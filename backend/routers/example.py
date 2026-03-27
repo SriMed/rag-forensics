@@ -1,13 +1,15 @@
 from fastapi import APIRouter
 from models import ExampleRequest, ExampleResponse
+from services.retriever import get_random_example
 
 router = APIRouter()
 
 
 @router.post("/example", response_model=ExampleResponse)
 def get_example(request: ExampleRequest) -> ExampleResponse:
+    example = get_random_example(request.domain)
     return ExampleResponse(
-        example_id=f"{request.domain}-001",
-        question="What is the capital of France?",
-        context_preview="France is a country in Western Europe. Its capital city is Paris.",
+        example_id=example.example_id,
+        question=example.question,
+        context_preview=example.context_preview,
     )

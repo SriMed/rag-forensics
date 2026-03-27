@@ -2,6 +2,18 @@ from typing import Literal
 from pydantic import BaseModel
 
 
+class StoredExample(BaseModel):
+    example_id: str
+    question: str
+    context_preview: str
+
+
+class RetrievedChunk(BaseModel):
+    chunk_id: str
+    text: str
+    score: float
+
+
 class ExampleRequest(BaseModel):
     domain: Literal["techqa", "finqa", "covidqa"]
 
