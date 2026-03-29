@@ -4,6 +4,7 @@ from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, Attribution
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
+from services.forensics.retrieval_distribution import analyze_retrieval_distribution
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -47,4 +48,5 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         chunk_attribution=_STUB_DIMENSION,
         confidence_calibration=_STUB_DIMENSION,
         attribution_map=[],
+        retrieval_distribution=analyze_retrieval_distribution(chunks),
     )

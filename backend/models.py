@@ -36,6 +36,15 @@ class AttributionEntry(BaseModel):
     similarity_score: float
 
 
+class RetrievalDistributionMetrics(BaseModel):
+    score_gap: float
+    score_entropy: float
+    decay_rate: float
+    tail_mass: float
+    top_score: float
+    n_chunks: int
+
+
 class AnalyzeRequest(BaseModel):
     example_id: str
 
@@ -51,3 +60,4 @@ class AnalyzeResponse(BaseModel):
     chunk_attribution: DimensionResult
     confidence_calibration: DimensionResult
     attribution_map: list[AttributionEntry]
+    retrieval_distribution: RetrievalDistributionMetrics
