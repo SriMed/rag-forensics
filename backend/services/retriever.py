@@ -2,7 +2,7 @@
 import logging
 import random
 import chromadb
-from models import StoredExample, RetrievedChunk
+from models import StoredExample, RetrievedChunk, RetrievalResult
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +71,42 @@ def _retrieve_chunks(question: str, collection: chromadb.Collection, top_k: int)
     return chunks
 
 
+def _retrieve_with_embeddings(
+    question: str, collection: chromadb.Collection, top_k: int
+) -> tuple[list[RetrievedChunk], list[float], list[list[float]]]:
+    """Return (chunks, query_embedding, chunk_embeddings)."""
+    query_result = collection.query(
+        query_texts=[question],
+        n_results=top_k,
+        include=["documents", "distances", "embeddings"],
+    )
+    documents = query_result["documents"][0]
+    distances = query_result["distances"][0]
+    chunk_ids = query_result["ids"][0]
+    raw_chunk_embeddings = query_result.get("embeddings", [[]])[0] or []
+
+    if not documents:
+        return [], [], []
+
+    chunks = [
+        RetrievedChunk(
+            chunk_id=chunk_id,
+            text=text,
+            score=float(max(0.0, 1.0 - distance)),
+        )
+        for chunk_id, text, distance in zip(chunk_ids, documents, distances)
+    ]
+    # Sort chunks and align chunk embeddings to the same order
+    order = sorted(range(len(chunks)), key=lambda i: chunks[i].score, reverse=True)
+    chunks = [chunks[i] for i in order]
+    chunk_embeddings = (
+        [list(raw_chunk_embeddings[i]) for i in order] if raw_chunk_embeddings else []
+    )
+
+    query_embedding = list(collection._embedding_function([question])[0])
+    return chunks, query_embedding, chunk_embeddings
+
+
 def retrieve(example_id: str, domain: str, top_k: int = 5) -> list[RetrievedChunk]:
     """Return up to top_k chunks most similar to the example's question, ordered by score desc."""
     collection = _get_collection(domain)
@@ -84,8 +120,8 @@ def retrieve(example_id: str, domain: str, top_k: int = 5) -> list[RetrievedChun
 _DOMAINS = ["techqa", "finqa", "covidqa"]
 
 
-def retrieve_for_example(example_id: str) -> tuple[str, list[RetrievedChunk]]:
-    """Return (question, chunks) for the given example_id, searching all domains."""
+def retrieve_for_example(example_id: str) -> tuple[str, RetrievalResult]:
+    """Return (question, RetrievalResult) for the given example_id, searching all domains."""
     for domain in _DOMAINS:
         try:
             collection = _get_collection(domain)
@@ -95,16 +131,22 @@ def retrieve_for_example(example_id: str) -> tuple[str, list[RetrievedChunk]]:
                 logger.debug("example_id=%s not found in domain=%s", example_id, domain)
                 continue
             question = meta.get("question", "")
-            chunks = _retrieve_chunks(question, collection, top_k=5)
+            chunks, query_embedding, chunk_embeddings = _retrieve_with_embeddings(
+                question, collection, top_k=5
+            )
             if chunks:
                 logger.debug("found example_id=%s in domain=%s, scores=%s",
                              example_id, domain, [round(c.score, 3) for c in chunks])
-                return question, chunks
+                return question, RetrievalResult(
+                    chunks=chunks,
+                    query_embedding=query_embedding,
+                    chunk_embeddings=chunk_embeddings,
+                )
         except Exception:
             logger.debug("error searching domain=%s for example_id=%s", domain, example_id, exc_info=True)
             continue
     logger.warning("example_id=%s not found in any domain", example_id)
-    return "", []
+    return "", RetrievalResult(chunks=[], query_embedding=[], chunk_embeddings=[])
 
 
 def get_reference_answer(example_id: str, domain: str) -> str:

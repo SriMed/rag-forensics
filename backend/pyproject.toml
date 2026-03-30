@@ -18,7 +18,8 @@ dependencies = [
     "langchain-anthropic (>=1.4.0,<2.0.0)",
     "anthropic (>=0.86.0,<0.87.0)",
     "nltk (>=3.9.4,<4.0.0)",
-    "httpx (>=0.28.1,<0.29.0)"
+    "httpx (>=0.28.1,<0.29.0)",
+    "scikit-learn (>=1.8.0,<2.0.0)"
 ]
 
 

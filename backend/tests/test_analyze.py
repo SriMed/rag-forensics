@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from models import RetrievedChunk, DimensionResult
+from models import RetrievedChunk, DimensionResult, RetrievalResult
 
 client = TestClient(app)
 
@@ -19,11 +19,21 @@ _STUB_CHUNKS = [
     RetrievedChunk(chunk_id="c1", text="Sample chunk text.", score=0.9),
 ]
 
+# Minimal 4-dim embeddings for the stub — sufficient for PCA (2 points, 4 dims → 2 components)
+_STUB_QUERY_EMBEDDING = [0.1, 0.2, 0.3, 0.4]
+_STUB_CHUNK_EMBEDDINGS = [[0.9, 0.8, 0.7, 0.6]]
+
+_STUB_RETRIEVAL_RESULT = RetrievalResult(
+    chunks=_STUB_CHUNKS,
+    query_embedding=_STUB_QUERY_EMBEDDING,
+    chunk_embeddings=_STUB_CHUNK_EMBEDDINGS,
+)
+
 _STUB_DIMENSION = DimensionResult(verdict="pass", explanation="ok", evidence=["Sample chunk text."])
 
 
 def _patch_services(mocker):
-    mocker.patch("routers.analyze.retrieve_for_example", return_value=("What is X?", _STUB_CHUNKS))
+    mocker.patch("routers.analyze.retrieve_for_example", return_value=("What is X?", _STUB_RETRIEVAL_RESULT))
     mocker.patch("routers.analyze.generate_answer", return_value="Generated answer.")
     mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_DIMENSION)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_DIMENSION)

@@ -45,6 +45,26 @@ class RetrievalDistributionMetrics(BaseModel):
     n_chunks: int
 
 
+class EmbeddingPoint(BaseModel):
+    label: str
+    x: float
+    y: float
+    is_query: bool
+
+
+class EmbeddingSpaceMetrics(BaseModel):
+    centroid_distance: float
+    chunk_spread: float
+    query_isolation: float
+    projection: list[EmbeddingPoint]
+
+
+class RetrievalResult(BaseModel):
+    chunks: list[RetrievedChunk]
+    query_embedding: list[float]
+    chunk_embeddings: list[list[float]]
+
+
 class AnalyzeRequest(BaseModel):
     example_id: str
 
@@ -61,3 +81,4 @@ class AnalyzeResponse(BaseModel):
     confidence_calibration: DimensionResult
     attribution_map: list[AttributionEntry]
     retrieval_distribution: RetrievalDistributionMetrics
+    embedding_space: EmbeddingSpaceMetrics

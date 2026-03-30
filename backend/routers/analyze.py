@@ -1,10 +1,12 @@
 import logging
+import numpy as np
 from fastapi import APIRouter, HTTPException
 from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, AttributionEntry
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
 from services.forensics.retrieval_distribution import analyze_retrieval_distribution
+from services.forensics.embedding_analysis import analyze_embedding_space
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -20,7 +22,8 @@ _STUB_DIMENSION = DimensionResult(
 def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     logger.info("analyze request: example_id=%s", request.example_id)
     try:
-        question, chunks = retrieve_for_example(request.example_id)
+        question, retrieval_result = retrieve_for_example(request.example_id)
+        chunks = retrieval_result.chunks
         logger.debug("retrieved %d chunks for example_id=%s", len(chunks), request.example_id)
 
         answer = generate_answer(question, chunks)
@@ -37,6 +40,12 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
 
     logger.info("analyze complete: example_id=%s", request.example_id)
 
+    embedding_space = analyze_embedding_space(
+        query_embedding=np.array(retrieval_result.query_embedding),
+        chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
+        chunk_ids=[c.chunk_id for c in chunks],
+    )
+
     return AnalyzeResponse(
         question=question,
         generated_answer=answer,
@@ -49,4 +58,5 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         confidence_calibration=_STUB_DIMENSION,
         attribution_map=[],
         retrieval_distribution=analyze_retrieval_distribution(chunks),
+        embedding_space=embedding_space,
     )
