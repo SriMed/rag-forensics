@@ -83,7 +83,8 @@ def _retrieve_with_embeddings(
     documents = query_result["documents"][0]
     distances = query_result["distances"][0]
     chunk_ids = query_result["ids"][0]
-    raw_chunk_embeddings = query_result.get("embeddings", [[]])[0] or []
+    # embeddings[0] is a numpy ndarray of shape (n_results, dim)
+    raw_chunk_embeddings = query_result["embeddings"][0]
 
     if not documents:
         return [], [], []
@@ -99,9 +100,7 @@ def _retrieve_with_embeddings(
     # Sort chunks and align chunk embeddings to the same order
     order = sorted(range(len(chunks)), key=lambda i: chunks[i].score, reverse=True)
     chunks = [chunks[i] for i in order]
-    chunk_embeddings = (
-        [list(raw_chunk_embeddings[i]) for i in order] if raw_chunk_embeddings else []
-    )
+    chunk_embeddings = [list(raw_chunk_embeddings[i]) for i in order]
 
     query_embedding = list(collection._embedding_function([question])[0])
     return chunks, query_embedding, chunk_embeddings

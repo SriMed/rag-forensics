@@ -161,3 +161,36 @@ Libraries like `httpx`, `httpcore`, `langchain`, `chromadb`, `ragas`, and `sente
 **Issue:** #3
 
 Seeding the ChromaDB index from RAGBench is slow and expensive (network + embedding compute). The script is never triggered automatically by tests, server startup, or CI. It runs only when explicitly instructed. The `backend/data/` directory is gitignored so the index is never committed.
+
+---
+
+## ADR-017: `retrieve_for_example` returns `RetrievalResult`, not a bare tuple
+
+**Status:** Accepted
+**Issue:** #14
+
+`retrieve_for_example` previously returned `tuple[str, list[RetrievedChunk]]`. It now returns `tuple[str, RetrievalResult]`, where `RetrievalResult` holds `chunks`, `query_embedding`, and `chunk_embeddings`. The query embedding is obtained by calling `collection._embedding_function([question])` after the ChromaDB query; chunk embeddings are extracted from `query_result["embeddings"][0]` via `include=["embeddings"]`.
+
+The bare tuple was sufficient when chunks were the only output. Adding embedding space analysis required passing pre-computed vectors through the pipeline without re-embedding. Bundling them in a named model makes the contract explicit and avoids positional unpacking errors as the return value grows.
+
+---
+
+## ADR-018: Embedding space analysis accepts pre-computed embeddings, makes no model calls
+
+**Status:** Accepted
+**Issue:** #14
+
+`analyze_embedding_space(query_embedding, chunk_embeddings, chunk_ids)` is a pure function — it takes numpy arrays and returns `EmbeddingSpaceMetrics`. It never instantiates or calls an embedding model. Embedding happens once in `_retrieve_with_embeddings` and is threaded through `RetrievalResult`; the analysis function only does geometry (cosine distances, PCA via scikit-learn).
+
+This mirrors the design of `analyze_retrieval_distribution`: forensics functions are pure math, not I/O. It keeps them fast, fully testable with synthetic data, and free of API key requirements.
+
+---
+
+## ADR-019: Never use `or []` on values from `query_result["embeddings"]`
+
+**Status:** Accepted
+**Issue:** #14
+
+ChromaDB's `query_result["embeddings"][0]` is a `numpy.ndarray` of shape `(n_results, embedding_dim)`, not a Python list. Using `ndarray or []` raises `ValueError: The truth value of an array with more than one element is ambiguous`. This error was caught by the broad `except Exception` in `retrieve_for_example`, silently returning an empty result and producing a confusing downstream crash in `analyze_embedding_space`.
+
+The fix: assign `raw_chunk_embeddings = query_result["embeddings"][0]` directly and use explicit `is None` checks for any guard logic. Never use Python's boolean short-circuit operators on numpy arrays.

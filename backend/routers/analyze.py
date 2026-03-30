@@ -34,17 +34,17 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
 
         answer_faithfulness = score_answer_faithfulness(answer, chunks, question)
         logger.debug("answer_faithfulness: verdict=%s", answer_faithfulness.verdict)
+
+        embedding_space = analyze_embedding_space(
+            query_embedding=np.array(retrieval_result.query_embedding),
+            chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
+            chunk_ids=[c.chunk_id for c in chunks],
+        )
     except Exception as exc:
         logger.exception("analyze failed for example_id=%s", request.example_id)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     logger.info("analyze complete: example_id=%s", request.example_id)
-
-    embedding_space = analyze_embedding_space(
-        query_embedding=np.array(retrieval_result.query_embedding),
-        chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
-        chunk_ids=[c.chunk_id for c in chunks],
-    )
 
     return AnalyzeResponse(
         question=question,
