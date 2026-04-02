@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, AttributionEntry
+from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, RAGASMetrics
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
@@ -29,11 +29,11 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         answer = generate_answer(question, chunks)
         logger.debug("generated answer (%d chars)", len(answer))
 
-        retrieval_relevance = score_retrieval_relevance(question, chunks)
-        logger.debug("retrieval_relevance: verdict=%s", retrieval_relevance.verdict)
+        relevance_score, relevance_evidence = score_retrieval_relevance(question, chunks)
+        logger.debug("retrieval_relevance_score=%.3f", relevance_score)
 
-        answer_faithfulness = score_answer_faithfulness(answer, chunks, question)
-        logger.debug("answer_faithfulness: verdict=%s", answer_faithfulness.verdict)
+        faithfulness_score, faithfulness_evidence = score_answer_faithfulness(answer, chunks, question)
+        logger.debug("faithfulness_score=%.3f", faithfulness_score)
 
         embedding_space = analyze_embedding_space(
             query_embedding=np.array(retrieval_result.query_embedding),
@@ -50,8 +50,12 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         question=question,
         generated_answer=answer,
         retrieved_chunks=[c.text for c in chunks],
-        retrieval_relevance=retrieval_relevance,
-        answer_faithfulness=answer_faithfulness,
+        ragas=RAGASMetrics(
+            retrieval_relevance_score=relevance_score,
+            faithfulness_score=faithfulness_score,
+            relevance_evidence=relevance_evidence,
+            faithfulness_evidence=faithfulness_evidence,
+        ),
         retrieval_score_distribution=_STUB_DIMENSION,
         hedging_verification_mismatch=_STUB_DIMENSION,
         chunk_attribution=_STUB_DIMENSION,

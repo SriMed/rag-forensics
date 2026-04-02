@@ -65,6 +65,13 @@ class RetrievalResult(BaseModel):
     chunk_embeddings: list[list[float]]
 
 
+class RAGASMetrics(BaseModel):
+    retrieval_relevance_score: float
+    faithfulness_score: float
+    relevance_evidence: list[str]
+    faithfulness_evidence: list[str]
+
+
 class AnalyzeRequest(BaseModel):
     example_id: str
 
@@ -73,8 +80,7 @@ class AnalyzeResponse(BaseModel):
     question: str
     generated_answer: str
     retrieved_chunks: list[str]
-    retrieval_relevance: DimensionResult
-    answer_faithfulness: DimensionResult
+    ragas: RAGASMetrics
     retrieval_score_distribution: DimensionResult
     hedging_verification_mismatch: DimensionResult
     chunk_attribution: DimensionResult

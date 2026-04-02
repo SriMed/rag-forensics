@@ -6,9 +6,8 @@ from models import RetrievedChunk, DimensionResult, RetrievalResult
 
 client = TestClient(app)
 
+# Dimension keys that still use DimensionResult shape (verdict/explanation/evidence)
 DIMENSION_KEYS = [
-    "retrieval_relevance",
-    "answer_faithfulness",
     "retrieval_score_distribution",
     "hedging_verification_mismatch",
     "chunk_attribution",
@@ -31,12 +30,15 @@ _STUB_RETRIEVAL_RESULT = RetrievalResult(
 
 _STUB_DIMENSION = DimensionResult(verdict="pass", explanation="ok", evidence=["Sample chunk text."])
 
+# RAGAS score functions now return (float, list[str])
+_STUB_SCORE_TUPLE = (0.85, ["Sample chunk text."])
+
 
 def _patch_services(mocker):
     mocker.patch("routers.analyze.retrieve_for_example", return_value=("What is X?", _STUB_RETRIEVAL_RESULT))
     mocker.patch("routers.analyze.generate_answer", return_value="Generated answer.")
-    mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_DIMENSION)
-    mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_DIMENSION)
+    mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_SCORE_TUPLE)
+    mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
 
 
 def test_post_analyze_valid_id_returns_200(mocker):
@@ -50,7 +52,56 @@ def test_post_analyze_missing_example_id_returns_422():
     assert response.status_code == 422
 
 
-def test_analyze_response_has_all_six_dimension_keys(mocker):
+def test_analyze_response_has_ragas_field(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    assert response.status_code == 200
+    body = response.json()
+    assert "ragas" in body, "Missing ragas field"
+
+
+def test_analyze_ragas_has_continuous_scores(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    body = response.json()
+    ragas = body["ragas"]
+    assert "retrieval_relevance_score" in ragas
+    assert "faithfulness_score" in ragas
+    assert isinstance(ragas["retrieval_relevance_score"], float)
+    assert isinstance(ragas["faithfulness_score"], float)
+    assert 0.0 <= ragas["retrieval_relevance_score"] <= 1.0
+    assert 0.0 <= ragas["faithfulness_score"] <= 1.0
+
+
+def test_analyze_ragas_has_no_verdict(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    body = response.json()
+    ragas = body["ragas"]
+    assert "verdict" not in ragas
+
+
+def test_analyze_ragas_has_evidence_fields(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    body = response.json()
+    ragas = body["ragas"]
+    assert "relevance_evidence" in ragas
+    assert "faithfulness_evidence" in ragas
+    assert isinstance(ragas["relevance_evidence"], list)
+    assert isinstance(ragas["faithfulness_evidence"], list)
+
+
+def test_analyze_response_no_longer_has_retrieval_relevance_dimension(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    body = response.json()
+    # These moved into ragas — should not exist as top-level DimensionResult fields
+    assert "retrieval_relevance" not in body
+    assert "answer_faithfulness" not in body
+
+
+def test_analyze_response_has_remaining_dimension_keys(mocker):
     _patch_services(mocker)
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     assert response.status_code == 200
@@ -84,7 +135,7 @@ def test_analyze_response_has_question_and_chunks(mocker):
     assert isinstance(body["retrieved_chunks"], list)
 
 
-def test_analyze_dimension_has_verdict_explanation_evidence(mocker):
+def test_analyze_remaining_dimensions_have_verdict_explanation_evidence(mocker):
     _patch_services(mocker)
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     body = response.json()
