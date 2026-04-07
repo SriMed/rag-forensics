@@ -194,3 +194,23 @@ This mirrors the design of `analyze_retrieval_distribution`: forensics functions
 ChromaDB's `query_result["embeddings"][0]` is a `numpy.ndarray` of shape `(n_results, embedding_dim)`, not a Python list. Using `ndarray or []` raises `ValueError: The truth value of an array with more than one element is ambiguous`. This error was caught by the broad `except Exception` in `retrieve_for_example`, silently returning an empty result and producing a confusing downstream crash in `analyze_embedding_space`.
 
 The fix: assign `raw_chunk_embeddings = query_result["embeddings"][0]` directly and use explicit `is None` checks for any guard logic. Never use Python's boolean short-circuit operators on numpy arrays.
+
+---
+
+## ADR-020: Deterministic lexicon for confidence classification, not an LLM
+
+**Status:** Accepted
+**Issue:** #6
+
+Confidence classification (definitive / hedged / uncertain) in `hedging_mismatch.py` uses a hand-coded lexicon and regex word-boundary matching rather than a Claude API call. The alternatives were: (a) another LLM round-trip per claim, or (b) a fine-tuned NLI model. The lexicon approach is deterministic, zero-latency, fully testable with no mocks, and covers the epistemic-marker vocabulary that matters for RAG answer hedging (modal verbs, approximators, attribution shields, first-person softeners). The tradeoff is that novel hedging constructions outside the lexicon will be misclassified as definitive — acceptable given the explicit priority ordering (uncertain > hedged > definitive) and the continuous-fraction output that smooths individual errors.
+
+---
+
+## ADR-021: Entailment response parsed with substring containment, not exact equality
+
+**Status:** Accepted
+**Issue:** #15
+
+The entailment step in `hedging_mismatch.py` checks whether Claude's response indicates `supported` or `not_supported`. The original implementation used exact equality after `.strip().lower()`. This silently misclassified any response with trailing punctuation (`"supported."`) or a prefix (`"yes, supported"`) as `not_supported`, biasing `overconfident_fraction` downward. The fix uses an order-of-operations substring check: first reject if `"not_supported"` or `"not supported"` appears, then accept if `"supported"` appears, otherwise log a warning and default to `not_supported`. The warning makes silent misparsing observable without raising an exception that would abort the per-claim loop.
+
+---
