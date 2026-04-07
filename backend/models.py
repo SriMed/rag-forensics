@@ -65,6 +65,21 @@ class RetrievalResult(BaseModel):
     chunk_embeddings: list[list[float]]
 
 
+class ClaimEntry(BaseModel):
+    claim: str
+    confidence_class: Literal["definitive", "hedged", "uncertain"]
+    supported: bool
+    mismatch_type: Literal["overconfident", "underconfident", "matched"]
+    source_chunk_id: str | None
+
+
+class HedgingMismatchMetrics(BaseModel):
+    overconfident_fraction: float
+    underconfident_fraction: float
+    total_claims: int
+    claim_breakdown: list[ClaimEntry]
+
+
 class RAGASMetrics(BaseModel):
     retrieval_relevance_score: float
     faithfulness_score: float
@@ -82,7 +97,7 @@ class AnalyzeResponse(BaseModel):
     retrieved_chunks: list[str]
     ragas: RAGASMetrics
     retrieval_score_distribution: DimensionResult
-    hedging_verification_mismatch: DimensionResult
+    hedging_mismatch: HedgingMismatchMetrics
     chunk_attribution: DimensionResult
     confidence_calibration: DimensionResult
     attribution_map: list[AttributionEntry]

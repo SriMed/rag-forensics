@@ -2,6 +2,7 @@ import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
 from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, RAGASMetrics
+from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
@@ -57,7 +58,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             faithfulness_evidence=faithfulness_evidence,
         ),
         retrieval_score_distribution=_STUB_DIMENSION,
-        hedging_verification_mismatch=_STUB_DIMENSION,
+        hedging_mismatch=analyze_hedging_mismatch(answer, chunks),
         chunk_attribution=_STUB_DIMENSION,
         confidence_calibration=_STUB_DIMENSION,
         attribution_map=[],

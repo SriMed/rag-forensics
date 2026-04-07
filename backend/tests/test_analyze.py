@@ -2,17 +2,23 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from models import RetrievedChunk, DimensionResult, RetrievalResult
+from models import RetrievedChunk, DimensionResult, HedgingMismatchMetrics, RetrievalResult
 
 client = TestClient(app)
 
 # Dimension keys that still use DimensionResult shape (verdict/explanation/evidence)
 DIMENSION_KEYS = [
     "retrieval_score_distribution",
-    "hedging_verification_mismatch",
     "chunk_attribution",
     "confidence_calibration",
 ]
+
+_STUB_HEDGING_MISMATCH = HedgingMismatchMetrics(
+    overconfident_fraction=0.0,
+    underconfident_fraction=0.0,
+    total_claims=0,
+    claim_breakdown=[],
+)
 
 _STUB_CHUNKS = [
     RetrievedChunk(chunk_id="c1", text="Sample chunk text.", score=0.9),
@@ -39,6 +45,7 @@ def _patch_services(mocker):
     mocker.patch("routers.analyze.generate_answer", return_value="Generated answer.")
     mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
+    mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING_MISMATCH)
 
 
 def test_post_analyze_valid_id_returns_200(mocker):
@@ -146,6 +153,19 @@ def test_analyze_remaining_dimensions_have_verdict_explanation_evidence(mocker):
         assert "evidence" in dim, f"{key} missing evidence"
         assert dim["verdict"] in ("pass", "warn", "fail"), f"{key} verdict invalid"
         assert isinstance(dim["evidence"], list), f"{key} evidence not a list"
+
+
+def test_analyze_response_has_hedging_mismatch(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    body = response.json()
+    assert "hedging_mismatch" in body
+    hm = body["hedging_mismatch"]
+    assert "overconfident_fraction" in hm
+    assert "underconfident_fraction" in hm
+    assert "total_claims" in hm
+    assert "claim_breakdown" in hm
+    assert "verdict" not in hm  # hedging_mismatch is continuous, not DimensionResult
 
 
 def test_analyze_generated_answer_comes_from_generator(mocker):
