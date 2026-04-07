@@ -245,6 +245,23 @@ def test_extraction_invalid_json_returns_zeroed(mocker):
     assert result.claim_breakdown == []
 
 
+def test_extraction_response_wrapped_in_code_fence(mocker):
+    """Model sometimes wraps JSON in ```json ... ``` — must still parse correctly."""
+    fenced = '```json\n["The deadline is March 15."]\n```'
+    _make_mock(mocker, [fenced, "not_supported"])
+    result = analyze_hedging_mismatch("The deadline is March 15.", _chunks(1))
+    assert result.total_claims == 1
+    assert result.claim_breakdown[0].mismatch_type == "overconfident"
+
+
+def test_extraction_response_wrapped_in_plain_code_fence(mocker):
+    """Model may also use ``` without language tag."""
+    fenced = '```\n["The deadline is March 15."]\n```'
+    _make_mock(mocker, [fenced, "not_supported"])
+    result = analyze_hedging_mismatch("The deadline is March 15.", _chunks(1))
+    assert result.total_claims == 1
+
+
 # ---------------------------------------------------------------------------
 # Test 16 — per-claim entailment failure → that claim gets not_supported, others unaffected
 # ---------------------------------------------------------------------------
@@ -331,3 +348,45 @@ def test_dimension_result_not_imported_in_module():
     import services.forensics.hedging_mismatch as mod
     source = inspect.getsource(mod)
     assert "DimensionResult" not in source
+
+
+# ---------------------------------------------------------------------------
+# Issue #15 — entailment response normalization
+# ---------------------------------------------------------------------------
+
+def test_entailment_supported_with_trailing_punctuation(mocker):
+    """'supported.' should be treated as supported."""
+    _make_mock(mocker, ['["It may apply after March."]', "supported."])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.claim_breakdown[0].supported is True
+    assert result.claim_breakdown[0].mismatch_type == "underconfident"
+
+
+def test_entailment_supported_with_prefix(mocker):
+    """'yes, supported' should be treated as supported."""
+    _make_mock(mocker, ['["It may apply after March."]', "yes, supported"])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.claim_breakdown[0].supported is True
+
+
+def test_entailment_not_supported_with_trailing_punctuation(mocker):
+    """'not_supported.' should be treated as not supported."""
+    _make_mock(mocker, ['["The deadline is March 15."]', "not_supported."])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.claim_breakdown[0].supported is False
+    assert result.claim_breakdown[0].mismatch_type == "overconfident"
+
+
+def test_entailment_not_supported_capitalized(mocker):
+    """'Not supported' (with space, capitalized) should be treated as not supported."""
+    _make_mock(mocker, ['["The deadline is March 15."]', "Not supported"])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.claim_breakdown[0].supported is False
+
+
+def test_entailment_unexpected_response_defaults_to_not_supported(mocker):
+    """Unrecognized responses default to not_supported without crashing."""
+    _make_mock(mocker, ['["The deadline is March 15."]', "I cannot determine this."])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.claim_breakdown[0].supported is False
+    assert result.total_claims == 1

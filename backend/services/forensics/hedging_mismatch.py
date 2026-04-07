@@ -145,7 +145,12 @@ def analyze_hedging_mismatch(
                 }
             ],
         )
-        claims_list: list[str] = json.loads(extraction_response.content[0].text)
+        raw = extraction_response.content[0].text.strip()
+        # Strip markdown code fences (```json ... ``` or ``` ... ```)
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[1]
+            raw = raw.rsplit("```", 1)[0].strip()
+        claims_list: list[str] = json.loads(raw)
     except Exception:
         logger.warning("Claim extraction failed; returning zeroed metrics")
         return _ZEROED
@@ -179,7 +184,17 @@ def analyze_hedging_mismatch(
                     ],
                 )
                 verdict = entailment_response.content[0].text.strip().lower()
-                if verdict == "supported":
+                is_negated = "not_supported" in verdict or "not supported" in verdict
+                is_supported = "supported" in verdict and not is_negated
+                is_unrecognized = "supported" not in verdict
+                if is_unrecognized:
+                    logger.warning(
+                        "Unexpected entailment response for claim '%s' on chunk '%s': %r — defaulting to not_supported",
+                        claim_str,
+                        chunk.chunk_id,
+                        verdict,
+                    )
+                if is_supported:
                     supported = True
                     source_chunk_id = chunk.chunk_id
                     break  # short-circuit on first supporting chunk
