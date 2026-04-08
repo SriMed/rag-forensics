@@ -2,13 +2,8 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ExampleBrowser from "@/app/components/ExampleBrowser";
 
-// Async mocks: return a Promise that resolves after one microtask tick so
-// the in-flight loading state is observable before resolution.
-const makeAsyncMock = <T,>(value: T) =>
-  jest.fn(() => new Promise<T>((resolve) => setTimeout(() => resolve(value), 0)));
-
 // Deferred promise helper: gives tests explicit control over when a mock resolves,
-// so the in-flight (loading) state can be asserted before resolution.
+// so the in-flight (loading) state is observable before resolution.
 function deferred<T>(): { promise: Promise<T>; resolve: (v: T) => void } {
   let resolve!: (v: T) => void;
   const promise = new Promise<T>((r) => {
@@ -29,8 +24,14 @@ describe("ExampleBrowser", () => {
   let analyzeExample: jest.Mock;
 
   beforeEach(() => {
-    loadExample = makeAsyncMock(EXAMPLE_RESULT);
-    analyzeExample = makeAsyncMock(undefined);
+    const { promise: lp, resolve: lr } = deferred<typeof EXAMPLE_RESULT>();
+    loadExample = jest.fn(() => lp);
+    // Resolve synchronously for tests that don't need to observe in-flight state.
+    lr(EXAMPLE_RESULT);
+
+    const { promise: ap, resolve: ar } = deferred<void>();
+    analyzeExample = jest.fn(() => ap);
+    ar(undefined);
   });
 
   // 1. Domain selector renders correct options
@@ -73,16 +74,39 @@ describe("ExampleBrowser", () => {
     expect(screen.getByTestId("preview-card")).toHaveTextContent(EXAMPLE_RESULT.question);
   });
 
-  // 6. Preview card shows truncated context (max 300 chars)
-  it("truncates context to 300 characters in the preview card", async () => {
+  // 6. Preview card truncates long context; does not truncate short context
+  it("truncates context longer than 300 chars to exactly 300 chars in the preview card", async () => {
+    // 400 'A's — unambiguously longer than the 300-char limit.
     const longContext = "A".repeat(400);
-    loadExample = makeAsyncMock({ ...EXAMPLE_RESULT, context: longContext });
+    const { promise, resolve } = deferred<typeof EXAMPLE_RESULT>();
+    loadExample = jest.fn(() => promise);
+    resolve({ ...EXAMPLE_RESULT, context: longContext });
+
     const user = userEvent.setup();
     render(<ExampleBrowser loadExample={loadExample} analyzeExample={analyzeExample} />);
     await user.click(screen.getByRole("button", { name: /load example/i }));
     await waitFor(() => screen.getByTestId("preview-card"));
+
     const displayedContext = screen.getByTestId("preview-context").textContent ?? "";
     expect(displayedContext.length).toBeLessThanOrEqual(300);
+    // The ellipsis must be present, proving truncation actually ran.
+    expect(displayedContext).toMatch(/…$/);
+  });
+
+  it("does not truncate context that is 300 chars or shorter", async () => {
+    const shortContext = "B".repeat(300);
+    const { promise, resolve } = deferred<typeof EXAMPLE_RESULT>();
+    loadExample = jest.fn(() => promise);
+    resolve({ ...EXAMPLE_RESULT, context: shortContext });
+
+    const user = userEvent.setup();
+    render(<ExampleBrowser loadExample={loadExample} analyzeExample={analyzeExample} />);
+    await user.click(screen.getByRole("button", { name: /load example/i }));
+    await waitFor(() => screen.getByTestId("preview-card"));
+
+    const displayedContext = screen.getByTestId("preview-context").textContent ?? "";
+    expect(displayedContext).toBe(shortContext);
+    expect(displayedContext).not.toMatch(/…$/);
   });
 
   // 7. 'Analyze' disabled before example loaded
@@ -115,20 +139,15 @@ describe("ExampleBrowser", () => {
 
   // 10. Spinner on Load Example while in flight
   it("shows a loading spinner on Load Example while the call is in flight", async () => {
-    // Use a deferred promise so we control exactly when the load resolves,
-    // keeping the component in the in-flight state long enough to assert the spinner.
     const { promise, resolve } = deferred<typeof EXAMPLE_RESULT>();
     loadExample = jest.fn(() => promise);
     const user = userEvent.setup();
     render(<ExampleBrowser loadExample={loadExample} analyzeExample={analyzeExample} />);
 
-    // Start the click but don't await it — let React render the loading state first.
     const clickPromise = user.click(screen.getByRole("button", { name: /load example/i }));
 
-    // Spinner must be visible while the load is in flight.
     await waitFor(() => expect(screen.getByTestId("load-spinner")).toBeInTheDocument());
 
-    // Resolve the load and confirm spinner disappears.
     await act(async () => { resolve(EXAMPLE_RESULT); });
     await clickPromise;
     await waitFor(() => expect(screen.queryByTestId("load-spinner")).not.toBeInTheDocument());
@@ -136,7 +155,6 @@ describe("ExampleBrowser", () => {
 
   // 11. Spinner on Analyze while in flight
   it("shows a loading spinner on Analyze while the call is in flight", async () => {
-    // Use a deferred promise for analyzeExample to hold the in-flight state.
     const { promise, resolve } = deferred<void>();
     analyzeExample = jest.fn(() => promise);
     const user = userEvent.setup();
@@ -146,13 +164,10 @@ describe("ExampleBrowser", () => {
       expect(screen.getByRole("button", { name: /analyze/i })).not.toBeDisabled()
     );
 
-    // Start analyze click without awaiting.
     const analyzePromise = user.click(screen.getByRole("button", { name: /analyze/i }));
 
-    // Spinner must be visible while analyze is in flight.
     await waitFor(() => expect(screen.getByTestId("analyze-spinner")).toBeInTheDocument());
 
-    // Resolve and confirm spinner disappears.
     await act(async () => { resolve(); });
     await analyzePromise;
     await waitFor(() =>
@@ -162,7 +177,6 @@ describe("ExampleBrowser", () => {
 
   // 12. Re-clicking Load Example replaces preview and resets Analyze
   it("re-loading replaces the preview card and disables Analyze until new load resolves", async () => {
-    // Second load uses a deferred promise so we can assert the disabled state mid-flight.
     const { promise: promise2, resolve: resolve2 } = deferred<typeof EXAMPLE_RESULT>();
     let callCount = 0;
     loadExample = jest.fn(() => {
@@ -178,13 +192,13 @@ describe("ExampleBrowser", () => {
     await waitFor(() => screen.getByTestId("preview-card"));
     expect(screen.getByRole("button", { name: /analyze/i })).not.toBeDisabled();
 
-    // Second load — start without awaiting so we can observe the in-flight state.
+    // Second load — Analyze must be disabled while in flight
     const secondClick = user.click(screen.getByRole("button", { name: /load example/i }));
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /analyze/i })).toBeDisabled()
     );
 
-    // Resolve second load — Analyze re-enables.
+    // Resolve second load — Analyze re-enables
     await act(async () => { resolve2(EXAMPLE_RESULT); });
     await secondClick;
     await waitFor(() =>

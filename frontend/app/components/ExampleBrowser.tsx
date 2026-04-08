@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import {
+  loadExample as defaultLoadExample,
+  analyzeExample as defaultAnalyzeExample,
+} from "@/lib/api";
 import type { ExampleResult } from "@/lib/api";
 
 const CONTEXT_TRUNCATE_LENGTH = 300;
@@ -14,11 +18,14 @@ const DOMAINS = [
 type Domain = (typeof DOMAINS)[number]["value"];
 
 interface Props {
-  loadExample: (domain: string) => Promise<ExampleResult>;
-  analyzeExample: (exampleId: string) => Promise<void>;
+  loadExample?: (domain: string) => Promise<ExampleResult>;
+  analyzeExample?: (exampleId: string) => Promise<void>;
 }
 
-export default function ExampleBrowser({ loadExample, analyzeExample }: Props) {
+export default function ExampleBrowser({
+  loadExample = defaultLoadExample,
+  analyzeExample = defaultAnalyzeExample,
+}: Props) {
   const [domain, setDomain] = useState<Domain>("techqa");
   const [example, setExample] = useState<ExampleResult | null>(null);
   const [loadingExample, setLoadingExample] = useState(false);
