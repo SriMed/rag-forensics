@@ -214,3 +214,21 @@ Confidence classification (definitive / hedged / uncertain) in `hedging_mismatch
 The entailment step in `hedging_mismatch.py` checks whether Claude's response indicates `supported` or `not_supported`. The original implementation used exact equality after `.strip().lower()`. This silently misclassified any response with trailing punctuation (`"supported."`) or a prefix (`"yes, supported"`) as `not_supported`, biasing `overconfident_fraction` downward. The fix uses an order-of-operations substring check: first reject if `"not_supported"` or `"not supported"` appears, then accept if `"supported"` appears, otherwise log a warning and default to `not_supported`. The warning makes silent misparsing observable without raising an exception that would abort the per-claim loop.
 
 ---
+
+## ADR-022: Frontend API functions injected as optional props with library defaults
+
+**Status:** Accepted
+**Issue:** #1
+
+`ExampleBrowser` accepts `loadExample` and `analyzeExample` as optional props, defaulting to the real stub implementations from `lib/api.ts`. Tests inject mock functions via props; `page.tsx` renders `<ExampleBrowser />` with no props and gets the defaults. The alternative — importing stubs directly inside the component — would require Jest module mocking (`jest.mock('@/lib/api')`) to test, which is harder to reason about and ties tests to module structure. The alternative of marking `page.tsx` as `"use client"` to allow function-prop passing was rejected: keeping `page.tsx` as a Server Component preserves the option to do server-side data fetching there in future issues (#10, #11) when real backend wiring lands.
+
+---
+
+## ADR-023: Deferred promises for in-flight state assertions in frontend tests
+
+**Status:** Accepted
+**Issue:** #1
+
+Frontend tests that assert loading spinner visibility use a `deferred()` helper that returns a `{ promise, resolve }` pair, giving tests explicit control over when async mocks settle. The alternative — `jest.fn(() => new Promise(resolve => setTimeout(resolve, 0)))` — is unreliable because `userEvent.setup()` under React 18's `act()` boundary drains the macro-task queue before returning from `await user.click()`, making the in-flight state unobservable. Deferred promises sidestep this by holding the promise open until the test explicitly calls `resolve()` inside `act()`, making spinner-present and spinner-absent assertions deterministic.
+
+---
