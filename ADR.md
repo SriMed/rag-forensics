@@ -232,3 +232,21 @@ The entailment step in `hedging_mismatch.py` checks whether Claude's response in
 Frontend tests that assert loading spinner visibility use a `deferred()` helper that returns a `{ promise, resolve }` pair, giving tests explicit control over when async mocks settle. The alternative — `jest.fn(() => new Promise(resolve => setTimeout(resolve, 0)))` — is unreliable because `userEvent.setup()` under React 18's `act()` boundary drains the macro-task queue before returning from `await user.click()`, making the in-flight state unobservable. Deferred promises sidestep this by holding the promise open until the test explicitly calls `resolve()` inside `act()`, making spinner-present and spinner-absent assertions deterministic.
 
 ---
+
+## ADR-024: `get_embedding_model()` singleton placed in `retriever.py`, not a separate module
+
+**Status:** Accepted
+**Issue:** #7
+
+Chunk attribution needs to embed answer sentences using the same model that ChromaDB uses to embed chunks (`sentence-transformers/all-MiniLM-L6-v2`). Rather than creating a separate `services/embedding.py` module, `get_embedding_model()` was added to `retriever.py` as a module-level cached singleton. The alternative (a dedicated embedding module) would be cleaner if more than one service needed the model, but currently only `chunk_attribution.py` calls it. Colocating it in the retriever keeps the model name in one place and avoids a one-function module with no other responsibility. If a second consumer appears, extract to `services/embedding.py`.
+
+---
+
+## ADR-025: Chunk attribution uses pre-computed chunk embeddings; only sentences are embedded at call time
+
+**Status:** Accepted
+**Issue:** #7
+
+`analyze_chunk_attribution(answer, chunks, chunk_embeddings)` accepts chunk embeddings as a pre-computed `list[list[float]]` sourced from `RetrievalResult.chunk_embeddings`. It calls `get_embedding_model().encode(sentences)` only for the answer sentences, which are new content not available at retrieval time. The alternative — re-embedding chunks inside the function — would double the embedding work and couple the forensics module to retrieval internals. This follows the same design as `analyze_embedding_space` (ADR-018): forensics functions are pure math over pre-computed vectors, with embedding happening exactly once in the retrieval layer.
+
+---
