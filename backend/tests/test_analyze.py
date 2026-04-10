@@ -2,14 +2,13 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from models import RetrievedChunk, DimensionResult, HedgingMismatchMetrics, RetrievalResult
+from models import RetrievedChunk, DimensionResult, HedgingMismatchMetrics, ChunkAttributionMetrics, RetrievalResult
 
 client = TestClient(app)
 
 # Dimension keys that still use DimensionResult shape (verdict/explanation/evidence)
 DIMENSION_KEYS = [
     "retrieval_score_distribution",
-    "chunk_attribution",
     "confidence_calibration",
 ]
 
@@ -36,6 +35,13 @@ _STUB_RETRIEVAL_RESULT = RetrievalResult(
 
 _STUB_DIMENSION = DimensionResult(verdict="pass", explanation="ok", evidence=["Sample chunk text."])
 
+_STUB_CHUNK_ATTRIBUTION = ChunkAttributionMetrics(
+    unattributed_fraction=0.0,
+    mean_attribution_score=0.9,
+    weak_match_fraction=0.0,
+    attribution_map=[],
+)
+
 # RAGAS score functions now return (float, list[str])
 _STUB_SCORE_TUPLE = (0.85, ["Sample chunk text."])
 
@@ -46,6 +52,7 @@ def _patch_services(mocker):
     mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING_MISMATCH)
+    mocker.patch("routers.analyze.analyze_chunk_attribution", return_value=_STUB_CHUNK_ATTRIBUTION)
 
 
 def test_post_analyze_valid_id_returns_200(mocker):
@@ -129,8 +136,9 @@ def test_analyze_response_has_attribution_map(mocker):
     _patch_services(mocker)
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     body = response.json()
-    assert "attribution_map" in body
-    assert isinstance(body["attribution_map"], list)
+    assert "chunk_attribution" in body
+    assert "attribution_map" in body["chunk_attribution"]
+    assert isinstance(body["chunk_attribution"]["attribution_map"], list)
 
 
 def test_analyze_response_has_question_and_chunks(mocker):
@@ -153,6 +161,18 @@ def test_analyze_remaining_dimensions_have_verdict_explanation_evidence(mocker):
         assert "evidence" in dim, f"{key} missing evidence"
         assert dim["verdict"] in ("pass", "warn", "fail"), f"{key} verdict invalid"
         assert isinstance(dim["evidence"], list), f"{key} evidence not a list"
+
+
+def test_analyze_response_chunk_attribution_is_continuous_metrics(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    body = response.json()
+    ca = body["chunk_attribution"]
+    assert "unattributed_fraction" in ca
+    assert "mean_attribution_score" in ca
+    assert "weak_match_fraction" in ca
+    assert "attribution_map" in ca
+    assert "verdict" not in ca  # ChunkAttributionMetrics is continuous, not DimensionResult
 
 
 def test_analyze_response_has_hedging_mismatch(mocker):

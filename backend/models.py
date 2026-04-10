@@ -34,6 +34,14 @@ class AttributionEntry(BaseModel):
     sentence: str
     chunk_id: str | None
     similarity_score: float
+    attribution_strength: Literal["strong", "weak", "unattributed"]
+
+
+class ChunkAttributionMetrics(BaseModel):
+    unattributed_fraction: float
+    mean_attribution_score: float
+    weak_match_fraction: float
+    attribution_map: list[AttributionEntry]
 
 
 class RetrievalDistributionMetrics(BaseModel):
@@ -98,8 +106,7 @@ class AnalyzeResponse(BaseModel):
     ragas: RAGASMetrics
     retrieval_score_distribution: DimensionResult
     hedging_mismatch: HedgingMismatchMetrics
-    chunk_attribution: DimensionResult
+    chunk_attribution: ChunkAttributionMetrics
     confidence_calibration: DimensionResult
-    attribution_map: list[AttributionEntry]
     retrieval_distribution: RetrievalDistributionMetrics
     embedding_space: EmbeddingSpaceMetrics

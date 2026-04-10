@@ -2,7 +2,19 @@
 import logging
 import random
 import chromadb
+from sentence_transformers import SentenceTransformer
 from models import StoredExample, RetrievedChunk, RetrievalResult
+
+_EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+_embedding_model: SentenceTransformer | None = None
+
+
+def get_embedding_model() -> SentenceTransformer:
+    """Return a cached SentenceTransformer instance for sentence embedding."""
+    global _embedding_model
+    if _embedding_model is None:
+        _embedding_model = SentenceTransformer(_EMBEDDING_MODEL_NAME)
+    return _embedding_model
 
 logger = logging.getLogger(__name__)
 
