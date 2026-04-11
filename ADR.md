@@ -250,3 +250,30 @@ Chunk attribution needs to embed answer sentences using the same model that Chro
 `analyze_chunk_attribution(answer, chunks, chunk_embeddings)` accepts chunk embeddings as a pre-computed `list[list[float]]` sourced from `RetrievalResult.chunk_embeddings`. It calls `get_embedding_model().encode(sentences)` only for the answer sentences, which are new content not available at retrieval time. The alternative — re-embedding chunks inside the function — would double the embedding work and couple the forensics module to retrieval internals. This follows the same design as `analyze_embedding_space` (ADR-018): forensics functions are pure math over pre-computed vectors, with embedding happening exactly once in the retrieval layer.
 
 ---
+
+## ADR-026: Query-corpus fit module is conditional — triggered by upstream forensics signals
+
+**Status:** Accepted
+**Issue:** #8
+
+`analyze_query_corpus_fit` is the only forensics module that can short-circuit to a no-op. It checks three trigger conditions (`query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, or `score_entropy > 1.5 AND faithfulness_score < 0.5`) before making any LLM calls; if none are met it returns a sentinel `_UNTRIGGERED` object immediately. The alternatives were: always run question generation (expensive, noisy for queries that retrieved well), or gate it at the router (spreads conditional logic across layers). Putting the gate inside the module keeps the router unconditional and makes the module self-contained and independently testable — a test can assert the Anthropic client is never called when signals are below threshold.
+
+---
+
+## ADR-027: Mismatch type classified by mean cosine similarity between suggested questions and original query
+
+**Status:** Accepted
+**Issue:** #8
+
+After generating suggested questions, each is embedded and its cosine similarity to the original query embedding is computed. The mean of these scores determines `mismatch_type`: `> 0.6` → `query_mismatch` (user was in the right neighborhood, just phrased it differently), `< 0.3` → `coverage_gap` (corpus doesn't cover the topic), otherwise `ambiguous`. The alternative was an additional LLM call to classify the mismatch. Using cosine similarity is zero-cost (model already loaded), deterministic, and directly measures the geometric relationship that defines the two failure modes — it is the most natural signal for this classification.
+
+---
+
+## ADR-028: Prompt uses f-string concatenation, not `str.format()`, for chunk text interpolation
+
+**Status:** Accepted
+**Issue:** #8
+
+`build_question_generation_prompt()` in `prompts/query_fit_prompts.py` uses f-string concatenation rather than `str.format()` or a `.format()`-style template. Chunk texts retrieved from a knowledge base frequently contain curly braces (JSON snippets, code examples, template literals). Passing such text through `str.format()` raises `KeyError` or silently corrupts the prompt. The f-string approach interpolates `chunk_texts` and `original_question` at definition time, so brace characters in the content are never interpreted as format placeholders.
+
+---
