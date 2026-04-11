@@ -10,7 +10,7 @@ import anthropic
 import numpy as np
 
 from models import QueryCorpusFitMetrics, RetrievedChunk, SuggestedQuestion
-from prompts.query_fit_prompts import QUESTION_GENERATION_PROMPT
+from prompts.query_fit_prompts import build_question_generation_prompt
 from services.retriever import get_embedding_model
 
 logger = logging.getLogger(__name__)
@@ -66,10 +66,7 @@ def analyze_query_corpus_fit(
             max_tokens=512,
             messages=[{
                 "role": "user",
-                "content": QUESTION_GENERATION_PROMPT.format(
-                    chunk_texts=chunk_texts,
-                    original_question=question,
-                ),
+                "content": build_question_generation_prompt(chunk_texts, question),
             }],
         )
         raw = response.content[0].text.strip()
@@ -77,7 +74,10 @@ def analyze_query_corpus_fit(
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[1]
             raw = raw.rsplit("```", 1)[0].strip()
-        question_strings: list[str] = json.loads(raw)
+        parsed = json.loads(raw)
+        if not isinstance(parsed, list) or not all(isinstance(q, str) for q in parsed):
+            raise ValueError(f"Expected JSON array of strings, got {type(parsed).__name__}")
+        question_strings: list[str] = parsed
     except Exception:
         logger.warning("Question generation failed; returning triggered with empty questions")
         return QueryCorpusFitMetrics(

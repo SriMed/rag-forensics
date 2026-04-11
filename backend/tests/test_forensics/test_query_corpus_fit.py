@@ -495,6 +495,32 @@ def test_invalid_json_fallback(mocker):
     assert result.mean_question_similarity is None
 
 
+def test_wrong_json_structure_fallback(mocker):
+    """Claude returns valid JSON but not a list of strings (e.g. a dict) → same fallback."""
+    from services.forensics.query_corpus_fit import analyze_query_corpus_fit
+
+    _make_claude_mock(mocker, '{"questions": ["Q1", "Q2"]}')
+    query_emb = _unit(seed=1)
+    chunks = _chunks(2)
+    chunk_embs = [_unit(seed=10 + i) for i in range(2)]
+
+    result = analyze_query_corpus_fit(
+        question="What is X?",
+        query_embedding=query_emb,
+        chunks=chunks,
+        chunk_embeddings=chunk_embs,
+        query_isolation=1.5,
+        retrieval_relevance_score=0.8,
+        score_entropy=0.5,
+        faithfulness_score=0.8,
+    )
+
+    assert result.triggered is True
+    assert result.suggested_questions == []
+    assert result.mismatch_type is None
+    assert result.mean_question_similarity is None
+
+
 # ---------------------------------------------------------------------------
 # Test 15 — query_isolation exactly 1.2 → triggered=False (strict >)
 # ---------------------------------------------------------------------------

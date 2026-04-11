@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, QueryCorpusFitMetrics, RAGASMetrics
+from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, RAGASMetrics
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.forensics.query_corpus_fit import analyze_query_corpus_fit

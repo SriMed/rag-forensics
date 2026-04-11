@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from models import RetrievedChunk, DimensionResult, HedgingMismatchMetrics, ChunkAttributionMetrics, RetrievalResult
+from models import RetrievedChunk, DimensionResult, HedgingMismatchMetrics, ChunkAttributionMetrics, QueryCorpusFitMetrics, RetrievalResult
 
 client = TestClient(app)
 
@@ -45,6 +45,13 @@ _STUB_CHUNK_ATTRIBUTION = ChunkAttributionMetrics(
 # RAGAS score functions now return (float, list[str])
 _STUB_SCORE_TUPLE = (0.85, ["Sample chunk text."])
 
+_STUB_QUERY_CORPUS_FIT = QueryCorpusFitMetrics(
+    triggered=False,
+    mismatch_type=None,
+    suggested_questions=[],
+    mean_question_similarity=None,
+)
+
 
 def _patch_services(mocker):
     mocker.patch("routers.analyze.retrieve_for_example", return_value=("What is X?", _STUB_RETRIEVAL_RESULT))
@@ -53,6 +60,7 @@ def _patch_services(mocker):
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING_MISMATCH)
     mocker.patch("routers.analyze.analyze_chunk_attribution", return_value=_STUB_CHUNK_ATTRIBUTION)
+    mocker.patch("routers.analyze.analyze_query_corpus_fit", return_value=_STUB_QUERY_CORPUS_FIT)
 
 
 def test_post_analyze_valid_id_returns_200(mocker):
@@ -200,3 +208,18 @@ def test_analyze_service_failure_returns_500(mocker):
     mocker.patch("routers.analyze.retrieve_for_example", side_effect=Exception("DB error"))
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     assert response.status_code == 500
+
+
+def test_analyze_response_has_query_corpus_fit(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    assert response.status_code == 200
+    body = response.json()
+    assert "query_corpus_fit" in body
+    qcf = body["query_corpus_fit"]
+    assert "triggered" in qcf
+    assert "mismatch_type" in qcf
+    assert "suggested_questions" in qcf
+    assert "mean_question_similarity" in qcf
+    assert isinstance(qcf["triggered"], bool)
+    assert isinstance(qcf["suggested_questions"], list)
