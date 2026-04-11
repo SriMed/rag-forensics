@@ -1,9 +1,10 @@
 import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, RAGASMetrics
+from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, QueryCorpusFitMetrics, RAGASMetrics
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
+from services.forensics.query_corpus_fit import analyze_query_corpus_fit
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
@@ -42,6 +43,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
             chunk_ids=[c.chunk_id for c in chunks],
         )
+        retrieval_distribution = analyze_retrieval_distribution(chunks)
     except Exception as exc:
         logger.exception("analyze failed for example_id=%s", request.example_id)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -62,6 +64,16 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         hedging_mismatch=analyze_hedging_mismatch(answer, chunks),
         chunk_attribution=analyze_chunk_attribution(answer, chunks, retrieval_result.chunk_embeddings),
         confidence_calibration=_STUB_DIMENSION,
-        retrieval_distribution=analyze_retrieval_distribution(chunks),
+        retrieval_distribution=retrieval_distribution,
         embedding_space=embedding_space,
+        query_corpus_fit=analyze_query_corpus_fit(
+            question=question,
+            query_embedding=np.array(retrieval_result.query_embedding),
+            chunks=chunks,
+            chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
+            query_isolation=embedding_space.query_isolation,
+            retrieval_relevance_score=relevance_score,
+            score_entropy=retrieval_distribution.score_entropy,
+            faithfulness_score=faithfulness_score,
+        ),
     )

@@ -2,6 +2,27 @@ from typing import Literal
 from pydantic import BaseModel
 
 
+class SuggestedQuestion(BaseModel):
+    question: str
+    source_chunk_ids: list[str]
+    relevance_to_original: float
+
+
+class QueryCorpusFitMetrics(BaseModel):
+    triggered: bool
+    mismatch_type: Literal["query_mismatch", "coverage_gap", "ambiguous"] | None
+    suggested_questions: list[SuggestedQuestion]
+    mean_question_similarity: float | None
+
+
+class RecommendationRule(BaseModel):
+    rule_id: str
+    root_cause: str
+    pipeline_component: str
+    action: str
+    render_hint: str
+
+
 class StoredExample(BaseModel):
     example_id: str
     question: str
@@ -110,3 +131,4 @@ class AnalyzeResponse(BaseModel):
     confidence_calibration: DimensionResult
     retrieval_distribution: RetrievalDistributionMetrics
     embedding_space: EmbeddingSpaceMetrics
+    query_corpus_fit: QueryCorpusFitMetrics
