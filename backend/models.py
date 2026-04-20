@@ -132,3 +132,5 @@ class AnalyzeResponse(BaseModel):
     retrieval_distribution: RetrievalDistributionMetrics
     embedding_space: EmbeddingSpaceMetrics
     query_corpus_fit: QueryCorpusFitMetrics
+    recommendation: str
+    rule_id: str

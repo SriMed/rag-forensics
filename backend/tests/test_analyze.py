@@ -61,6 +61,7 @@ def _patch_services(mocker):
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING_MISMATCH)
     mocker.patch("routers.analyze.analyze_chunk_attribution", return_value=_STUB_CHUNK_ATTRIBUTION)
     mocker.patch("routers.analyze.analyze_query_corpus_fit", return_value=_STUB_QUERY_CORPUS_FIT)
+    mocker.patch("routers.analyze.render_recommendation", return_value="No changes indicated.")
 
 
 def test_post_analyze_valid_id_returns_200(mocker):
@@ -223,3 +224,14 @@ def test_analyze_response_has_query_corpus_fit(mocker):
     assert "mean_question_similarity" in qcf
     assert isinstance(qcf["triggered"], bool)
     assert isinstance(qcf["suggested_questions"], list)
+
+
+def test_analyze_response_has_recommendation_and_rule_id(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    assert response.status_code == 200
+    body = response.json()
+    assert "recommendation" in body
+    assert "rule_id" in body
+    assert isinstance(body["recommendation"], str)
+    assert body["rule_id"] in {"R01", "R02", "R03", "R04", "R05", "R06", "R07", "R08", "R09"}
