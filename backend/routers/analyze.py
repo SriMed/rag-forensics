@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, DimensionResult, RAGASMetrics
+from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.forensics.query_corpus_fit import analyze_query_corpus_fit
@@ -14,12 +14,6 @@ from services.forensics.embedding_analysis import analyze_embedding_space
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-_STUB_DIMENSION = DimensionResult(
-    verdict="pass",
-    explanation="Not yet implemented.",
-    evidence=[],
-)
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
@@ -85,10 +79,8 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             relevance_evidence=relevance_evidence,
             faithfulness_evidence=faithfulness_evidence,
         ),
-        retrieval_score_distribution=_STUB_DIMENSION,
         hedging_mismatch=hedging,
         chunk_attribution=chunk_attribution,
-        confidence_calibration=_STUB_DIMENSION,
         retrieval_distribution=retrieval_distribution,
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,

@@ -1,6 +1,6 @@
 "use client";
 
-import type { AnalyzeResponse, DimensionResult } from "@/lib/api";
+import type { AnalyzeResponse } from "@/lib/api";
 
 // Deterministic palette for chunk_id → color class. Cycles through 6 hues.
 const CHUNK_COLORS = [
@@ -19,19 +19,15 @@ function chunkColor(chunkId: string, index: Map<string, number>): string {
   return CHUNK_COLORS[index.get(chunkId)!];
 }
 
-function verdictClass(verdict: DimensionResult["verdict"]): string {
+type Verdict = "pass" | "warn" | "fail";
+
+function verdictClass(verdict: Verdict): string {
   if (verdict === "pass") return "bg-green-100 text-green-800";
   if (verdict === "warn") return "bg-amber-100 text-amber-800";
   return "bg-red-100 text-red-800";
 }
 
-function VerdictBadge({
-  verdict,
-  testId,
-}: {
-  verdict: DimensionResult["verdict"];
-  testId: string;
-}) {
+function VerdictBadge({ verdict, testId }: { verdict: Verdict; testId: string }) {
   return (
     <span
       data-testid={testId}
@@ -40,43 +36,6 @@ function VerdictBadge({
       {verdict}
     </span>
   );
-}
-
-function DimensionRow({
-  label,
-  result,
-  id,
-}: {
-  label: string;
-  result: DimensionResult;
-  id: string;
-}) {
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        <VerdictBadge verdict={result.verdict} testId={`badge-${id}`} />
-      </div>
-      <p className="text-sm text-gray-600">{result.explanation}</p>
-      {result.evidence.length > 0 && (
-        <ul className="space-y-1 pl-3 border-l-2 border-gray-200">
-          {result.evidence.map((e, i) => (
-            <li key={i} className="text-xs text-gray-500 italic">
-              {e}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-function worstVerdict(
-  ...verdicts: DimensionResult["verdict"][]
-): DimensionResult["verdict"] {
-  if (verdicts.includes("fail")) return "fail";
-  if (verdicts.includes("warn")) return "warn";
-  return "pass";
 }
 
 interface Props {
@@ -88,8 +47,6 @@ export default function DiagnosticCard({ response }: Props) {
     question,
     generated_answer,
     ragas,
-    retrieval_score_distribution,
-    confidence_calibration,
     chunk_attribution,
     hedging_mismatch,
     retrieval_distribution,
@@ -101,14 +58,14 @@ export default function DiagnosticCard({ response }: Props) {
 
   // Derive synthetic DimensionResults for continuous-metric modules
   // so they render consistently in the forensics section.
-  const hedgingVerdict: DimensionResult["verdict"] =
+  const hedgingVerdict: Verdict =
     hedging_mismatch.overconfident_fraction > 0.3
       ? "fail"
       : hedging_mismatch.overconfident_fraction > 0.15
       ? "warn"
       : "pass";
 
-  const attributionVerdict: DimensionResult["verdict"] =
+  const attributionVerdict: Verdict =
     chunk_attribution.unattributed_fraction > 0.4
       ? "fail"
       : chunk_attribution.unattributed_fraction > 0.2
@@ -118,7 +75,7 @@ export default function DiagnosticCard({ response }: Props) {
   // Banner uses rule_id as the authoritative verdict — it is the backend's
   // synthesised signal across all modules. Local per-dimension badges are
   // heuristic approximations for display only and can diverge.
-  const overall: DimensionResult["verdict"] =
+  const overall: Verdict =
     rule_id === "R07" ? "pass" : "fail";
 
   const chunkColorIndex = new Map<string, number>();
@@ -201,18 +158,6 @@ export default function DiagnosticCard({ response }: Props) {
         <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500">
           Forensics
         </h2>
-
-        <DimensionRow
-          label="Retrieval Score Distribution"
-          result={retrieval_score_distribution}
-          id="retrieval_score_distribution"
-        />
-
-        <DimensionRow
-          label="Confidence Calibration"
-          result={confidence_calibration}
-          id="confidence_calibration"
-        />
 
         {/* Hedging Mismatch — continuous metrics */}
         <div className="space-y-1">

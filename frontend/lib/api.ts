@@ -87,10 +87,8 @@ export interface AnalyzeResponse {
   generated_answer: string;
   retrieved_chunks: string[];
   ragas: RAGASMetrics;
-  retrieval_score_distribution: DimensionResult;
   hedging_mismatch: HedgingMismatchMetrics;
   chunk_attribution: ChunkAttributionMetrics;
-  confidence_calibration: DimensionResult;
   retrieval_distribution: RetrievalDistributionMetrics;
   embedding_space: EmbeddingSpaceMetrics;
   query_corpus_fit: QueryCorpusFitMetrics;

@@ -2,15 +2,9 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from models import RetrievedChunk, DimensionResult, HedgingMismatchMetrics, ChunkAttributionMetrics, QueryCorpusFitMetrics, RetrievalResult
+from models import RetrievedChunk, HedgingMismatchMetrics, ChunkAttributionMetrics, QueryCorpusFitMetrics, RetrievalResult
 
 client = TestClient(app)
-
-# Dimension keys that still use DimensionResult shape (verdict/explanation/evidence)
-DIMENSION_KEYS = [
-    "retrieval_score_distribution",
-    "confidence_calibration",
-]
 
 _STUB_HEDGING_MISMATCH = HedgingMismatchMetrics(
     overconfident_fraction=0.0,
@@ -32,8 +26,6 @@ _STUB_RETRIEVAL_RESULT = RetrievalResult(
     query_embedding=_STUB_QUERY_EMBEDDING,
     chunk_embeddings=_STUB_CHUNK_EMBEDDINGS,
 )
-
-_STUB_DIMENSION = DimensionResult(verdict="pass", explanation="ok", evidence=["Sample chunk text."])
 
 _STUB_CHUNK_ATTRIBUTION = ChunkAttributionMetrics(
     unattributed_fraction=0.0,
@@ -124,15 +116,6 @@ def test_analyze_response_no_longer_has_retrieval_relevance_dimension(mocker):
     assert "answer_faithfulness" not in body
 
 
-def test_analyze_response_has_remaining_dimension_keys(mocker):
-    _patch_services(mocker)
-    response = client.post("/analyze", json={"example_id": "techqa-001"})
-    assert response.status_code == 200
-    body = response.json()
-    for key in DIMENSION_KEYS:
-        assert key in body, f"Missing dimension key: {key}"
-
-
 def test_analyze_response_has_generated_answer(mocker):
     _patch_services(mocker)
     response = client.post("/analyze", json={"example_id": "techqa-001"})
@@ -159,17 +142,6 @@ def test_analyze_response_has_question_and_chunks(mocker):
     assert isinstance(body["retrieved_chunks"], list)
 
 
-def test_analyze_remaining_dimensions_have_verdict_explanation_evidence(mocker):
-    _patch_services(mocker)
-    response = client.post("/analyze", json={"example_id": "techqa-001"})
-    body = response.json()
-    for key in DIMENSION_KEYS:
-        dim = body[key]
-        assert "verdict" in dim, f"{key} missing verdict"
-        assert "explanation" in dim, f"{key} missing explanation"
-        assert "evidence" in dim, f"{key} missing evidence"
-        assert dim["verdict"] in ("pass", "warn", "fail"), f"{key} verdict invalid"
-        assert isinstance(dim["evidence"], list), f"{key} evidence not a list"
 
 
 def test_analyze_response_chunk_attribution_is_continuous_metrics(mocker):

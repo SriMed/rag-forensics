@@ -125,10 +125,8 @@ class AnalyzeResponse(BaseModel):
     generated_answer: str
     retrieved_chunks: list[str]
     ragas: RAGASMetrics
-    retrieval_score_distribution: DimensionResult
     hedging_mismatch: HedgingMismatchMetrics
     chunk_attribution: ChunkAttributionMetrics
-    confidence_calibration: DimensionResult
     retrieval_distribution: RetrievalDistributionMetrics
     embedding_space: EmbeddingSpaceMetrics
     query_corpus_fit: QueryCorpusFitMetrics

@@ -12,11 +12,6 @@ const BASE_RESPONSE: AnalyzeResponse = {
     relevance_evidence: ["Evidence A"],
     faithfulness_evidence: ["Evidence B"],
   },
-  retrieval_score_distribution: {
-    verdict: "pass",
-    explanation: "Scores are well-distributed.",
-    evidence: ["Score gap is 0.3"],
-  },
   hedging_mismatch: {
     overconfident_fraction: 0.1,
     underconfident_fraction: 0.05,
@@ -50,11 +45,6 @@ const BASE_RESPONSE: AnalyzeResponse = {
       },
     ],
   },
-  confidence_calibration: {
-    verdict: "warn",
-    explanation: "Minor overconfidence detected.",
-    evidence: [],
-  },
   retrieval_distribution: {
     score_gap: 0.3,
     score_entropy: 0.9,
@@ -86,10 +76,9 @@ const FAIL_RESPONSE: AnalyzeResponse = {
   ...BASE_RESPONSE,
   rule_id: "R01",
   recommendation: "Reduce top-k to improve selectivity.",
-  retrieval_score_distribution: {
-    verdict: "fail",
-    explanation: "Retrieval scores are ambiguous.",
-    evidence: ["Score gap is 0.01"],
+  hedging_mismatch: {
+    ...BASE_RESPONSE.hedging_mismatch,
+    overconfident_fraction: 0.4, // > 0.3 threshold → FAIL badge
   },
 };
 
@@ -109,11 +98,11 @@ describe("DiagnosticCard", () => {
   });
 
   // 3. Verdict badge colors
-  it("applies green class for pass verdict, amber for warn, red for fail", () => {
+  it("applies green class for pass verdict, red for fail", () => {
     render(<DiagnosticCard response={FAIL_RESPONSE} />);
-    const passBadge = screen.getByTestId("badge-confidence_calibration");
-    const failBadge = screen.getByTestId("badge-retrieval_score_distribution");
-    expect(passBadge.className).toMatch(/amber/);
+    const passBadge = screen.getByTestId("badge-chunk_attribution"); // 10% unattributed → pass
+    const failBadge = screen.getByTestId("badge-hedging_mismatch");  // 40% overconfident → fail
+    expect(passBadge.className).toMatch(/green/);
     expect(failBadge.className).toMatch(/red/);
   });
 
@@ -140,7 +129,6 @@ describe("DiagnosticCard", () => {
   // 7. Empty evidence array does not crash
   it("renders without crashing when evidence arrays are empty", () => {
     expect(() => render(<DiagnosticCard response={BASE_RESPONSE} />)).not.toThrow();
-    // confidence_calibration has evidence: [] — verify it still renders the dimension
-    expect(screen.getByTestId("badge-confidence_calibration")).toBeInTheDocument();
+    expect(screen.getByTestId("badge-chunk_attribution")).toBeInTheDocument();
   });
 });
