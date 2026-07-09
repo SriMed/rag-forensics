@@ -98,19 +98,29 @@ export interface AnalyzeResponse {
   rule_id: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 export async function loadExample(domain: string): Promise<ExampleResult> {
-  // Stub: returns mock data. Real implementation will call POST /example.
+  const resp = await fetch(`${API_URL}/example`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ domain }),
+  });
+  if (!resp.ok) throw new Error(`loadExample failed: ${resp.status}`);
+  const data = await resp.json();
   return {
-    exampleId: `${domain}-example-001`,
-    question: `Sample question for domain: ${domain}`,
-    context:
-      "This is a sample context passage retrieved from the RAGBench dataset. " +
-      "It contains information relevant to the question above and is used to " +
-      "demonstrate how the RAG forensics system evaluates retrieval quality.",
+    exampleId: data.example_id,
+    question: data.question,
+    context: data.context_preview,
   };
 }
 
-export async function analyzeExample(exampleId: string): Promise<void> {
-  // Stub: no-op. Real implementation will call POST /analyze with exampleId.
-  void exampleId;
+export async function analyzeExample(exampleId: string): Promise<AnalyzeResponse> {
+  const resp = await fetch(`${API_URL}/analyze`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ example_id: exampleId }),
+  });
+  if (!resp.ok) throw new Error(`analyzeExample failed: ${resp.status}`);
+  return resp.json();
 }

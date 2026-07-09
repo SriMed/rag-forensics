@@ -1,6 +1,23 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ExampleBrowser from "@/app/components/ExampleBrowser";
+import type { AnalyzeResponse } from "@/lib/api";
+
+const ANALYZE_FIXTURE: AnalyzeResponse = {
+  question: "What is X?",
+  generated_answer: "X is Y.",
+  retrieved_chunks: [],
+  ragas: { retrieval_relevance_score: 0.8, faithfulness_score: 0.9, relevance_evidence: [], faithfulness_evidence: [] },
+  retrieval_score_distribution: { verdict: "pass", explanation: "ok", evidence: [] },
+  hedging_mismatch: { overconfident_fraction: 0, underconfident_fraction: 0, total_claims: 0, claim_breakdown: [] },
+  chunk_attribution: { unattributed_fraction: 0, mean_attribution_score: 0.9, weak_match_fraction: 0, attribution_map: [] },
+  confidence_calibration: { verdict: "pass", explanation: "ok", evidence: [] },
+  retrieval_distribution: { score_gap: 0.3, score_entropy: 0.9, decay_rate: 0.4, tail_mass: 0.1, top_score: 0.9, n_chunks: 3 },
+  embedding_space: { centroid_distance: 0.3, chunk_spread: 0.2, query_isolation: 0.8, projection: [] },
+  query_corpus_fit: { triggered: false, mismatch_type: null, suggested_questions: [], mean_question_similarity: null },
+  recommendation: "Pipeline looks healthy.",
+  rule_id: "R07",
+};
 
 // Deferred promise helper: gives tests explicit control over when a mock resolves,
 // so the in-flight (loading) state is observable before resolution.
@@ -29,9 +46,9 @@ describe("ExampleBrowser", () => {
     // Resolve synchronously for tests that don't need to observe in-flight state.
     lr(EXAMPLE_RESULT);
 
-    const { promise: ap, resolve: ar } = deferred<void>();
+    const { promise: ap, resolve: ar } = deferred<AnalyzeResponse>();
     analyzeExample = jest.fn(() => ap);
-    ar(undefined);
+    ar(ANALYZE_FIXTURE);
   });
 
   // 1. Domain selector renders correct options
@@ -155,7 +172,7 @@ describe("ExampleBrowser", () => {
 
   // 11. Spinner on Analyze while in flight
   it("shows a loading spinner on Analyze while the call is in flight", async () => {
-    const { promise, resolve } = deferred<void>();
+    const { promise, resolve } = deferred<AnalyzeResponse>();
     analyzeExample = jest.fn(() => promise);
     const user = userEvent.setup();
     render(<ExampleBrowser loadExample={loadExample} analyzeExample={analyzeExample} />);
@@ -168,14 +185,40 @@ describe("ExampleBrowser", () => {
 
     await waitFor(() => expect(screen.getByTestId("analyze-spinner")).toBeInTheDocument());
 
-    await act(async () => { resolve(); });
+    await act(async () => { resolve(ANALYZE_FIXTURE); });
     await analyzePromise;
     await waitFor(() =>
       expect(screen.queryByTestId("analyze-spinner")).not.toBeInTheDocument()
     );
   });
 
-  // 12. Re-clicking Load Example replaces preview and resets Analyze
+  // 12. DiagnosticCard renders after Analyze resolves
+  it("renders DiagnosticCard with the recommendation after Analyze resolves", async () => {
+    const user = userEvent.setup();
+    render(<ExampleBrowser loadExample={loadExample} analyzeExample={analyzeExample} />);
+    await user.click(screen.getByRole("button", { name: /load example/i }));
+    await waitFor(() => screen.getByTestId("preview-card"));
+    await user.click(screen.getByRole("button", { name: /analyze/i }));
+    await waitFor(() =>
+      expect(screen.getByTestId("summary-banner")).toBeInTheDocument()
+    );
+    expect(screen.getByTestId("summary-banner")).toHaveTextContent(ANALYZE_FIXTURE.recommendation);
+  });
+
+  // 13. Error message shown on analyzeExample rejection
+  it("shows an error message when analyzeExample rejects", async () => {
+    analyzeExample = jest.fn(() => Promise.reject(new Error("Network error")));
+    const user = userEvent.setup();
+    render(<ExampleBrowser loadExample={loadExample} analyzeExample={analyzeExample} />);
+    await user.click(screen.getByRole("button", { name: /load example/i }));
+    await waitFor(() => screen.getByTestId("preview-card"));
+    await user.click(screen.getByRole("button", { name: /analyze/i }));
+    await waitFor(() =>
+      expect(screen.getByTestId("analyze-error")).toBeInTheDocument()
+    );
+  });
+
+  // 14. Re-clicking Load Example replaces preview and resets Analyze
   it("re-loading replaces the preview card and disables Analyze until new load resolves", async () => {
     const { promise: promise2, resolve: resolve2 } = deferred<typeof EXAMPLE_RESULT>();
     let callCount = 0;

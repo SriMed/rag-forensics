@@ -5,7 +5,8 @@ import {
   loadExample as defaultLoadExample,
   analyzeExample as defaultAnalyzeExample,
 } from "@/lib/api";
-import type { ExampleResult } from "@/lib/api";
+import type { ExampleResult, AnalyzeResponse } from "@/lib/api";
+import DiagnosticCard from "@/app/components/DiagnosticCard";
 
 const CONTEXT_TRUNCATE_LENGTH = 300;
 
@@ -19,7 +20,7 @@ type Domain = (typeof DOMAINS)[number]["value"];
 
 interface Props {
   loadExample?: (domain: string) => Promise<ExampleResult>;
-  analyzeExample?: (exampleId: string) => Promise<void>;
+  analyzeExample?: (exampleId: string) => Promise<AnalyzeResponse>;
 }
 
 export default function ExampleBrowser({
@@ -28,11 +29,15 @@ export default function ExampleBrowser({
 }: Props) {
   const [domain, setDomain] = useState<Domain>("techqa");
   const [example, setExample] = useState<ExampleResult | null>(null);
+  const [analyzeResult, setAnalyzeResult] = useState<AnalyzeResponse | null>(null);
+  const [analyzeError, setAnalyzeError] = useState<string | null>(null);
   const [loadingExample, setLoadingExample] = useState(false);
   const [loadingAnalyze, setLoadingAnalyze] = useState(false);
 
   async function handleLoadExample() {
     setExample(null);
+    setAnalyzeResult(null);
+    setAnalyzeError(null);
     setLoadingExample(true);
     try {
       const result = await loadExample(domain);
@@ -44,9 +49,14 @@ export default function ExampleBrowser({
 
   async function handleAnalyze() {
     if (!example) return;
+    setAnalyzeResult(null);
+    setAnalyzeError(null);
     setLoadingAnalyze(true);
     try {
-      await analyzeExample(example.exampleId);
+      const result = await analyzeExample(example.exampleId);
+      setAnalyzeResult(result);
+    } catch (err) {
+      setAnalyzeError(err instanceof Error ? err.message : "Analysis failed. Please try again.");
     } finally {
       setLoadingAnalyze(false);
     }
@@ -106,6 +116,19 @@ export default function ExampleBrowser({
           Analyze
         </button>
       </div>
+
+      {/* Analyze error */}
+      {analyzeError && (
+        <div
+          data-testid="analyze-error"
+          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
+          {analyzeError}
+        </div>
+      )}
+
+      {/* Diagnostic results */}
+      {analyzeResult && <DiagnosticCard response={analyzeResult} />}
 
       {/* Preview card */}
       {example && !loadingExample && (

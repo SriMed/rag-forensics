@@ -115,12 +115,11 @@ export default function DiagnosticCard({ response }: Props) {
       ? "warn"
       : "pass";
 
-  const overall = worstVerdict(
-    retrieval_score_distribution.verdict,
-    confidence_calibration.verdict,
-    hedgingVerdict,
-    attributionVerdict
-  );
+  // Banner uses rule_id as the authoritative verdict — it is the backend's
+  // synthesised signal across all modules. Local per-dimension badges are
+  // heuristic approximations for display only and can diverge.
+  const overall: DimensionResult["verdict"] =
+    rule_id === "R07" ? "pass" : "fail";
 
   const chunkColorIndex = new Map<string, number>();
 

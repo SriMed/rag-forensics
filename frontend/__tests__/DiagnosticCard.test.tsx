@@ -78,12 +78,14 @@ const BASE_RESPONSE: AnalyzeResponse = {
     suggested_questions: [],
     mean_question_similarity: null,
   },
-  recommendation: "Reduce top-k to improve selectivity.",
-  rule_id: "R01",
+  recommendation: "Pipeline looks healthy — no action required.",
+  rule_id: "R07",
 };
 
 const FAIL_RESPONSE: AnalyzeResponse = {
   ...BASE_RESPONSE,
+  rule_id: "R01",
+  recommendation: "Reduce top-k to improve selectivity.",
   retrieval_score_distribution: {
     verdict: "fail",
     explanation: "Retrieval scores are ambiguous.",
