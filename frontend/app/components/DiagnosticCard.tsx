@@ -143,19 +143,19 @@ export default function DiagnosticCard({ response }: Props) {
           ? "Potential issues detected"
           : "Issues detected"}{" "}
         — {recommendation}{" "}
-        <span className="opacity-60 font-normal">({rule_id})</span>
+        <span className="text-current/70 font-normal">({rule_id})</span>
       </div>
 
       {/* Question + Answer */}
       <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm space-y-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-1">
             Question
           </p>
           <p className="text-base font-medium text-gray-900">{question}</p>
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-1">
             Generated Answer
           </p>
           <p className="text-sm text-gray-700 leading-relaxed">{generated_answer}</p>
@@ -169,23 +169,23 @@ export default function DiagnosticCard({ response }: Props) {
         </h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">Retrieval Relevance</p>
+            <p className="text-xs text-gray-600 mb-0.5">Retrieval Relevance</p>
             <p className="text-2xl font-bold text-gray-800">
               {(ragas.retrieval_relevance_score * 100).toFixed(0)}
-              <span className="text-sm font-normal text-gray-400">%</span>
+              <span className="text-sm font-normal text-gray-600">%</span>
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 mb-0.5">Faithfulness</p>
+            <p className="text-xs text-gray-600 mb-0.5">Faithfulness</p>
             <p className="text-2xl font-bold text-gray-800">
               {(ragas.faithfulness_score * 100).toFixed(0)}
-              <span className="text-sm font-normal text-gray-400">%</span>
+              <span className="text-sm font-normal text-gray-600">%</span>
             </p>
           </div>
         </div>
         {ragas.relevance_evidence.length > 0 && (
           <div>
-            <p className="text-xs text-gray-400 mb-1">Relevance Evidence</p>
+            <p className="text-xs text-gray-600 mb-1">Relevance Evidence</p>
             <ul className="space-y-1 pl-3 border-l-2 border-gray-200">
               {ragas.relevance_evidence.map((e, i) => (
                 <li key={i} className="text-xs text-gray-500 italic">
@@ -303,7 +303,7 @@ export default function DiagnosticCard({ response }: Props) {
             </div>
             {query_corpus_fit.suggested_questions.length > 0 && (
               <div>
-                <p className="text-xs text-gray-400 mb-1">Questions these chunks answer well:</p>
+                <p className="text-xs text-gray-600 mb-1">Questions these chunks answer well:</p>
                 <ul className="space-y-1 pl-3 border-l-2 border-gray-200">
                   {query_corpus_fit.suggested_questions.map((q, i) => (
                     <li key={i} className="text-xs text-gray-600">
