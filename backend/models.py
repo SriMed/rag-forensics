@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class SuggestedQuestion(BaseModel):
@@ -118,6 +118,25 @@ class RAGASMetrics(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     example_id: str
+
+
+class CustomChunk(BaseModel):
+    chunk_id: str
+    text: str
+    score: float
+
+
+class CustomAnalyzeRequest(BaseModel):
+    question: str
+    answer: str
+    chunks: list[CustomChunk]
+
+    @field_validator("chunks")
+    @classmethod
+    def chunks_not_empty(cls, v):
+        if not v:
+            raise ValueError("chunks must not be empty")
+        return v
 
 
 class AnalyzeResponse(BaseModel):
