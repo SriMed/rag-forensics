@@ -277,3 +277,30 @@ After generating suggested questions, each is embedded and its cosine similarity
 `build_question_generation_prompt()` in `prompts/query_fit_prompts.py` uses f-string concatenation rather than `str.format()` or a `.format()`-style template. Chunk texts retrieved from a knowledge base frequently contain curly braces (JSON snippets, code examples, template literals). Passing such text through `str.format()` raises `KeyError` or silently corrupts the prompt. The f-string approach interpolates `chunk_texts` and `original_question` at definition time, so brace characters in the content are never interpreted as format placeholders.
 
 ---
+
+## ADR-029: Verdict generation is a two-stage pipeline — deterministic rule match, then Claude render
+
+**Status:** Accepted
+**Issue:** #9
+
+`verdict_generator.py` separates verdict logic into two stages: (1) `match_rule()` is a deterministic decision tree that maps forensics signal combinations to a `RecommendationRule` object — no LLM involved; (2) `render_recommendation()` calls Claude once to render the matched rule as a single readable sentence. The alternative — asking Claude to synthesize all signals and produce a recommendation in one shot — is harder to test (output is non-deterministic), harder to debug (no inspectable intermediate), and more expensive (more tokens per request). Separating the rule match from the render means the business logic lives in testable Python, and the LLM is used only for prose quality, not for correctness.
+
+---
+
+## ADR-030: `/analyze/custom` computes embeddings inline using the cached singleton from `retriever.py`
+
+**Status:** Accepted
+**Issue:** #13
+
+The `/analyze/custom` endpoint accepts pre-scored BYO chunks (no ChromaDB) but still needs embeddings for `chunk_attribution` and `embedding_space`. It computes them inline by calling `get_embedding_model()` from `retriever.py` — the same `SentenceTransformer` singleton used by the retrieval path. The alternative was requiring callers to supply embeddings, which would have made the API harder to use. The singleton is already warm by the time a custom request arrives (server startup loads it via `/example`), so the overhead is just the encode call, not model loading.
+
+---
+
+## ADR-031: Frontend API URL injected via `NEXT_PUBLIC_API_URL` env var, defaulting to localhost
+
+**Status:** Accepted
+**Issue:** #11
+
+`frontend/lib/api.ts` reads `process.env.NEXT_PUBLIC_API_URL` with a fallback of `http://localhost:8000`. This lets the same build target both local development and production without code changes — Vercel sets the env var at build time; local dev gets the default. The snake_case → camelCase mapping from backend response fields is done inside `lib/api.ts` so components work with idiomatic TypeScript field names and are decoupled from the backend's naming conventions.
+
+---

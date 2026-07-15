@@ -97,37 +97,37 @@ This matters because ChromaDB always returns N nearest neighbors — there is no
 
 ### Chunk Attribution
 
-*(Implementation in progress — #7)*
-
 Sentence-level grounding map: for each sentence in the generated answer, which chunk supports it, and how strongly?
 
 ```json
 "chunk_attribution": {
-  "verdict": "warn",
-  "explanation": "2 of 4 answer sentences are well-grounded. 1 sentence has weak grounding (score < 0.5). 1 sentence has no supporting chunk (score < 0.3) — possible hallucination.",
-  "evidence": [
-    "The vaccine was authorized by the FDA on December 11, 2020."
-  ],
+  "unattributed_fraction": 0.25,
+  "mean_attribution_score": 0.61,
+  "weak_match_fraction": 0.25,
   "attribution_map": [
     {
       "sentence": "The vaccine was authorized by the FDA on December 11, 2020.",
       "chunk_id": "covidqa_doc_14_chunk_2",
-      "similarity_score": 0.91
+      "similarity_score": 0.91,
+      "attribution_strength": "strong"
     },
     {
       "sentence": "Clinical trials enrolled over 44,000 participants.",
       "chunk_id": "covidqa_doc_14_chunk_5",
-      "similarity_score": 0.78
+      "similarity_score": 0.78,
+      "attribution_strength": "strong"
     },
     {
       "sentence": "The vaccine showed 95% efficacy across all age groups.",
       "chunk_id": "covidqa_doc_14_chunk_3",
-      "similarity_score": 0.44
+      "similarity_score": 0.44,
+      "attribution_strength": "weak"
     },
     {
       "sentence": "No long-term side effects have been reported in any demographic.",
       "chunk_id": null,
-      "similarity_score": 0.21
+      "similarity_score": 0.21,
+      "attribution_strength": "unattributed"
     }
   ]
 }
@@ -139,16 +139,42 @@ The last sentence — "No long-term side effects have been reported in any demog
 
 ### Hedging Mismatch
 
-*(Implementation in progress — #6)*
-
 Detects misalignment between the confidence of the model's language and the strength of the supporting evidence.
 
 ```json
-"hedging_verification_mismatch": {
-  "verdict": "fail",
-  "explanation": "Answer uses high-confidence language ('conclusively shows', 'it is established') but retrieval scores are weak (top score 0.61) and chunk spread is high (0.71), indicating the model is more certain than the evidence warrants.",
-  "evidence": [
-    "Recent studies suggest a possible correlation between sleep deprivation and cardiovascular risk."
+"hedging_mismatch": {
+  "overconfident_fraction": 0.5,
+  "underconfident_fraction": 0.0,
+  "total_claims": 4,
+  "claim_breakdown": [
+    {
+      "claim": "Recent studies conclusively show a link between sleep deprivation and cardiovascular risk.",
+      "confidence_class": "definitive",
+      "supported": false,
+      "mismatch_type": "overconfident",
+      "source_chunk_id": "healthqa_doc_07_chunk_1"
+    },
+    {
+      "claim": "It is established that poor sleep increases cortisol levels.",
+      "confidence_class": "definitive",
+      "supported": false,
+      "mismatch_type": "overconfident",
+      "source_chunk_id": "healthqa_doc_07_chunk_3"
+    },
+    {
+      "claim": "Some researchers suggest this may be a bidirectional relationship.",
+      "confidence_class": "hedged",
+      "supported": true,
+      "mismatch_type": "matched",
+      "source_chunk_id": "healthqa_doc_07_chunk_2"
+    },
+    {
+      "claim": "Further studies are needed to confirm causality.",
+      "confidence_class": "hedged",
+      "supported": true,
+      "mismatch_type": "matched",
+      "source_chunk_id": "healthqa_doc_07_chunk_4"
+    }
   ]
 }
 ```
@@ -158,8 +184,6 @@ The chunk uses hedged language ("suggest", "possible correlation"). The answer a
 ---
 
 ### Query-Corpus Fit
-
-*(Implementation in progress — #8)*
 
 Conditional module — only runs when upstream signals indicate a query-corpus mismatch (`query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, or both `score_entropy > 1.5` and `faithfulness_score < 0.5`). When not triggered, returns immediately with no Claude API call.
 
@@ -247,9 +271,9 @@ POST /example or /analyze/custom
     → forensics/
       → retrieval_distribution.py  (entropy, decay rate, score gap — pure numpy)
       → embedding_analysis.py      (centroid distance, spread, PCA projection — pure sklearn)
-      → chunk_attribution.py       (sentence grounding map — in progress)
-      → hedging_mismatch.py        (language vs evidence alignment — in progress)
-      → query_corpus_fit.py        (conditional: suggested questions + mismatch type — in progress)
+      → chunk_attribution.py       (sentence grounding map — pure numpy/sklearn/nltk)
+      → hedging_mismatch.py        (language vs evidence alignment — LLM entailment)
+      → query_corpus_fit.py        (conditional: suggested questions + mismatch type)
     → verdict_generator.py         (match_rule() maps signal combinations → RecommendationRule → final verdict)
 ```
 
