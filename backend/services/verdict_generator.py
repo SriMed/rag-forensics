@@ -19,6 +19,7 @@ from models import (
     RetrievalDistributionMetrics,
 )
 from prompts.verdict_prompts import RANKED_SIGNALS_PROMPT
+from signal_weights import DEFAULT_WEIGHTS, SignalWeights
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +41,10 @@ def rank_signals(
     attribution: ChunkAttributionMetrics,
     hedging_mismatch: HedgingMismatchMetrics,
     query_fit: QueryCorpusFitMetrics,
+    weights: SignalWeights | None = None,
 ) -> list[RankedSignal]:
     """Score each forensic signal by concern level and return sorted descending."""
+    w = weights if weights is not None else DEFAULT_WEIGHTS
     signals: list[RankedSignal] = []
 
     # Unattributed content — fraction is already 0–1
@@ -64,7 +67,7 @@ def rank_signals(
     if hedging_mismatch.underconfident_fraction > 0:
         signals.append(RankedSignal(
             name="underconfidence",
-            concern_score=hedging_mismatch.underconfident_fraction * 0.7,
+            concern_score=hedging_mismatch.underconfident_fraction * w.underconfidence_weight,
             description=f"{hedging_mismatch.underconfident_fraction:.0%} of claims hedged despite strong chunk support",
         ))
 
@@ -84,9 +87,9 @@ def rank_signals(
         description=f"Retrieval relevance score {retrieval_relevance_score:.2f} — retrieved chunks do not match the question well",
     ))
 
-    # Ambiguous retrieval — normalize score_entropy (practical range 0–2.5) to 0–1
-    entropy_concern = min(distribution.score_entropy / 2.5, 1.0)
-    if entropy_concern > 0.1:
+    # Ambiguous retrieval — normalize score_entropy by empirical p95 to 0–1
+    entropy_concern = min(distribution.score_entropy / w.entropy_p95, 1.0)
+    if entropy_concern > w.entropy_min_concern:
         signals.append(RankedSignal(
             name="ambiguous_retrieval",
             concern_score=entropy_concern,
@@ -97,13 +100,15 @@ def rank_signals(
     if attribution.weak_match_fraction > 0:
         signals.append(RankedSignal(
             name="weak_chunk_matches",
-            concern_score=attribution.weak_match_fraction * 0.6,
+            concern_score=attribution.weak_match_fraction * w.weak_match_weight,
             description=f"{attribution.weak_match_fraction:.0%} of answer sentences have only weak chunk support",
         ))
 
-    # Query geometrically isolated from chunks — concern rises above isolation ratio 1.0
-    if embedding.query_isolation > 1.0:
-        isolation_concern = min((embedding.query_isolation - 1.0) / 1.5, 1.0)
+    # Query geometrically isolated from chunks — concern rises above isolation threshold
+    if embedding.query_isolation > w.isolation_threshold:
+        isolation_concern = min(
+            (embedding.query_isolation - w.isolation_threshold) / w.isolation_excess_range, 1.0
+        )
         signals.append(RankedSignal(
             name="query_isolation",
             concern_score=isolation_concern,
@@ -124,9 +129,9 @@ def rank_signals(
             description="Corpus contains relevant content but the query did not retrieve it effectively — consider rephrasing the query",
         ))
 
-    # Noisy context from high tail mass
-    if distribution.tail_mass > 0.2:
-        tail_concern = min(distribution.tail_mass / 0.6, 1.0) * 0.65
+    # Noisy context from high tail mass (only above corpus mean to reduce noise)
+    if distribution.tail_mass > w.tail_mass_threshold:
+        tail_concern = min(distribution.tail_mass / w.tail_mass_p95, 1.0) * w.tail_mass_weight
         signals.append(RankedSignal(
             name="noisy_context",
             concern_score=tail_concern,

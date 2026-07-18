@@ -15,6 +15,7 @@ from models import (
     RetrievalDistributionMetrics,
 )
 from services.verdict_generator import RankedSignal, rank_signals, render_recommendation
+from signal_weights import SignalWeights
 
 
 # ---------------------------------------------------------------------------
@@ -66,6 +67,7 @@ def _rank(**kwargs) -> list[RankedSignal]:
         attribution=_attribution(**{k: v for k, v in kwargs.items() if k in ChunkAttributionMetrics.model_fields}),
         hedging_mismatch=_hedging(**{k: v for k, v in kwargs.items() if k in HedgingMismatchMetrics.model_fields}),
         query_fit=_query_fit(**{k: v for k, v in kwargs.items() if k in QueryCorpusFitMetrics.model_fields}),
+        weights=kwargs.get("weights"),
     )
 
 
@@ -275,6 +277,114 @@ def test_render_recommendation_claude_failure_falls_back_to_top_signal():
 def test_render_recommendation_empty_signals_returns_no_issues():
     result = render_recommendation([], 0.95, 0.95, _attribution(), _hedging())
     assert "no significant issues" in result.lower()
+
+
+# ---------------------------------------------------------------------------
+# SignalWeights — custom weights parameter
+# ---------------------------------------------------------------------------
+
+def test_rank_signals_accepts_custom_weights():
+    """rank_signals must accept a SignalWeights instance without raising."""
+    w = SignalWeights()
+    signals = _rank(weights=w)
+    assert isinstance(signals, list)
+
+
+def test_rank_signals_custom_entropy_p95_scales_concern():
+    """A lower entropy_p95 should increase the entropy signal's concern score."""
+    # With entropy = 1.0, default p95 = 1.61 → concern ≈ 0.62
+    # With a custom p95 = 0.5 → concern = min(1.0/0.5, 1.0) = 1.0
+    default_signals = rank_signals(
+        distribution=_distribution(score_entropy=1.0),
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        retrieval_relevance_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(),
+        query_fit=_query_fit(),
+    )
+    tight_signals = rank_signals(
+        distribution=_distribution(score_entropy=1.0),
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        retrieval_relevance_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(),
+        query_fit=_query_fit(),
+        weights=SignalWeights(entropy_p95=0.5),
+    )
+    default_entropy = next(s for s in default_signals if s.name == "ambiguous_retrieval")
+    tight_entropy = next(s for s in tight_signals if s.name == "ambiguous_retrieval")
+    assert tight_entropy.concern_score > default_entropy.concern_score
+
+
+def test_rank_signals_custom_underconfidence_weight():
+    """Changing underconfidence_weight should change that signal's concern proportionally."""
+    base = rank_signals(
+        distribution=_distribution(),
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        retrieval_relevance_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(underconfident_fraction=0.5),
+        query_fit=_query_fit(),
+    )
+    scaled = rank_signals(
+        distribution=_distribution(),
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        retrieval_relevance_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(underconfident_fraction=0.5),
+        query_fit=_query_fit(),
+        weights=SignalWeights(underconfidence_weight=1.0),
+    )
+    base_under = next(s for s in base if s.name == "underconfidence")
+    scaled_under = next(s for s in scaled if s.name == "underconfidence")
+    assert scaled_under.concern_score == pytest.approx(0.5)
+    assert scaled_under.concern_score > base_under.concern_score
+
+
+def test_rank_signals_tail_mass_threshold_suppresses_below_threshold():
+    """tail_mass below tail_mass_threshold must not generate a noisy_context signal."""
+    signals = rank_signals(
+        distribution=_distribution(tail_mass=0.37),  # just below default threshold 0.38
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        retrieval_relevance_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(),
+        query_fit=_query_fit(),
+    )
+    names = [s.name for s in signals]
+    assert "noisy_context" not in names
+
+
+def test_rank_signals_omitting_weights_uses_defaults():
+    """Omitting weights parameter is equivalent to passing DEFAULT_WEIGHTS."""
+    from signal_weights import DEFAULT_WEIGHTS
+    without = rank_signals(
+        distribution=_distribution(score_entropy=1.0, tail_mass=0.5),
+        embedding=_embedding(query_isolation=5.0),
+        faithfulness_score=0.7,
+        retrieval_relevance_score=0.7,
+        attribution=_attribution(unattributed_fraction=0.3),
+        hedging_mismatch=_hedging(overconfident_fraction=0.2),
+        query_fit=_query_fit(),
+    )
+    with_defaults = rank_signals(
+        distribution=_distribution(score_entropy=1.0, tail_mass=0.5),
+        embedding=_embedding(query_isolation=5.0),
+        faithfulness_score=0.7,
+        retrieval_relevance_score=0.7,
+        attribution=_attribution(unattributed_fraction=0.3),
+        hedging_mismatch=_hedging(overconfident_fraction=0.2),
+        query_fit=_query_fit(),
+        weights=DEFAULT_WEIGHTS,
+    )
+    assert [(s.name, s.concern_score) for s in without] == [
+        (s.name, s.concern_score) for s in with_defaults
+    ]
 
 
 def test_render_recommendation_under_word_limit():
