@@ -10,13 +10,16 @@ def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDis
 
     score_gap = float(scores[0] - scores[1]) if n > 1 else 0.0
 
-    normalized = scores / scores.sum()
-    score_entropy = float(max(0.0, -np.sum(normalized * np.log(normalized + 1e-9))))
+    total = scores.sum()
+    if total > 0:
+        normalized = scores / total
+        score_entropy = float(max(0.0, -np.sum(normalized * np.log(normalized + 1e-9))))
+    else:
+        score_entropy = 0.0
 
     ranks = np.arange(n, dtype=float)
-    if n < 3:
-        decay_rate = 0.0
-    else:
+    decay_rate: float | None = None
+    if n >= 3:
         try:
             popt, _ = curve_fit(
                 lambda x, a, b: a * np.exp(-b * x),
@@ -25,11 +28,13 @@ def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDis
                 p0=[1.0, 0.1],
                 maxfev=1000,
             )
-            decay_rate = float(popt[1])
+            # Negative decay means scores increase with rank — nonsensical for sorted-descending
+            # data; treat as a fit failure rather than silently pass 0.
+            decay_rate = float(popt[1]) if popt[1] >= 0 else None
         except (RuntimeError, TypeError, ValueError):
-            decay_rate = 0.0
+            decay_rate = None
 
-    tail_mass = float(scores[2:].sum() / scores.sum()) if n > 2 else 0.0
+    tail_mass = float(scores[2:].sum() / total) if (n > 2 and total > 0) else 0.0
 
     return RetrievalDistributionMetrics(
         score_gap=score_gap,

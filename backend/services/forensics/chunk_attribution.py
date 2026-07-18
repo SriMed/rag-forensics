@@ -19,7 +19,7 @@ def analyze_chunk_attribution(
     Accepts pre-computed chunk embeddings — only sentences are embedded here.
     """
     sentences = nltk.sent_tokenize(answer)
-    if not sentences:
+    if not sentences or not chunks:
         return ChunkAttributionMetrics(
             unattributed_fraction=0.0,
             mean_attribution_score=0.0,

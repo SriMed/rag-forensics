@@ -1,11 +1,11 @@
 import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest, RetrievedChunk
+from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.forensics.query_corpus_fit import analyze_query_corpus_fit
-from services.verdict_generator import match_rule, render_recommendation
+from services.verdict_generator import rank_signals, render_recommendation
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
@@ -51,23 +51,28 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             score_entropy=retrieval_distribution.score_entropy,
             faithfulness_score=faithfulness_score,
         )
-        matched_rule = match_rule(
+        signals = rank_signals(
             distribution=retrieval_distribution,
             embedding=embedding_space,
             faithfulness_score=faithfulness_score,
+            retrieval_relevance_score=relevance_score,
             attribution=chunk_attribution,
             hedging_mismatch=hedging,
             query_fit=query_corpus_fit,
         )
         recommendation = render_recommendation(
-            matched_rule, retrieval_distribution, embedding_space,
-            faithfulness_score, chunk_attribution, hedging,
+            signals=signals,
+            faithfulness_score=faithfulness_score,
+            retrieval_relevance_score=relevance_score,
+            attribution=chunk_attribution,
+            hedging_mismatch=hedging,
         )
     except Exception as exc:
         logger.exception("analyze failed for example_id=%s", request.example_id)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    logger.info("analyze complete: example_id=%s rule_id=%s", request.example_id, matched_rule.rule_id)
+    logger.info("analyze complete: example_id=%s top_signal=%s",
+                request.example_id, signals[0].name if signals else "none")
 
     return AnalyzeResponse(
         question=question,
@@ -85,14 +90,13 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
         recommendation=recommendation,
-        rule_id=matched_rule.rule_id,
     )
 
 
 @router.post("/analyze/custom", response_model=AnalyzeResponse)
 def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
     logger.info("analyze/custom request: %d chunks", len(request.chunks))
-    chunks = [RetrievedChunk(chunk_id=c.chunk_id, text=c.text, score=c.score) for c in request.chunks]
+    chunks = request.chunks
     question = request.question
     answer = request.answer
 
@@ -100,7 +104,9 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         from services.retriever import get_embedding_model
         model = get_embedding_model()
         query_embedding = np.array(model.encode([question])[0])
-        chunk_embeddings = [np.array(model.encode([c.text])[0]) for c in chunks]
+        # Batch-encode all chunk texts in a single model call.
+        chunk_texts = [c.text for c in chunks]
+        chunk_embeddings = [np.array(e) for e in model.encode(chunk_texts)]
 
         relevance_score, relevance_evidence = score_retrieval_relevance(question, chunks)
         faithfulness_score, faithfulness_evidence = score_answer_faithfulness(answer, chunks, question)
@@ -123,23 +129,27 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
             score_entropy=retrieval_distribution.score_entropy,
             faithfulness_score=faithfulness_score,
         )
-        matched_rule = match_rule(
+        signals = rank_signals(
             distribution=retrieval_distribution,
             embedding=embedding_space,
             faithfulness_score=faithfulness_score,
+            retrieval_relevance_score=relevance_score,
             attribution=chunk_attribution,
             hedging_mismatch=hedging,
             query_fit=query_corpus_fit,
         )
         recommendation = render_recommendation(
-            matched_rule, retrieval_distribution, embedding_space,
-            faithfulness_score, chunk_attribution, hedging,
+            signals=signals,
+            faithfulness_score=faithfulness_score,
+            retrieval_relevance_score=relevance_score,
+            attribution=chunk_attribution,
+            hedging_mismatch=hedging,
         )
     except Exception as exc:
         logger.exception("analyze/custom failed")
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    logger.info("analyze/custom complete: rule_id=%s", matched_rule.rule_id)
+    logger.info("analyze/custom complete: top_signal=%s", signals[0].name if signals else "none")
 
     return AnalyzeResponse(
         question=question,
@@ -157,5 +167,4 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
         recommendation=recommendation,
-        rule_id=matched_rule.rule_id,
     )

@@ -15,14 +15,6 @@ class QueryCorpusFitMetrics(BaseModel):
     mean_question_similarity: float | None
 
 
-class RecommendationRule(BaseModel):
-    rule_id: str
-    root_cause: str
-    pipeline_component: str
-    action: str
-    render_hint: str
-
-
 class StoredExample(BaseModel):
     example_id: str
     question: str
@@ -35,6 +27,10 @@ class RetrievedChunk(BaseModel):
     score: float
 
 
+# CustomChunk is structurally identical to RetrievedChunk — alias to avoid duplication.
+CustomChunk = RetrievedChunk
+
+
 class ExampleRequest(BaseModel):
     domain: Literal["techqa", "finqa", "covidqa"]
 
@@ -43,12 +39,6 @@ class ExampleResponse(BaseModel):
     example_id: str
     question: str
     context_preview: str  # first 300 chars of top chunk
-
-
-class DimensionResult(BaseModel):
-    verdict: Literal["pass", "warn", "fail"]
-    explanation: str
-    evidence: list[str]
 
 
 class AttributionEntry(BaseModel):
@@ -68,7 +58,7 @@ class ChunkAttributionMetrics(BaseModel):
 class RetrievalDistributionMetrics(BaseModel):
     score_gap: float
     score_entropy: float
-    decay_rate: float
+    decay_rate: float | None  # None when exponential fit fails
     tail_mass: float
     top_score: float
     n_chunks: int
@@ -120,16 +110,10 @@ class AnalyzeRequest(BaseModel):
     example_id: str
 
 
-class CustomChunk(BaseModel):
-    chunk_id: str
-    text: str
-    score: float
-
-
 class CustomAnalyzeRequest(BaseModel):
     question: str
     answer: str
-    chunks: list[CustomChunk]
+    chunks: list[RetrievedChunk]
 
     @field_validator("chunks")
     @classmethod
@@ -150,4 +134,3 @@ class AnalyzeResponse(BaseModel):
     embedding_space: EmbeddingSpaceMetrics
     query_corpus_fit: QueryCorpusFitMetrics
     recommendation: str
-    rule_id: str

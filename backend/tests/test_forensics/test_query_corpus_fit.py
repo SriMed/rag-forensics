@@ -60,9 +60,9 @@ def _make_claude_mock(mocker, response) -> MagicMock:
 
 
 def _make_embed_mock(embeddings: list[np.ndarray]) -> MagicMock:
-    """Return a mock embedding model. encode([q]) returns (1, dim) array per call."""
+    """Return a mock embedding model. encode(texts) returns (len(texts), dim) array in one call."""
     model = MagicMock()
-    model.encode.side_effect = [e.reshape(1, -1) for e in embeddings]
+    model.encode.return_value = np.vstack([e.reshape(1, -1) for e in embeddings])
     return model
 
 

@@ -198,12 +198,11 @@ def test_analyze_response_has_query_corpus_fit(mocker):
     assert isinstance(qcf["suggested_questions"], list)
 
 
-def test_analyze_response_has_recommendation_and_rule_id(mocker):
+def test_analyze_response_has_recommendation(mocker):
     _patch_services(mocker)
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     assert response.status_code == 200
     body = response.json()
     assert "recommendation" in body
-    assert "rule_id" in body
     assert isinstance(body["recommendation"], str)
-    assert body["rule_id"] in {"R01", "R02", "R03", "R04", "R05", "R06", "R07", "R08", "R09"}
+    assert "rule_id" not in body

@@ -9,6 +9,7 @@ import logging
 import anthropic
 import numpy as np
 
+from config import CLAUDE_HAIKU
 from models import QueryCorpusFitMetrics, RetrievedChunk, SuggestedQuestion
 from prompts.query_fit_prompts import build_question_generation_prompt
 from services.retriever import get_embedding_model
@@ -56,13 +57,12 @@ def analyze_query_corpus_fit(
     if not _should_trigger(query_isolation, retrieval_relevance_score, score_entropy, faithfulness_score):
         return _UNTRIGGERED
 
-    # Build chunk text block for the prompt
     chunk_texts = "\n\n".join(f"[{c.chunk_id}] {c.text}" for c in chunks)
 
     client = anthropic.Anthropic()
     try:
         response = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model=CLAUDE_HAIKU,
             max_tokens=512,
             messages=[{
                 "role": "user",
@@ -70,7 +70,6 @@ def analyze_query_corpus_fit(
             }],
         )
         raw = response.content[0].text.strip()
-        # Strip markdown code fences (```json ... ``` or ``` ... ```)
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[1]
             raw = raw.rsplit("```", 1)[0].strip()
@@ -95,27 +94,25 @@ def analyze_query_corpus_fit(
             mean_question_similarity=None,
         )
 
-    # Pre-normalize query and chunk embeddings for cosine similarity via dot product
     qry_norm = np.linalg.norm(query_embedding)
     qry_unit = query_embedding / (qry_norm + 1e-10)
 
-    chunk_matrix = np.array(chunk_embeddings)  # shape (n_chunks, dim)
+    chunk_matrix = np.array(chunk_embeddings)
     chunk_norms = np.linalg.norm(chunk_matrix, axis=1, keepdims=True)
-    chunk_units = chunk_matrix / (chunk_norms + 1e-10)  # shape (n_chunks, dim)
+    chunk_units = chunk_matrix / (chunk_norms + 1e-10)
 
     embed_model = get_embedding_model()
-    suggested: list[SuggestedQuestion] = []
+    # Batch-encode all suggested questions in a single model call.
+    question_embeddings = embed_model.encode(question_strings)  # shape (n_questions, dim)
 
-    for q_text in question_strings:
-        q_emb = embed_model.encode([q_text])[0]  # shape (dim,)
+    suggested: list[SuggestedQuestion] = []
+    for i, q_text in enumerate(question_strings):
+        q_emb = question_embeddings[i]
         q_norm = np.linalg.norm(q_emb)
         q_unit = q_emb / (q_norm + 1e-10)
 
-        # relevance_to_original: cosine sim between this question and the original query
         relevance = float(np.dot(q_unit, qry_unit))
-
-        # source_chunk_ids: top-1 chunk by cosine sim to this question embedding
-        sims = chunk_units @ q_unit  # shape (n_chunks,)
+        sims = chunk_units @ q_unit
         top_idx = int(np.argmax(sims))
 
         suggested.append(SuggestedQuestion(

@@ -12,6 +12,7 @@ from typing import Literal
 
 import anthropic
 
+from config import CLAUDE_HAIKU
 from models import ClaimEntry, HedgingMismatchMetrics, RetrievedChunk
 from prompts.hedging_prompts import CLAIM_EXTRACTION_PROMPT, ENTAILMENT_PROMPT
 
@@ -119,6 +120,8 @@ _ZEROED = HedgingMismatchMetrics(
 )
 
 # Number of top chunks to run entailment against per claim.
+# Only the top-K chunks are checked per claim to bound LLM call count.
+# Claims grounded in lower-ranked chunks will be classified as overconfident.
 _ENTAILMENT_TOP_K = 3
 
 
@@ -136,7 +139,7 @@ def analyze_hedging_mismatch(
     # Step 1 — extract claims via LLM
     try:
         extraction_response = client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model=CLAUDE_HAIKU,
             max_tokens=1024,
             messages=[
                 {
@@ -172,7 +175,7 @@ def analyze_hedging_mismatch(
         for chunk in top_chunks:
             try:
                 entailment_response = client.messages.create(
-                    model="claude-haiku-4-5-20251001",
+                    model=CLAUDE_HAIKU,
                     max_tokens=32,
                     messages=[
                         {

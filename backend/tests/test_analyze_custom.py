@@ -86,7 +86,7 @@ def test_custom_response_is_analyze_response_shape(mocker):
     assert "embedding_space" in body
     assert "query_corpus_fit" in body
     assert "recommendation" in body
-    assert "rule_id" in body
+    assert "rule_id" not in body
 
 
 def test_custom_empty_chunks_returns_422(mocker):
