@@ -24,8 +24,11 @@ from signal_weights import SignalWeights
 
 def _distribution(**kwargs) -> RetrievalDistributionMetrics:
     defaults = dict(score_gap=0.05, score_entropy=0.5, decay_rate=0.3,
-                    tail_mass=0.1, top_score=0.9, n_chunks=5)
+                    tail_mass=0.1, top_score=0.9, n_chunks=5,
+                    normalized_entropy=0.5 / 1.609437912)
     defaults.update(kwargs)
+    if "score_entropy" in kwargs and "normalized_entropy" not in kwargs:
+        defaults["normalized_entropy"] = kwargs["score_entropy"] / 1.609437912
     return RetrievalDistributionMetrics(**defaults)
 
 
@@ -51,7 +54,7 @@ def _hedging(**kwargs) -> HedgingMismatchMetrics:
 
 
 def _query_fit(**kwargs) -> QueryCorpusFitMetrics:
-    defaults = dict(triggered=False, mismatch_type=None,
+    defaults = dict(triggered=False, observed_fit=None,
                     suggested_questions=[], mean_question_similarity=None)
     defaults.update(kwargs)
     return QueryCorpusFitMetrics(**defaults)
@@ -81,6 +84,21 @@ def test_rank_signals_returns_list_of_ranked_signals():
     assert all(isinstance(s, RankedSignal) for s in signals)
 
 
+def test_analysis_errors_are_ranked_as_unavailable_not_healthy():
+    signals = rank_signals(
+        distribution=_distribution(),
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        retrieval_relevance_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(status="error", error="claim_extraction_failed"),
+        query_fit=_query_fit(status="error", error="fit_computation_failed"),
+    )
+    names = {signal.name for signal in signals}
+    assert "hedging_analysis_unavailable" in names
+    assert "retrieved_context_fit_unavailable" in names
+
+
 def test_rank_signals_sorted_descending_by_concern():
     signals = rank_signals(
         distribution=_distribution(score_entropy=1.8, tail_mass=0.5),
@@ -91,7 +109,7 @@ def test_rank_signals_sorted_descending_by_concern():
         hedging_mismatch=_hedging(overconfident_fraction=0.5),
         query_fit=_query_fit(),
     )
-    scores = [s.concern_score for s in signals]
+    scores = [s.priority_score for s in signals]
     assert scores == sorted(scores, reverse=True)
 
 
@@ -106,7 +124,7 @@ def test_rank_signals_high_unattributed_is_top_signal():
         query_fit=_query_fit(),
     )
     assert signals[0].name == "unattributed_content"
-    assert signals[0].concern_score == pytest.approx(0.8)
+    assert signals[0].priority_score == pytest.approx(0.8)
 
 
 def test_rank_signals_corpus_coverage_gap_is_high_concern():
@@ -117,10 +135,10 @@ def test_rank_signals_corpus_coverage_gap_is_high_concern():
         retrieval_relevance_score=0.9,
         attribution=_attribution(),
         hedging_mismatch=_hedging(),
-        query_fit=_query_fit(triggered=True, mismatch_type="coverage_gap"),
+        query_fit=_query_fit(triggered=True, observed_fit="retrieved_context_topic_gap"),
     )
-    gap_signal = next(s for s in signals if s.name == "corpus_coverage_gap")
-    assert gap_signal.concern_score == pytest.approx(0.9)
+    gap_signal = next(s for s in signals if s.name == "retrieved_context_topic_gap")
+    assert gap_signal.priority_score == pytest.approx(0.9)
 
 
 def test_rank_signals_query_mismatch_present_when_triggered():
@@ -131,10 +149,10 @@ def test_rank_signals_query_mismatch_present_when_triggered():
         retrieval_relevance_score=0.9,
         attribution=_attribution(),
         hedging_mismatch=_hedging(),
-        query_fit=_query_fit(triggered=True, mismatch_type="query_mismatch"),
+        query_fit=_query_fit(triggered=True, observed_fit="retrieved_context_near_miss"),
     )
     names = [s.name for s in signals]
-    assert "query_phrasing_mismatch" in names
+    assert "retrieved_context_near_miss" in names
 
 
 def test_rank_signals_overconfidence_appears():
@@ -150,10 +168,10 @@ def test_rank_signals_overconfidence_appears():
     names = [s.name for s in signals]
     assert "overconfidence" in names
     overconfidence = next(s for s in signals if s.name == "overconfidence")
-    assert overconfidence.concern_score == pytest.approx(0.5)
+    assert overconfidence.priority_score == pytest.approx(0.5)
 
 
-def test_rank_signals_underconfidence_weighted_lower_than_overconfidence():
+def test_rank_signals_does_not_infer_underconfidence_from_binary_entailment():
     signals = rank_signals(
         distribution=_distribution(),
         embedding=_embedding(),
@@ -163,9 +181,9 @@ def test_rank_signals_underconfidence_weighted_lower_than_overconfidence():
         hedging_mismatch=_hedging(overconfident_fraction=0.4, underconfident_fraction=0.4),
         query_fit=_query_fit(),
     )
-    over = next(s for s in signals if s.name == "overconfidence")
-    under = next(s for s in signals if s.name == "underconfidence")
-    assert over.concern_score > under.concern_score
+    names = [s.name for s in signals]
+    assert "overconfidence" in names
+    assert "underconfidence" not in names
 
 
 def test_rank_signals_clean_metrics_top_concern_is_low():
@@ -178,7 +196,7 @@ def test_rank_signals_clean_metrics_top_concern_is_low():
         hedging_mismatch=_hedging(),
         query_fit=_query_fit(),
     )
-    assert signals[0].concern_score < 0.2
+    assert signals[0].priority_score < 0.2
 
 
 def test_rank_signals_untriggered_query_fit_adds_no_fit_signal():
@@ -192,8 +210,8 @@ def test_rank_signals_untriggered_query_fit_adds_no_fit_signal():
         query_fit=_query_fit(triggered=False),
     )
     names = [s.name for s in signals]
-    assert "corpus_coverage_gap" not in names
-    assert "query_phrasing_mismatch" not in names
+    assert "retrieved_context_topic_gap" not in names
+    assert "retrieved_context_near_miss" not in names
 
 
 def test_rank_signals_decay_rate_none_does_not_crash():
@@ -237,9 +255,9 @@ def test_rank_signals_fuzz_never_crashes():
             ),
             query_fit=_query_fit(),
         )
-        scores = [s.concern_score for s in signals]
+        scores = [s.priority_score for s in signals]
         assert scores == sorted(scores, reverse=True)
-        assert all(0.0 <= s.concern_score <= 1.0 for s in signals)
+        assert all(0.0 <= s.priority_score <= 1.0 for s in signals)
 
 
 # ---------------------------------------------------------------------------
@@ -247,7 +265,7 @@ def test_rank_signals_fuzz_never_crashes():
 # ---------------------------------------------------------------------------
 
 def test_render_recommendation_returns_string():
-    signals = [RankedSignal(name="low_faithfulness", concern_score=0.6, description="Low faithfulness.")]
+    signals = [RankedSignal(name="low_faithfulness", priority_score=0.6, description="Low faithfulness.", reliability="model_judged")]
     attr = _attribution()
     hed = _hedging()
 
@@ -264,7 +282,7 @@ def test_render_recommendation_returns_string():
 
 
 def test_render_recommendation_claude_failure_falls_back_to_top_signal():
-    signals = [RankedSignal(name="overconfidence", concern_score=0.7, description="Claims are overconfident.")]
+    signals = [RankedSignal(name="overconfidence", priority_score=0.7, description="Claims are overconfident.", reliability="model_judged")]
     attr = _attribution()
     hed = _hedging()
 
@@ -290,10 +308,8 @@ def test_rank_signals_accepts_custom_weights():
     assert isinstance(signals, list)
 
 
-def test_rank_signals_custom_entropy_p95_scales_concern():
-    """A lower entropy_p95 should increase the entropy signal's concern score."""
-    # With entropy = 1.0, default p95 = 1.61 → concern ≈ 0.62
-    # With a custom p95 = 0.5 → concern = min(1.0/0.5, 1.0) = 1.0
+def test_rank_signals_entropy_uses_top_k_invariant_normalized_value():
+    """Entropy priority should use the metric's normalized, top-k-invariant value."""
     default_signals = rank_signals(
         distribution=_distribution(score_entropy=1.0),
         embedding=_embedding(),
@@ -303,24 +319,22 @@ def test_rank_signals_custom_entropy_p95_scales_concern():
         hedging_mismatch=_hedging(),
         query_fit=_query_fit(),
     )
-    tight_signals = rank_signals(
-        distribution=_distribution(score_entropy=1.0),
+    changed_raw_signals = rank_signals(
+        distribution=_distribution(score_entropy=0.2, normalized_entropy=1.0 / 1.609437912),
         embedding=_embedding(),
         faithfulness_score=0.9,
         retrieval_relevance_score=0.9,
         attribution=_attribution(),
         hedging_mismatch=_hedging(),
         query_fit=_query_fit(),
-        weights=SignalWeights(entropy_p95=0.5),
     )
     default_entropy = next(s for s in default_signals if s.name == "ambiguous_retrieval")
-    tight_entropy = next(s for s in tight_signals if s.name == "ambiguous_retrieval")
-    assert tight_entropy.concern_score > default_entropy.concern_score
+    changed_raw_entropy = next(s for s in changed_raw_signals if s.name == "ambiguous_retrieval")
+    assert changed_raw_entropy.priority_score == pytest.approx(default_entropy.priority_score)
 
 
-def test_rank_signals_custom_underconfidence_weight():
-    """Changing underconfidence_weight should change that signal's concern proportionally."""
-    base = rank_signals(
+def test_underconfidence_compatibility_field_does_not_affect_ranking():
+    signals = rank_signals(
         distribution=_distribution(),
         embedding=_embedding(),
         faithfulness_score=0.9,
@@ -329,20 +343,7 @@ def test_rank_signals_custom_underconfidence_weight():
         hedging_mismatch=_hedging(underconfident_fraction=0.5),
         query_fit=_query_fit(),
     )
-    scaled = rank_signals(
-        distribution=_distribution(),
-        embedding=_embedding(),
-        faithfulness_score=0.9,
-        retrieval_relevance_score=0.9,
-        attribution=_attribution(),
-        hedging_mismatch=_hedging(underconfident_fraction=0.5),
-        query_fit=_query_fit(),
-        weights=SignalWeights(underconfidence_weight=1.0),
-    )
-    base_under = next(s for s in base if s.name == "underconfidence")
-    scaled_under = next(s for s in scaled if s.name == "underconfidence")
-    assert scaled_under.concern_score == pytest.approx(0.5)
-    assert scaled_under.concern_score > base_under.concern_score
+    assert all(signal.name != "underconfidence" for signal in signals)
 
 
 def test_rank_signals_tail_mass_threshold_suppresses_below_threshold():
@@ -382,13 +383,13 @@ def test_rank_signals_omitting_weights_uses_defaults():
         query_fit=_query_fit(),
         weights=DEFAULT_WEIGHTS,
     )
-    assert [(s.name, s.concern_score) for s in without] == [
-        (s.name, s.concern_score) for s in with_defaults
+    assert [(s.name, s.priority_score) for s in without] == [
+        (s.name, s.priority_score) for s in with_defaults
     ]
 
 
 def test_render_recommendation_under_word_limit():
-    signals = [RankedSignal(name="low_faithfulness", concern_score=0.6, description="Low faithfulness.")]
+    signals = [RankedSignal(name="low_faithfulness", priority_score=0.6, description="Low faithfulness.", reliability="model_judged")]
     attr = _attribution()
     hed = _hedging()
 

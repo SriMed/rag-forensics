@@ -1,29 +1,29 @@
 # RAG Forensics
 
-> Did your RAG system actually use the retrieved information — or just hallucinate a confident-sounding answer?
+> What observable signals can help a developer investigate why a RAG answer went wrong?
 
-RAG Forensics is a diagnostic layer for Retrieval-Augmented Generation systems. It accepts a question, the RAG-generated answer, and the retrieved chunks, then runs five independent forensics analyses to produce a structured verdict explaining *why* an answer succeeded or failed — not just that it did.
+RAG Forensics is a transparent hypothesis-generation layer for Retrieval-Augmented Generation systems. It accepts a question, the RAG-generated answer, and the retrieved chunks, then produces an inspectable diagnostic record: observations, heuristic priorities, reliability labels, source candidates, and concrete follow-up tests. Its outputs narrow an investigation; they do not prove a root cause.
 
 ## What it does
 
-Standard RAG evaluation gives you scores: faithfulness 0.62, answer relevance 0.71. It doesn't tell you which failure mode you're looking at or what to do about it. RAG Forensics layers five independent analyses on top of those scores to pinpoint the problem:
+Standard RAG evaluation gives you scores such as faithfulness 0.62 and answer relevance 0.71. Those scores rarely identify a unique failure mode. RAG Forensics layers five complementary analyses on top of them to rank plausible diagnostic hypotheses:
 
 | Module | Question it answers |
 |---|---|
 | **RAGAS Metrics** | What are the raw faithfulness and context precision scores? |
-| **Score Distribution** | What is the shape of the retrieval score distribution? A flat distribution at low absolute scores signals weak retrieval — no chunk stood out. A steep decay from a high top score means one document genuinely matched. |
+| **Score Distribution** | What is the shape of the retrieval score distribution? Flatness and decay are observations that must be interpreted jointly with absolute relevance and score semantics. |
 | **Embedding Analysis** | Is the query geometrically coherent with the retrieved chunks in embedding space, or is it an outlier? |
-| **Chunk Attribution** | Is the answer actually grounded in the retrieved chunks sentence-by-sentence, or did the model hallucinate while citing them? |
+| **Semantic Attribution** | Which retrieved chunk is the closest semantic source candidate for each answer sentence? Similarity is not treated as proof of entailment. |
 | **Hedging Mismatch** | Does the model's language ("definitely", "may", "it appears") match the evidence strength in the chunks? |
-| **Query-Corpus Fit** | *(Conditional)* When mismatch signals are present: what questions would the retrieved chunks actually answer well? Distinguishes between a poorly-phrased query (user was close) and a genuine coverage gap (corpus doesn't have it). |
+| **Retrieved-Context Fit** | *(Conditional)* What questions would the retrieved chunks answer well, and are those questions near or far from the original query? This describes the retrieved set, not the full corpus. |
 
-A verdict generator synthesizes all analyses into a ranked list of concern signals (`verdict_signals`) and a single readable diagnostic recommendation. The full signal ranking is always available in the response so you can see what drove the recommendation and what was deprioritized.
+A verdict generator synthesizes all analyses into a ranked list of heuristic priority signals (`verdict_signals`) and a readable investigation recommendation. Priority scores make ordering deterministic, but are not probabilities or cross-signal calibrated severities. Every signal states whether it is unvalidated, partially calibrated, or model-judged.
 
 ---
 
 ## Forensics examples
 
-Each module runs independently. Here is a concrete example of the output each produces.
+Each module can be called in isolation, although several signals share inputs, embeddings, or model judges. Here is a concrete example of each output.
 
 ### RAGAS Metrics
 
@@ -31,11 +31,11 @@ Each module runs independently. Here is a concrete example of the output each pr
 "ragas": {
   "retrieval_relevance_score": 0.41,
   "faithfulness_score": 0.87,
-  "relevance_evidence": [
+  "relevance_context_excerpts": [
     "The Federal Reserve raised interest rates by 25 basis points in March.",
     "Inflation as measured by CPI reached 3.2% in February."
   ],
-  "faithfulness_evidence": [
+  "faithfulness_context_excerpts": [
     "The Federal Reserve raised interest rates by 25 basis points in March.",
     "Inflation as measured by CPI reached 3.2% in February."
   ]
@@ -48,7 +48,7 @@ Low `retrieval_relevance_score` (0.41) with high `faithfulness_score` (0.87) is 
 
 ### Score Distribution
 
-Treats the retrieval score vector as a probability distribution and measures its shape.
+Normalizes the retrieval score vector and measures its shape. `normalized_entropy = entropy / log(n_chunks)` makes entropy comparable across different top-k values.
 
 ```json
 "retrieval_distribution": {
@@ -61,9 +61,9 @@ Treats the retrieval score vector as a probability distribution and measures its
 }
 ```
 
-High `score_gap` (0.43): one chunk dominates by a large margin. Low `tail_mass` (0.09): almost no score weight in the tail. High `decay_rate` (2.8): scores drop off steeply after the first chunk. This profile — one dominant chunk, steep decay — is associated with narrow retrieval. The answer is likely grounded in a single source even if five chunks were returned.
+High `score_gap` (0.43), low `tail_mass` (0.09), and high `decay_rate` (2.8) describe a narrow retrieved set dominated by one chunk. Whether that chunk is genuinely relevant requires an absolute relevance check.
 
-Contrast with a flat distribution: `score_gap` near 0, `score_entropy` near 1.0, `decay_rate` near 0. That pattern signals the retriever had no strong signal and returned five weakly-relevant chunks uniformly — a noise retrieval.
+Contrast with a flat distribution: `score_gap` near 0, normalized entropy near 1.0, and `decay_rate` near 0. This shows that scores are similarly distributed. It does **not** distinguish uniformly strong retrieval from uniformly weak retrieval, so shape must be interpreted jointly with absolute relevance and documented score semantics.
 
 ---
 
@@ -133,7 +133,7 @@ Sentence-level grounding map: for each sentence in the generated answer, which c
 }
 ```
 
-The last sentence — "No long-term side effects have been reported in any demographic" — has no supporting chunk. That's a hallucination marker. The third sentence is weakly grounded (0.44), meaning the model may have extrapolated beyond what the chunk actually said.
+The last sentence has no semantically close source candidate under the current threshold. That makes it useful for review, but does not by itself establish hallucination. Topic similarity can miss valid synthesis and can falsely accept contradictions, incorrect numbers, or changed qualifiers.
 
 ---
 
@@ -183,18 +183,18 @@ The chunk uses hedged language ("suggest", "possible correlation"). The answer a
 
 ---
 
-### Query-Corpus Fit
+### Retrieved-Context Fit
 
-Conditional module — only runs when upstream signals indicate a query-corpus mismatch. The three trigger conditions are checked in order: `query_isolation > 1.2` (geometric outlier), `retrieval_relevance_score < 0.5` (RAGAS score), or `score_entropy > 1.5 AND faithfulness_score < 0.5` (flat distribution + poor output). The `trigger_reason` field in the response names which condition fired. When not triggered, returns immediately with no Claude API call.
+Conditional module — only runs when upstream signals indicate a retrieved-context mismatch. The three trigger conditions are checked in order: `query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, or `normalized_entropy > 0.9 AND faithfulness_score < 0.5`. The `trigger_reason` field names which condition fired. These thresholds are heuristic.
 
-When triggered, it prompts Claude to generate 3–5 questions the retrieved chunks would actually answer well, then computes the cosine similarity between each suggested question and the original query embedding. That similarity score — `relevance_to_original` — is what distinguishes the two failure modes.
+When triggered, it prompts Claude to generate 3–5 questions the retrieved chunks would answer well, then computes cosine similarity between each suggested question and the original query. This distinguishes an observed retrieved-context near miss from an observed retrieved-context topic gap. It cannot determine whether an unretrieved document elsewhere in the corpus contains the answer.
 
-**Example: query mismatch** (`mean_question_similarity: 0.71` — suggested questions are semantically close to what the user asked)
+**Example: retrieved-context near miss** (`mean_question_similarity: 0.71`)
 
 ```json
 "query_corpus_fit": {
   "triggered": true,
-  "mismatch_type": "query_mismatch",
+  "observed_fit": "retrieved_context_near_miss",
   "mean_question_similarity": 0.71,
   "suggested_questions": [
     {
@@ -216,14 +216,14 @@ When triggered, it prompts Claude to generate 3–5 questions the retrieved chun
 }
 ```
 
-The user asked something like "What did the Fed do about inflation?" The suggested questions are adjacent — same domain, same documents. `mismatch_type: "query_mismatch"` means the corpus has what the user needs, but the phrasing didn't land in the right part of embedding space. The fix is on the query side.
+The suggested questions are adjacent to the original question. This supports testing a query rewrite; it does not prove that phrasing caused the failure or that the full answer exists in the corpus.
 
-**Example: coverage gap** (`mean_question_similarity: 0.19` — suggested questions bear little resemblance to what the user asked)
+**Example: retrieved-context topic gap** (`mean_question_similarity: 0.19`)
 
 ```json
 "query_corpus_fit": {
   "triggered": true,
-  "mismatch_type": "coverage_gap",
+  "observed_fit": "retrieved_context_topic_gap",
   "mean_question_similarity": 0.19,
   "suggested_questions": [
     {
@@ -245,7 +245,7 @@ The user asked something like "What did the Fed do about inflation?" The suggest
 }
 ```
 
-The user asked something about vaccine clinical trial design. The corpus is Medicare policy documents. The suggested questions are completely unrelated to the original query — `mismatch_type: "coverage_gap"`. The fix is on the data side: this corpus cannot answer what the user needs.
+The suggested questions are distant from the original query, showing that the retrieved set is off-topic. Establishing a corpus coverage gap requires a corpus-level answerability check or counterfactual retrieval experiment.
 
 ---
 
@@ -253,23 +253,35 @@ The user asked something about vaccine clinical trial design. The corpus is Medi
 
 ### What this adds
 
-The sharpest contribution is the **query_corpus_fit** module's distinction between `query_mismatch` and `coverage_gap`. These are two failure modes that look identical from RAGAS scores — both produce low `retrieval_relevance_score` — but require opposite fixes. A query mismatch means the corpus has what the user needs; the query didn't land in the right part of embedding space. A coverage gap means the corpus doesn't contain the answer at all. The mechanism — comparing cosine similarity between Claude-suggested questions and the original query — is a principled operationalization of this distinction. This gives developers a genuinely different action path not available from standard scores.
+The contribution is an **inspectable instance-level debugging record**. Instead of collapsing evaluation into one score, RAG Forensics exposes complementary observations, their method and reliability, a deterministic heuristic ordering, and follow-up tests. This makes the diagnostic reasoning contestable without claiming that the observations identify a unique cause.
 
-The **verdict signal layer** also addresses a gap: when scores are ambiguous, a ranked list of concern signals with their magnitudes makes the diagnostic reasoning inspectable and contestable. The concern scores and the top-3 selection are deterministic and testable; the prose recommendation is generated only after the ranking is fixed.
+The retrieved-context fit module adds a useful intervention split: semantically near retrieved content motivates testing query reformulation, while distant content motivates testing retrieval and corpus coverage. These remain hypotheses until the proposed test is run.
+
+**Confidence in this contribution: moderate.** The implementation establishes inspectability and deterministic ordering. Its diagnostic accuracy and developer utility have not yet been established by a labeled benchmark or user study.
+
+**What would change this assessment:** failure to improve root-cause classification, time-to-diagnosis, or intervention success over RAGAS-only baselines would weaken the contribution. A blinded injected-failure benchmark is the intended test.
 
 ### Honest limitations
 
-**Chunk attribution thresholds are uncalibrated.** The `"strong"` (> 0.75) and `"unattributed"` (< 0.40) cosine similarity thresholds in `chunk_attribution.py` were chosen by convention, not validated against ground-truth hallucination labels. Whether these cutoffs reliably separate grounded from hallucinated sentences in `all-MiniLM-L6-v2` space is the most important open empirical question in the system. The calibration that was done (300 RAGBench examples in `calibrate_signal_weights.py`) covers signal *normalization ranges* — not the fundamental accuracy of these thresholds.
+**Semantic attribution thresholds are uncalibrated.** The `"strong"` (> 0.75) and `"unattributed"` (< 0.40) cosine-similarity thresholds were chosen by convention. They identify source candidates; they have not been validated as entailment or hallucination classifiers.
 
-**Hedging mismatch confidence classification is lexicon-bounded.** The confidence classifier uses a priority-ordered lexicon of uncertainty markers. Any hedging construction outside the lexicon — "evidence suggests," "the data indicates," "it has been shown" — is silently classified as `definitive`. This biases `overconfident_fraction` upward when the model uses novel hedging language.
+**Hedging mismatch confidence classification is lexicon-bounded.** The confidence classifier uses a priority-ordered lexicon of uncertainty markers. Constructions outside that lexicon are classified as `definitive`, which can bias `overconfident_fraction` upward.
+
+**Underconfidence is not currently inferred.** Binary entailment does not establish that a hedge was unnecessary; doing so requires comparing the source's epistemic strength with the answer's. The compatibility field remains zero until that analysis exists.
 
 **The entailment check covers only the top 3 chunks.** A claim grounded in chunk 4 or 5 will be classified as overconfident regardless of whether it is actually supported. The fix (increase `_ENTAILMENT_TOP_K`) trades cost for accuracy.
 
 **The verdict uses only the top 3 signals.** The full ranked list is available in `verdict_signals` in the API response. The recommendation prose is generated from the top 3 only; signals ranked 4th and below are not sent to Claude. Consult `verdict_signals` directly for the full picture.
 
-**The query_corpus_fit trigger thresholds are heuristic.** `query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, and `score_entropy > 1.5` were chosen without corpus-level calibration. The `trigger_reason` field in the response now exposes which condition fired, so you can assess whether the trigger was well-founded for your use case.
+**The query_corpus_fit trigger thresholds are heuristic.** `query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, and `normalized_entropy > 0.9` were chosen without outcome-label calibration. The `trigger_reason` field exposes which condition fired.
 
-**The embedding model is an implicit shared dependency.** `chunk_attribution` and `query_corpus_fit` both import `get_embedding_model()` from `retriever.py`. If you pass custom chunk embeddings generated by a different model (e.g. via `/analyze/custom`), the similarity comparisons will be geometrically invalid without error. The API does not validate that passed embeddings share a space with the internal model.
+**Priority scores are heuristic indices.** They combine quantities with different semantics and reliability. Their ordering is deterministic but not calibrated as probability, severity, or expected intervention value. Each signal exposes a reliability class.
+
+**Retrieved-context fit is not corpus answerability.** The module observes only retrieved chunks. Its near-miss and topic-gap labels deliberately avoid claiming that the full corpus contains or lacks the answer.
+
+**Analysis failures are explicit.** LLM-backed modules return `status="error"` with an error code rather than silently representing failure as a clean zero. Consumers must display unknown separately from healthy.
+
+**The embedding model is an implicit shared dependency.** Semantic attribution and retrieved-context fit use the same internal MiniLM model. `/analyze/custom` re-embeds the supplied text in that space rather than accepting caller embeddings, which keeps comparisons coherent but can differ from the caller's production retriever.
 
 ### Relation to prior work
 
@@ -289,13 +301,13 @@ POST /example or /analyze/custom
     → forensics/
       → retrieval_distribution.py  (entropy, decay rate, score gap — pure numpy)
       → embedding_analysis.py      (centroid distance, spread, PCA projection — pure sklearn)
-      → chunk_attribution.py       (sentence grounding map — pure numpy/sklearn/nltk)
+      → chunk_attribution.py       (semantic source-candidate map — pure numpy/sklearn/nltk)
       → hedging_mismatch.py        (language vs evidence alignment — LLM entailment)
-      → query_corpus_fit.py        (conditional: suggested questions + mismatch type)
-    → verdict_generator.py         (match_rule() maps signal combinations → RecommendationRule → final verdict)
+      → query_corpus_fit.py        (conditional: suggested questions + observed retrieved-context fit)
+    → verdict_generator.py         (heuristic priority ranking → test-oriented recommendation)
 ```
 
-RAGAS scores and the two pure-numeric forensics modules produce no verdict on their own. `query_corpus_fit` only makes Claude API calls when triggered. All verdict logic is deferred to the verdict generator, which runs `match_rule()` over the full signal set and maps the result to a structured `RecommendationRule` — including R08 (query mismatch) and R09 (coverage gap) from query-corpus fit.
+RAGAS scores and the numeric forensics modules produce observations rather than verdicts. `query_corpus_fit` only makes Claude API calls when triggered. The verdict generator orders heuristic priorities deterministically, then asks Claude to express the highest-ranked observations as hypotheses and falsifiable follow-up tests.
 
 ## Endpoints
 

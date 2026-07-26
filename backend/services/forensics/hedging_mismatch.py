@@ -56,6 +56,13 @@ _HEDGED_MULTI: list[str] = [
     "i think",      # first-person softener
     "i believe",    # first-person softener
     "i suspect",    # first-person softener
+    "evidence suggests",
+    "the evidence suggests",
+    "the data indicate",
+    "the data indicates",
+    "appears to",
+    "seems to",
+    "is consistent with",
 ]
 
 
@@ -117,6 +124,8 @@ _ZEROED = HedgingMismatchMetrics(
     underconfident_fraction=0.0,
     total_claims=0,
     claim_breakdown=[],
+    status="ok",
+    evaluated_chunk_count=0,
 )
 
 # Number of top chunks to run entailment against per claim.
@@ -131,7 +140,7 @@ def analyze_hedging_mismatch(
 ) -> HedgingMismatchMetrics:
     """Extract claims, classify confidence, check entailment, compute mismatch metrics.
 
-    Returns zeroed metrics on any top-level failure (e.g. claim extraction fails).
+    Returns an explicit error status on top-level failure (e.g. claim extraction fails).
     Per-claim entailment failures fall back to not_supported for that chunk only.
     """
     client = anthropic.Anthropic()
@@ -155,8 +164,16 @@ def analyze_hedging_mismatch(
             raw = raw.rsplit("```", 1)[0].strip()
         claims_list: list[str] = json.loads(raw)
     except Exception:
-        logger.warning("Claim extraction failed; returning zeroed metrics")
-        return _ZEROED
+        logger.warning("Claim extraction failed; returning explicit error status")
+        return HedgingMismatchMetrics(
+            overconfident_fraction=0.0,
+            underconfident_fraction=0.0,
+            total_claims=0,
+            claim_breakdown=[],
+            status="error",
+            error="claim_extraction_failed",
+            evaluated_chunk_count=0,
+        )
 
     if not claims_list:
         return _ZEROED
@@ -211,9 +228,9 @@ def analyze_hedging_mismatch(
 
         if confidence == "definitive" and not supported:
             mismatch_type: Literal["overconfident", "underconfident", "matched"] = "overconfident"
-        elif confidence in ("hedged", "uncertain") and supported:
-            mismatch_type = "underconfident"
         else:
+            # Binary entailment cannot determine whether hedging is unnecessarily weak.
+            # That requires comparing the source's epistemic strength with the claim's.
             mismatch_type = "matched"
 
         entries.append(
@@ -226,4 +243,5 @@ def analyze_hedging_mismatch(
             )
         )
 
-    return _compute_metrics(entries)
+    result = _compute_metrics(entries)
+    return result.model_copy(update={"evaluated_chunk_count": len(top_chunks)})

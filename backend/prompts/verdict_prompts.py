@@ -12,7 +12,7 @@ Additional context:
 - Unattributed answer fraction: {unattributed_fraction:.0%}
 - Overconfident claim fraction: {overconfident_fraction:.0%}
 
-Write 2–3 sentences for a developer who needs to know what to investigate next. Focus on the highest-ranked signals. Name the specific pipeline component to look at (for example: chunk size, embedding model, retrieval threshold, top-k setting, prompt template). Do not repeat the numbers verbatim. Be direct — no hedging language like "may" or "might"."""
+Write 2–3 sentences for a developer who needs to know what to investigate next. Treat the signals as diagnostic hypotheses, not proof of root cause. Focus on the highest-ranked signals, name a plausible pipeline component, and propose a concrete test that could confirm or falsify the hypothesis. Do not repeat the numbers verbatim and do not claim that an intervention will work before it is tested."""
 
 DIMENSION_EXPLANATION_PROMPT = """Write one plain-English sentence explaining this RAG evaluation signal to a non-technical stakeholder.
 

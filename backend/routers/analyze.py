@@ -27,10 +27,10 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         answer = generate_answer(question, chunks)
         logger.debug("generated answer (%d chars)", len(answer))
 
-        relevance_score, relevance_evidence = score_retrieval_relevance(question, chunks)
+        relevance_score, relevance_context_excerpts = score_retrieval_relevance(question, chunks)
         logger.debug("retrieval_relevance_score=%.3f", relevance_score)
 
-        faithfulness_score, faithfulness_evidence = score_answer_faithfulness(answer, chunks, question)
+        faithfulness_score, faithfulness_context_excerpts = score_answer_faithfulness(answer, chunks, question)
         logger.debug("faithfulness_score=%.3f", faithfulness_score)
 
         embedding_space = analyze_embedding_space(
@@ -48,7 +48,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
             query_isolation=embedding_space.query_isolation,
             retrieval_relevance_score=relevance_score,
-            score_entropy=retrieval_distribution.score_entropy,
+            normalized_entropy=retrieval_distribution.normalized_entropy,
             faithfulness_score=faithfulness_score,
         )
         signals = rank_signals(
@@ -81,15 +81,15 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         ragas=RAGASMetrics(
             retrieval_relevance_score=relevance_score,
             faithfulness_score=faithfulness_score,
-            relevance_evidence=relevance_evidence,
-            faithfulness_evidence=faithfulness_evidence,
+            relevance_context_excerpts=relevance_context_excerpts,
+            faithfulness_context_excerpts=faithfulness_context_excerpts,
         ),
         hedging_mismatch=hedging,
         chunk_attribution=chunk_attribution,
         retrieval_distribution=retrieval_distribution,
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
-        verdict_signals=[VerdictSignal(name=s.name, concern_score=s.concern_score, description=s.description) for s in signals],
+        verdict_signals=[VerdictSignal(name=s.name, priority_score=s.priority_score, description=s.description, reliability=s.reliability) for s in signals],
         recommendation=recommendation,
     )
 
@@ -109,8 +109,8 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         chunk_texts = [c.text for c in chunks]
         chunk_embeddings = [np.array(e) for e in model.encode(chunk_texts)]
 
-        relevance_score, relevance_evidence = score_retrieval_relevance(question, chunks)
-        faithfulness_score, faithfulness_evidence = score_answer_faithfulness(answer, chunks, question)
+        relevance_score, relevance_context_excerpts = score_retrieval_relevance(question, chunks)
+        faithfulness_score, faithfulness_context_excerpts = score_answer_faithfulness(answer, chunks, question)
 
         embedding_space = analyze_embedding_space(
             query_embedding=query_embedding,
@@ -127,7 +127,7 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
             chunk_embeddings=chunk_embeddings,
             query_isolation=embedding_space.query_isolation,
             retrieval_relevance_score=relevance_score,
-            score_entropy=retrieval_distribution.score_entropy,
+            normalized_entropy=retrieval_distribution.normalized_entropy,
             faithfulness_score=faithfulness_score,
         )
         signals = rank_signals(
@@ -159,14 +159,14 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         ragas=RAGASMetrics(
             retrieval_relevance_score=relevance_score,
             faithfulness_score=faithfulness_score,
-            relevance_evidence=relevance_evidence,
-            faithfulness_evidence=faithfulness_evidence,
+            relevance_context_excerpts=relevance_context_excerpts,
+            faithfulness_context_excerpts=faithfulness_context_excerpts,
         ),
         hedging_mismatch=hedging,
         chunk_attribution=chunk_attribution,
         retrieval_distribution=retrieval_distribution,
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
-        verdict_signals=[VerdictSignal(name=s.name, concern_score=s.concern_score, description=s.description) for s in signals],
+        verdict_signals=[VerdictSignal(name=s.name, priority_score=s.priority_score, description=s.description, reliability=s.reliability) for s in signals],
         recommendation=recommendation,
     )

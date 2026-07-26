@@ -52,14 +52,16 @@ export default function DiagnosticCard({ response }: Props) {
     retrieval_distribution,
     embedding_space,
     query_corpus_fit,
+    verdict_signals,
     recommendation,
-    rule_id,
   } = response;
 
   // Derive synthetic DimensionResults for continuous-metric modules
   // so they render consistently in the forensics section.
   const hedgingVerdict: Verdict =
-    hedging_mismatch.overconfident_fraction > 0.3
+    hedging_mismatch.status === "error"
+      ? "warn"
+      : hedging_mismatch.overconfident_fraction > 0.3
       ? "fail"
       : hedging_mismatch.overconfident_fraction > 0.15
       ? "warn"
@@ -72,11 +74,9 @@ export default function DiagnosticCard({ response }: Props) {
       ? "warn"
       : "pass";
 
-  // Banner uses rule_id as the authoritative verdict — it is the backend's
-  // synthesised signal across all modules. Local per-dimension badges are
-  // heuristic approximations for display only and can diverge.
+  const topPriority = verdict_signals[0]?.priority_score ?? 0;
   const overall: Verdict =
-    rule_id === "R07" ? "pass" : "fail";
+    topPriority > 0.5 ? "fail" : topPriority > 0.2 ? "warn" : "pass";
 
   const chunkColorIndex = new Map<string, number>();
 
@@ -98,8 +98,7 @@ export default function DiagnosticCard({ response }: Props) {
           : overall === "warn"
           ? "Potential issues detected"
           : "Issues detected"}{" "}
-        — {recommendation}{" "}
-        <span className="text-current/70 font-normal">({rule_id})</span>
+        — {recommendation}
       </div>
 
       {/* Question + Answer */}
@@ -139,16 +138,17 @@ export default function DiagnosticCard({ response }: Props) {
             </p>
           </div>
         </div>
-        {ragas.relevance_evidence.length > 0 && (
+        {ragas.relevance_context_excerpts.length > 0 && (
           <div>
-            <p className="text-xs text-gray-600 mb-1">Relevance Evidence</p>
+            <p className="text-xs text-gray-600 mb-1">Context excerpts</p>
             <ul className="space-y-1 pl-3 border-l-2 border-gray-200">
-              {ragas.relevance_evidence.map((e, i) => (
+              {ragas.relevance_context_excerpts.map((e, i) => (
                 <li key={i} className="text-xs text-gray-500 italic">
                   {e}
                 </li>
               ))}
             </ul>
+            <p className="mt-1 text-[11px] text-gray-500">{ragas.excerpt_caveat}</p>
           </div>
         )}
       </section>
@@ -168,9 +168,10 @@ export default function DiagnosticCard({ response }: Props) {
             <VerdictBadge verdict={hedgingVerdict} testId="badge-hedging_mismatch" />
           </div>
           <p className="text-xs text-gray-500">
-            Overconfident: {(hedging_mismatch.overconfident_fraction * 100).toFixed(0)}% ·
-            Underconfident: {(hedging_mismatch.underconfident_fraction * 100).toFixed(0)}% ·
-            {hedging_mismatch.total_claims} claims
+            {hedging_mismatch.status === "error" ? (
+              <>Analysis unavailable: {hedging_mismatch.error}</>
+            ) : <>Overconfident: {(hedging_mismatch.overconfident_fraction * 100).toFixed(0)}% ·
+            {hedging_mismatch.total_claims} claims</>}
           </p>
         </div>
 
@@ -183,9 +184,10 @@ export default function DiagnosticCard({ response }: Props) {
             <VerdictBadge verdict={attributionVerdict} testId="badge-chunk_attribution" />
           </div>
           <p className="text-xs text-gray-500">
-            Unattributed: {(chunk_attribution.unattributed_fraction * 100).toFixed(0)}% ·
+            No close semantic source: {(chunk_attribution.unattributed_fraction * 100).toFixed(0)}% ·
             Mean score: {chunk_attribution.mean_attribution_score.toFixed(2)}
           </p>
+          <p className="text-[11px] text-gray-500">{chunk_attribution.caveat}</p>
           <div className="flex flex-wrap gap-1 leading-loose">
             {chunk_attribution.attribution_map.map((entry, i) => {
               const isUnattributed = entry.attribution_strength === "unattributed";
@@ -215,13 +217,14 @@ export default function DiagnosticCard({ response }: Props) {
             Retrieval Distribution
           </span>
           <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
-            <span>Entropy: {retrieval_distribution.score_entropy.toFixed(2)}</span>
+            <span>Normalized entropy: {retrieval_distribution.normalized_entropy.toFixed(2)}</span>
             <span>Gap: {retrieval_distribution.score_gap.toFixed(2)}</span>
             <span>Tail mass: {retrieval_distribution.tail_mass.toFixed(2)}</span>
-            <span>Decay: {retrieval_distribution.decay_rate.toFixed(2)}</span>
+            <span>Decay: {retrieval_distribution.decay_rate?.toFixed(2) ?? "unavailable"}</span>
             <span>Top: {retrieval_distribution.top_score.toFixed(2)}</span>
             <span>Chunks: {retrieval_distribution.n_chunks}</span>
           </div>
+          <p className="text-[11px] text-gray-500">{retrieval_distribution.interpretation}</p>
         </div>
 
         {/* Embedding Space — numeric summary */}
@@ -239,10 +242,10 @@ export default function DiagnosticCard({ response }: Props) {
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-700">
-                Query-Corpus Fit
+                Retrieved-Context Fit
               </span>
               <span className="inline-block rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wide bg-red-100 text-red-800">
-                {query_corpus_fit.mismatch_type ?? "triggered"}
+                {query_corpus_fit.observed_fit ?? query_corpus_fit.status}
               </span>
             </div>
             {query_corpus_fit.suggested_questions.length > 0 && (

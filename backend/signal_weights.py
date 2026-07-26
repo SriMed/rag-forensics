@@ -40,10 +40,6 @@ class SignalWeights:
 
     # --- Priority weights (human-judged relative scaling) ------------------------
 
-    # Underconfidence is less actionable than overconfidence: the system hedged when
-    # it didn't need to, but the answer is still factually grounded.
-    underconfidence_weight: float = 0.7  # [priority]
-
     # Weak matches indicate partial grounding — better than no support at all, so
     # scaled below unattributed_fraction (which is always weighted 1.0×).
     weak_match_weight: float = 0.6  # [priority]

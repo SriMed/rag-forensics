@@ -17,6 +17,7 @@ chunks = [
 response = requests.post("https://your-deployment.railway.app/analyze/custom", json={
     "question": "What is the refund policy?",
     "answer": "Refunds are processed within 5-7 business days.",
+    "score_semantics": "normalized_similarity",
     "chunks": chunks
 })
 
@@ -29,8 +30,16 @@ print(response.json())
 |---|---|---|
 | `chunk_id` | string | Any unique identifier for the chunk in your system |
 | `text` | string | The raw text content of the chunk |
-| `score` | float (0–1) | Similarity score from your retrieval system |
+| `score` | float (0–1) | Normalized similarity where higher means more relevant |
+
+`score_semantics` is currently required to be `normalized_similarity`. BM25 values, distances,
+reranker logits, and vendor-specific scores must be converted to a meaningful 0–1 similarity
+scale before use. Distribution shape is not comparable across retrievers unless their score
+calibration is comparable.
 
 ## Response
 
 Same `AnalyzeResponse` shape as the demo endpoint. See the main README for full schema.
+Priority scores in `verdict_signals` are heuristic ordering indices, not probabilities or
+calibrated severities. Check each signal's `reliability` field and treat recommendations as
+experiments to test rather than established root causes.

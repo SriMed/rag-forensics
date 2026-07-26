@@ -9,20 +9,20 @@ logger = logging.getLogger(__name__)
 _LLM_MODEL = "claude-haiku-4-5-20251001"
 
 
-def _extract_evidence(chunks: list[RetrievedChunk], n: int = 3) -> list[str]:
-    """Return up to n verbatim spans, one per top chunk."""
-    evidence = []
+def _extract_context_excerpts(chunks: list[RetrievedChunk], n: int = 3) -> list[str]:
+    """Return context excerpts for inspection; these do not explain the judge score."""
+    excerpts = []
     for chunk in chunks[:n]:
         text = chunk.text.strip()
         # First sentence keeps evidence readable without cutting a claim mid-thought.
         for sep in (". ", ".\n", "! ", "? "):
             idx = text.find(sep)
             if 0 < idx < 200:
-                evidence.append(text[: idx + 1])
+                excerpts.append(text[: idx + 1])
                 break
         else:
-            evidence.append(text[:150])
-    return evidence
+            excerpts.append(text[:150])
+    return excerpts
 
 
 def _run_ragas(
@@ -37,7 +37,7 @@ def _run_ragas(
     result = evaluate(dataset, metrics=[metric], llm=llm, show_progress=False)
     score = float(result[metric_name][0])
     logger.debug("ragas metric=%s score=%.3f", metric_name, score)
-    return score, _extract_evidence(chunks)
+    return score, _extract_context_excerpts(chunks)
 
 
 def score_retrieval_relevance(question: str, chunks: list[RetrievedChunk]) -> tuple[float, list[str]]:

@@ -70,7 +70,7 @@ def _make_embed_mock(embeddings: list[np.ndarray]) -> MagicMock:
 _NO_TRIGGER = dict(
     query_isolation=0.5,
     retrieval_relevance_score=0.8,
-    score_entropy=0.5,
+    normalized_entropy=0.5,
     faithfulness_score=0.8,
 )
 
@@ -97,8 +97,10 @@ def test_no_trigger_returns_false(mocker):
 
     assert result.triggered is False
     assert result.suggested_questions == []
-    assert result.mismatch_type is None
+    assert result.observed_fit is None
     assert result.mean_question_similarity is None
+    assert result.status == "not_run"
+    assert result.error is None
     mock_client.messages.create.assert_not_called()
 
 
@@ -124,7 +126,7 @@ def test_query_isolation_triggers(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.3,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
@@ -153,7 +155,7 @@ def test_retrieval_relevance_triggers(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=0.5,
             retrieval_relevance_score=0.4,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
@@ -182,7 +184,7 @@ def test_entropy_and_faithfulness_trigger(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=0.5,
             retrieval_relevance_score=0.8,
-            score_entropy=1.6,
+            normalized_entropy=0.95,
             faithfulness_score=0.4,
         )
 
@@ -208,7 +210,7 @@ def test_entropy_alone_does_not_trigger(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
         retrieval_relevance_score=0.8,
-        score_entropy=1.6,
+        normalized_entropy=0.95,
         faithfulness_score=0.8,
     )
 
@@ -235,7 +237,7 @@ def test_faithfulness_alone_does_not_trigger(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
         retrieval_relevance_score=0.8,
-        score_entropy=0.5,
+        normalized_entropy=0.5,
         faithfulness_score=0.4,
     )
 
@@ -265,7 +267,7 @@ def test_triggered_returns_expected_question_count(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
@@ -295,7 +297,7 @@ def test_suggested_question_fields(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
@@ -329,7 +331,7 @@ def test_source_chunk_ids_from_input(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
@@ -339,7 +341,7 @@ def test_source_chunk_ids_from_input(mocker):
 
 
 # ---------------------------------------------------------------------------
-# Test 10 — high mean similarity (> 0.6) → mismatch_type="query_mismatch"
+# Test 10 — high mean similarity (> 0.6) → observed_fit="retrieved_context_near_miss"
 # ---------------------------------------------------------------------------
 
 def test_high_similarity_query_mismatch(mocker):
@@ -363,16 +365,16 @@ def test_high_similarity_query_mismatch(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
     assert result.mean_question_similarity > 0.6
-    assert result.mismatch_type == "query_mismatch"
+    assert result.observed_fit == "retrieved_context_near_miss"
 
 
 # ---------------------------------------------------------------------------
-# Test 11 — low mean similarity (< 0.3) → mismatch_type="coverage_gap"
+# Test 11 — low mean similarity (< 0.3) → observed_fit="retrieved_context_topic_gap"
 # ---------------------------------------------------------------------------
 
 def test_low_similarity_coverage_gap(mocker):
@@ -396,12 +398,12 @@ def test_low_similarity_coverage_gap(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
     assert result.mean_question_similarity < 0.3
-    assert result.mismatch_type == "coverage_gap"
+    assert result.observed_fit == "retrieved_context_topic_gap"
 
 
 # ---------------------------------------------------------------------------
@@ -429,12 +431,12 @@ def test_mid_similarity_ambiguous(mocker):
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
             retrieval_relevance_score=0.8,
-            score_entropy=0.5,
+            normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
 
     assert 0.3 <= result.mean_question_similarity <= 0.6
-    assert result.mismatch_type == "ambiguous"
+    assert result.observed_fit == "ambiguous"
 
 
 # ---------------------------------------------------------------------------
@@ -456,14 +458,16 @@ def test_claude_exception_fallback(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=1.5,
         retrieval_relevance_score=0.8,
-        score_entropy=0.5,
+        normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
 
     assert result.triggered is True
     assert result.suggested_questions == []
-    assert result.mismatch_type is None
+    assert result.observed_fit is None
     assert result.mean_question_similarity is None
+    assert result.status == "error"
+    assert result.error == "question_generation_failed"
 
 
 # ---------------------------------------------------------------------------
@@ -485,13 +489,13 @@ def test_invalid_json_fallback(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
         retrieval_relevance_score=0.4,
-        score_entropy=0.5,
+        normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
 
     assert result.triggered is True
     assert result.suggested_questions == []
-    assert result.mismatch_type is None
+    assert result.observed_fit is None
     assert result.mean_question_similarity is None
 
 
@@ -511,14 +515,36 @@ def test_wrong_json_structure_fallback(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=1.5,
         retrieval_relevance_score=0.8,
-        score_entropy=0.5,
+        normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
 
     assert result.triggered is True
     assert result.suggested_questions == []
-    assert result.mismatch_type is None
+    assert result.observed_fit is None
     assert result.mean_question_similarity is None
+
+
+def test_embedding_failure_returns_explicit_error(mocker):
+    from services.forensics.query_corpus_fit import analyze_query_corpus_fit
+
+    _make_claude_mock(mocker, '["Q1?", "Q2?", "Q3?"]')
+    with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
+        mock_get.side_effect = RuntimeError("model unavailable")
+        result = analyze_query_corpus_fit(
+            question="What is X?",
+            query_embedding=_unit(seed=1),
+            chunks=_chunks(2),
+            chunk_embeddings=[_unit(seed=10), _unit(seed=11)],
+            query_isolation=1.5,
+            retrieval_relevance_score=0.8,
+            normalized_entropy=0.5,
+            faithfulness_score=0.8,
+        )
+
+    assert result.status == "error"
+    assert result.error == "fit_computation_failed"
+    assert result.observed_fit is None
 
 
 # ---------------------------------------------------------------------------
@@ -540,7 +566,7 @@ def test_query_isolation_boundary_not_triggered(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=1.2,
         retrieval_relevance_score=0.8,
-        score_entropy=0.5,
+        normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
 
@@ -567,7 +593,7 @@ def test_retrieval_relevance_boundary_not_triggered(mocker):
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
         retrieval_relevance_score=0.5,
-        score_entropy=0.5,
+        normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
 

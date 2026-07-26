@@ -13,6 +13,7 @@ client = TestClient(app)
 _VALID_REQUEST = {
     "question": "What is the refund policy?",
     "answer": "Refunds are processed in 5-7 days. Customers must request within 30 days.",
+    "score_semantics": "normalized_similarity",
     "chunks": [
         {"chunk_id": "doc_1_chunk_0", "text": "Refunds are processed within 5 to 7 business days.", "score": 0.87},
         {"chunk_id": "doc_1_chunk_1", "text": "Customers must request a refund within 30 days of purchase.", "score": 0.75},
@@ -48,7 +49,7 @@ _STUB_ATTRIBUTION = ChunkAttributionMetrics(
 
 _STUB_QUERY_FIT = QueryCorpusFitMetrics(
     triggered=False,
-    mismatch_type=None,
+    observed_fit=None,
     suggested_questions=[],
     mean_question_similarity=None,
 )
@@ -57,6 +58,12 @@ _STUB_SCORE_TUPLE = (0.85, ["evidence text"])
 
 
 def _patch_services(mocker):
+    embedding_model = mocker.MagicMock()
+    embedding_model.encode.side_effect = [
+        [[1.0, 0.0]],
+        [[1.0, 0.0], [0.8, 0.2]],
+    ]
+    mocker.patch("services.retriever.get_embedding_model", return_value=embedding_model)
     mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING)
@@ -106,6 +113,21 @@ def test_custom_missing_question_returns_422(mocker):
 def test_custom_missing_answer_returns_422(mocker):
     _patch_services(mocker)
     payload = {k: v for k, v in _VALID_REQUEST.items() if k != "answer"}
+    response = client.post("/analyze/custom", json=payload)
+    assert response.status_code == 422
+
+
+def test_custom_missing_score_semantics_returns_422(mocker):
+    _patch_services(mocker)
+    payload = {k: v for k, v in _VALID_REQUEST.items() if k != "score_semantics"}
+    response = client.post("/analyze/custom", json=payload)
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("score", [-0.01, 1.01])
+def test_custom_rejects_scores_outside_normalized_range(mocker, score):
+    _patch_services(mocker)
+    payload = {**_VALID_REQUEST, "chunks": [{**_VALID_REQUEST["chunks"][0], "score": score}]}
     response = client.post("/analyze/custom", json=payload)
     assert response.status_code == 422
 

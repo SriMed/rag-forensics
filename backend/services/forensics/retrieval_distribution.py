@@ -16,6 +16,8 @@ def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDis
         score_entropy = float(max(0.0, -np.sum(normalized * np.log(normalized + 1e-9))))
     else:
         score_entropy = 0.0
+    max_entropy = float(np.log(n)) if n > 1 else 0.0
+    normalized_entropy = score_entropy / max_entropy if max_entropy > 0 else 0.0
 
     ranks = np.arange(n, dtype=float)
     decay_rate: float | None = None
@@ -43,4 +45,5 @@ def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDis
         tail_mass=tail_mass,
         top_score=float(scores[0]),
         n_chunks=n,
+        normalized_entropy=normalized_entropy,
     )

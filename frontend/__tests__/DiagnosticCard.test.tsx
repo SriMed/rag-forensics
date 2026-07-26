@@ -9,8 +9,8 @@ const BASE_RESPONSE: AnalyzeResponse = {
   ragas: {
     retrieval_relevance_score: 0.82,
     faithfulness_score: 0.91,
-    relevance_evidence: ["Evidence A"],
-    faithfulness_evidence: ["Evidence B"],
+    relevance_context_excerpts: ["Evidence A"],
+    faithfulness_context_excerpts: ["Evidence B"], excerpt_caveat: "Context excerpts are not score evidence.",
   },
   hedging_mismatch: {
     overconfident_fraction: 0.1,
@@ -25,6 +25,9 @@ const BASE_RESPONSE: AnalyzeResponse = {
         source_chunk_id: "chunk-1",
       },
     ],
+    status: "ok",
+    error: null,
+    evaluated_chunk_count: 3,
   },
   chunk_attribution: {
     unattributed_fraction: 0.1,
@@ -44,6 +47,8 @@ const BASE_RESPONSE: AnalyzeResponse = {
         attribution_strength: "unattributed",
       },
     ],
+    method: "semantic_similarity",
+    caveat: "Similarity does not prove entailment.",
   },
   retrieval_distribution: {
     score_gap: 0.3,
@@ -52,6 +57,8 @@ const BASE_RESPONSE: AnalyzeResponse = {
     tail_mass: 0.2,
     top_score: 0.92,
     n_chunks: 5,
+    normalized_entropy: 0.56,
+    interpretation: "Interpret with absolute relevance.",
   },
   embedding_space: {
     centroid_distance: 0.4,
@@ -64,17 +71,19 @@ const BASE_RESPONSE: AnalyzeResponse = {
   },
   query_corpus_fit: {
     triggered: false,
-    mismatch_type: null,
+    observed_fit: null,
     suggested_questions: [],
     mean_question_similarity: null,
+    status: "not_run",
+    error: null,
   },
   recommendation: "Pipeline looks healthy — no action required.",
-  rule_id: "R07",
+  verdict_signals: [],
 };
 
 const FAIL_RESPONSE: AnalyzeResponse = {
   ...BASE_RESPONSE,
-  rule_id: "R01",
+  verdict_signals: [{ name: "test_issue", priority_score: 0.8, description: "Test issue", score_kind: "heuristic_priority", reliability: "unvalidated" }],
   recommendation: "Reduce top-k to improve selectivity.",
   hedging_mismatch: {
     ...BASE_RESPONSE.hedging_mismatch,

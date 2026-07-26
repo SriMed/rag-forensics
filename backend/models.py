@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class SuggestedQuestion(BaseModel):
@@ -11,9 +11,11 @@ class SuggestedQuestion(BaseModel):
 class QueryCorpusFitMetrics(BaseModel):
     triggered: bool
     trigger_reason: Literal["query_isolation", "retrieval_relevance", "entropy_faithfulness"] | None = None
-    mismatch_type: Literal["query_mismatch", "coverage_gap", "ambiguous"] | None
+    observed_fit: Literal["retrieved_context_near_miss", "retrieved_context_topic_gap", "ambiguous"] | None = None
     suggested_questions: list[SuggestedQuestion]
     mean_question_similarity: float | None
+    status: Literal["ok", "not_run", "error"] = "ok"
+    error: str | None = None
 
 
 class StoredExample(BaseModel):
@@ -25,7 +27,7 @@ class StoredExample(BaseModel):
 class RetrievedChunk(BaseModel):
     chunk_id: str
     text: str
-    score: float
+    score: float = Field(ge=0.0, le=1.0)
 
 
 # CustomChunk is structurally identical to RetrievedChunk — alias to avoid duplication.
@@ -54,6 +56,11 @@ class ChunkAttributionMetrics(BaseModel):
     mean_attribution_score: float
     weak_match_fraction: float
     attribution_map: list[AttributionEntry]
+    method: Literal["semantic_similarity"] = "semantic_similarity"
+    caveat: str = (
+        "Similarity identifies a semantically close source candidate; it does not prove entailment "
+        "or establish that unsupported text is a hallucination."
+    )
 
 
 class RetrievalDistributionMetrics(BaseModel):
@@ -63,6 +70,10 @@ class RetrievalDistributionMetrics(BaseModel):
     tail_mass: float
     top_score: float
     n_chunks: int
+    normalized_entropy: float = 0.0
+    interpretation: str = (
+        "Distribution shape must be interpreted jointly with absolute relevance and score semantics."
+    )
 
 
 class EmbeddingPoint(BaseModel):
@@ -98,13 +109,19 @@ class HedgingMismatchMetrics(BaseModel):
     underconfident_fraction: float
     total_claims: int
     claim_breakdown: list[ClaimEntry]
+    status: Literal["ok", "error"] = "ok"
+    error: str | None = None
+    evaluated_chunk_count: int = 0
 
 
 class RAGASMetrics(BaseModel):
     retrieval_relevance_score: float
     faithfulness_score: float
-    relevance_evidence: list[str]
-    faithfulness_evidence: list[str]
+    relevance_context_excerpts: list[str]
+    faithfulness_context_excerpts: list[str]
+    excerpt_caveat: str = (
+        "These are context excerpts for inspection, not evidence explaining the evaluator's score."
+    )
 
 
 class AnalyzeRequest(BaseModel):
@@ -115,6 +132,7 @@ class CustomAnalyzeRequest(BaseModel):
     question: str
     answer: str
     chunks: list[RetrievedChunk]
+    score_semantics: Literal["normalized_similarity"]
 
     @field_validator("chunks")
     @classmethod
@@ -126,8 +144,10 @@ class CustomAnalyzeRequest(BaseModel):
 
 class VerdictSignal(BaseModel):
     name: str
-    concern_score: float
+    priority_score: float
     description: str
+    score_kind: Literal["heuristic_priority"] = "heuristic_priority"
+    reliability: Literal["unvalidated", "partially_calibrated", "model_judged"]
 
 
 class AnalyzeResponse(BaseModel):
@@ -140,5 +160,5 @@ class AnalyzeResponse(BaseModel):
     retrieval_distribution: RetrievalDistributionMetrics
     embedding_space: EmbeddingSpaceMetrics
     query_corpus_fit: QueryCorpusFitMetrics
-    verdict_signals: list[VerdictSignal]  # all ranked signals, descending by concern_score
+    verdict_signals: list[VerdictSignal]  # all ranked signals, descending by heuristic priority
     recommendation: str

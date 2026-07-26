@@ -22,6 +22,8 @@ export interface ChunkAttributionMetrics {
   mean_attribution_score: number;
   weak_match_fraction: number;
   attribution_map: AttributionEntry[];
+  method: "semantic_similarity";
+  caveat: string;
 }
 
 export interface ClaimEntry {
@@ -37,22 +39,28 @@ export interface HedgingMismatchMetrics {
   underconfident_fraction: number;
   total_claims: number;
   claim_breakdown: ClaimEntry[];
+  status: "ok" | "error";
+  error: string | null;
+  evaluated_chunk_count: number;
 }
 
 export interface RAGASMetrics {
   retrieval_relevance_score: number;
   faithfulness_score: number;
-  relevance_evidence: string[];
-  faithfulness_evidence: string[];
+  relevance_context_excerpts: string[];
+  faithfulness_context_excerpts: string[];
+  excerpt_caveat: string;
 }
 
 export interface RetrievalDistributionMetrics {
   score_gap: number;
   score_entropy: number;
-  decay_rate: number;
+  decay_rate: number | null;
   tail_mass: number;
   top_score: number;
   n_chunks: number;
+  normalized_entropy: number;
+  interpretation: string;
 }
 
 export interface EmbeddingPoint {
@@ -77,9 +85,19 @@ export interface SuggestedQuestion {
 
 export interface QueryCorpusFitMetrics {
   triggered: boolean;
-  mismatch_type: "query_mismatch" | "coverage_gap" | "ambiguous" | null;
+  observed_fit: "retrieved_context_near_miss" | "retrieved_context_topic_gap" | "ambiguous" | null;
   suggested_questions: SuggestedQuestion[];
   mean_question_similarity: number | null;
+  status: "ok" | "not_run" | "error";
+  error: string | null;
+}
+
+export interface VerdictSignal {
+  name: string;
+  priority_score: number;
+  description: string;
+  score_kind: "heuristic_priority";
+  reliability: "unvalidated" | "partially_calibrated" | "model_judged";
 }
 
 export interface AnalyzeResponse {
@@ -92,8 +110,8 @@ export interface AnalyzeResponse {
   retrieval_distribution: RetrievalDistributionMetrics;
   embedding_space: EmbeddingSpaceMetrics;
   query_corpus_fit: QueryCorpusFitMetrics;
+  verdict_signals: VerdictSignal[];
   recommendation: string;
-  rule_id: string;
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";

@@ -90,7 +90,7 @@ def test_all_definitive_not_supported(mocker):
 
 
 # ---------------------------------------------------------------------------
-# Test 8 — all hedged + supported → underconfident_fraction=1.0
+# Test 8 — all hedged + supported → matched (binary entailment cannot establish underconfidence)_fraction=1.0
 # ---------------------------------------------------------------------------
 
 def test_all_hedged_supported(mocker):
@@ -100,9 +100,9 @@ def test_all_hedged_supported(mocker):
         "supported",  # chunk c0 → short-circuit, c1 not checked
     ])
     result = analyze_hedging_mismatch("It may apply after March.", chunks)
-    assert result.underconfident_fraction == pytest.approx(1.0)
+    assert result.underconfident_fraction == pytest.approx(0.0)
     assert result.overconfident_fraction == pytest.approx(0.0)
-    assert result.claim_breakdown[0].mismatch_type == "underconfident"
+    assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 # ---------------------------------------------------------------------------
@@ -148,7 +148,7 @@ def test_mixed_claims_fractions(mocker):
         '["The deadline is March 15.", "It may apply after March.", "The fee is $50."]',
         # claim 0: definitive + not_supported → overconfident (k=3 chunks all checked)
         "not_supported", "not_supported", "not_supported",
-        # claim 1: hedged + supported → underconfident (short-circuit at c0)
+        # claim 1: hedged + supported → matched (binary entailment cannot establish underconfidence) (short-circuit at c0)
         "supported",
         # claim 2: definitive + supported → matched (short-circuit at c0)
         "supported",
@@ -156,7 +156,7 @@ def test_mixed_claims_fractions(mocker):
     result = analyze_hedging_mismatch("answer", chunks)
     assert result.total_claims == 3
     assert result.overconfident_fraction == pytest.approx(1 / 3)
-    assert result.underconfident_fraction == pytest.approx(1 / 3)
+    assert result.underconfident_fraction == pytest.approx(0.0)
     assert result.overconfident_fraction + result.underconfident_fraction <= 1.0
 
 
@@ -190,7 +190,7 @@ def test_mismatch_type_definitive_not_supported(mocker):
 def test_mismatch_type_hedged_supported(mocker):
     _make_mock(mocker, ['["It may apply after March."]', "supported"])
     result = analyze_hedging_mismatch("It may apply after March.", _chunks(1))
-    assert result.claim_breakdown[0].mismatch_type == "underconfident"
+    assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 def test_mismatch_type_definitive_supported(mocker):
@@ -214,14 +214,14 @@ def test_mismatch_type_uncertain_not_supported(mocker):
 def test_mismatch_type_uncertain_supported(mocker):
     _make_mock(mocker, ['["I\'m not sure this applies."]', "supported"])
     result = analyze_hedging_mismatch("answer", _chunks(1))
-    assert result.claim_breakdown[0].mismatch_type == "underconfident"
+    assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 # ---------------------------------------------------------------------------
 # Test 14 — extraction throws → zeroed metrics, no exception raised
 # ---------------------------------------------------------------------------
 
-def test_extraction_failure_returns_zeroed(mocker):
+def test_extraction_failure_is_explicit_not_healthy(mocker):
     mock_client = MagicMock()
     mock_client.messages.create.side_effect = Exception("API error")
     mock_cls = MagicMock(return_value=mock_client)
@@ -232,6 +232,8 @@ def test_extraction_failure_returns_zeroed(mocker):
     assert result.claim_breakdown == []
     assert result.overconfident_fraction == pytest.approx(0.0)
     assert result.underconfident_fraction == pytest.approx(0.0)
+    assert result.status == "error"
+    assert result.error == "claim_extraction_failed"
 
 
 # ---------------------------------------------------------------------------
@@ -283,9 +285,9 @@ def test_per_claim_entailment_failure_is_isolated(mocker):
     # claim 0: definitive + not_supported (entailment failed → treated as not_supported) → overconfident
     assert result.claim_breakdown[0].supported is False
     assert result.claim_breakdown[0].mismatch_type == "overconfident"
-    # claim 1: hedged + supported → underconfident
+    # claim 1: hedged + supported → matched (binary entailment cannot establish underconfidence)
     assert result.claim_breakdown[1].supported is True
-    assert result.claim_breakdown[1].mismatch_type == "underconfident"
+    assert result.claim_breakdown[1].mismatch_type == "matched"
 
 
 # ---------------------------------------------------------------------------
@@ -326,7 +328,7 @@ def test_fractions_sum_at_most_one(mocker):
     result = analyze_hedging_mismatch("answer", chunks)
     assert result.overconfident_fraction + result.underconfident_fraction <= 1.0
     assert result.overconfident_fraction == pytest.approx(0.5)
-    assert result.underconfident_fraction == pytest.approx(0.5)
+    assert result.underconfident_fraction == pytest.approx(0.0)
 
 
 # ---------------------------------------------------------------------------
@@ -359,7 +361,7 @@ def test_entailment_supported_with_trailing_punctuation(mocker):
     _make_mock(mocker, ['["It may apply after March."]', "supported."])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].supported is True
-    assert result.claim_breakdown[0].mismatch_type == "underconfident"
+    assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 def test_entailment_supported_with_prefix(mocker):

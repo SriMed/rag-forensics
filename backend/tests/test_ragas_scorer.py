@@ -18,39 +18,39 @@ def _mock_evaluate(mocker, metric_name: str, score: float):
     mocker.patch("services.ragas_scorer.evaluate", return_value=mock_result)
 
 
-# --- _extract_evidence ---
+# --- _extract_context_excerpts ---
 
-def test_extract_evidence_returns_list():
-    from services.ragas_scorer import _extract_evidence
-    result = _extract_evidence(CHUNKS)
+def test_extract_context_excerpts_returns_list():
+    from services.ragas_scorer import _extract_context_excerpts
+    result = _extract_context_excerpts(CHUNKS)
     assert isinstance(result, list)
 
 
-def test_extract_evidence_between_1_and_3_items():
-    from services.ragas_scorer import _extract_evidence
-    result = _extract_evidence(CHUNKS)
+def test_extract_context_excerpts_between_1_and_3_items():
+    from services.ragas_scorer import _extract_context_excerpts
+    result = _extract_context_excerpts(CHUNKS)
     assert 1 <= len(result) <= 3
 
 
-def test_extract_evidence_items_are_strings():
-    from services.ragas_scorer import _extract_evidence
-    result = _extract_evidence(CHUNKS)
+def test_extract_context_excerpts_items_are_strings():
+    from services.ragas_scorer import _extract_context_excerpts
+    result = _extract_context_excerpts(CHUNKS)
     for item in result:
         assert isinstance(item, str)
 
 
-def test_extract_evidence_items_appear_verbatim_in_chunks():
-    from services.ragas_scorer import _extract_evidence
+def test_extract_context_excerpts_items_appear_verbatim_in_chunks():
+    from services.ragas_scorer import _extract_context_excerpts
     all_chunk_text = " ".join(c.text for c in CHUNKS)
-    result = _extract_evidence(CHUNKS)
+    result = _extract_context_excerpts(CHUNKS)
     for item in result:
         assert item in all_chunk_text, f"Evidence '{item}' not found verbatim in any chunk"
 
 
-def test_extract_evidence_uses_top_chunks():
-    from services.ragas_scorer import _extract_evidence
+def test_extract_context_excerpts_uses_top_chunks():
+    from services.ragas_scorer import _extract_context_excerpts
     single = [RetrievedChunk(chunk_id="x", text="Only chunk text here.", score=1.0)]
-    result = _extract_evidence(single)
+    result = _extract_context_excerpts(single)
     assert len(result) == 1
     assert result[0] in single[0].text
 

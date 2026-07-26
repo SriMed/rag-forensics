@@ -18,16 +18,17 @@ logger = logging.getLogger(__name__)
 
 _UNTRIGGERED = QueryCorpusFitMetrics(
     triggered=False,
-    mismatch_type=None,
+    observed_fit=None,
     suggested_questions=[],
     mean_question_similarity=None,
+    status="not_run",
 )
 
 
 def _should_trigger(
     query_isolation: float,
     retrieval_relevance_score: float,
-    score_entropy: float,
+    normalized_entropy: float,
     faithfulness_score: float,
 ) -> str | None:
     """Return the name of the first trigger condition that fired, or None."""
@@ -35,7 +36,7 @@ def _should_trigger(
         return "query_isolation"
     if retrieval_relevance_score < 0.5:
         return "retrieval_relevance"
-    if score_entropy > 1.5 and faithfulness_score < 0.5:
+    if normalized_entropy > 0.9 and faithfulness_score < 0.5:
         return "entropy_faithfulness"
     return None
 
@@ -47,15 +48,15 @@ def analyze_query_corpus_fit(
     chunk_embeddings: list[np.ndarray],
     query_isolation: float,
     retrieval_relevance_score: float,
-    score_entropy: float,
+    normalized_entropy: float,
     faithfulness_score: float,
 ) -> QueryCorpusFitMetrics:
-    """Generate questions the retrieved chunks answer well; classify mismatch type.
+    """Generate questions the retrieved chunks answer well; classify observed retrieved-context fit.
 
     Returns triggered=False immediately (no LLM calls) when signals don't indicate
     a query-corpus mismatch. On LLM failure returns triggered=True with empty questions.
     """
-    trigger_reason = _should_trigger(query_isolation, retrieval_relevance_score, score_entropy, faithfulness_score)
+    trigger_reason = _should_trigger(query_isolation, retrieval_relevance_score, normalized_entropy, faithfulness_score)
     if trigger_reason is None:
         return _UNTRIGGERED
 
@@ -84,60 +85,75 @@ def analyze_query_corpus_fit(
         return QueryCorpusFitMetrics(
             triggered=True,
             trigger_reason=trigger_reason,
-            mismatch_type=None,
+            observed_fit=None,
             suggested_questions=[],
             mean_question_similarity=None,
+            status="error",
+            error="question_generation_failed",
         )
 
     if not question_strings:
         return QueryCorpusFitMetrics(
             triggered=True,
             trigger_reason=trigger_reason,
-            mismatch_type=None,
+            observed_fit=None,
             suggested_questions=[],
             mean_question_similarity=None,
+            status="error",
+            error="question_generation_returned_no_questions",
         )
 
-    qry_norm = np.linalg.norm(query_embedding)
-    qry_unit = query_embedding / (qry_norm + 1e-10)
+    try:
+        qry_norm = np.linalg.norm(query_embedding)
+        qry_unit = query_embedding / (qry_norm + 1e-10)
 
-    chunk_matrix = np.array(chunk_embeddings)
-    chunk_norms = np.linalg.norm(chunk_matrix, axis=1, keepdims=True)
-    chunk_units = chunk_matrix / (chunk_norms + 1e-10)
+        chunk_matrix = np.array(chunk_embeddings)
+        chunk_norms = np.linalg.norm(chunk_matrix, axis=1, keepdims=True)
+        chunk_units = chunk_matrix / (chunk_norms + 1e-10)
 
-    embed_model = get_embedding_model()
-    # Batch-encode all suggested questions in a single model call.
-    question_embeddings = embed_model.encode(question_strings)  # shape (n_questions, dim)
+        embed_model = get_embedding_model()
+        question_embeddings = embed_model.encode(question_strings)
 
-    suggested: list[SuggestedQuestion] = []
-    for i, q_text in enumerate(question_strings):
-        q_emb = question_embeddings[i]
-        q_norm = np.linalg.norm(q_emb)
-        q_unit = q_emb / (q_norm + 1e-10)
+        suggested: list[SuggestedQuestion] = []
+        for i, q_text in enumerate(question_strings):
+            q_emb = question_embeddings[i]
+            q_norm = np.linalg.norm(q_emb)
+            q_unit = q_emb / (q_norm + 1e-10)
 
-        relevance = float(np.dot(q_unit, qry_unit))
-        sims = chunk_units @ q_unit
-        top_idx = int(np.argmax(sims))
+            relevance = float(np.dot(q_unit, qry_unit))
+            sims = chunk_units @ q_unit
+            top_idx = int(np.argmax(sims))
 
-        suggested.append(SuggestedQuestion(
-            question=q_text,
-            source_chunk_ids=[chunks[top_idx].chunk_id],
-            relevance_to_original=relevance,
-        ))
+            suggested.append(SuggestedQuestion(
+                question=q_text,
+                source_chunk_ids=[chunks[top_idx].chunk_id],
+                relevance_to_original=relevance,
+            ))
 
-    mean_sim = float(np.mean([sq.relevance_to_original for sq in suggested]))
+        mean_sim = float(np.mean([sq.relevance_to_original for sq in suggested]))
 
-    if mean_sim > 0.6:
-        mismatch_type = "query_mismatch"
-    elif mean_sim < 0.3:
-        mismatch_type = "coverage_gap"
-    else:
-        mismatch_type = "ambiguous"
+        if mean_sim > 0.6:
+            observed_fit = "retrieved_context_near_miss"
+        elif mean_sim < 0.3:
+            observed_fit = "retrieved_context_topic_gap"
+        else:
+            observed_fit = "ambiguous"
+    except Exception:
+        logger.warning("Retrieved-context fit computation failed", exc_info=True)
+        return QueryCorpusFitMetrics(
+            triggered=True,
+            trigger_reason=trigger_reason,
+            observed_fit=None,
+            suggested_questions=[],
+            mean_question_similarity=None,
+            status="error",
+            error="fit_computation_failed",
+        )
 
     return QueryCorpusFitMetrics(
         triggered=True,
         trigger_reason=trigger_reason,
-        mismatch_type=mismatch_type,
+        observed_fit=observed_fit,
         suggested_questions=suggested,
         mean_question_similarity=mean_sim,
     )

@@ -28,6 +28,13 @@ def test_equal_scores_give_high_entropy():
     equal = analyze_retrieval_distribution(_chunks([0.70, 0.70, 0.70, 0.70, 0.70]))
     steep = analyze_retrieval_distribution(_chunks([0.95, 0.50, 0.20, 0.10, 0.05]))
     assert equal.score_entropy > steep.score_entropy
+    assert equal.normalized_entropy == pytest.approx(1.0, abs=1e-6)
+
+
+def test_normalized_entropy_is_comparable_across_top_k():
+    three = analyze_retrieval_distribution(_chunks([0.8, 0.8, 0.8]))
+    five = analyze_retrieval_distribution(_chunks([0.8] * 5))
+    assert three.normalized_entropy == pytest.approx(five.normalized_entropy, abs=1e-6)
 
 
 def test_steep_drop_gives_low_entropy():

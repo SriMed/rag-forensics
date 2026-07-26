@@ -39,7 +39,7 @@ _STUB_SCORE_TUPLE = (0.85, ["Sample chunk text."])
 
 _STUB_QUERY_CORPUS_FIT = QueryCorpusFitMetrics(
     triggered=False,
-    mismatch_type=None,
+    observed_fit=None,
     suggested_questions=[],
     mean_question_similarity=None,
 )
@@ -101,10 +101,10 @@ def test_analyze_ragas_has_evidence_fields(mocker):
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     body = response.json()
     ragas = body["ragas"]
-    assert "relevance_evidence" in ragas
-    assert "faithfulness_evidence" in ragas
-    assert isinstance(ragas["relevance_evidence"], list)
-    assert isinstance(ragas["faithfulness_evidence"], list)
+    assert "relevance_context_excerpts" in ragas
+    assert "faithfulness_context_excerpts" in ragas
+    assert isinstance(ragas["relevance_context_excerpts"], list)
+    assert isinstance(ragas["faithfulness_context_excerpts"], list)
 
 
 def test_analyze_response_no_longer_has_retrieval_relevance_dimension(mocker):
@@ -191,7 +191,7 @@ def test_analyze_response_has_query_corpus_fit(mocker):
     assert "query_corpus_fit" in body
     qcf = body["query_corpus_fit"]
     assert "triggered" in qcf
-    assert "mismatch_type" in qcf
+    assert "observed_fit" in qcf
     assert "suggested_questions" in qcf
     assert "mean_question_similarity" in qcf
     assert isinstance(qcf["triggered"], bool)
