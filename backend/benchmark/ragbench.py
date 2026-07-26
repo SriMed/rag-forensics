@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping, Sequence
 
 from models import (
+    BenchmarkDocumentSentence,
     BenchmarkSentence,
     BenchmarkSentenceSupport,
     RAGBenchBenchmarkMetadata,
@@ -22,7 +23,14 @@ from services.forensics.chunk_attribution import (
 
 DATASET_NAME = "galileo-ai/ragbench"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-_SUPPORT_SENTINELS = {"general", "well_known_fact", "supported_without_sentence"}
+_SUPPORT_SENTINELS = {
+    "general",
+    "generally",
+    "well_known_fact",
+    "supported_without_sentence",
+    "numerical_reasoning",
+    "numeric_reasoning",
+}
 
 
 class RAGBenchRowError(ValueError):
@@ -53,9 +61,9 @@ def _optional_float(row: Mapping, key: str) -> float | None:
     return None if value is None else float(value)
 
 
-def _normalize_response_reference(key, response_keys: set[str]) -> str:
+def _normalize_sentence_reference(key, valid_keys: set[str]) -> str:
     value = str(key)
-    if value not in response_keys and value.endswith(".") and value[:-1] in response_keys:
+    if value not in valid_keys and value.endswith(".") and value[:-1] in valid_keys:
         return value[:-1]
     return value
 
@@ -76,16 +84,24 @@ def adapt_ragbench_row(row: Mapping, domain: str) -> RAGBenchEvaluationRecord:
         raise RAGBenchRowError("documents_sentences must align one-to-one with documents")
 
     document_sentence_keys: set[str] = set()
-    for group in document_sentence_groups:
+    document_sentences: list[BenchmarkDocumentSentence] = []
+    for document_index, group in enumerate(document_sentence_groups):
         for sentence in _pairs(group, "documents_sentences"):
             if sentence.key in document_sentence_keys:
                 raise RAGBenchRowError(f"duplicate document sentence key: {sentence.key}")
             document_sentence_keys.add(sentence.key)
+            document_sentences.append(
+                BenchmarkDocumentSentence(
+                    key=sentence.key,
+                    text=sentence.text,
+                    document_id=f"document_{document_index}",
+                )
+            )
 
     response_sentences = _pairs(row["response_sentences"], "response_sentences")
     response_keys = {sentence.key for sentence in response_sentences}
     unsupported_keys = {
-        _normalize_response_reference(key, response_keys)
+        _normalize_sentence_reference(key, response_keys)
         for key in row.get("unsupported_response_sentence_keys", [])
     }
     unknown_unsupported = unsupported_keys - response_keys
@@ -96,7 +112,7 @@ def adapt_ragbench_row(row: Mapping, domain: str) -> RAGBenchEvaluationRecord:
 
     support_by_key: dict[str, BenchmarkSentenceSupport] = {}
     for raw_support in row.get("sentence_support_information", []):
-        response_key = _normalize_response_reference(
+        response_key = _normalize_sentence_reference(
             raw_support.get("response_sentence_key", ""),
             response_keys,
         )
@@ -104,7 +120,10 @@ def adapt_ragbench_row(row: Mapping, domain: str) -> RAGBenchEvaluationRecord:
             raise RAGBenchRowError(f"unknown support response sentence key: {response_key}")
         if response_key in support_by_key:
             raise RAGBenchRowError(f"duplicate support record for response sentence key: {response_key}")
-        supporting_keys = [str(key) for key in raw_support.get("supporting_sentence_keys", [])]
+        supporting_keys = [
+            _normalize_sentence_reference(key, document_sentence_keys)
+            for key in raw_support.get("supporting_sentence_keys", [])
+        ]
         unknown_sources = set(supporting_keys) - document_sentence_keys - _SUPPORT_SENTINELS
         if unknown_sources:
             raise RAGBenchRowError(
@@ -128,6 +147,7 @@ def adapt_ragbench_row(row: Mapping, domain: str) -> RAGBenchEvaluationRecord:
         response=str(row["response"]),
         chunks=chunks,
         response_sentences=response_sentences,
+        document_sentences=document_sentences,
         document_sentence_keys=document_sentence_keys,
         unsupported_response_sentence_keys=unsupported_keys,
         sentence_support=support_by_key,

@@ -169,6 +169,10 @@ class BenchmarkSentence(BaseModel):
     text: str
 
 
+class BenchmarkDocumentSentence(BenchmarkSentence):
+    document_id: str
+
+
 class BenchmarkSentenceSupport(BaseModel):
     response_sentence_key: str
     fully_supported: bool
@@ -183,6 +187,7 @@ class RAGBenchEvaluationRecord(BaseModel):
     response: str
     chunks: list[RetrievedChunk]
     response_sentences: list[BenchmarkSentence]
+    document_sentences: list[BenchmarkDocumentSentence]
     document_sentence_keys: set[str]
     unsupported_response_sentence_keys: set[str]
     sentence_support: dict[str, BenchmarkSentenceSupport]
@@ -245,3 +250,118 @@ class RAGBenchBenchmarkReport(BaseModel):
     metadata: RAGBenchBenchmarkMetadata
     metrics: UnsupportedDetectionMetrics
     examples: list[RAGBenchExampleResult]
+
+
+class AtomicClaim(BaseModel):
+    claim_id: str
+    parent_sentence_key: str
+    text: str
+
+
+class EvidenceCandidate(BaseModel):
+    sentence_key: str
+    document_id: str
+    text: str
+    selection_score: float
+
+
+class NLIVerifierScores(BaseModel):
+    entailment: float
+    neutral: float
+    contradiction: float
+    label: Literal["entailment", "neutral", "contradiction"]
+
+
+class ClaimVerification(BaseModel):
+    claim: AtomicClaim
+    parent_sentence_key: str
+    evidence: EvidenceCandidate | None
+    support_score: float | None
+    predicted_supported: bool | None
+    status: Literal["ok", "no_evidence", "verifier_error"]
+    verifier_label: str | None = None
+    nli_scores: NLIVerifierScores | None = None
+    error: str | None = None
+
+
+class GroundingSentencePrediction(BaseModel):
+    example_id: str
+    domain: str
+    sentence_key: str
+    sentence: str
+    gold_unsupported: bool
+    predicted_unsupported: bool | None
+    unsupported_score: float | None
+    claims: list[ClaimVerification]
+    error_categories: list[str] = Field(default_factory=list)
+
+
+class BinaryClassificationMetrics(BaseModel):
+    true_positive: int
+    false_positive: int
+    true_negative: int
+    false_negative: int
+    precision: float
+    recall: float
+    f1: float
+    auroc: float | None
+    auprc: float | None
+    prevalence: float
+    coverage: float
+    evaluated: int
+    total: int
+
+
+class CalibrationResult(BaseModel):
+    threshold: float
+    objective: Literal["f1"] = "f1"
+    objective_value: float
+    partition: Literal["calibration"] = "calibration"
+
+
+class ConfidenceInterval(BaseModel):
+    point_estimate: float
+    lower: float
+    upper: float
+    confidence: float = 0.95
+    iterations: int
+    seed: int
+
+
+class GroundingRunMetadata(BaseModel):
+    dataset: str
+    dataset_revision: str
+    split_strategy: str
+    calibration_split: str
+    evaluation_split: str
+    seed: int
+    embedding_model: str
+    embedding_model_revision: str
+    entailment_model: str
+    entailment_model_revision: str
+    claim_decomposer: str
+    claim_decomposer_version: str
+    similarity_threshold: float
+    entailment_threshold: float
+    code_commit: str
+    calibration_sample_count: int = 0
+    evaluation_sample_count: int = 0
+    skipped_rows: list[str] = Field(default_factory=list)
+
+
+class GroundingMethodReport(BaseModel):
+    method: str
+    threshold: float | None
+    per_domain: dict[str, BinaryClassificationMetrics]
+    pooled: BinaryClassificationMetrics
+    macro_f1: float
+    macro_auprc: float | None
+    confidence_intervals: dict[str, ConfidenceInterval]
+    predictions: list[GroundingSentencePrediction]
+
+
+class GroundingExperimentReport(BaseModel):
+    metadata: GroundingRunMetadata
+    calibration: dict[str, CalibrationResult]
+    methods: dict[str, GroundingMethodReport]
+    paired_b3_vs_b1: dict[str, ConfidenceInterval]

@@ -92,7 +92,17 @@ def test_adapter_rejects_unknown_supporting_document_sentence_key():
         adapt_ragbench_row(row, domain="techqa")
 
 
-@pytest.mark.parametrize("sentinel", ["general", "well_known_fact", "supported_without_sentence"])
+@pytest.mark.parametrize(
+    "sentinel",
+    [
+        "general",
+        "generally",
+        "well_known_fact",
+        "supported_without_sentence",
+        "numerical_reasoning",
+        "numeric_reasoning",
+    ],
+)
 def test_adapter_accepts_ragbench_non_document_support_sentinels(sentinel):
     row = ragbench_row()
     row["sentence_support_information"][0]["supporting_sentence_keys"] = [sentinel]
@@ -107,6 +117,13 @@ def test_adapter_normalizes_trailing_periods_in_label_references():
     record = adapt_ragbench_row(row, domain="techqa")
     assert record.unsupported_response_sentence_keys == {"b"}
     assert set(record.sentence_support) == {"a", "b"}
+
+
+def test_adapter_normalizes_trailing_period_in_document_support_reference():
+    row = ragbench_row()
+    row["sentence_support_information"][0]["supporting_sentence_keys"] = ["0a."]
+    record = adapt_ragbench_row(row, domain="finqa")
+    assert record.sentence_support["a"].supporting_sentence_keys == ["0a"]
 
 
 def test_adapter_rejects_document_sentence_count_mismatch():
