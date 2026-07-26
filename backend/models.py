@@ -10,6 +10,7 @@ class SuggestedQuestion(BaseModel):
 
 class QueryCorpusFitMetrics(BaseModel):
     triggered: bool
+    trigger_reason: Literal["query_isolation", "retrieval_relevance", "entropy_faithfulness"] | None = None
     mismatch_type: Literal["query_mismatch", "coverage_gap", "ambiguous"] | None
     suggested_questions: list[SuggestedQuestion]
     mean_question_similarity: float | None
@@ -123,6 +124,12 @@ class CustomAnalyzeRequest(BaseModel):
         return v
 
 
+class VerdictSignal(BaseModel):
+    name: str
+    concern_score: float
+    description: str
+
+
 class AnalyzeResponse(BaseModel):
     question: str
     generated_answer: str
@@ -133,4 +140,5 @@ class AnalyzeResponse(BaseModel):
     retrieval_distribution: RetrievalDistributionMetrics
     embedding_space: EmbeddingSpaceMetrics
     query_corpus_fit: QueryCorpusFitMetrics
+    verdict_signals: list[VerdictSignal]  # all ranked signals, descending by concern_score
     recommendation: str

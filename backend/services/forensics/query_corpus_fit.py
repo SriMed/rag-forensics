@@ -29,14 +29,15 @@ def _should_trigger(
     retrieval_relevance_score: float,
     score_entropy: float,
     faithfulness_score: float,
-) -> bool:
+) -> str | None:
+    """Return the name of the first trigger condition that fired, or None."""
     if query_isolation > 1.2:
-        return True
+        return "query_isolation"
     if retrieval_relevance_score < 0.5:
-        return True
+        return "retrieval_relevance"
     if score_entropy > 1.5 and faithfulness_score < 0.5:
-        return True
-    return False
+        return "entropy_faithfulness"
+    return None
 
 
 def analyze_query_corpus_fit(
@@ -54,7 +55,8 @@ def analyze_query_corpus_fit(
     Returns triggered=False immediately (no LLM calls) when signals don't indicate
     a query-corpus mismatch. On LLM failure returns triggered=True with empty questions.
     """
-    if not _should_trigger(query_isolation, retrieval_relevance_score, score_entropy, faithfulness_score):
+    trigger_reason = _should_trigger(query_isolation, retrieval_relevance_score, score_entropy, faithfulness_score)
+    if trigger_reason is None:
         return _UNTRIGGERED
 
     chunk_texts = "\n\n".join(f"[{c.chunk_id}] {c.text}" for c in chunks)
@@ -81,6 +83,7 @@ def analyze_query_corpus_fit(
         logger.warning("Question generation failed; returning triggered with empty questions")
         return QueryCorpusFitMetrics(
             triggered=True,
+            trigger_reason=trigger_reason,
             mismatch_type=None,
             suggested_questions=[],
             mean_question_similarity=None,
@@ -89,6 +92,7 @@ def analyze_query_corpus_fit(
     if not question_strings:
         return QueryCorpusFitMetrics(
             triggered=True,
+            trigger_reason=trigger_reason,
             mismatch_type=None,
             suggested_questions=[],
             mean_question_similarity=None,
@@ -132,6 +136,7 @@ def analyze_query_corpus_fit(
 
     return QueryCorpusFitMetrics(
         triggered=True,
+        trigger_reason=trigger_reason,
         mismatch_type=mismatch_type,
         suggested_questions=suggested,
         mean_question_similarity=mean_sim,

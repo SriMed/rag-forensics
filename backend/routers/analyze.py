@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest
+from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest, VerdictSignal
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.forensics.query_corpus_fit import analyze_query_corpus_fit
@@ -89,6 +89,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         retrieval_distribution=retrieval_distribution,
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
+        verdict_signals=[VerdictSignal(name=s.name, concern_score=s.concern_score, description=s.description) for s in signals],
         recommendation=recommendation,
     )
 
@@ -166,5 +167,6 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         retrieval_distribution=retrieval_distribution,
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
+        verdict_signals=[VerdictSignal(name=s.name, concern_score=s.concern_score, description=s.description) for s in signals],
         recommendation=recommendation,
     )

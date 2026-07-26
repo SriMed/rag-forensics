@@ -17,7 +17,7 @@ Standard RAG evaluation gives you scores: faithfulness 0.62, answer relevance 0.
 | **Hedging Mismatch** | Does the model's language ("definitely", "may", "it appears") match the evidence strength in the chunks? |
 | **Query-Corpus Fit** | *(Conditional)* When mismatch signals are present: what questions would the retrieved chunks actually answer well? Distinguishes between a poorly-phrased query (user was close) and a genuine coverage gap (corpus doesn't have it). |
 
-A verdict generator synthesizes all analyses into a single readable diagnosis.
+A verdict generator synthesizes all analyses into a ranked list of concern signals (`verdict_signals`) and a single readable diagnostic recommendation. The full signal ranking is always available in the response so you can see what drove the recommendation and what was deprioritized.
 
 ---
 
@@ -185,7 +185,7 @@ The chunk uses hedged language ("suggest", "possible correlation"). The answer a
 
 ### Query-Corpus Fit
 
-Conditional module — only runs when upstream signals indicate a query-corpus mismatch (`query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, or both `score_entropy > 1.5` and `faithfulness_score < 0.5`). When not triggered, returns immediately with no Claude API call.
+Conditional module — only runs when upstream signals indicate a query-corpus mismatch. The three trigger conditions are checked in order: `query_isolation > 1.2` (geometric outlier), `retrieval_relevance_score < 0.5` (RAGAS score), or `score_entropy > 1.5 AND faithfulness_score < 0.5` (flat distribution + poor output). The `trigger_reason` field in the response names which condition fired. When not triggered, returns immediately with no Claude API call.
 
 When triggered, it prompts Claude to generate 3–5 questions the retrieved chunks would actually answer well, then computes the cosine similarity between each suggested question and the original query embedding. That similarity score — `relevance_to_original` — is what distinguishes the two failure modes.
 
@@ -249,15 +249,33 @@ The user asked something about vaccine clinical trial design. The corpus is Medi
 
 ---
 
-## Relation to prior work
+## Contribution and limitations
 
-Two recent papers are worth situating this against.
+### What this adds
 
-**RAGXplain** (Abbasiantaeb et al., May 2025, arXiv:2505.xxxxx) independently arrived at a similar thesis: raw evaluation scores need LLM-powered reasoning to become actionable. It focuses on translating RAGAS scores into configuration recommendations. RAG Forensics was built without knowledge of RAGXplain. The shared insight is that scores alone are insufficient — the forensics signal set is different. RAGXplain does not describe score distribution shape or hedging mismatch as diagnostic signals.
+The sharpest contribution is the **query_corpus_fit** module's distinction between `query_mismatch` and `coverage_gap`. These are two failure modes that look identical from RAGAS scores — both produce low `retrieval_relevance_score` — but require opposite fixes. A query mismatch means the corpus has what the user needs; the query didn't land in the right part of embedding space. A coverage gap means the corpus doesn't contain the answer at all. The mechanism — comparing cosine similarity between Claude-suggested questions and the original query — is a principled operationalization of this distinction. This gives developers a genuinely different action path not available from standard scores.
 
-**RAGSmith** (Kartal et al., arXiv:2511.01386) addresses the adjacent problem of *pipeline optimization* — treating RAG design as an architecture search over 46,080 configurations using genetic search. It answers "which pipeline is best for this domain?". RAG Forensics asks a different question: "why did this specific answer succeed or fail?" The two are complementary: RAGSmith finds a good configuration; RAG Forensics diagnoses what went wrong at inference time.
+The **verdict signal layer** also addresses a gap: when scores are ambiguous, a ranked list of concern signals with their magnitudes makes the diagnostic reasoning inspectable and contestable. The concern scores and the top-3 selection are deterministic and testable; the prose recommendation is generated only after the ranking is fixed.
 
-**On score distribution as a signal.** The RAG evaluation literature has been almost entirely focused on output quality — did the answer contain the right information. Retrieval is typically treated as a black box that either worked or didn't. Analyzing score distribution shape requires treating retrieval as a probabilistic process worth diagnosing in its own right. That framing is absent from the standard eval literature, which is why the signal hasn't been formalized before.
+### Honest limitations
+
+**Chunk attribution thresholds are uncalibrated.** The `"strong"` (> 0.75) and `"unattributed"` (< 0.40) cosine similarity thresholds in `chunk_attribution.py` were chosen by convention, not validated against ground-truth hallucination labels. Whether these cutoffs reliably separate grounded from hallucinated sentences in `all-MiniLM-L6-v2` space is the most important open empirical question in the system. The calibration that was done (300 RAGBench examples in `calibrate_signal_weights.py`) covers signal *normalization ranges* — not the fundamental accuracy of these thresholds.
+
+**Hedging mismatch confidence classification is lexicon-bounded.** The confidence classifier uses a priority-ordered lexicon of uncertainty markers. Any hedging construction outside the lexicon — "evidence suggests," "the data indicates," "it has been shown" — is silently classified as `definitive`. This biases `overconfident_fraction` upward when the model uses novel hedging language.
+
+**The entailment check covers only the top 3 chunks.** A claim grounded in chunk 4 or 5 will be classified as overconfident regardless of whether it is actually supported. The fix (increase `_ENTAILMENT_TOP_K`) trades cost for accuracy.
+
+**The verdict uses only the top 3 signals.** The full ranked list is available in `verdict_signals` in the API response. The recommendation prose is generated from the top 3 only; signals ranked 4th and below are not sent to Claude. Consult `verdict_signals` directly for the full picture.
+
+**The query_corpus_fit trigger thresholds are heuristic.** `query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, and `score_entropy > 1.5` were chosen without corpus-level calibration. The `trigger_reason` field in the response now exposes which condition fired, so you can assess whether the trigger was well-founded for your use case.
+
+**The embedding model is an implicit shared dependency.** `chunk_attribution` and `query_corpus_fit` both import `get_embedding_model()` from `retriever.py`. If you pass custom chunk embeddings generated by a different model (e.g. via `/analyze/custom`), the similarity comparisons will be geometrically invalid without error. The API does not validate that passed embeddings share a space with the internal model.
+
+### Relation to prior work
+
+**RAGXplain** (Abbasiantaeb et al., May 2025) independently arrived at a similar thesis: raw evaluation scores need reasoning to become actionable. It focuses on translating RAGAS scores into configuration recommendations. The shared insight is that scores alone are insufficient. RAGXplain does not describe score distribution shape or hedging mismatch as diagnostic signals; those signals are not, as far as I can determine from the standard RAG eval literature (RAGAS, RAGTruth, ARES), previously formalized — though I have not done a systematic review.
+
+**RAGSmith** (Kartal et al., arXiv:2511.01386) addresses *pipeline optimization* — architecture search over 46,080 RAG configurations. It answers "which pipeline is best for this domain?". RAG Forensics asks "why did this specific answer fail?" The two are complementary.
 
 ## Architecture
 
