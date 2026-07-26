@@ -315,6 +315,77 @@ RAGAS scores and the numeric forensics modules produce observations rather than 
 
 **`POST /analyze/custom`** — Accepts your own question, answer, and chunks. See [README_INTEGRATION.md](./README_INTEGRATION.md).
 
+## Label-preserving RAGBench evaluation
+
+The interactive demo re-retrieves documents and generates a new answer, so its output cannot
+be compared directly with RAGBench's original sentence-support labels. The offline benchmark
+runner instead preserves each row's original:
+
+- question, documents, response, and response-sentence segmentation;
+- unsupported response-sentence keys;
+- sentence-to-source support mappings;
+- adherence, relevance, utilization, and completeness labels.
+
+It evaluates the semantic-attribution module as an unsupported-sentence detector. A sentence
+is predicted unsupported when its attribution strength is `unattributed`. The report contains
+per-sentence raw similarity, source candidate, gold label, prediction, confusion counts,
+precision, recall, F1, coverage, explicit skipped-row reasons, and run configuration.
+
+```bash
+cd backend
+
+# Writes JSON to stdout. Dataset order is deterministically shuffled by seed.
+poetry run python -m benchmark.cli \
+  --domain techqa \
+  --split test \
+  --limit 100 \
+  --seed 42
+
+# Or save the machine-readable report.
+poetry run python -m benchmark.cli \
+  --domain covidqa \
+  --split validation \
+  --limit 250 \
+  --seed 42 \
+  --output output/ragbench-covidqa.json
+```
+
+The default benchmark makes no Anthropic or RAGAS calls. It does use the local
+`sentence-transformers/all-MiniLM-L6-v2` embedding model and may download that model or the
+dataset if they are not already cached.
+
+This benchmark validates unsupported-sentence screening against RAGBench outcome labels. It
+does not establish that similarity proves entailment, and it cannot identify configuration-level
+causes such as top-k, chunking, or corpus coverage.
+
+### Current benchmark status
+
+The first reproducible smoke benchmark used 100 seeded examples from the RAGBench TechQA test
+split (`seed=42`). All 100 records were evaluated without skips, covering 946 response sentences.
+
+| Metric | Result |
+|---|---:|
+| Gold unsupported sentences | 330 |
+| Predicted unsupported sentences | 349 |
+| Precision | 0.381 |
+| Recall | 0.403 |
+| F1 | 0.392 |
+| Coverage | 1.000 |
+| AUROC (lower similarity predicts unsupported) | 0.563 |
+
+At the current `0.4` unattributed threshold, whole-sentence MiniLM similarity is therefore not a
+reliable standalone unsupported-claim detector. Supported and unsupported sentences overlap
+substantially in similarity. An in-sample threshold sweep reached approximately `0.547` F1 at
+`0.67`, largely by predicting almost every sentence as unsupported; an always-unsupported
+classifier scores approximately `0.517` F1 on this sample. The sweep is diagnostic and is not a
+held-out calibration result.
+
+The supported conclusion is narrower: embedding similarity can rank source candidates for
+investigation, but this experiment does not justify treating its threshold as proof of grounding
+or hallucination. The next scientific comparison should evaluate the current method against
+claim decomposition plus entailment-aware verification across every RAGBench domain, followed
+by external validation on a dataset such as RAGTruth.
+
 ## Setup
 
 ```bash

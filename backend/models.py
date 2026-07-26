@@ -162,3 +162,86 @@ class AnalyzeResponse(BaseModel):
     query_corpus_fit: QueryCorpusFitMetrics
     verdict_signals: list[VerdictSignal]  # all ranked signals, descending by heuristic priority
     recommendation: str
+
+
+class BenchmarkSentence(BaseModel):
+    key: str
+    text: str
+
+
+class BenchmarkSentenceSupport(BaseModel):
+    response_sentence_key: str
+    fully_supported: bool
+    supporting_sentence_keys: list[str]
+    explanation: str = ""
+
+
+class RAGBenchEvaluationRecord(BaseModel):
+    example_id: str
+    domain: str
+    question: str
+    response: str
+    chunks: list[RetrievedChunk]
+    response_sentences: list[BenchmarkSentence]
+    document_sentence_keys: set[str]
+    unsupported_response_sentence_keys: set[str]
+    sentence_support: dict[str, BenchmarkSentenceSupport]
+    adherence_score: bool | None = None
+    relevance_score: float | None = None
+    utilization_score: float | None = None
+    completeness_score: float | None = None
+
+
+class UnsupportedSentencePrediction(BaseModel):
+    sentence_key: str
+    sentence: str
+    gold_unsupported: bool
+    predicted_unsupported: bool
+    similarity_score: float
+    source_chunk_id: str | None
+    ragbench_fully_supported: bool | None
+    ragbench_supporting_sentence_keys: list[str]
+
+
+class UnsupportedDetectionMetrics(BaseModel):
+    true_positive: int
+    false_positive: int
+    true_negative: int
+    false_negative: int
+    precision: float
+    recall: float
+    f1: float
+    coverage: float
+    evaluated_sentences: int
+    total_sentences: int
+
+
+class RAGBenchExampleResult(BaseModel):
+    example_id: str
+    domain: str
+    predictions: list[UnsupportedSentencePrediction]
+    adherence_score: bool | None
+    relevance_score: float | None
+    utilization_score: float | None
+    completeness_score: float | None
+
+
+class RAGBenchBenchmarkMetadata(BaseModel):
+    dataset: str
+    dataset_config: str
+    split: str
+    seed: int
+    requested_limit: int | None
+    sample_count: int
+    skipped_count: int
+    skipped_rows: list[str]
+    embedding_model: str
+    unattributed_threshold: float
+    timestamp: str
+    llm_calls_enabled: Literal[False] = False
+
+
+class RAGBenchBenchmarkReport(BaseModel):
+    metadata: RAGBenchBenchmarkMetadata
+    metrics: UnsupportedDetectionMetrics
+    examples: list[RAGBenchExampleResult]

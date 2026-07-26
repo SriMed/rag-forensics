@@ -6,7 +6,18 @@ from sklearn.metrics.pairwise import cosine_similarity
 from models import AttributionEntry, ChunkAttributionMetrics, RetrievedChunk
 from services.retriever import get_embedding_model
 
-nltk.download("punkt_tab", quiet=True)
+STRONG_THRESHOLD = 0.75
+UNATTRIBUTED_THRESHOLD = 0.4
+
+
+def _tokenize_answer(answer: str) -> list[str]:
+    if not answer.strip():
+        return []
+    try:
+        return nltk.sent_tokenize(answer)
+    except LookupError:
+        nltk.download("punkt_tab", quiet=True)
+        return nltk.sent_tokenize(answer)
 
 
 def analyze_chunk_attribution(
@@ -18,7 +29,20 @@ def analyze_chunk_attribution(
 
     Accepts pre-computed chunk embeddings — only sentences are embedded here.
     """
-    sentences = nltk.sent_tokenize(answer)
+    return analyze_sentences_attribution(
+        sentences=_tokenize_answer(answer),
+        chunks=chunks,
+        chunk_embeddings=chunk_embeddings,
+    )
+
+
+def analyze_sentences_attribution(
+    sentences: list[str],
+    chunks: list[RetrievedChunk],
+    chunk_embeddings: list[list[float]],
+    embedding_model=None,
+) -> ChunkAttributionMetrics:
+    """Attribute an authoritative sentence list without re-tokenizing it."""
     if not sentences or not chunks:
         return ChunkAttributionMetrics(
             unattributed_fraction=0.0,
@@ -27,7 +51,7 @@ def analyze_chunk_attribution(
             attribution_map=[],
         )
 
-    model = get_embedding_model()
+    model = embedding_model if embedding_model is not None else get_embedding_model()
     sentence_embeddings = model.encode(sentences)  # shape: (n_sentences, dim)
     chunk_emb_matrix = np.array(chunk_embeddings, dtype=float)  # shape: (n_chunks, dim)
 
@@ -44,10 +68,10 @@ def analyze_chunk_attribution(
         best_score = float(sims[best_idx])
         best_scores.append(best_score)
 
-        if best_score > 0.75:
+        if best_score > STRONG_THRESHOLD:
             strength = "strong"
             chunk_id: str | None = chunks[best_idx].chunk_id
-        elif best_score > 0.4:
+        elif best_score > UNATTRIBUTED_THRESHOLD:
             strength = "weak"
             chunk_id = chunks[best_idx].chunk_id
         else:

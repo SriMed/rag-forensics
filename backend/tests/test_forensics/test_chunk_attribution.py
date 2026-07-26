@@ -171,6 +171,27 @@ def test_empty_answer_returns_zeros():
     mock_get.assert_not_called()
 
 
+def test_explicit_sentence_list_preserves_dataset_segmentation():
+    from services.forensics.chunk_attribution import analyze_sentences_attribution
+
+    chunks = make_chunks(1)
+    chunk_embs = make_parallel_embeddings(1)
+    sent_matrix = np.stack(make_parallel_embeddings(2))
+
+    with patch("services.forensics.chunk_attribution.get_embedding_model") as mock_get:
+        mock_get.return_value = _mock_model(sent_matrix)
+        result = analyze_sentences_attribution(
+            sentences=["Dataset sentence one", "Dataset sentence two"],
+            chunks=chunks,
+            chunk_embeddings=[chunk_embs[0].tolist()],
+        )
+
+    assert [entry.sentence for entry in result.attribution_map] == [
+        "Dataset sentence one",
+        "Dataset sentence two",
+    ]
+
+
 # ---------------------------------------------------------------------------
 # Test 6 — attribution_map length equals sentence count
 # ---------------------------------------------------------------------------
