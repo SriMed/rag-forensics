@@ -1,5 +1,8 @@
+import warnings
+
 import numpy as np
 import pytest
+from scipy.optimize import OptimizeWarning
 from models import RetrievedChunk, RetrievalDistributionMetrics
 from services.forensics.retrieval_distribution import analyze_retrieval_distribution
 
@@ -68,6 +71,14 @@ def test_steep_drop_gives_high_decay_rate():
 def test_flat_distribution_decay_rate_falls_back_to_zero():
     result = analyze_retrieval_distribution(_chunks([0.70, 0.70, 0.70, 0.70, 0.70]))
     assert result.decay_rate == pytest.approx(0.0, abs=1e-6)
+
+
+def test_degenerate_decay_fit_does_not_emit_covariance_warning():
+    with warnings.catch_warnings(record=True) as captured:
+        warnings.simplefilter("always")
+        analyze_retrieval_distribution(_chunks([0.70, 0.70, 0.70, 0.70, 0.70]))
+
+    assert not any(isinstance(warning.message, OptimizeWarning) for warning in captured)
 
 
 # ---------------------------------------------------------------------------

@@ -1,5 +1,7 @@
+import warnings
+
 import numpy as np
-from scipy.optimize import curve_fit
+from scipy.optimize import OptimizeWarning, curve_fit
 from models import RetrievedChunk, RetrievalDistributionMetrics
 
 
@@ -23,13 +25,17 @@ def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDis
     decay_rate: float | None = None
     if n >= 3:
         try:
-            popt, _ = curve_fit(
-                lambda x, a, b: a * np.exp(-b * x),
-                ranks,
-                scores,
-                p0=[1.0, 0.1],
-                maxfev=1000,
-            )
+            # Degenerate distributions can identify the decay parameters while
+            # leaving their covariance undefined. We do not use covariance.
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", OptimizeWarning)
+                popt, _ = curve_fit(
+                    lambda x, a, b: a * np.exp(-b * x),
+                    ranks,
+                    scores,
+                    p0=[1.0, 0.1],
+                    maxfev=1000,
+                )
             # Negative decay means scores increase with rank — nonsensical for sorted-descending
             # data; treat as a fit failure rather than silently pass 0.
             decay_rate = float(popt[1]) if popt[1] >= 0 else None
