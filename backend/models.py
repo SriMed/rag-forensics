@@ -365,3 +365,63 @@ class GroundingExperimentReport(BaseModel):
     calibration: dict[str, CalibrationResult]
     methods: dict[str, GroundingMethodReport]
     paired_b3_vs_b1: dict[str, ConfidenceInterval]
+
+
+class OracleEvidenceEligibility(BaseModel):
+    total_fully_supported: int
+    eligible: int
+    excluded: dict[str, int] = Field(default_factory=dict)
+
+
+class OracleEvidenceSentenceResult(BaseModel):
+    example_id: str
+    domain: str
+    sentence_key: str
+    sentence: str
+    annotated_evidence_keys: list[str]
+    selected: GroundingSentencePrediction
+    oracle: GroundingSentencePrediction
+    oracle_pairs: list[ClaimVerification]
+    selected_evidence_hit_at_1: bool
+
+
+class OracleEvidenceRunMetadata(BaseModel):
+    dataset: str
+    dataset_revision: str
+    evaluation_split: str
+    seed: int
+    embedding_model: str
+    embedding_model_revision: str
+    entailment_model: str
+    entailment_model_revision: str
+    claim_decomposer: str
+    claim_decomposer_version: str
+    entailment_threshold: float
+    code_commit: str
+    sample_count: int
+    skipped_rows: list[str] = Field(default_factory=list)
+
+
+class OracleEvidenceStratumMetrics(BaseModel):
+    sentences: int
+    selected_evaluated: int
+    oracle_evaluated: int
+    paired_evaluated: int
+    selected_false_unsupported_rate: float | None
+    oracle_false_unsupported_rate: float | None
+    paired_difference: float | None
+
+
+class OracleEvidenceDiagnosticReport(BaseModel):
+    eligibility: OracleEvidenceEligibility
+    selected_false_unsupported_rate: float | None
+    oracle_false_unsupported_rate: float | None
+    selected_evidence_hit_at_1: float | None
+    paired_false_unsupported_difference: ConfidenceInterval | None
+    selected_evaluated: int = 0
+    oracle_evaluated: int = 0
+    paired_evaluated: int = 0
+    per_domain: dict[str, OracleEvidenceStratumMetrics] = Field(default_factory=dict)
+    by_source_count: dict[str, OracleEvidenceStratumMetrics] = Field(default_factory=dict)
+    predictions: list[OracleEvidenceSentenceResult]
+    metadata: OracleEvidenceRunMetadata | None = None

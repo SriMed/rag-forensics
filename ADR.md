@@ -304,3 +304,23 @@ The `/analyze/custom` endpoint accepts pre-scored BYO chunks (no ChromaDB) but s
 `frontend/lib/api.ts` reads `process.env.NEXT_PUBLIC_API_URL` with a fallback of `http://localhost:8000`. This lets the same build target both local development and production without code changes — Vercel sets the env var at build time; local dev gets the default. The snake_case → camelCase mapping from backend response fields is done inside `lib/api.ts` so components work with idiomatic TypeScript field names and are decoupled from the backend's naming conventions.
 
 ---
+
+## ADR-032: Oracle evidence is a label-derived diagnostic, not a B4 method
+
+**Status:** Accepted
+**Issue:** #19
+
+The oracle-evidence experiment runs only on fully supported RAGBench response sentences with
+concrete annotated document-sentence keys. It compares B3's similarity-selected evidence with all
+annotated evidence while holding claim decomposition, verifier, and threshold fixed. Maximum
+entailment across annotated sentences produces the oracle sentence decision, but every raw
+claim/evidence pair is retained. Missing annotations, support sentinels, and verifier errors remain
+explicit exclusions or unevaluated states.
+
+This condition is not named B4 and is not included in deployable grounding methods because it uses
+benchmark labels unavailable at inference time. Unsupported sentences are excluded from its main
+failure-localization claim because RAGBench does not provide a well-defined oracle negative-evidence
+sentence. The paired difference can localize supported-sentence false negatives; it cannot
+establish production classifier performance or causal responsibility for all RAG failures.
+
+---

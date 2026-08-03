@@ -406,10 +406,11 @@ def test_oracle_diagnostic_compares_selected_and_annotated_evidence(mocker):
         }
     )
 
+    decomposer = mocker.MagicMock(wraps=DeterministicClaimDecomposer())
     report = run_oracle_evidence_diagnostic(
         [record],
         embedding_model=embedding_model,
-        decomposer=DeterministicClaimDecomposer(),
+        decomposer=decomposer,
         entailment_verifier=verifier,
         entailment_threshold=0.5,
         bootstrap_iterations=20,
@@ -427,6 +428,12 @@ def test_oracle_diagnostic_compares_selected_and_annotated_evidence(mocker):
     assert prediction.oracle.predicted_unsupported is False
     assert prediction.annotated_evidence_keys == ["0a"]
     assert prediction.oracle.claims[0].evidence.sentence_key == "0a"
+    assert decomposer.decompose.call_count == 1
+    assert report.selected_evaluated == 1
+    assert report.oracle_evaluated == 1
+    assert report.paired_evaluated == 1
+    assert report.per_domain["finqa"].paired_evaluated == 1
+    assert report.by_source_count["single_source"].oracle_false_unsupported_rate == 0.0
 
 
 def test_oracle_diagnostic_preserves_multisource_pairs_and_uses_best_per_claim(mocker):
@@ -534,9 +541,12 @@ def test_oracle_verifier_failure_remains_unevaluated(mocker):
 
 
 def test_oracle_cli_is_explicitly_diagnostic_and_pins_revisions():
-    args = build_oracle_parser().parse_args(["--output", "oracle.json"])
+    args = build_oracle_parser().parse_args(
+        ["--entailment-threshold", "0.42", "--output", "oracle.json"]
+    )
     assert args.evaluation_split == "test"
     assert len(args.dataset_revision) == 40
     assert len(args.embedding_revision) == 40
     assert len(args.entailment_revision) == 40
     assert args.bootstrap_iterations == 2000
+    assert args.entailment_threshold == pytest.approx(0.42)
