@@ -16,6 +16,8 @@ from benchmark.grounding import (
 from benchmark.ragbench import adapt_ragbench_row
 from benchmark.experiment import categorize_error, run_experiment
 from benchmark.experiment_cli import build_parser as build_experiment_parser
+from benchmark.oracle_evidence import run_oracle_evidence_diagnostic
+from benchmark.oracle_evidence_cli import build_parser as build_oracle_parser
 from models import GroundingRunMetadata, GroundingSentencePrediction
 
 
@@ -376,3 +378,165 @@ def test_experiment_cli_uses_pinned_revisions_and_method_selection():
     assert args.calibration_split == "validation"
     assert args.evaluation_split == "test"
     assert args.entailment_revision == "immutable-hash"
+
+
+def test_oracle_diagnostic_compares_selected_and_annotated_evidence(mocker):
+    row = _row(
+        response="Revenue rose to $20 million.",
+        response_sentences=[["a", "Revenue rose to $20 million."]],
+        unsupported_response_sentence_keys=[],
+    )
+    row["sentence_support_information"][0] = {
+        "response_sentence_key": "a",
+        "fully_supported": True,
+        "supporting_sentence_keys": ["0a"],
+        "explanation": "Sentence 0a supports the response.",
+    }
+    record = adapt_ragbench_row(row, domain="finqa")
+    embedding_model = mocker.MagicMock()
+    embedding_model.encode.side_effect = [
+        np.array([[0.0, 1.0], [1.0, 0.0]]),
+        np.array([[1.0, 0.0]]),
+        np.array([[1.0, 0.0]]),
+    ]
+    verifier = FixtureEntailmentVerifier(
+        {
+            ("Revenue rose to $20 million.", "0b"): 0.1,
+            ("Revenue rose to $20 million.", "0a"): 0.95,
+        }
+    )
+
+    report = run_oracle_evidence_diagnostic(
+        [record],
+        embedding_model=embedding_model,
+        decomposer=DeterministicClaimDecomposer(),
+        entailment_verifier=verifier,
+        entailment_threshold=0.5,
+        bootstrap_iterations=20,
+        seed=7,
+    )
+
+    assert report.eligibility.total_fully_supported == 1
+    assert report.eligibility.eligible == 1
+    assert report.selected_false_unsupported_rate == 1.0
+    assert report.oracle_false_unsupported_rate == 0.0
+    assert report.selected_evidence_hit_at_1 == 0.0
+    assert report.paired_false_unsupported_difference.point_estimate == pytest.approx(-1.0)
+    prediction = report.predictions[0]
+    assert prediction.selected.predicted_unsupported is True
+    assert prediction.oracle.predicted_unsupported is False
+    assert prediction.annotated_evidence_keys == ["0a"]
+    assert prediction.oracle.claims[0].evidence.sentence_key == "0a"
+
+
+def test_oracle_diagnostic_preserves_multisource_pairs_and_uses_best_per_claim(mocker):
+    row = _row(
+        response="Revenue rose and costs remained flat.",
+        response_sentences=[["a", "Revenue rose and costs remained flat."]],
+        unsupported_response_sentence_keys=[],
+    )
+    row["sentence_support_information"][0] = {
+        "response_sentence_key": "a",
+        "fully_supported": True,
+        "supporting_sentence_keys": ["0a", "0b"],
+    }
+    record = adapt_ragbench_row(row, domain="finqa")
+    embedding_model = mocker.MagicMock()
+    embedding_model.encode.side_effect = [
+        np.array([[1.0, 0.0], [0.0, 1.0]]),
+        np.array([[1.0, 0.0]]),
+        np.array([[1.0, 0.0], [0.0, 1.0]]),
+    ]
+    verifier = FixtureEntailmentVerifier(
+        {
+            ("Revenue rose", "0a"): 0.9,
+            ("Revenue rose", "0b"): 0.2,
+            ("costs remained flat.", "0a"): 0.1,
+            ("costs remained flat.", "0b"): 0.8,
+        }
+    )
+
+    report = run_oracle_evidence_diagnostic(
+        [record], embedding_model, DeterministicClaimDecomposer(), verifier, 0.5, 20, 3
+    )
+
+    prediction = report.predictions[0]
+    assert len(prediction.oracle_pairs) == 4
+    assert [item.evidence.sentence_key for item in prediction.oracle.claims] == [
+        "0a",
+        "0b",
+    ]
+    assert prediction.oracle.predicted_unsupported is False
+
+
+@pytest.mark.parametrize(
+    ("supporting_keys", "reason"),
+    [([], "missing_annotation"), (["general"], "non_document_support" )],
+)
+def test_oracle_diagnostic_reports_ineligible_annotations(
+    mocker, supporting_keys, reason
+):
+    row = _row(
+        response="Revenue rose.",
+        response_sentences=[["a", "Revenue rose."]],
+        unsupported_response_sentence_keys=[],
+    )
+    row["sentence_support_information"][0] = {
+        "response_sentence_key": "a",
+        "fully_supported": True,
+        "supporting_sentence_keys": supporting_keys,
+    }
+    record = adapt_ragbench_row(row, domain="finqa")
+
+    report = run_oracle_evidence_diagnostic(
+        [record],
+        mocker.MagicMock(),
+        DeterministicClaimDecomposer(),
+        mocker.MagicMock(),
+        0.5,
+        20,
+        3,
+    )
+
+    assert report.eligibility.eligible == 0
+    assert report.eligibility.excluded == {reason: 1}
+    assert report.predictions == []
+
+
+def test_oracle_verifier_failure_remains_unevaluated(mocker):
+    row = _row(
+        response="Revenue rose.",
+        response_sentences=[["a", "Revenue rose."]],
+        unsupported_response_sentence_keys=[],
+    )
+    row["sentence_support_information"][0] = {
+        "response_sentence_key": "a",
+        "fully_supported": True,
+        "supporting_sentence_keys": ["0a"],
+    }
+    record = adapt_ragbench_row(row, domain="finqa")
+    embedding_model = mocker.MagicMock()
+    embedding_model.encode.side_effect = [
+        np.array([[1.0, 0.0], [0.0, 1.0]]),
+        np.array([[1.0, 0.0]]),
+        np.array([[1.0, 0.0]]),
+    ]
+    verifier = mocker.MagicMock()
+    verifier.score.side_effect = RuntimeError("model failed")
+
+    report = run_oracle_evidence_diagnostic(
+        [record], embedding_model, DeterministicClaimDecomposer(), verifier, 0.5, 20, 3
+    )
+
+    assert report.oracle_false_unsupported_rate is None
+    assert report.predictions[0].oracle.predicted_unsupported is None
+    assert report.predictions[0].oracle.claims[0].status == "verifier_error"
+
+
+def test_oracle_cli_is_explicitly_diagnostic_and_pins_revisions():
+    args = build_oracle_parser().parse_args(["--output", "oracle.json"])
+    assert args.evaluation_split == "test"
+    assert len(args.dataset_revision) == 40
+    assert len(args.embedding_revision) == 40
+    assert len(args.entailment_revision) == 40
+    assert args.bootstrap_iterations == 2000
