@@ -183,3 +183,40 @@ bottleneck claim. The diagnostic cannot establish why unsupported sentences fail
 responsibility for the full RAG pipeline, or production performance. See
 [Understanding the oracle-evidence experiment](../explainers/oracle-evidence.md) for a
 plain-language explanation.
+
+### Seeded cross-domain result
+
+The entailment threshold (`0.0017914474`) was regenerated from 299 retained validation records
+sampled at up to 100 examples per domain with seed 42. The threshold was then frozen before the
+oracle diagnostic analyzed 299 retained test records at the same sampling limit. One FinQA test
+row was skipped because its annotation referenced an unknown document-sentence key.
+
+The test sample contained 224 fully supported response sentences. Of these, 188 had concrete
+annotated document evidence and were eligible; 36 used non-document support sentinels and were
+excluded. All 188 eligible sentences produced paired selected and oracle outcomes.
+
+| Condition | False-unsupported rate |
+|---|---:|
+| Similarity-selected evidence | 0.452 |
+| Annotated oracle evidence | 0.287 |
+| Paired oracle − selected difference | -0.165 |
+
+The example-clustered 95% interval for the paired difference was `[-0.230, -0.101]` with 2,000
+bootstrap iterations. At least one selected claim-level evidence candidate matched an annotated
+support sentence for 80.3% of eligible response sentences.
+
+| Stratum | Eligible sentences | Selected rate | Oracle rate | Difference |
+|---|---:|---:|---:|---:|
+| TechQA | 39 | 0.359 | 0.231 | -0.128 |
+| FinQA | 11 | 0.455 | 0.091 | -0.364 |
+| CovidQA | 138 | 0.478 | 0.319 | -0.159 |
+| Single annotated source | 87 | 0.310 | 0.264 | -0.046 |
+| Multiple annotated sources | 101 | 0.574 | 0.307 | -0.267 |
+
+This result supports evidence selection as a meaningful bottleneck for the eligible supported
+sentences, especially where annotations identify multiple sources. It does not support evidence
+selection as the sole explanation: even with annotated evidence, 28.7% of eligible sentences were
+still falsely rejected. Claim decomposition, verifier behavior, multi-sentence reasoning, and
+annotation granularity therefore remain material competing explanations. The FinQA estimate is
+based on only 11 eligible sentences, and per-stratum differences do not have separate confidence
+intervals; their apparent heterogeneity is descriptive rather than conclusive.

@@ -81,12 +81,18 @@ present claim-plus-NLI pipeline as a reliable standalone grounding detector. Sim
 useful for navigating to candidate evidence. The stronger contribution is the transparent,
 label-preserving framework that makes this null result—and its remaining uncertainty—inspectable.
 
+A follow-up oracle-evidence diagnostic on 188 eligible supported sentences reduced the
+false-unsupported rate from `0.452` with similarity-selected evidence to `0.287` with annotated
+evidence. The paired difference was `-0.165` with a 95% example-clustered interval of
+`[-0.230, -0.101]`. This supports evidence selection as a meaningful—but not exclusive—bottleneck;
+substantial errors persist even when annotated evidence is supplied.
+
 Detailed protocols, commands, revisions, results, and limitations are in
 [Benchmarking and current evidence](docs/reference/benchmarks.md).
 
 ## Current research boundary
 
-The next useful experiment is not another unstructured model swap. It should separate:
+The next useful analysis is not another unstructured model swap. It should further separate:
 
 - claim-decomposition errors;
 - evidence-selection errors;
@@ -94,7 +100,7 @@ The next useful experiment is not another unstructured model swap. It should sep
 - verifier errors; and
 - annotation-granularity mismatches.
 
-The implemented oracle-evidence diagnostic uses RAGBench’s annotated supporting sentences to
+The completed oracle-evidence diagnostic uses RAGBench’s annotated supporting sentences to
 localize evidence-selection versus downstream verification failures on eligible, fully supported
 sentences. It is label-derived analysis—not a deployable classifier—and does not explain failures
 for unsupported sentences. Until broader interventions are run, the project should claim that it

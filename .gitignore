@@ -26,6 +26,9 @@ out/
 # Data — ChromaDB index is generated, not committed
 backend/data/
 
+# Benchmark reports are reproducible generated artifacts
+backend/output/
+
 # IDE
 .vscode/
 .idea/
