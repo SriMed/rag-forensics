@@ -48,6 +48,12 @@ The scientific runner compares:
 B2 and B3 use identical claims and evidence candidates. B3 preserves entailment, neutral, and
 contradiction probabilities rather than collapsing all non-entailment outcomes.
 
+More concretely, B3 splits a response sentence into claims, selects one candidate source sentence
+per claim using similarity, scores each pair with a pinned third-party pretrained NLI verifier,
+and aggregates the claim decisions back to the response sentence. RAG Forensics did not develop
+the verifier; the experiment evaluates whether the assembled method is valid for the diagnostic
+role assigned to it.
+
 RAGBench’s official validation split selects each threshold. The test split is evaluated with
 those frozen thresholds. Calibration and test example IDs are checked for overlap.
 
@@ -191,9 +197,17 @@ sampled at up to 100 examples per domain with seed 42. The threshold was then fr
 oracle diagnostic analyzed 299 retained test records at the same sampling limit. One FinQA test
 row was skipped because its annotation referenced an unknown document-sentence key.
 
+The threshold is a model-specific decision boundary, not a calibrated probability that a claim is
+supported. Its small absolute value is less important than the protocol: it was selected on the
+declared validation data and frozen before the test and oracle outcomes were examined.
+
 The test sample contained 224 fully supported response sentences. Of these, 188 had concrete
 annotated document evidence and were eligible; 36 used non-document support sentinels and were
 excluded. All 188 eligible sentences produced paired selected and oracle outcomes.
+
+Selected evidence falsely rejected 85 of the 188 sentences, while oracle evidence falsely
+rejected 54. Annotated evidence corrected 37 previous false rejections but introduced 6 new ones,
+for a net reduction of 31.
 
 | Condition | False-unsupported rate |
 |---|---:|

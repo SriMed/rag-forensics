@@ -19,6 +19,9 @@ The verdict generator converts these observations into a deterministic ordering 
 reliability class. Recommendation prose uses the highest-ranked observations to propose
 follow-up tests.
 
+For a non-technical walkthrough of evidence candidates, competing hypotheses, and follow-up
+tests, see [How RAG Forensics investigates an answer](../explainers/how-rag-forensics-works.md).
+
 ## Interpretation examples
 
 ### Retrieval shape
@@ -70,6 +73,24 @@ Offline evaluation
 Numeric forensics modules return observations rather than verdicts. LLM-backed modules expose
 errors explicitly. The offline benchmark defaults to local embedding and NLI models and does not
 call Anthropic or RAGAS.
+
+## Offline grounding methods are evaluation tools
+
+B1, B2, and B3 belong to the offline benchmark path shown above. They test whether particular
+grounding signals correspond to RAGBench labels; they are not additional interactive product
+modules.
+
+B3 performs four steps:
+
+1. deterministically split each response sentence into smaller claims;
+2. choose the most similar document sentence for each claim;
+3. score each claim/evidence pair with a pinned pretrained NLI cross-encoder; and
+4. mark the parent sentence supported only when all evaluated claims pass the frozen threshold.
+
+The NLI cross-encoder is a third-party general-purpose model, not a verifier developed or trained
+by RAG Forensics. Its suitability is still part of this project's measurement validity because B3
+uses its scores to make grounding decisions. The benchmark therefore tests the assembled method,
+preserves verifier errors as unknown states, and avoids treating its outputs as ground truth.
 
 ## Known limitations
 

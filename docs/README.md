@@ -6,9 +6,12 @@ protocols, and reproducible commands.
 
 ## Explainers
 
+- [How RAG Forensics investigates an answer](explainers/how-rag-forensics-works.md) follows one
+  example from retrieved passages through evidence candidates, competing hypotheses, follow-up
+  tests, B3, and the oracle condition.
 - [Understanding the oracle-evidence experiment](explainers/oracle-evidence.md) explains how the
-  proposed experiment separates evidence-selection errors from downstream verification errors,
-  with examples and explicit limits.
+  completed experiment separates evidence-selection errors from downstream verification errors,
+  with its interpretation and explicit limits.
 
 ## Reference
 

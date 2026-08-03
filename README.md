@@ -11,6 +11,18 @@ RAG Forensics keeps them visible. Given a question, answer, and retrieved contex
 observable signals, evidence candidates, method assumptions, reliability labels, ranked
 hypotheses, and follow-up tests. It is a hypothesis-generation layer—not a root-cause oracle.
 
+In practical terms, it helps a reviewer answer three questions:
+
+1. **What evidence appears related to each part of the answer?** These passages are candidates for
+   inspection, not proof of support.
+2. **What could explain the concern?** Retrieval, generation, evidence selection, claim splitting,
+   or evaluator failure may produce similar symptoms.
+3. **What should we change next to distinguish those explanations?** For example, rerun generation
+   with the same context, rewrite the query, or supply known supporting evidence to the evaluator.
+
+See [How RAG Forensics investigates an answer](docs/explainers/how-rag-forensics-works.md) for a
+worked example.
+
 ## The argument
 
 Useful reasoning transparency requires more than displaying intermediate numbers. A diagnostic
@@ -64,6 +76,11 @@ The principal comparison is:
 - **B1:** whole-sentence embedding similarity;
 - **B2:** deterministic claim decomposition plus similarity;
 - **B3:** the same claims and evidence candidates scored by a pinned NLI cross-encoder.
+
+B3 is an offline experimental method, not the entire product. It splits an answer into claims,
+selects evidence for each claim, asks a third-party pretrained NLI model whether the evidence
+supports the claim, and aggregates the claim judgments. RAG Forensics did not create the verifier;
+it tests the verifier because B3 relies on that component's output.
 
 On a seeded sample of up to 100 validation and 100 test examples from each RAGBench domain:
 
@@ -128,8 +145,9 @@ External API calls are mocked in tests; no API key is required.
 ## Documentation
 
 - [Documentation guide](docs/README.md)
+- [Worked example of the investigation workflow](docs/explainers/how-rag-forensics-works.md)
 - [Methods, outputs, architecture, and limitations](docs/reference/methods.md)
 - [Benchmark protocol, results, and reproducible commands](docs/reference/benchmarks.md)
-- [Plain-language guide to the next oracle-evidence experiment](docs/explainers/oracle-evidence.md)
+- [Plain-language guide to the oracle-evidence experiment](docs/explainers/oracle-evidence.md)
 - [Custom API integration](docs/reference/api-integration.md)
 - [Architectural decisions](ADR.md)
