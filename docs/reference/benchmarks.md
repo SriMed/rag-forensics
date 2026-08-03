@@ -143,6 +143,43 @@ They do not establish:
 - that the deterministic clause splitter produces correct atomic claims;
 - that the sampled results generalize to the full datasets or production traffic.
 
-The next discriminating experiment should compare selected evidence with RAGBench’s annotated
-supporting sentences as an oracle condition. That separates evidence-selection error from
-verifier error.
+## Oracle-evidence failure localization
+
+The implemented diagnostic compares selected evidence with RAGBench’s annotated supporting
+sentences. It is an analysis intervention, not a fourth deployable grounding method: labels supply
+the oracle evidence, so its output is not test-time classifier performance.
+
+The primary population is response sentences marked fully supported with at least one concrete
+document-sentence key. Missing annotations and non-document support sentinels are excluded with
+explicit reason counts. Unsupported sentences are outside the primary comparison because the
+dataset does not identify a corresponding "correct negative evidence" sentence.
+
+The paired conditions hold claim decomposition, NLI verifier and revision, and entailment
+threshold fixed:
+
+- **selected evidence:** B3's top cosine-similarity evidence for each claim;
+- **oracle evidence:** every annotated sentence is scored for every claim, with maximum entailment
+  used for the decision while all raw claim/evidence pairs remain in the report.
+
+The primary outcome is the paired change in false-unsupported rate, with an example-clustered
+confidence interval. The report also preserves selected-evidence hit-at-1, claim scores,
+multi-source provenance, eligibility coverage, and verifier failures.
+
+```bash
+cd backend
+poetry run python -m benchmark.oracle_evidence_cli \
+  --domains techqa finqa covidqa \
+  --evaluation-split test \
+  --entailment-threshold <frozen-b3-threshold> \
+  --seed 42 \
+  --bootstrap-iterations 2000 \
+  --output output/ragbench-oracle-evidence.json
+```
+
+A material reduction supports evidence selection as a bottleneck for eligible supported
+sentences. Little or no reduction leaves verifier, decomposition, multi-sentence reasoning, and
+annotation-granularity failures unresolved. Heterogeneous results argue against a global
+bottleneck claim. The diagnostic cannot establish why unsupported sentences fail, causal
+responsibility for the full RAG pipeline, or production performance. See
+[Understanding the oracle-evidence experiment](../explainers/oracle-evidence.md) for a
+plain-language explanation.

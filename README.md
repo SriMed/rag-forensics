@@ -50,8 +50,8 @@ The API exposes two entry points:
 - `POST /example` runs the demonstration pipeline over a stored RAGBench example.
 - `POST /analyze/custom` accepts a caller-provided question, answer, and retrieved chunks.
 
-See [Methods and architecture](docs/METHODS.md) and
-[integration documentation](README_INTEGRATION.md) for the full contracts.
+See [Methods and architecture](docs/reference/methods.md) and
+[integration documentation](docs/reference/api-integration.md) for the full contracts.
 
 ## What the evidence currently says
 
@@ -82,7 +82,7 @@ useful for navigating to candidate evidence. The stronger contribution is the tr
 label-preserving framework that makes this null result—and its remaining uncertainty—inspectable.
 
 Detailed protocols, commands, revisions, results, and limitations are in
-[Benchmarking and current evidence](docs/BENCHMARKS.md).
+[Benchmarking and current evidence](docs/reference/benchmarks.md).
 
 ## Current research boundary
 
@@ -94,9 +94,11 @@ The next useful experiment is not another unstructured model swap. It should sep
 - verifier errors; and
 - annotation-granularity mismatches.
 
-An oracle-evidence condition using RAGBench’s annotated supporting sentences can distinguish
-evidence-selection failure from verifier failure. Until such interventions are run, the project
-should claim that it narrows an investigation—not that it explains the cause of a bad answer.
+The implemented oracle-evidence diagnostic uses RAGBench’s annotated supporting sentences to
+localize evidence-selection versus downstream verification failures on eligible, fully supported
+sentences. It is label-derived analysis—not a deployable classifier—and does not explain failures
+for unsupported sentences. Until broader interventions are run, the project should claim that it
+narrows an investigation—not that it explains the cause of a bad answer.
 
 ## Quick start
 
@@ -119,7 +121,9 @@ External API calls are mocked in tests; no API key is required.
 
 ## Documentation
 
-- [Methods, outputs, architecture, and limitations](docs/METHODS.md)
-- [Benchmark protocol, results, and reproducible commands](docs/BENCHMARKS.md)
-- [Custom API integration](README_INTEGRATION.md)
+- [Documentation guide](docs/README.md)
+- [Methods, outputs, architecture, and limitations](docs/reference/methods.md)
+- [Benchmark protocol, results, and reproducible commands](docs/reference/benchmarks.md)
+- [Plain-language guide to the next oracle-evidence experiment](docs/explainers/oracle-evidence.md)
+- [Custom API integration](docs/reference/api-integration.md)
 - [Architectural decisions](ADR.md)
