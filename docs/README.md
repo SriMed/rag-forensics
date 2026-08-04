@@ -21,6 +21,10 @@ protocols, and reproducible commands.
   empirical results, uncertainty, and the current research boundary.
 - [Custom API integration](reference/api-integration.md) describes the request and response
   contracts for analyzing caller-provided RAG outputs.
+- [Prompt development evaluation](reference/prompt-evaluation.md) documents the versioned prompt
+  cases, deterministic scorers, held-out split, review schema, and evidence limits.
+- [Installed RAGAS prompt audit](reference/ragas-prompt-audit.md) records the dependency-owned
+  prompt contracts, model configuration, parsing and failure behavior, and downstream influence.
 
 ## Project records
 

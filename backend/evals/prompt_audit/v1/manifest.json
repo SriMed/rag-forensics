@@ -1,0 +1,19 @@
+{
+  "schema_version": "prompt-eval-manifest.v1",
+  "dataset_version": "1.0.0",
+  "status": "frozen",
+  "frozen_at": "2026-08-03",
+  "case_count": 24,
+  "counts": {
+    "development.production_path": 18,
+    "development.counterfactual_capability": 1,
+    "held_out.production_path": 4,
+    "held_out.counterfactual_capability": 1
+  },
+  "sha256": {
+    "cases.json": "93c1ab539e295e4113fe583d4e461292fcd3cc6d76648bc3929eb02c810bfe90",
+    "human-review.schema.json": "ae93faf4762db60ccf2b0e4624d8a9a6b984ca69ccec59243292e2ac6ee3171e",
+    "human-review.template.json": "e97cdb02602fad0043da5a19deec78f6f7e8abd60b6c785bc04a52cb678b1db5"
+  },
+  "change_policy": "Do not edit frozen v1 content. Create a new version directory for substantive changes or corrected judgments."
+}

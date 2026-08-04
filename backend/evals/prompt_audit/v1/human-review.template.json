@@ -1,0 +1,12 @@
+{
+  "schema_version": "prompt-human-review.v1",
+  "dataset_version": "1.0.0",
+  "run_id": null,
+  "reviewer": {
+    "name": null,
+    "role": null
+  },
+  "reviewed_at": null,
+  "reviews": [],
+  "notes": "Copy this file outside the frozen v1 directory before recording reviews. Use pass, fail, or uncertain and provide a rationale for every reviewed case."
+}
