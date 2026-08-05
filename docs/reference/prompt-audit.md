@@ -4,7 +4,7 @@
 
 RAG Forensics has several materially different LLM boundaries, and their risks should not be
 collapsed into “prompt quality.” The most consequential finding is an installed input-contract
-mismatch in the RAGAS value exposed as retrieval relevance. The most consequential repository-owned
+mismatch in the RAGAS value formerly exposed as retrieval relevance. The most consequential repository-owned
 prompt risk is verdict rendering: free-form prose can turn mixed diagnostic signals into causal
 claims stronger than their reliability supports.
 
@@ -112,6 +112,15 @@ Do not merely replace the sentinel string. Compare input-compatible reference-aw
 reference-free configurations on human-labeled relevant and irrelevant contexts, make non-finite
 or failed judgments explicitly unavailable, and pin the installed contract. Follow-up:
 [#20](https://github.com/SriMed/rag-forensics/issues/20).
+
+### Issue #20 resolution
+
+The production path now uses installed RAGAS 0.4.3 `ContextUtilization`, supplies the actual
+generated or caller-provided answer as `response`, and exposes the narrower answer-conditioned
+construct as `ragas.context_utilization`. Exceptions and non-finite results are explicit unavailable
+states. The earlier paragraphs remain the audit evidence that motivated this change; they describe
+the superseded implementation rather than current behavior. See
+[Installed RAGAS prompt contract audit](ragas-prompt-audit.md) for the current contract.
 
 ## 2. Verdict rendering
 

@@ -8,7 +8,7 @@ from services.forensics.query_corpus_fit import analyze_query_corpus_fit
 from services.verdict_generator import rank_signals, render_recommendation
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
-from services.ragas_scorer import score_retrieval_relevance, score_answer_faithfulness
+from services.ragas_scorer import score_context_utilization, score_answer_faithfulness
 from services.forensics.retrieval_distribution import analyze_retrieval_distribution
 from services.forensics.embedding_analysis import analyze_embedding_space
 
@@ -27,11 +27,11 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         answer = generate_answer(question, chunks)
         logger.debug("generated answer (%d chars)", len(answer))
 
-        relevance_score, relevance_context_excerpts = score_retrieval_relevance(question, chunks)
-        logger.debug("retrieval_relevance_score=%.3f", relevance_score)
+        utilization, utilization_context_excerpts = score_context_utilization(question, answer, chunks)
+        logger.debug("context_utilization_status=%s", utilization.status)
 
-        faithfulness_score, faithfulness_context_excerpts = score_answer_faithfulness(answer, chunks, question)
-        logger.debug("faithfulness_score=%.3f", faithfulness_score)
+        faithfulness, faithfulness_context_excerpts = score_answer_faithfulness(answer, chunks, question)
+        logger.debug("faithfulness_status=%s", faithfulness.status)
 
         embedding_space = analyze_embedding_space(
             query_embedding=np.array(retrieval_result.query_embedding),
@@ -47,23 +47,23 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             chunks=chunks,
             chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
             query_isolation=embedding_space.query_isolation,
-            retrieval_relevance_score=relevance_score,
+            context_utilization_score=utilization.score,
             normalized_entropy=retrieval_distribution.normalized_entropy,
-            faithfulness_score=faithfulness_score,
+            faithfulness_score=faithfulness.score,
         )
         signals = rank_signals(
             distribution=retrieval_distribution,
             embedding=embedding_space,
-            faithfulness_score=faithfulness_score,
-            retrieval_relevance_score=relevance_score,
+            faithfulness_score=faithfulness.score,
+            context_utilization_score=utilization.score,
             attribution=chunk_attribution,
             hedging_mismatch=hedging,
             query_fit=query_corpus_fit,
         )
         recommendation = render_recommendation(
             signals=signals,
-            faithfulness_score=faithfulness_score,
-            retrieval_relevance_score=relevance_score,
+            faithfulness_score=faithfulness.score,
+            context_utilization_score=utilization.score,
             attribution=chunk_attribution,
             hedging_mismatch=hedging,
         )
@@ -79,9 +79,9 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         generated_answer=answer,
         retrieved_chunks=[c.text for c in chunks],
         ragas=RAGASMetrics(
-            retrieval_relevance_score=relevance_score,
-            faithfulness_score=faithfulness_score,
-            relevance_context_excerpts=relevance_context_excerpts,
+            context_utilization=utilization,
+            faithfulness=faithfulness,
+            utilization_context_excerpts=utilization_context_excerpts,
             faithfulness_context_excerpts=faithfulness_context_excerpts,
         ),
         hedging_mismatch=hedging,
@@ -109,8 +109,8 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         chunk_texts = [c.text for c in chunks]
         chunk_embeddings = [np.array(e) for e in model.encode(chunk_texts)]
 
-        relevance_score, relevance_context_excerpts = score_retrieval_relevance(question, chunks)
-        faithfulness_score, faithfulness_context_excerpts = score_answer_faithfulness(answer, chunks, question)
+        utilization, utilization_context_excerpts = score_context_utilization(question, answer, chunks)
+        faithfulness, faithfulness_context_excerpts = score_answer_faithfulness(answer, chunks, question)
 
         embedding_space = analyze_embedding_space(
             query_embedding=query_embedding,
@@ -126,23 +126,23 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
             chunks=chunks,
             chunk_embeddings=chunk_embeddings,
             query_isolation=embedding_space.query_isolation,
-            retrieval_relevance_score=relevance_score,
+            context_utilization_score=utilization.score,
             normalized_entropy=retrieval_distribution.normalized_entropy,
-            faithfulness_score=faithfulness_score,
+            faithfulness_score=faithfulness.score,
         )
         signals = rank_signals(
             distribution=retrieval_distribution,
             embedding=embedding_space,
-            faithfulness_score=faithfulness_score,
-            retrieval_relevance_score=relevance_score,
+            faithfulness_score=faithfulness.score,
+            context_utilization_score=utilization.score,
             attribution=chunk_attribution,
             hedging_mismatch=hedging,
             query_fit=query_corpus_fit,
         )
         recommendation = render_recommendation(
             signals=signals,
-            faithfulness_score=faithfulness_score,
-            retrieval_relevance_score=relevance_score,
+            faithfulness_score=faithfulness.score,
+            context_utilization_score=utilization.score,
             attribution=chunk_attribution,
             hedging_mismatch=hedging,
         )
@@ -157,9 +157,9 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         generated_answer=answer,
         retrieved_chunks=[c.text for c in chunks],
         ragas=RAGASMetrics(
-            retrieval_relevance_score=relevance_score,
-            faithfulness_score=faithfulness_score,
-            relevance_context_excerpts=relevance_context_excerpts,
+            context_utilization=utilization,
+            faithfulness=faithfulness,
+            utilization_context_excerpts=utilization_context_excerpts,
             faithfulness_context_excerpts=faithfulness_context_excerpts,
         ),
         hedging_mismatch=hedging,

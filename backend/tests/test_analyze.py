@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from main import app
-from models import RetrievedChunk, HedgingMismatchMetrics, ChunkAttributionMetrics, QueryCorpusFitMetrics, RetrievalResult
+from models import RetrievedChunk, HedgingMismatchMetrics, ChunkAttributionMetrics, QueryCorpusFitMetrics, RAGASMetricResult, RetrievalResult
 
 client = TestClient(app)
 
@@ -34,8 +34,7 @@ _STUB_CHUNK_ATTRIBUTION = ChunkAttributionMetrics(
     attribution_map=[],
 )
 
-# RAGAS score functions now return (float, list[str])
-_STUB_SCORE_TUPLE = (0.85, ["Sample chunk text."])
+_STUB_SCORE_TUPLE = (RAGASMetricResult(score=0.85, status="ok"), ["Sample chunk text."])
 
 _STUB_QUERY_CORPUS_FIT = QueryCorpusFitMetrics(
     triggered=False,
@@ -48,7 +47,7 @@ _STUB_QUERY_CORPUS_FIT = QueryCorpusFitMetrics(
 def _patch_services(mocker):
     mocker.patch("routers.analyze.retrieve_for_example", return_value=("What is X?", _STUB_RETRIEVAL_RESULT))
     mocker.patch("routers.analyze.generate_answer", return_value="Generated answer.")
-    mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_SCORE_TUPLE)
+    mocker.patch("routers.analyze.score_context_utilization", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING_MISMATCH)
     mocker.patch("routers.analyze.analyze_chunk_attribution", return_value=_STUB_CHUNK_ATTRIBUTION)
@@ -80,12 +79,26 @@ def test_analyze_ragas_has_continuous_scores(mocker):
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     body = response.json()
     ragas = body["ragas"]
-    assert "retrieval_relevance_score" in ragas
-    assert "faithfulness_score" in ragas
-    assert isinstance(ragas["retrieval_relevance_score"], float)
-    assert isinstance(ragas["faithfulness_score"], float)
-    assert 0.0 <= ragas["retrieval_relevance_score"] <= 1.0
-    assert 0.0 <= ragas["faithfulness_score"] <= 1.0
+    assert ragas["context_utilization"] == {"score": 0.85, "status": "ok", "error": None}
+    assert ragas["faithfulness"] == {"score": 0.85, "status": "ok", "error": None}
+
+
+def test_analyze_ragas_exposes_unavailable_state(mocker):
+    _patch_services(mocker)
+    unavailable = RAGASMetricResult(
+        score=None, status="unavailable", error="evaluation_failed"
+    )
+    mocker.patch(
+        "routers.analyze.score_context_utilization",
+        return_value=(unavailable, ["Sample chunk text."]),
+    )
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    assert response.status_code == 200
+    assert response.json()["ragas"]["context_utilization"] == {
+        "score": None,
+        "status": "unavailable",
+        "error": "evaluation_failed",
+    }
 
 
 def test_analyze_ragas_has_no_verdict(mocker):
@@ -101,18 +114,18 @@ def test_analyze_ragas_has_evidence_fields(mocker):
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     body = response.json()
     ragas = body["ragas"]
-    assert "relevance_context_excerpts" in ragas
+    assert "utilization_context_excerpts" in ragas
     assert "faithfulness_context_excerpts" in ragas
-    assert isinstance(ragas["relevance_context_excerpts"], list)
+    assert isinstance(ragas["utilization_context_excerpts"], list)
     assert isinstance(ragas["faithfulness_context_excerpts"], list)
 
 
-def test_analyze_response_no_longer_has_retrieval_relevance_dimension(mocker):
+def test_analyze_response_no_longer_has_context_utilization_dimension(mocker):
     _patch_services(mocker)
     response = client.post("/analyze", json={"example_id": "techqa-001"})
     body = response.json()
     # These moved into ragas — should not exist as top-level DimensionResult fields
-    assert "retrieval_relevance" not in body
+    assert "context_utilization" not in body
     assert "answer_faithfulness" not in body
 
 

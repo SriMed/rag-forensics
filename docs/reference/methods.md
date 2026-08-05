@@ -7,7 +7,7 @@ should be interpreted as independently proving a pipeline root cause.
 
 | Module | Output | Interpretation constraint |
 |---|---|---|
-| RAGAS metrics | faithfulness and context-precision scores | model-judged evaluation, not a causal explanation |
+| RAGAS metrics | faithfulness and answer-conditioned context-utilization scores | model-judged evaluation, not a causal explanation; failures are explicitly unavailable |
 | Retrieval distribution | top score, gap, normalized entropy, decay, tail mass | score shape cannot distinguish uniformly good from uniformly bad retrieval |
 | Embedding analysis | centroid distance, chunk spread, query isolation, PCA projection | geometry describes the retrieved set, not corpus answerability |
 | Semantic attribution | nearest source candidate and similarity for each answer unit | similarity is neither entailment nor contradiction detection |

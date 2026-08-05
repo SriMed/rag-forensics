@@ -45,11 +45,17 @@ export interface HedgingMismatchMetrics {
 }
 
 export interface RAGASMetrics {
-  retrieval_relevance_score: number;
-  faithfulness_score: number;
-  relevance_context_excerpts: string[];
+  context_utilization: RAGASMetricResult;
+  faithfulness: RAGASMetricResult;
+  utilization_context_excerpts: string[];
   faithfulness_context_excerpts: string[];
   excerpt_caveat: string;
+}
+
+export interface RAGASMetricResult {
+  score: number | null;
+  status: "ok" | "unavailable";
+  error: "evaluation_failed" | "non_finite_score" | null;
 }
 
 export interface RetrievalDistributionMetrics {

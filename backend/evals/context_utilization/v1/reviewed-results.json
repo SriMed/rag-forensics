@@ -1,0 +1,53 @@
+{
+  "schema_version": "context-utilization-review.v1",
+  "run_date": "2026-08-05",
+  "ragas_version": "0.4.3",
+  "runner": "claude-cli",
+  "model_alias": "haiku",
+  "review_status": "reviewed",
+  "results": [
+    {
+      "id": "relevant_single",
+      "human_context_labels": [1],
+      "before_score": 0.0,
+      "before_context_verdicts": [0],
+      "after_score": 1.0,
+      "after_context_verdicts": [1],
+      "review": "After verdict matches the relevant label; the sentinel baseline incorrectly rejects the useful context because the supplied answer is N/A."
+    },
+    {
+      "id": "irrelevant_single",
+      "human_context_labels": [0],
+      "before_score": 0.0,
+      "before_context_verdicts": [0],
+      "after_score": 0.0,
+      "after_context_verdicts": [0],
+      "review": "Both configurations reject the irrelevant context; this case alone cannot expose the sentinel mismatch."
+    },
+    {
+      "id": "relevant_then_irrelevant",
+      "human_context_labels": [1, 0],
+      "before_score": 0.0,
+      "before_context_verdicts": [0, 0],
+      "after_score": 1.0,
+      "after_context_verdicts": [1, 0],
+      "review": "After verdicts match both labels and reward the relevant-first ranking; the sentinel baseline loses the relevant item."
+    },
+    {
+      "id": "irrelevant_then_relevant",
+      "human_context_labels": [0, 1],
+      "before_score": 0.0,
+      "before_context_verdicts": [0, 0],
+      "after_score": 0.5,
+      "after_context_verdicts": [0, 1],
+      "review": "After verdicts match both labels and the lower aggregate correctly reflects the relevant context's second-place rank."
+    }
+  ],
+  "summary": {
+    "before_context_label_matches": 3,
+    "before_context_label_total": 6,
+    "after_context_label_matches": 6,
+    "after_context_label_total": 6,
+    "review_conclusion": "On this small hand-labeled set, the selected configuration matches every context label and preserves rank sensitivity. The result is model-judged evidence on four synthetic cases, not a calibrated accuracy estimate or a general benchmark claim."
+  }
+}

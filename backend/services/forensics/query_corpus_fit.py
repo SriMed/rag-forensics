@@ -27,16 +27,16 @@ _UNTRIGGERED = QueryCorpusFitMetrics(
 
 def _should_trigger(
     query_isolation: float,
-    retrieval_relevance_score: float,
+    context_utilization_score: float | None,
     normalized_entropy: float,
-    faithfulness_score: float,
+    faithfulness_score: float | None,
 ) -> str | None:
     """Return the name of the first trigger condition that fired, or None."""
     if query_isolation > 1.2:
         return "query_isolation"
-    if retrieval_relevance_score < 0.5:
-        return "retrieval_relevance"
-    if normalized_entropy > 0.9 and faithfulness_score < 0.5:
+    if context_utilization_score is not None and context_utilization_score < 0.5:
+        return "context_utilization"
+    if normalized_entropy > 0.9 and faithfulness_score is not None and faithfulness_score < 0.5:
         return "entropy_faithfulness"
     return None
 
@@ -47,16 +47,16 @@ def analyze_query_corpus_fit(
     chunks: list[RetrievedChunk],
     chunk_embeddings: list[np.ndarray],
     query_isolation: float,
-    retrieval_relevance_score: float,
+    context_utilization_score: float | None,
     normalized_entropy: float,
-    faithfulness_score: float,
+    faithfulness_score: float | None,
 ) -> QueryCorpusFitMetrics:
     """Generate questions the retrieved chunks answer well; classify observed retrieved-context fit.
 
     Returns triggered=False immediately (no LLM calls) when signals don't indicate
     a query-corpus mismatch. On LLM failure returns triggered=True with empty questions.
     """
-    trigger_reason = _should_trigger(query_isolation, retrieval_relevance_score, normalized_entropy, faithfulness_score)
+    trigger_reason = _should_trigger(query_isolation, context_utilization_score, normalized_entropy, faithfulness_score)
     if trigger_reason is None:
         return _UNTRIGGERED
 

@@ -37,8 +37,8 @@ class RankedSignal:
 def rank_signals(
     distribution: RetrievalDistributionMetrics,
     embedding: EmbeddingSpaceMetrics,
-    faithfulness_score: float,
-    retrieval_relevance_score: float,
+    faithfulness_score: float | None,
+    context_utilization_score: float | None,
     attribution: ChunkAttributionMetrics,
     hedging_mismatch: HedgingMismatchMetrics,
     query_fit: QueryCorpusFitMetrics,
@@ -47,6 +47,22 @@ def rank_signals(
     """Compute heuristic diagnostic priorities and return them sorted descending."""
     w = weights if weights is not None else DEFAULT_WEIGHTS
     signals: list[RankedSignal] = []
+
+    if faithfulness_score is None:
+        signals.append(RankedSignal(
+            name="faithfulness_unavailable",
+            priority_score=0.5,
+            description="Faithfulness evaluation is unavailable; do not interpret the missing score as healthy",
+            reliability="unvalidated",
+        ))
+
+    if context_utilization_score is None:
+        signals.append(RankedSignal(
+            name="context_utilization_unavailable",
+            priority_score=0.5,
+            description="Context-utilization evaluation is unavailable; do not interpret the missing score as healthy",
+            reliability="unvalidated",
+        ))
 
     if hedging_mismatch.status == "error":
         signals.append(RankedSignal(
@@ -83,22 +99,24 @@ def rank_signals(
         ))
 
     # Low faithfulness — inverted so higher concern = lower score
-    faithfulness_concern = max(0.0, 1.0 - faithfulness_score)
-    signals.append(RankedSignal(
-        name="low_faithfulness",
-        priority_score=faithfulness_concern,
-        description=f"Faithfulness score {faithfulness_score:.2f} — answer is not fully grounded in retrieved content",
-        reliability="model_judged",
-    ))
+    if faithfulness_score is not None:
+        faithfulness_concern = max(0.0, 1.0 - faithfulness_score)
+        signals.append(RankedSignal(
+            name="low_faithfulness",
+            priority_score=faithfulness_concern,
+            description=f"Faithfulness score {faithfulness_score:.2f} — answer is not fully grounded in retrieved content",
+            reliability="model_judged",
+        ))
 
-    # Low retrieval relevance
-    relevance_concern = max(0.0, 1.0 - retrieval_relevance_score)
-    signals.append(RankedSignal(
-        name="low_retrieval_relevance",
-        priority_score=relevance_concern,
-        description=f"Retrieval relevance score {retrieval_relevance_score:.2f} — retrieved chunks do not match the question well",
-        reliability="model_judged",
-    ))
+    # Low answer-conditioned context utilization
+    if context_utilization_score is not None:
+        utilization_concern = max(0.0, 1.0 - context_utilization_score)
+        signals.append(RankedSignal(
+            name="low_context_utilization",
+            priority_score=utilization_concern,
+            description=f"Context utilization score {context_utilization_score:.2f} — retrieved chunks were not consistently useful for producing the answer",
+            reliability="model_judged",
+        ))
 
     # Ambiguous retrieval — normalize score_entropy by empirical p95 to 0–1
     entropy_concern = min(max(distribution.normalized_entropy, 0.0), 1.0)
@@ -162,8 +180,8 @@ def rank_signals(
 
 def render_recommendation(
     signals: list[RankedSignal],
-    faithfulness_score: float,
-    retrieval_relevance_score: float,
+    faithfulness_score: float | None,
+    context_utilization_score: float | None,
     attribution: ChunkAttributionMetrics,
     hedging_mismatch: HedgingMismatchMetrics,
 ) -> str:
@@ -177,8 +195,8 @@ def render_recommendation(
     )
     prompt = RANKED_SIGNALS_PROMPT.format(
         signals_text=signals_text,
-        faithfulness_score=faithfulness_score,
-        retrieval_relevance_score=retrieval_relevance_score,
+        faithfulness_score="unavailable" if faithfulness_score is None else f"{faithfulness_score:.2f}",
+        context_utilization_score="unavailable" if context_utilization_score is None else f"{context_utilization_score:.2f}",
         unattributed_fraction=attribution.unattributed_fraction,
         overconfident_fraction=hedging_mismatch.overconfident_fraction,
     )

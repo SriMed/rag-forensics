@@ -39,26 +39,26 @@ behavior are dependency-owned.
 
 ### Interpretation and downstream influence
 
-The project exposes this value as `faithfulness_score`. It is a model-judged continuous value, not
+The project exposes this value as `ragas.faithfulness.score`. It is a model-judged continuous value, not
 ground truth or a calibrated probability. It affects:
 
 - the `entropy_faithfulness` trigger in `query_corpus_fit.py`;
 - the deterministic `low_faithfulness` priority in `verdict_generator.py`;
 - the numeric context supplied to the verdict-rendering prompt;
-- the API's `ragas.faithfulness_score` field.
+- the API's `ragas.faithfulness.score` field.
 
 Because statement generation changes the units being judged, variation or decomposition errors in
 the first LLM stage can change the final score even when the answer and evidence remain fixed.
 Issue #18's mixed/null decomposition result and issue #19's residual oracle-evidence error are
 direct reasons not to interpret this score as an isolated measurement of evidence selection.
 
-## Context precision used as retrieval relevance
+## Context utilization
 
 ### Required inputs and processing
 
-The imported `context_precision` object is the installed `ContextPrecision` implementation built on
-`LLMContextPrecisionWithReference`. Its declared required inputs are `user_input`,
-`retrieved_contexts`, and `reference`. For each retrieved context independently,
+The project now imports the installed `context_utilization` object, a `ContextUtilization`
+implementation built on `LLMContextPrecisionWithoutReference`. Its declared required inputs are
+`user_input`, `retrieved_contexts`, and `response`. For each retrieved context independently,
 `ContextPrecisionPrompt` asks whether that context was useful in arriving at the supplied answer.
 It parses a `reason: str` and binary `verdict: int`, then computes rank-sensitive average precision
 over the context verdicts.
@@ -71,38 +71,48 @@ The prompt's operative instruction is:
 The metric declares `max_retries = 1`. Prompt formatting, structured-output parsing, multiple
 generation, and verdict ensembling are dependency-owned.
 
-### Project input mismatch
+### Project input contract
 
-`score_retrieval_relevance()` currently supplies `reference="N/A"`. In the installed metric,
-`reference` becomes the prompt's `answer`. Therefore the model is asked whether each context was
-useful for arriving at the literal answer `N/A`, rather than the generated answer or a benchmark
-reference answer.
-
-This is a direct installed-code finding, not a sampled-model result. It makes the construct measured
-by the current call unclear and is a plausible explanation for the zero retrieval-relevance scores
-recorded in issue #9's smoke test. A follow-up should compare an appropriate reference-aware metric
-configuration or a reference-free retrieval metric before interpreting this field as retrieval
-relevance. This audit does not change production behavior.
+`score_context_utilization()` supplies the actual generated or caller-provided answer as `response`.
+No reference sentinel is used. The supported interpretation is therefore answer-conditioned context
+utilization: whether each retrieved context was useful for producing that answer, with rank-sensitive
+average-precision aggregation. It does not independently establish question–context relevance or
+retriever quality.
 
 ### Downstream influence
 
-The project exposes the result as `retrieval_relevance_score`. It affects:
+The project exposes the result as `ragas.context_utilization`. Its finite score affects:
 
 - the unconditional `< 0.5` query-fit trigger;
-- the deterministic `low_retrieval_relevance` priority;
+- the deterministic `low_context_utilization` priority;
 - the numeric context supplied to the verdict-rendering prompt;
-- the API's `ragas.retrieval_relevance_score` field.
+- the API's `ragas.context_utilization.score` field.
 
 Consequently, a dependency-owned prompt or input-contract mismatch can trigger an additional LLM
 analysis and elevate a diagnostic concern. The score should remain labeled `model_judged` and must
 not be described as a direct retriever measurement.
 
+### Labeled comparison
+
+On 2026-08-05, the issue #20 comparison runner evaluated four synthetic cases containing six
+human-labeled relevant or irrelevant contexts through the Claude CLI `haiku` alias. The superseded
+`reference="N/A"` configuration scored every case `0.0` and matched 3 of 6 context labels. The
+selected context-utilization configuration matched all 6 labels and produced aggregate scores of
+`1.0` for relevant-only, `0.0` for irrelevant-only, `1.0` for relevant-then-irrelevant, and `0.5`
+for irrelevant-then-relevant. The mixed ordering confirms rank-sensitive aggregation on this run.
+
+The cases, reviewed results, and runner are under
+`backend/evals/context_utilization/v1/`. This small model-judged synthetic check validates the input
+contract and expected contrasts; it is not a calibrated accuracy estimate or a general benchmark
+claim.
+
 ## Failure and upgrade behavior
 
-`backend/services/ragas_scorer.py` calls `ragas.evaluate()` and directly converts the returned first
-metric value with `float(...)`. It does not define a local parse fallback or explicit unavailable
-state. Exceptions propagate to the request-level caller; `NaN` can also originate from the installed
-faithfulness metric when no statements are generated.
+`backend/services/ragas_scorer.py` catches evaluation/conversion exceptions and rejects every
+non-finite result. The API reports `status="unavailable"`, `score=null`, and either
+`evaluation_failed` or `non_finite_score`; it never substitutes zero. Query-fit skips thresholds
+whose score is unavailable, while verdict ranking emits an explicit unavailable signal. These
+semantics apply to both context utilization and faithfulness.
 
 The project permits any RAGAS release from 0.4.3 up to, but excluding, 0.5.0. Prompt text, examples,
 Pydantic output models, retry behavior, aggregation, or which implementation the exported metric

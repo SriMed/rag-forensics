@@ -107,7 +107,14 @@ def render_case(case: dict[str, Any]) -> RenderedCase:
             inputs["chunks_text"], inputs["original_question"]
         )
     elif boundary == "verdict_rendering":
-        prompt = RANKED_SIGNALS_PROMPT.format(**inputs)
+        prompt_inputs = dict(inputs)
+        # Frozen v1 used the superseded issue #20 field name. Preserve the dataset while
+        # rendering it through the current production prompt contract.
+        if "retrieval_relevance_score" in prompt_inputs:
+            prompt_inputs["context_utilization_score"] = prompt_inputs.pop(
+                "retrieval_relevance_score"
+            )
+        prompt = RANKED_SIGNALS_PROMPT.format(**prompt_inputs)
     else:  # Protected by load_dataset; retained for direct callers.
         raise ValueError(f"unsupported boundary: {boundary}")
     return RenderedCase(case=case, prompt=prompt, system_prompt=system_prompt)

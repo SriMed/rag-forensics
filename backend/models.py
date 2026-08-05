@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class SuggestedQuestion(BaseModel):
@@ -10,7 +10,7 @@ class SuggestedQuestion(BaseModel):
 
 class QueryCorpusFitMetrics(BaseModel):
     triggered: bool
-    trigger_reason: Literal["query_isolation", "retrieval_relevance", "entropy_faithfulness"] | None = None
+    trigger_reason: Literal["query_isolation", "context_utilization", "entropy_faithfulness"] | None = None
     observed_fit: Literal["retrieved_context_near_miss", "retrieved_context_topic_gap", "ambiguous"] | None = None
     suggested_questions: list[SuggestedQuestion]
     mean_question_similarity: float | None
@@ -114,10 +114,24 @@ class HedgingMismatchMetrics(BaseModel):
     evaluated_chunk_count: int = 0
 
 
+class RAGASMetricResult(BaseModel):
+    score: float | None
+    status: Literal["ok", "unavailable"]
+    error: Literal["evaluation_failed", "non_finite_score"] | None = None
+
+    @model_validator(mode="after")
+    def status_matches_value(self):
+        if self.status == "ok" and (self.score is None or self.error is not None):
+            raise ValueError("ok RAGAS results require a score and no error")
+        if self.status == "unavailable" and (self.score is not None or self.error is None):
+            raise ValueError("unavailable RAGAS results require an error and no score")
+        return self
+
+
 class RAGASMetrics(BaseModel):
-    retrieval_relevance_score: float
-    faithfulness_score: float
-    relevance_context_excerpts: list[str]
+    context_utilization: RAGASMetricResult
+    faithfulness: RAGASMetricResult
+    utilization_context_excerpts: list[str]
     faithfulness_context_excerpts: list[str]
     excerpt_caveat: str = (
         "These are context excerpts for inspection, not evidence explaining the evaluator's score."

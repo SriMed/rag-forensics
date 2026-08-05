@@ -1,0 +1,40 @@
+[
+  {
+    "id": "relevant_single",
+    "question": "What organelle produces ATP?",
+    "answer": "Mitochondria produce ATP.",
+    "contexts": [
+      "Mitochondria generate most of a cell's ATP through oxidative phosphorylation."
+    ],
+    "human_context_labels": [1]
+  },
+  {
+    "id": "irrelevant_single",
+    "question": "What organelle produces ATP?",
+    "answer": "Mitochondria produce ATP.",
+    "contexts": [
+      "The Golgi apparatus modifies and packages proteins for transport."
+    ],
+    "human_context_labels": [0]
+  },
+  {
+    "id": "relevant_then_irrelevant",
+    "question": "How long do refunds take?",
+    "answer": "Refunds take five to seven business days.",
+    "contexts": [
+      "Approved refunds are processed within five to seven business days.",
+      "Customers can change their account password from the profile page."
+    ],
+    "human_context_labels": [1, 0]
+  },
+  {
+    "id": "irrelevant_then_relevant",
+    "question": "How long do refunds take?",
+    "answer": "Refunds take five to seven business days.",
+    "contexts": [
+      "Customers can change their account password from the profile page.",
+      "Approved refunds are processed within five to seven business days."
+    ],
+    "human_context_labels": [0, 1]
+  }
+]

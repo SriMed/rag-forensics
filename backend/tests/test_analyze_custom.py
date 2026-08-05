@@ -5,6 +5,7 @@ from models import (
     HedgingMismatchMetrics,
     ChunkAttributionMetrics,
     QueryCorpusFitMetrics,
+    RAGASMetricResult,
     AttributionEntry,
 )
 
@@ -54,7 +55,7 @@ _STUB_QUERY_FIT = QueryCorpusFitMetrics(
     mean_question_similarity=None,
 )
 
-_STUB_SCORE_TUPLE = (0.85, ["evidence text"])
+_STUB_SCORE_TUPLE = (RAGASMetricResult(score=0.85, status="ok"), ["evidence text"])
 
 
 def _patch_services(mocker):
@@ -64,7 +65,7 @@ def _patch_services(mocker):
         [[1.0, 0.0], [0.8, 0.2]],
     ]
     mocker.patch("services.retriever.get_embedding_model", return_value=embedding_model)
-    mocker.patch("routers.analyze.score_retrieval_relevance", return_value=_STUB_SCORE_TUPLE)
+    mocker.patch("routers.analyze.score_context_utilization", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING)
     mocker.patch("routers.analyze.analyze_chunk_attribution", return_value=_STUB_ATTRIBUTION)

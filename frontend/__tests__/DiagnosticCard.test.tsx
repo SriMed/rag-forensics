@@ -7,9 +7,9 @@ const BASE_RESPONSE: AnalyzeResponse = {
   generated_answer: "Lightning is caused by electrical discharge. It happens in storm clouds.",
   retrieved_chunks: ["Chunk text one", "Chunk text two"],
   ragas: {
-    retrieval_relevance_score: 0.82,
-    faithfulness_score: 0.91,
-    relevance_context_excerpts: ["Evidence A"],
+    context_utilization: { score: 0.82, status: "ok", error: null },
+    faithfulness: { score: 0.91, status: "ok", error: null },
+    utilization_context_excerpts: ["Evidence A"],
     faithfulness_context_excerpts: ["Evidence B"], excerpt_caveat: "Context excerpts are not score evidence.",
   },
   hedging_mismatch: {
@@ -80,6 +80,26 @@ const BASE_RESPONSE: AnalyzeResponse = {
   recommendation: "Pipeline looks healthy — no action required.",
   verdict_signals: [],
 };
+
+test("renders unavailable RAGAS metrics explicitly", () => {
+  render(
+    <DiagnosticCard
+      response={{
+        ...BASE_RESPONSE,
+        ragas: {
+          ...BASE_RESPONSE.ragas,
+          context_utilization: {
+            score: null,
+            status: "unavailable",
+            error: "evaluation_failed",
+          },
+        },
+      }}
+    />
+  );
+  expect(screen.getByText("Unavailable")).toBeInTheDocument();
+  expect(screen.getByText("evaluation_failed")).toBeInTheDocument();
+});
 
 const FAIL_RESPONSE: AnalyzeResponse = {
   ...BASE_RESPONSE,

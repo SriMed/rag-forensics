@@ -7,8 +7,8 @@ The following signals have been ranked by concern level from a forensic analysis
 {signals_text}
 
 Additional context:
-- Faithfulness score: {faithfulness_score:.2f} (1.0 = answer fully grounded in retrieved content)
-- Retrieval relevance score: {retrieval_relevance_score:.2f} (1.0 = retrieved chunks highly relevant to the question)
+- Faithfulness score: {faithfulness_score} (1.0 = answer fully grounded in retrieved content; unavailable = evaluation failed)
+- Context utilization score: {context_utilization_score} (1.0 = higher-ranked retrieved chunks were useful for producing the answer; unavailable = evaluation failed)
 - Unattributed answer fraction: {unattributed_fraction:.0%}
 - Overconfident claim fraction: {overconfident_fraction:.0%}
 

@@ -124,25 +124,33 @@ export default function DiagnosticCard({ response }: Props) {
         </h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-gray-600 mb-0.5">Retrieval Relevance</p>
+            <p className="text-xs text-gray-600 mb-0.5">Context Utilization</p>
             <p className="text-2xl font-bold text-gray-800">
-              {(ragas.retrieval_relevance_score * 100).toFixed(0)}
-              <span className="text-sm font-normal text-gray-600">%</span>
+              {ragas.context_utilization.score === null
+                ? "Unavailable"
+                : `${(ragas.context_utilization.score * 100).toFixed(0)}%`}
             </p>
+            {ragas.context_utilization.error && (
+              <p className="text-xs text-gray-500">{ragas.context_utilization.error}</p>
+            )}
           </div>
           <div>
             <p className="text-xs text-gray-600 mb-0.5">Faithfulness</p>
             <p className="text-2xl font-bold text-gray-800">
-              {(ragas.faithfulness_score * 100).toFixed(0)}
-              <span className="text-sm font-normal text-gray-600">%</span>
+              {ragas.faithfulness.score === null
+                ? "Unavailable"
+                : `${(ragas.faithfulness.score * 100).toFixed(0)}%`}
             </p>
+            {ragas.faithfulness.error && (
+              <p className="text-xs text-gray-500">{ragas.faithfulness.error}</p>
+            )}
           </div>
         </div>
-        {ragas.relevance_context_excerpts.length > 0 && (
+        {ragas.utilization_context_excerpts.length > 0 && (
           <div>
             <p className="text-xs text-gray-600 mb-1">Context excerpts</p>
             <ul className="space-y-1 pl-3 border-l-2 border-gray-200">
-              {ragas.relevance_context_excerpts.map((e, i) => (
+              {ragas.utilization_context_excerpts.map((e, i) => (
                 <li key={i} className="text-xs text-gray-500 italic">
                   {e}
                 </li>

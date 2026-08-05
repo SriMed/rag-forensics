@@ -6,7 +6,7 @@ const ANALYZE_FIXTURE: AnalyzeResponse = {
   question: "What is X?",
   generated_answer: "X is Y.",
   retrieved_chunks: [],
-  ragas: { retrieval_relevance_score: 0.8, faithfulness_score: 0.9, relevance_context_excerpts: [], faithfulness_context_excerpts: [], excerpt_caveat: "Context excerpts are not score evidence." },
+  ragas: { context_utilization: { score: 0.8, status: "ok", error: null }, faithfulness: { score: 0.9, status: "ok", error: null }, utilization_context_excerpts: [], faithfulness_context_excerpts: [], excerpt_caveat: "Context excerpts are not score evidence." },
   hedging_mismatch: { overconfident_fraction: 0, underconfident_fraction: 0, total_claims: 0, claim_breakdown: [], status: "ok", error: null, evaluated_chunk_count: 0 },
   chunk_attribution: { unattributed_fraction: 0, mean_attribution_score: 0.9, weak_match_fraction: 0, attribution_map: [], method: "semantic_similarity", caveat: "Similarity does not prove entailment." },
   retrieval_distribution: { score_gap: 0.3, score_entropy: 0.9, decay_rate: 0.4, tail_mass: 0.1, top_score: 0.9, n_chunks: 3, normalized_entropy: 0.5, interpretation: "Interpret with absolute relevance." },

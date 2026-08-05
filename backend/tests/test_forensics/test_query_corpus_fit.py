@@ -69,7 +69,7 @@ def _make_embed_mock(embeddings: list[np.ndarray]) -> MagicMock:
 # All-clear signal values — no trigger conditions met
 _NO_TRIGGER = dict(
     query_isolation=0.5,
-    retrieval_relevance_score=0.8,
+    context_utilization_score=0.8,
     normalized_entropy=0.5,
     faithfulness_score=0.8,
 )
@@ -125,7 +125,7 @@ def test_query_isolation_triggers(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.3,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -134,10 +134,10 @@ def test_query_isolation_triggers(mocker):
 
 
 # ---------------------------------------------------------------------------
-# Test 3 — retrieval_relevance_score < 0.5 → triggered=True
+# Test 3 — context_utilization_score < 0.5 → triggered=True
 # ---------------------------------------------------------------------------
 
-def test_retrieval_relevance_triggers(mocker):
+def test_context_utilization_triggers(mocker):
     from services.forensics.query_corpus_fit import analyze_query_corpus_fit
 
     query_emb = _unit(seed=1)
@@ -154,7 +154,7 @@ def test_retrieval_relevance_triggers(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=0.5,
-            retrieval_relevance_score=0.4,
+            context_utilization_score=0.4,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -183,7 +183,7 @@ def test_entropy_and_faithfulness_trigger(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=0.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.95,
             faithfulness_score=0.4,
         )
@@ -209,7 +209,7 @@ def test_entropy_alone_does_not_trigger(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
-        retrieval_relevance_score=0.8,
+        context_utilization_score=0.8,
         normalized_entropy=0.95,
         faithfulness_score=0.8,
     )
@@ -236,7 +236,7 @@ def test_faithfulness_alone_does_not_trigger(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
-        retrieval_relevance_score=0.8,
+        context_utilization_score=0.8,
         normalized_entropy=0.5,
         faithfulness_score=0.4,
     )
@@ -266,7 +266,7 @@ def test_triggered_returns_expected_question_count(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -296,7 +296,7 @@ def test_suggested_question_fields(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -330,7 +330,7 @@ def test_source_chunk_ids_from_input(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -364,7 +364,7 @@ def test_high_similarity_query_mismatch(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -397,7 +397,7 @@ def test_low_similarity_coverage_gap(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -430,7 +430,7 @@ def test_mid_similarity_ambiguous(mocker):
             chunks=chunks,
             chunk_embeddings=chunk_embs,
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -457,7 +457,7 @@ def test_claude_exception_fallback(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=1.5,
-        retrieval_relevance_score=0.8,
+        context_utilization_score=0.8,
         normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
@@ -488,7 +488,7 @@ def test_invalid_json_fallback(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
-        retrieval_relevance_score=0.4,
+        context_utilization_score=0.4,
         normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
@@ -514,7 +514,7 @@ def test_wrong_json_structure_fallback(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=1.5,
-        retrieval_relevance_score=0.8,
+        context_utilization_score=0.8,
         normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
@@ -537,7 +537,7 @@ def test_embedding_failure_returns_explicit_error(mocker):
             chunks=_chunks(2),
             chunk_embeddings=[_unit(seed=10), _unit(seed=11)],
             query_isolation=1.5,
-            retrieval_relevance_score=0.8,
+            context_utilization_score=0.8,
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
@@ -565,7 +565,7 @@ def test_query_isolation_boundary_not_triggered(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=1.2,
-        retrieval_relevance_score=0.8,
+        context_utilization_score=0.8,
         normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
@@ -575,10 +575,10 @@ def test_query_isolation_boundary_not_triggered(mocker):
 
 
 # ---------------------------------------------------------------------------
-# Test 16 — retrieval_relevance_score exactly 0.5 → triggered=False (strict <)
+# Test 16 — context_utilization_score exactly 0.5 → triggered=False (strict <)
 # ---------------------------------------------------------------------------
 
-def test_retrieval_relevance_boundary_not_triggered(mocker):
+def test_context_utilization_boundary_not_triggered(mocker):
     from services.forensics.query_corpus_fit import analyze_query_corpus_fit
 
     mock_client = _make_claude_mock(mocker, "[]")
@@ -592,9 +592,28 @@ def test_retrieval_relevance_boundary_not_triggered(mocker):
         chunks=chunks,
         chunk_embeddings=chunk_embs,
         query_isolation=0.5,
-        retrieval_relevance_score=0.5,
+        context_utilization_score=0.5,
         normalized_entropy=0.5,
         faithfulness_score=0.8,
+    )
+
+    assert result.triggered is False
+    mock_client.messages.create.assert_not_called()
+
+
+def test_unavailable_ragas_scores_do_not_trigger(mocker):
+    from services.forensics.query_corpus_fit import analyze_query_corpus_fit
+
+    mock_client = _make_claude_mock(mocker, "[]")
+    result = analyze_query_corpus_fit(
+        question="What is X?",
+        query_embedding=_unit(seed=1),
+        chunks=_chunks(1),
+        chunk_embeddings=[_unit(seed=10)],
+        query_isolation=0.5,
+        context_utilization_score=None,
+        normalized_entropy=0.95,
+        faithfulness_score=None,
     )
 
     assert result.triggered is False

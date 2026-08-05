@@ -324,3 +324,25 @@ sentence. The paired difference can localize supported-sentence false negatives;
 establish production classifier performance or causal responsibility for all RAG failures.
 
 ---
+
+## ADR-033: RAGAS context utilization replaces ambiguous retrieval relevance
+
+**Status:** Accepted
+**Issue:** #20
+
+RAGAS 0.4.3's exported `context_precision` requires a reference answer, but the project supplied the
+sentinel `"N/A"`. The project now uses `ContextUtilization`, whose required inputs are
+`user_input`, `response`, and `retrieved_contexts`, and supplies the actual generated or
+caller-provided answer. The public construct is renamed from retrieval relevance to
+answer-conditioned context utilization because the metric judges whether ranked contexts were
+useful for producing that answer; it does not isolate question–context relevance or retriever
+quality. This supersedes the metric choice in ADR-007 and renames the score-dependent trigger in
+ADR-026.
+
+RAGAS scores are represented as `{score, status, error}`. Evaluation exceptions and non-finite
+values produce an explicit unavailable result rather than zero or a request failure. Numeric
+query-fit triggers skip unavailable inputs, and verdict ranking exposes unavailable evaluations as
+separate diagnostic signals. The same failure model applies to faithfulness because installed
+RAGAS can also produce `NaN` there.
+
+---
