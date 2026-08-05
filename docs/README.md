@@ -23,6 +23,8 @@ protocols, and reproducible commands.
   contracts for analyzing caller-provided RAG outputs.
 - [Prompt development evaluation](reference/prompt-evaluation.md) documents the versioned prompt
   cases, deterministic scorers, held-out split, review schema, and evidence limits.
+- [LLM prompt and model-boundary audit](reference/prompt-audit.md) records the decisive findings,
+  proxy evaluation, recommendations, and linked follow-up work from issue #16.
 - [Installed RAGAS prompt audit](reference/ragas-prompt-audit.md) records the dependency-owned
   prompt contracts, model configuration, parsing and failure behavior, and downstream influence.
 
