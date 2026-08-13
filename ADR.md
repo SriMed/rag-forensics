@@ -283,10 +283,6 @@ After generating suggested questions, each is embedded and its cosine similarity
 **Status:** Accepted
 **Issue:** #9
 
-`verdict_generator.py` separates verdict logic into two stages: (1) `match_rule()` is a deterministic decision tree that maps forensics signal combinations to a `RecommendationRule` object — no LLM involved; (2) `render_recommendation()` calls Claude once to render the matched rule as a single readable sentence. The alternative — asking Claude to synthesize all signals and produce a recommendation in one shot — is harder to test (output is non-deterministic), harder to debug (no inspectable intermediate), and more expensive (more tokens per request). Separating the rule match from the render means the business logic lives in testable Python, and the LLM is used only for prose quality, not for correctness.
-
----
-
 ## ADR-030: `/analyze/custom` computes embeddings inline using the cached singleton from `retriever.py`
 
 **Status:** Accepted
@@ -380,5 +376,27 @@ unavailable-judgment signal. Evaluation still continues past negative, invalid, 
 and short-circuits on the first valid `supported` verdict. This rejects the permissive substring
 strategy in ADR-021 because semantic recognizability is not contract compliance, and because
 coercing invalid output to `not_supported` confounds model-format failure with evidence absence.
+
+---
+
+## ADR-036: Verdict reasoning is deterministic and inspectable before bounded rendering
+
+**Status:** Accepted
+**Issue:** #21
+
+Ranked signals feed a typed deterministic structure containing observations and reliability,
+competing hypotheses, a named component, one discriminating test, and interpretations for each
+outcome. Retrieval and generation hypotheses remain separate when both kinds of signal are present.
+Unavailable analyses are missing evidence and produce a restore-and-rerun test rather than a clean
+interpretation. The API exposes this structure as `verdict_reasoning` while retaining
+`verdict_signals` and recommendation prose.
+
+Claude may only render the supplied structure; it cannot select a cause, component, test, or
+outcome. A failed rendering returns a deterministic serialization of the complete structure. This
+implements the structural lesson from issue #16's small frozen proxy-model evaluation without
+claiming that deterministic scaffolding is generally superior or that production reliability has
+been established. Any production-improvement claim still requires validation through the exact
+production Anthropic SDK and configured model, and held-out cases must not be used for iterative
+prompt tuning.
 
 ---

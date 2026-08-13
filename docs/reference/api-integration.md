@@ -62,6 +62,13 @@ Priority scores in `verdict_signals` are heuristic ordering indices, not probabi
 calibrated severities. Check each signal's `reliability` field and treat recommendations as
 experiments to test rather than established root causes.
 
+`verdict_reasoning` is the inspectable source for the recommendation. It contains `observations`,
+`hypotheses`, and a `test` with a named `component`, an `action`, and outcome-dependent
+`interpretations`. Each interpretation lists the hypothesis IDs that outcome would support. The
+renderer is limited to wording this structure; if its model call fails, `recommendation` contains a
+deterministic rendering of the full structure. Consumers that need stable diagnostic semantics
+should use `verdict_reasoning`, not parse the prose.
+
 The `hedging_mismatch` result also carries explicit availability semantics. A validated empty claim
 array returns `status: "ok"`, `total_claims: 0`, and `error: null`. Extraction failures return
 `status: "error"` and one of `claim_extraction_failed`, `claim_extraction_parse_failed`, or

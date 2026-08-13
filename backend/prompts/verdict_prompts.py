@@ -1,18 +1,16 @@
 """Prompts for the verdict generator."""
 
-RANKED_SIGNALS_PROMPT = """You are writing a diagnostic summary for a RAG (Retrieval-Augmented Generation) pipeline developer.
+RANKED_SIGNALS_PROMPT = """You are wording an already-constructed RAG diagnostic for a developer.
 
-The following signals have been ranked by concern level from a forensic analysis of the system's response:
+Structured diagnostic:
+{reasoning_json}
 
-{signals_text}
-
-Additional context:
-- Faithfulness score: {faithfulness_score} (1.0 = answer fully grounded in retrieved content; unavailable = evaluation failed)
-- Context utilization score: {context_utilization_score} (1.0 = higher-ranked retrieved chunks were useful for producing the answer; unavailable = evaluation failed)
-- Unattributed answer fraction: {unattributed_fraction:.0%}
-- Overconfident claim fraction: {overconfident_fraction:.0%}
-
-Write 2–3 sentences for a developer who needs to know what to investigate next. Treat the signals as diagnostic hypotheses, not proof of root cause. Focus on the highest-ranked signals, name a plausible pipeline component, and propose a concrete test that could confirm or falsify the hypothesis. Do not repeat the numbers verbatim and do not claim that an intervention will work before it is tested."""
+Write 2–3 concise sentences. Preserve the observations as observations, keep materially different
+hypotheses separate, name only the supplied component and test, and include the supplied
+outcome-dependent interpretations. Reliability must bound the language: never turn an unvalidated,
+partially calibrated, or model-judged observation into proof. Do not add causes, components, tests,
+outcomes, or facts absent from the structure. Do not repeat numeric values unless needed to identify
+an observation."""
 
 DIMENSION_EXPLANATION_PROMPT = """Write one plain-English sentence explaining this RAG evaluation signal to a non-technical stakeholder.
 

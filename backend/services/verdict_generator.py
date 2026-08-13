@@ -1,10 +1,11 @@
-"""Verdict generation — ranked signals approach.
+"""Verdict generation — deterministic reasoning with bounded rendering.
 
 Two-stage pipeline:
   Stage 1 — rank_signals(): deterministic scoring of each forensic dimension, no LLM.
-  Stage 2 — render_recommendation(): Claude synthesizes the top-ranked signals into
-             a 2–3 sentence diagnostic for the developer.
+  Stage 2 — build_verdict_reasoning(): deterministic observations, hypotheses, and test.
+  Stage 3 — render_recommendation(): Claude may only word that inspectable structure.
 """
+import json
 import logging
 from dataclasses import dataclass
 
@@ -32,6 +33,39 @@ class RankedSignal:
     priority_score: float  # heuristic 0.0–1.0 index; not a probability or calibrated severity
     description: str
     reliability: str
+
+
+@dataclass(frozen=True)
+class VerdictObservation:
+    signal_name: str
+    description: str
+    reliability: str
+
+
+@dataclass(frozen=True)
+class VerdictHypothesis:
+    hypothesis_id: str
+    statement: str
+
+
+@dataclass(frozen=True)
+class OutcomeInterpretation:
+    outcome: str
+    supports_hypothesis_ids: list[str]
+
+
+@dataclass(frozen=True)
+class DiscriminatingTest:
+    component: str
+    action: str
+    interpretations: list[OutcomeInterpretation]
+
+
+@dataclass(frozen=True)
+class VerdictReasoning:
+    observations: list[VerdictObservation]
+    hypotheses: list[VerdictHypothesis]
+    test: DiscriminatingTest | None
 
 
 def rank_signals(
@@ -189,27 +223,137 @@ def rank_signals(
     return sorted(signals, key=lambda s: s.priority_score, reverse=True)
 
 
-def render_recommendation(
-    signals: list[RankedSignal],
-    faithfulness_score: float | None,
-    context_utilization_score: float | None,
-    attribution: ChunkAttributionMetrics,
-    hedging_mismatch: HedgingMismatchMetrics,
-) -> str:
-    top = signals[:_TOP_N]
-    if not top:
-        return "No significant issues detected — retrieval and generation signals are within normal range."
+_RETRIEVAL_SIGNALS = {
+    "ambiguous_retrieval", "query_isolation", "retrieved_context_topic_gap",
+    "retrieved_context_near_miss", "noisy_context", "low_context_utilization",
+}
+_GENERATION_SIGNALS = {
+    "unattributed_content", "weak_chunk_matches", "overconfidence", "low_faithfulness",
+}
+_UNAVAILABLE_SIGNALS = {
+    "faithfulness_unavailable", "context_utilization_unavailable",
+    "hedging_analysis_unavailable", "hedging_judgments_unavailable",
+    "retrieved_context_fit_unavailable",
+}
 
-    signals_text = "\n".join(
-        f"{i + 1}. {s.description} (heuristic priority: {s.priority_score:.2f}; reliability: {s.reliability})"
-        for i, s in enumerate(top)
+
+def build_verdict_reasoning(signals: list[RankedSignal]) -> VerdictReasoning:
+    """Build inspectable hypotheses and a test without asking a model to infer causes."""
+    top = signals[:_TOP_N]
+    observations = [
+        VerdictObservation(s.name, s.description, s.reliability) for s in top
+    ]
+    if not observations:
+        return VerdictReasoning(observations=[], hypotheses=[], test=None)
+
+    names = {s.name for s in top}
+    has_retrieval = bool(names & _RETRIEVAL_SIGNALS)
+    has_generation = bool(names & _GENERATION_SIGNALS)
+    has_unavailable = bool(names & _UNAVAILABLE_SIGNALS)
+
+    if has_unavailable:
+        hypotheses = [
+            VerdictHypothesis(
+                "H1",
+                "The missing evaluation may be hiding a diagnostic concern that the available signals cannot resolve.",
+            ),
+            VerdictHypothesis(
+                "H2",
+                "The available pipeline behavior may be acceptable, while the apparent concern comes from evaluation unavailability.",
+            ),
+        ]
+        test = DiscriminatingTest(
+            component="unavailable evaluation component",
+            action=(
+                "Restore the unavailable evaluation, rerun it on the same answer and chunks, and compare "
+                "the completed judgment with the available observations."
+            ),
+            interpretations=[
+                OutcomeInterpretation("The restored evaluation reports a concern consistent with the available observations.", ["H1"]),
+                OutcomeInterpretation("The restored evaluation reports no concern and the available observations remain unchanged.", ["H2"]),
+            ],
+        )
+    elif has_retrieval and has_generation:
+        hypotheses = [
+            VerdictHypothesis("H1", "Retrieved evidence may be a poor fit for the question."),
+            VerdictHypothesis("H2", "Answer generation may be introducing or overstating content despite the retrieved evidence."),
+        ]
+        test = DiscriminatingTest(
+            component="retrieval-to-generation boundary",
+            action=(
+                "Hold the question and generator configuration constant, replace the retrieved chunks with "
+                "manually verified relevant chunks, and rerun the answer and forensic checks."
+            ),
+            interpretations=[
+                OutcomeInterpretation("Grounding observations improve with verified chunks.", ["H1"]),
+                OutcomeInterpretation("Grounding observations remain concerning with verified chunks.", ["H2"]),
+            ],
+        )
+    elif has_retrieval:
+        hypotheses = [
+            VerdictHypothesis("H1", "Retrieval may be returning evidence that is a poor fit for the question."),
+            VerdictHypothesis("H2", "The retrieval signal may reflect its heuristic or partially calibrated measurement rather than poor evidence."),
+        ]
+        test = DiscriminatingTest(
+            component="retriever",
+            action="Compare the retrieved chunks with manually verified relevant chunks for the same question.",
+            interpretations=[
+                OutcomeInterpretation("Verified chunks are materially more relevant than the retrieved chunks.", ["H1"]),
+                OutcomeInterpretation("Retrieved and verified chunks are similarly relevant.", ["H2"]),
+            ],
+        )
+    else:
+        hypotheses = [
+            VerdictHypothesis("H1", "Answer generation may be introducing content not supported by the retrieved chunks."),
+            VerdictHypothesis("H2", "The grounding concern may reflect the unvalidated or model-judged measurement rather than generation behavior."),
+        ]
+        test = DiscriminatingTest(
+            component="answer generator",
+            action="Review the flagged answer units against the retrieved chunks, then rerun with a strict evidence-only generation prompt.",
+            interpretations=[
+                OutcomeInterpretation("The strict run removes the flagged unsupported content.", ["H1"]),
+                OutcomeInterpretation("Human review finds support or the strict run leaves the measurements unchanged.", ["H2"]),
+            ],
+        )
+
+    return VerdictReasoning(observations=observations, hypotheses=hypotheses, test=test)
+
+
+def reasoning_payload(reasoning: VerdictReasoning) -> dict:
+    return {
+        "observations": [o.__dict__ for o in reasoning.observations],
+        "hypotheses": [h.__dict__ for h in reasoning.hypotheses],
+        "test": None if reasoning.test is None else {
+            "component": reasoning.test.component,
+            "action": reasoning.test.action,
+            "interpretations": [i.__dict__ for i in reasoning.test.interpretations],
+        },
+    }
+
+
+def format_verdict_reasoning(reasoning: VerdictReasoning) -> str:
+    """Deterministic, complete fallback for rendering failures."""
+    if not reasoning.observations:
+        return "No significant issues detected — retrieval and generation signals are within normal range."
+    observations = "; ".join(
+        f"{o.description} [reliability: {o.reliability}]" for o in reasoning.observations
     )
+    hypotheses = "; ".join(f"{h.hypothesis_id}: {h.statement}" for h in reasoning.hypotheses)
+    test = reasoning.test
+    assert test is not None
+    outcomes = "; ".join(
+        f"{i.outcome} -> {', '.join(i.supports_hypothesis_ids)}" for i in test.interpretations
+    )
+    return f"Observations: {observations} Hypotheses: {hypotheses} Test {test.component}: {test.action} Outcomes: {outcomes}"
+
+
+def render_recommendation(
+    reasoning: VerdictReasoning,
+) -> str:
+    if not reasoning.observations:
+        return format_verdict_reasoning(reasoning)
     prompt = RANKED_SIGNALS_PROMPT.format(
-        signals_text=signals_text,
-        faithfulness_score="unavailable" if faithfulness_score is None else f"{faithfulness_score:.2f}",
-        context_utilization_score="unavailable" if context_utilization_score is None else f"{context_utilization_score:.2f}",
-        unattributed_fraction=attribution.unattributed_fraction,
-        overconfident_fraction=hedging_mismatch.overconfident_fraction,
+        reasoning_json=json.dumps(reasoning_payload(reasoning), indent=2),
     )
     try:
         client = anthropic.Anthropic()
@@ -220,5 +364,5 @@ def render_recommendation(
         )
         return message.content[0].text.strip()
     except Exception:
-        logger.warning("render_recommendation: Claude call failed, falling back to top signal")
-        return top[0].description
+        logger.warning("render_recommendation: Claude call failed, falling back to structured reasoning")
+        return format_verdict_reasoning(reasoning)

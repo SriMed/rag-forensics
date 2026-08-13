@@ -89,7 +89,9 @@ def test_render_uses_production_prompt_builders(dataset):
 
     frozen_verdict = next(case for case in dataset["cases"] if case["id"] == "verdict_dominant")
     verdict_prompt = render_case(frozen_verdict).prompt
-    assert "Context utilization score: 0.84" in verdict_prompt
+    assert "no semantically close source" in verdict_prompt
+    assert '"hypotheses"' in verdict_prompt
+    assert '"interpretations"' in verdict_prompt
 
 
 @pytest.mark.parametrize(

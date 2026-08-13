@@ -218,4 +218,14 @@ def test_analyze_response_has_recommendation(mocker):
     body = response.json()
     assert "recommendation" in body
     assert isinstance(body["recommendation"], str)
+
+
+def test_analyze_response_exposes_structured_verdict_reasoning(mocker):
+    _patch_services(mocker)
+    body = client.post("/analyze", json={"example_id": "techqa-001"}).json()
+    reasoning = body["verdict_reasoning"]
+    assert reasoning["observations"]
+    assert len(reasoning["hypotheses"]) == 2
+    assert reasoning["test"]["component"]
+    assert len(reasoning["test"]["interpretations"]) == 2
     assert "rule_id" not in body

@@ -93,6 +93,7 @@ def test_custom_response_is_analyze_response_shape(mocker):
     assert "retrieval_distribution" in body
     assert "embedding_space" in body
     assert "query_corpus_fit" in body
+    assert "verdict_reasoning" in body
     assert "recommendation" in body
     assert "rule_id" not in body
 

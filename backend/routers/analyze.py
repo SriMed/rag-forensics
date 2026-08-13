@@ -1,11 +1,12 @@
 import logging
+from dataclasses import asdict
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest, VerdictSignal
+from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest, VerdictSignal, VerdictReasoning
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.forensics.query_corpus_fit import analyze_query_corpus_fit
-from services.verdict_generator import rank_signals, render_recommendation
+from services.verdict_generator import build_verdict_reasoning, rank_signals, render_recommendation
 from services.retriever import retrieve_for_example
 from services.generator import generate_answer
 from services.ragas_scorer import score_context_utilization, score_answer_faithfulness
@@ -60,13 +61,8 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             hedging_mismatch=hedging,
             query_fit=query_corpus_fit,
         )
-        recommendation = render_recommendation(
-            signals=signals,
-            faithfulness_score=faithfulness.score,
-            context_utilization_score=utilization.score,
-            attribution=chunk_attribution,
-            hedging_mismatch=hedging,
-        )
+        reasoning = build_verdict_reasoning(signals)
+        recommendation = render_recommendation(reasoning)
     except Exception as exc:
         logger.exception("analyze failed for example_id=%s", request.example_id)
         raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -90,6 +86,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
         verdict_signals=[VerdictSignal(name=s.name, priority_score=s.priority_score, description=s.description, reliability=s.reliability) for s in signals],
+        verdict_reasoning=VerdictReasoning.model_validate(asdict(reasoning)),
         recommendation=recommendation,
     )
 
@@ -139,13 +136,8 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
             hedging_mismatch=hedging,
             query_fit=query_corpus_fit,
         )
-        recommendation = render_recommendation(
-            signals=signals,
-            faithfulness_score=faithfulness.score,
-            context_utilization_score=utilization.score,
-            attribution=chunk_attribution,
-            hedging_mismatch=hedging,
-        )
+        reasoning = build_verdict_reasoning(signals)
+        recommendation = render_recommendation(reasoning)
     except Exception as exc:
         logger.exception("analyze/custom failed")
         raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -168,5 +160,6 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         embedding_space=embedding_space,
         query_corpus_fit=query_corpus_fit,
         verdict_signals=[VerdictSignal(name=s.name, priority_score=s.priority_score, description=s.description, reliability=s.reliability) for s in signals],
+        verdict_reasoning=VerdictReasoning.model_validate(asdict(reasoning)),
         recommendation=recommendation,
     )

@@ -202,6 +202,34 @@ class VerdictSignal(BaseModel):
     reliability: Literal["unvalidated", "partially_calibrated", "model_judged"]
 
 
+class VerdictObservation(BaseModel):
+    signal_name: str
+    description: str
+    reliability: Literal["unvalidated", "partially_calibrated", "model_judged"]
+
+
+class VerdictHypothesis(BaseModel):
+    hypothesis_id: str
+    statement: str
+
+
+class VerdictOutcomeInterpretation(BaseModel):
+    outcome: str
+    supports_hypothesis_ids: list[str]
+
+
+class VerdictDiscriminatingTest(BaseModel):
+    component: str
+    action: str
+    interpretations: list[VerdictOutcomeInterpretation]
+
+
+class VerdictReasoning(BaseModel):
+    observations: list[VerdictObservation]
+    hypotheses: list[VerdictHypothesis]
+    test: VerdictDiscriminatingTest | None
+
+
 class AnalyzeResponse(BaseModel):
     question: str
     generated_answer: str
@@ -213,6 +241,7 @@ class AnalyzeResponse(BaseModel):
     embedding_space: EmbeddingSpaceMetrics
     query_corpus_fit: QueryCorpusFitMetrics
     verdict_signals: list[VerdictSignal]  # all ranked signals, descending by heuristic priority
+    verdict_reasoning: VerdictReasoning
     recommendation: str
 
 

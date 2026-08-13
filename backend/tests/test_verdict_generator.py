@@ -14,7 +14,13 @@ from models import (
     QueryCorpusFitMetrics,
     RetrievalDistributionMetrics,
 )
-from services.verdict_generator import RankedSignal, rank_signals, render_recommendation
+from services.verdict_generator import (
+    RankedSignal,
+    build_verdict_reasoning,
+    format_verdict_reasoning,
+    rank_signals,
+    render_recommendation,
+)
 from signal_weights import SignalWeights
 
 
@@ -277,13 +283,46 @@ def test_rank_signals_fuzz_never_crashes():
 
 
 # ---------------------------------------------------------------------------
-# render_recommendation
+# structured reasoning and bounded rendering
 # ---------------------------------------------------------------------------
+
+def test_conflicting_frozen_development_case_keeps_competing_explanations():
+    signals = [
+        RankedSignal("query_isolation", 0.8, "Query is distant from chunks.", "partially_calibrated"),
+        RankedSignal("overconfidence", 0.2, "Claims are definitive but unsupported.", "model_judged"),
+        RankedSignal("low_faithfulness", 0.08, "Faithfulness is not perfect.", "model_judged"),
+    ]
+
+    reasoning = build_verdict_reasoning(signals)
+
+    assert [h.hypothesis_id for h in reasoning.hypotheses] == ["H1", "H2"]
+    assert "Retrieved evidence" in reasoning.hypotheses[0].statement
+    assert "generation" in reasoning.hypotheses[1].statement
+    assert reasoning.test.component == "retrieval-to-generation boundary"
+    assert {tuple(i.supports_hypothesis_ids) for i in reasoning.test.interpretations} == {("H1",), ("H2",)}
+
+
+def test_observations_preserve_signal_reliability():
+    reasoning = build_verdict_reasoning([
+        RankedSignal("unattributed_content", 0.7, "Content lacks a close source.", "unvalidated"),
+        RankedSignal("low_faithfulness", 0.58, "Faithfulness is low.", "model_judged"),
+    ])
+    assert [o.reliability for o in reasoning.observations] == ["unvalidated", "model_judged"]
+    assert all("may" in h.statement for h in reasoning.hypotheses)
+
+
+def test_unavailable_signal_is_missing_evidence_not_healthy_zero():
+    reasoning = build_verdict_reasoning([
+        RankedSignal("hedging_analysis_unavailable", 0.5, "Hedging analysis is unavailable.", "unvalidated"),
+    ])
+    fallback = format_verdict_reasoning(reasoning)
+    assert "unavailable" in fallback.lower()
+    assert reasoning.test.component == "unavailable evaluation component"
+
 
 def test_render_recommendation_returns_string():
     signals = [RankedSignal(name="low_faithfulness", priority_score=0.6, description="Low faithfulness.", reliability="model_judged")]
-    attr = _attribution()
-    hed = _hedging()
+    reasoning = build_verdict_reasoning(signals)
 
     fake_message = MagicMock()
     fake_message.content = [MagicMock(text="Investigate your prompt template — faithfulness is low.")]
@@ -291,25 +330,26 @@ def test_render_recommendation_returns_string():
     fake_client.messages.create.return_value = fake_message
 
     with patch("services.verdict_generator.anthropic.Anthropic", return_value=fake_client):
-        result = render_recommendation(signals, 0.4, 0.8, attr, hed)
+        result = render_recommendation(reasoning)
 
     assert isinstance(result, str)
     assert len(result) > 0
 
 
-def test_render_recommendation_claude_failure_falls_back_to_top_signal():
+def test_render_recommendation_claude_failure_falls_back_to_full_structure():
     signals = [RankedSignal(name="overconfidence", priority_score=0.7, description="Claims are overconfident.", reliability="model_judged")]
-    attr = _attribution()
-    hed = _hedging()
+    reasoning = build_verdict_reasoning(signals)
 
     with patch("services.verdict_generator.anthropic.Anthropic", side_effect=Exception("API down")):
-        result = render_recommendation(signals, 0.5, 0.5, attr, hed)
+        result = render_recommendation(reasoning)
 
-    assert result == "Claims are overconfident."
+    assert result == format_verdict_reasoning(reasoning)
+    assert "Hypotheses:" in result
+    assert "Outcomes:" in result
 
 
 def test_render_recommendation_empty_signals_returns_no_issues():
-    result = render_recommendation([], 0.95, 0.95, _attribution(), _hedging())
+    result = render_recommendation(build_verdict_reasoning([]))
     assert "no significant issues" in result.lower()
 
 
@@ -406,8 +446,6 @@ def test_rank_signals_omitting_weights_uses_defaults():
 
 def test_render_recommendation_under_word_limit():
     signals = [RankedSignal(name="low_faithfulness", priority_score=0.6, description="Low faithfulness.", reliability="model_judged")]
-    attr = _attribution()
-    hed = _hedging()
 
     fake_text = "Retrieval is decisive but the answer draws on content outside the retrieved chunks — increase chunk size to give the model more grounding material."
     fake_message = MagicMock()
@@ -416,6 +454,6 @@ def test_render_recommendation_under_word_limit():
     fake_client.messages.create.return_value = fake_message
 
     with patch("services.verdict_generator.anthropic.Anthropic", return_value=fake_client):
-        result = render_recommendation(signals, 0.4, 0.8, attr, hed)
+        result = render_recommendation(build_verdict_reasoning(signals))
 
     assert len(result.split()) <= 100

@@ -1,0 +1,49 @@
+{
+  "schema_version": "verdict-reasoning-review.v1",
+  "dataset_version": "1.0.0",
+  "executed_at": "2026-08-13",
+  "execution": {
+    "sdk": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "max_tokens": 200,
+    "split": "held_out",
+    "execution_mode": "production_path",
+    "case_ids": [
+      "verdict_unavailable"
+    ],
+    "run_count": 1
+  },
+  "records": [
+    {
+      "case_id": "verdict_unavailable",
+      "response": "Hedging analysis is unavailable due to a claim extraction failure, so the absence of hedging flags should not be read as a sign the answer is clean; separately, the retrieval relevance score indicates that the retrieved chunks do not match the question particularly well, though this judgment comes from a model rather than a validated signal. These observations leave two competing explanations open: the missing evaluation may be concealing a genuine concern that the available signals cannot resolve (H1), or the pipeline may actually be behaving acceptably and the apparent problem stems entirely from the evaluation being unavailable (H2). To distinguish between them, restore the unavailable evaluation component, rerun it against the same answer and chunks, and compare its output with the existing observations — if it surfaces a concern consistent with what is already visible, that supports H1, whereas if it reports nothing wrong and the other observations hold steady, that supports H2.",
+      "deterministic_review": {
+        "passed": true,
+        "sentence_count": 3,
+        "expected_sentence_count": "2-3",
+        "availability_terms_found": [
+          "unavailable",
+          "rerun",
+          "claim extraction"
+        ]
+      },
+      "semantic_review": {
+        "reviewer_count": 1,
+        "passed": true,
+        "criteria": [
+          {
+            "criterion": "Unavailable analysis is not reported as a healthy zero.",
+            "passed": true,
+            "reason": "The response explicitly says the absence of hedging flags must not be read as a clean answer."
+          },
+          {
+            "criterion": "Any diagnosis acknowledges the missing evidence.",
+            "passed": true,
+            "reason": "The response names claim-extraction failure, retains competing explanations, and proposes restoring and rerunning the unavailable evaluation."
+          }
+        ]
+      }
+    }
+  ],
+  "evidence_boundary": "This single frozen held-out case confirms contract behavior for one unavailable-analysis scenario under the configured production SDK and model. It does not estimate population reliability or prove deterministic scaffolding is generally superior."
+}

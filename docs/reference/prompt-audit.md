@@ -54,6 +54,12 @@ not results from the exact production Anthropic SDK/model configuration. Raw run
 preserved locally outside version control; the committed repository contains the frozen cases,
 scoring logic, review schema, and comparison method without claiming model execution.
 
+Issue #21 subsequently implemented deterministic verdict reasoning and evaluated its two frozen
+development verdict cases plus the single frozen held-out verdict case through the Anthropic SDK
+with the configured `claude-sonnet-4-6` model. The held-out case was executed once after development
+was complete and was not used for tuning. Its raw response and review are preserved in
+[`verdict-reasoning-production-review.json`](../../backend/evals/prompt_audit/v1/verdict-reasoning-production-review.json).
+
 ### Aggregate results
 
 | Run | Scope | Deterministic | Human review | Interpretation |
@@ -62,6 +68,8 @@ scoring logic, review schema, and comparison method without claiming model execu
 | Verdict candidate v1 | Same 18 case IDs | 12/18 | 14/18 | Rejected: target remained a failure and an existing verdict pass regressed |
 | Verdict candidate v2 | Same 18 case IDs | 13/18 | 15/18 | Selected on development: target improved and the other verdict remained a semantic pass |
 | Verdict v2 held-out | Four production-path held-out cases, run once | 3/4 | 4/4 | Semantic pass; deterministic miss came from decimal-sensitive sentence counting |
+| Structured verdict implementation | Two frozen development verdict cases, production SDK/model | Not rescored as a paired baseline | 2/2 | Both retained distinct hypotheses and outcome-dependent tests |
+| Structured verdict held-out | One frozen held-out verdict case, production SDK/model, run once | 1/1 | 1/1 | Missing evidence remained unavailable; no tuning or rerun followed |
 
 No counterfactual held-out case was run. Neither development nor held-out was rerun to rescue a
 candidate after inspecting its output.
@@ -126,18 +134,18 @@ the superseded implementation rather than current behavior. See
 
 ### Purpose and call site
 
-`RANKED_SIGNALS_PROMPT` in `backend/prompts/verdict_prompts.py:3–15` receives the top deterministic
-signals, reliability labels, and selected raw values. `render_recommendation()` calls Claude Sonnet
-with `max_tokens=200` at `backend/services/verdict_generator.py:163–195`; API failure falls back to
-the top signal description.
+`build_verdict_reasoning()` receives the top deterministic signals and constructs typed
+observations, reliability, competing hypotheses, a named component, one test, and
+outcome-dependent interpretations. `RANKED_SIGNALS_PROMPT` receives only that structure.
+`render_recommendation()` calls the configured Claude Sonnet model with `max_tokens=200`; API
+failure deterministically renders the complete structure.
 
 ### Output contract
 
-The prompt requests two to three sentences that frame signals as hypotheses, name a plausible
-component, and propose a falsifiable test without asserting an intervention will work. Production
-returns unvalidated free-form text. The separate `DIMENSION_EXPLANATION_PROMPT` is currently unused;
-it creates no active model boundary and needs no independent follow-up. Its disposition belongs
-with the verdict implementation work.
+The prompt limits the model to wording supplied observations, hypotheses, component, test, and
+outcomes in two to three sentences. Reliability must bound its language, and it may not add causes,
+tests, or facts. The inspectable API structure remains authoritative; recommendation prose is a
+presentation layer.
 
 ### Representative observations
 
@@ -153,12 +161,19 @@ Candidate v2 retained format imperfections: it could repeat numeric values and i
 conflicted with an “exactly two sentences” instruction. The result supports the structural lesson,
 not copying the evaluated text.
 
+The implemented structure passed semantic review on both frozen development verdict cases through
+the production SDK/model. In the one-time `verdict_unavailable` held-out run, all frozen
+deterministic checks passed: the response was non-empty, contained three sentences, and explicitly
+included unavailable/rerun semantics. A single-reviewer semantic review also passed both criteria:
+missing hedging evidence was not presented as a healthy zero, and the diagnosis acknowledged the
+missing evidence. This is one case-level contract result, not a production failure-rate estimate.
+
 ### Recommendation
 
-Construct observations, reliability, competing hypotheses, component, test, and outcome meanings
-as an inspectable intermediate representation. Limit the LLM to bounded rendering and fall back to
-that structure on failure. Validate with the production SDK/model before claiming production
-improvement. Follow-up: [#21](https://github.com/SriMed/rag-forensics/issues/21).
+Issue [#21](https://github.com/SriMed/rag-forensics/issues/21) implemented the recommended
+inspectable intermediate representation, bounded rendering, and deterministic fallback. The exact
+production SDK/model checks support closing that implementation issue while preserving the narrow
+evidence boundary above.
 
 ## 3. Query-fit question generation
 
@@ -325,8 +340,9 @@ version corrected behavior and report migration differences rather than silently
 
 ## Open questions and update conditions
 
-- Production-model reliability remains unknown until the selected verdict structure is validated
-  through the exact production SDK/model configuration.
+- Broader production-model reliability remains unknown: the exact production SDK/model validation
+  covers two frozen development cases and one frozen held-out verdict case, not a representative
+  production sample.
 - The magnitude of the RAGAS sentinel mismatch remains unknown until compared against labeled
   retrieval examples and a contract-compatible metric.
 - Query-fit and truncated-generation observations are case-level findings; broader claims require

@@ -13,6 +13,7 @@ from prompts.generation_prompts import GENERATION_SYSTEM_PROMPT, build_generatio
 from prompts.hedging_prompts import CLAIM_EXTRACTION_PROMPT, ENTAILMENT_PROMPT
 from prompts.query_fit_prompts import build_question_generation_prompt
 from prompts.verdict_prompts import RANKED_SIGNALS_PROMPT
+from services.verdict_generator import RankedSignal, build_verdict_reasoning, reasoning_payload
 
 DATASET_PATH = Path(__file__).parent / "v1" / "cases.json"
 Split = Literal["development", "held_out"]
@@ -107,14 +108,34 @@ def render_case(case: dict[str, Any]) -> RenderedCase:
             inputs["chunks_text"], inputs["original_question"]
         )
     elif boundary == "verdict_rendering":
-        prompt_inputs = dict(inputs)
-        # Frozen v1 used the superseded issue #20 field name. Preserve the dataset while
-        # rendering it through the current production prompt contract.
-        if "retrieval_relevance_score" in prompt_inputs:
-            prompt_inputs["context_utilization_score"] = prompt_inputs.pop(
-                "retrieval_relevance_score"
+        # Preserve frozen v1 inputs and adapt their ranked-signal text to the current
+        # deterministic reasoning boundary. The dataset itself remains unchanged.
+        signal_names = {
+            "no semantically close source": "unattributed_content",
+            "Faithfulness score": "low_faithfulness",
+            "geometrically distant": "query_isolation",
+            "definitively but unsupported": "overconfidence",
+            "Hedging analysis is unavailable": "hedging_analysis_unavailable",
+            "Retrieval relevance score": "low_context_utilization",
+        }
+        signals = []
+        for line in inputs["signals_text"].splitlines():
+            description = re.sub(r"^\d+\.\s*", "", line)
+            metadata = re.search(
+                r"\s*\(heuristic priority: ([0-9.]+); reliability: ([a-z_]+)\)$",
+                description,
             )
-        prompt = RANKED_SIGNALS_PROMPT.format(**prompt_inputs)
+            if metadata is None:
+                raise ValueError(f"invalid frozen verdict signal: {line}")
+            description = description[:metadata.start()]
+            name = next((value for key, value in signal_names.items() if key in description), None)
+            if name is None:
+                raise ValueError(f"unmapped frozen verdict signal: {line}")
+            signals.append(RankedSignal(name, float(metadata.group(1)), description, metadata.group(2)))
+        reasoning = build_verdict_reasoning(signals)
+        prompt = RANKED_SIGNALS_PROMPT.format(
+            reasoning_json=json.dumps(reasoning_payload(reasoning), indent=2)
+        )
     else:  # Protected by load_dataset; retained for direct callers.
         raise ValueError(f"unsupported boundary: {boundary}")
     return RenderedCase(case=case, prompt=prompt, system_prompt=system_prompt)

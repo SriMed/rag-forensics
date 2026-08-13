@@ -15,9 +15,16 @@ should be interpreted as independently proving a pipeline root cause.
 | Retrieved-context fit | questions the retrieved passages appear able to answer | conditional hypothesis about retrieved content, not the full corpus |
 
 The verdict generator converts these observations into a deterministic ordering of
-`verdict_signals`. Each signal identifies its score as a heuristic priority and exposes a
-reliability class. Recommendation prose uses the highest-ranked observations to propose
-follow-up tests.
+`verdict_signals` and an inspectable `verdict_reasoning` object. The latter preserves up to three
+observations with reliability labels, materially different hypotheses, a named component under
+test, one test action, and outcome interpretations that identify which hypothesis each result
+supports. When retrieval and generation signals coexist, they remain competing explanations
+rather than being collapsed into a single asserted cause.
+
+Claude receives only this constructed structure and may word it as recommendation prose; it is not
+asked to invent causes or tests. If rendering fails, the API deterministically formats the complete
+structure instead of falling back to one signal. Unavailable evaluations become missing-evidence
+observations with a restore-and-rerun test, never healthy zeros.
 
 For a non-technical walkthrough of evidence candidates, competing hypotheses, and follow-up
 tests, see [How RAG Forensics investigates an answer](../explainers/how-rag-forensics-works.md).
@@ -103,6 +110,8 @@ preserves verifier errors as unknown states, and avoids treating its outputs as 
   tables, or financial calculation.
 - Hedging classification is lexicon-bounded; unseen constructions default toward definitive.
 - Retrieved-context-fit trigger thresholds and verdict priorities remain heuristic.
+- Verdict hypothesis and test templates are deterministic diagnostic defaults, not proof that the
+  named component caused an observed failure.
 - `/analyze/custom` re-embeds caller text with the project’s MiniLM model, which may not match the
   caller’s production retriever space.
 - Model or evaluator failure is an unknown state and must not be rendered as a clean result.
