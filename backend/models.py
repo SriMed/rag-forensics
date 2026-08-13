@@ -1,6 +1,12 @@
 from typing import Literal
 from pydantic import BaseModel, Field, field_validator, model_validator
 
+ClaimExtractionError = Literal[
+    "claim_extraction_failed",
+    "claim_extraction_parse_failed",
+    "claim_extraction_schema_failed",
+]
+
 
 class SuggestedQuestion(BaseModel):
     question: str
@@ -110,8 +116,16 @@ class HedgingMismatchMetrics(BaseModel):
     total_claims: int
     claim_breakdown: list[ClaimEntry]
     status: Literal["ok", "error"] = "ok"
-    error: str | None = None
+    error: ClaimExtractionError | None = None
     evaluated_chunk_count: int = 0
+
+    @model_validator(mode="after")
+    def status_matches_error(self):
+        if self.status == "ok" and self.error is not None:
+            raise ValueError("successful hedging results cannot include an error")
+        if self.status == "error" and self.error is None:
+            raise ValueError("failed hedging results require an error")
+        return self
 
 
 class RAGASMetricResult(BaseModel):

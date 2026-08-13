@@ -245,23 +245,64 @@ def test_extraction_invalid_json_returns_zeroed(mocker):
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.total_claims == 0
     assert result.claim_breakdown == []
+    assert result.status == "error"
+    assert result.error == "claim_extraction_parse_failed"
 
 
-def test_extraction_response_wrapped_in_code_fence(mocker):
-    """Model sometimes wraps JSON in ```json ... ``` — must still parse correctly."""
+def test_extraction_response_wrapped_in_code_fence_is_rejected(mocker):
     fenced = '```json\n["The deadline is March 15."]\n```'
-    _make_mock(mocker, [fenced, "not_supported"])
+    _make_mock(mocker, [fenced])
     result = analyze_hedging_mismatch("The deadline is March 15.", _chunks(1))
-    assert result.total_claims == 1
-    assert result.claim_breakdown[0].mismatch_type == "overconfident"
+    assert result.status == "error"
+    assert result.error == "claim_extraction_parse_failed"
 
 
-def test_extraction_response_wrapped_in_plain_code_fence(mocker):
-    """Model may also use ``` without language tag."""
+def test_extraction_response_wrapped_in_plain_code_fence_is_rejected(mocker):
     fenced = '```\n["The deadline is March 15."]\n```'
-    _make_mock(mocker, [fenced, "not_supported"])
+    _make_mock(mocker, [fenced])
     result = analyze_hedging_mismatch("The deadline is March 15.", _chunks(1))
-    assert result.total_claims == 1
+    assert result.status == "error"
+    assert result.error == "claim_extraction_parse_failed"
+
+
+@pytest.mark.parametrize("payload", [
+    '["The deadline is March 15."] trailing prose',
+    '["The deadline is March 15."]\n```',
+])
+def test_extraction_trailing_content_is_rejected_as_parse_failure(mocker, payload):
+    _make_mock(mocker, [payload])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.status == "error"
+    assert result.error == "claim_extraction_parse_failed"
+
+
+@pytest.mark.parametrize("payload", [
+    '{"claim": "The deadline is March 15."}',
+    '"The deadline is March 15."',
+    '["The deadline is March 15.", 23]',
+    '[null]',
+])
+def test_extraction_schema_violations_are_rejected(mocker, payload):
+    _make_mock(mocker, [payload])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    assert result.status == "error"
+    assert result.error == "claim_extraction_schema_failed"
+    assert result.total_claims == 0
+
+
+def test_extraction_uses_exact_array_of_strings_schema(mocker):
+    mock_client = _make_mock(mocker, ["[]"])
+    result = analyze_hedging_mismatch("No factual claims.", _chunks(1))
+
+    output_config = mock_client.messages.create.call_args.kwargs["output_config"]
+    assert output_config == {
+        "format": {
+            "type": "json_schema",
+            "schema": {"items": {"type": "string"}, "type": "array"},
+        }
+    }
+    assert result.status == "ok"
+    assert result.error is None
 
 
 # ---------------------------------------------------------------------------

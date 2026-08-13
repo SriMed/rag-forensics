@@ -61,3 +61,9 @@ response schema.
 Priority scores in `verdict_signals` are heuristic ordering indices, not probabilities or
 calibrated severities. Check each signal's `reliability` field and treat recommendations as
 experiments to test rather than established root causes.
+
+The `hedging_mismatch` result also carries explicit availability semantics. A validated empty claim
+array returns `status: "ok"`, `total_claims: 0`, and `error: null`. Extraction failures return
+`status: "error"` and one of `claim_extraction_failed`, `claim_extraction_parse_failed`, or
+`claim_extraction_schema_failed`; downstream verdicts treat those zero-valued metric placeholders as
+unavailable rather than healthy.

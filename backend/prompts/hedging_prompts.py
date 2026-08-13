@@ -3,7 +3,8 @@ assertable statement about the world that could be verified.
 
 Answer: {answer}
 
-Return only a JSON array of claim strings. Include the original hedging language if present.
+Return only the schema-constrained JSON array of claim strings, with no Markdown fences or \
+commentary. Include the original hedging language if present.
 Example: ["The policy was enacted in 2019.", "It may apply to contracts signed after March.", "The fee is approximately $50."]
 If there are no factual claims, return an empty array: []"""
 

@@ -205,9 +205,12 @@ classification.
 
 ### Output contract and current handling
 
-Production removes a leading fence and uses `json.loads`. Any exception returns explicit
-`claim_extraction_failed` status and zero-valued metric fields. The decoded top-level and item types
-are not explicitly validated before later string operations.
+Production supplies the Anthropic API with a JSON Schema whose root is an array and whose items are
+strings. It then decodes the returned text and independently validates the same type contract before
+confidence classification. Fences, trailing commentary, and other invalid JSON produce
+`claim_extraction_parse_failed`; valid JSON with a non-array root or non-string item produces
+`claim_extraction_schema_failed`; request or response-access failures produce
+`claim_extraction_failed`. Only a validated empty array reports a healthy zero-claim result.
 
 ### Representative observations
 
@@ -227,8 +230,9 @@ replacement by sentence splitting.
 
 ### Recommendation
 
-Use a typed array-of-strings contract, validate every value, and distinguish a valid empty result
-from unavailable extraction. Follow-up: [#23](https://github.com/SriMed/rag-forensics/issues/23).
+The typed boundary and failure distinction were implemented by
+[#23](https://github.com/SriMed/rag-forensics/issues/23). Production-model reliability is still an
+empirical question, but invalid values cannot reach confidence classification or entailment.
 
 ## 5. Entailment
 

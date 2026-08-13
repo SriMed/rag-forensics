@@ -11,12 +11,21 @@ import re
 from typing import Literal
 
 import anthropic
+from pydantic import TypeAdapter, ValidationError
 
 from config import CLAUDE_HAIKU
-from models import ClaimEntry, HedgingMismatchMetrics, RetrievedChunk
+from models import ClaimEntry, ClaimExtractionError, HedgingMismatchMetrics, RetrievedChunk
 from prompts.hedging_prompts import CLAIM_EXTRACTION_PROMPT, ENTAILMENT_PROMPT
 
 logger = logging.getLogger(__name__)
+
+_CLAIMS_ADAPTER = TypeAdapter(list[str])
+_CLAIMS_OUTPUT_CONFIG = {
+    "format": {
+        "type": "json_schema",
+        "schema": _CLAIMS_ADAPTER.json_schema(),
+    }
+}
 
 # ---------------------------------------------------------------------------
 # Lexicon for confidence classification (deterministic, no LLM)
@@ -134,6 +143,24 @@ _ZEROED = HedgingMismatchMetrics(
 _ENTAILMENT_TOP_K = 3
 
 
+def _extraction_error(error: ClaimExtractionError) -> HedgingMismatchMetrics:
+    return HedgingMismatchMetrics(
+        overconfident_fraction=0.0,
+        underconfident_fraction=0.0,
+        total_claims=0,
+        claim_breakdown=[],
+        status="error",
+        error=error,
+        evaluated_chunk_count=0,
+    )
+
+
+def _parse_claims(raw: str) -> list[str]:
+    """Decode and strictly validate the claim-extraction payload."""
+    decoded = json.loads(raw)
+    return _CLAIMS_ADAPTER.validate_python(decoded, strict=True)
+
+
 def analyze_hedging_mismatch(
     answer: str,
     chunks: list[RetrievedChunk],
@@ -150,6 +177,7 @@ def analyze_hedging_mismatch(
         extraction_response = client.messages.create(
             model=CLAUDE_HAIKU,
             max_tokens=1024,
+            output_config=_CLAIMS_OUTPUT_CONFIG,
             messages=[
                 {
                     "role": "user",
@@ -158,22 +186,16 @@ def analyze_hedging_mismatch(
             ],
         )
         raw = extraction_response.content[0].text.strip()
-        # Strip markdown code fences (```json ... ``` or ``` ... ```)
-        if raw.startswith("```"):
-            raw = raw.split("\n", 1)[1]
-            raw = raw.rsplit("```", 1)[0].strip()
-        claims_list: list[str] = json.loads(raw)
+        claims_list = _parse_claims(raw)
+    except json.JSONDecodeError:
+        logger.warning("Claim extraction returned invalid JSON")
+        return _extraction_error("claim_extraction_parse_failed")
+    except ValidationError:
+        logger.warning("Claim extraction returned JSON that violates the claim schema")
+        return _extraction_error("claim_extraction_schema_failed")
     except Exception:
-        logger.warning("Claim extraction failed; returning explicit error status")
-        return HedgingMismatchMetrics(
-            overconfident_fraction=0.0,
-            underconfident_fraction=0.0,
-            total_claims=0,
-            claim_breakdown=[],
-            status="error",
-            error="claim_extraction_failed",
-            evaluated_chunk_count=0,
-        )
+        logger.warning("Claim extraction request failed; returning explicit error status")
+        return _extraction_error("claim_extraction_failed")
 
     if not claims_list:
         return _ZEROED

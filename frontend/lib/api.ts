@@ -40,7 +40,11 @@ export interface HedgingMismatchMetrics {
   total_claims: number;
   claim_breakdown: ClaimEntry[];
   status: "ok" | "error";
-  error: string | null;
+  error:
+    | "claim_extraction_failed"
+    | "claim_extraction_parse_failed"
+    | "claim_extraction_schema_failed"
+    | null;
   evaluated_chunk_count: number;
 }
 

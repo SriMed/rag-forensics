@@ -346,3 +346,21 @@ separate diagnostic signals. The same failure model applies to faithfulness beca
 RAGAS can also produce `NaN` there.
 
 ---
+
+## ADR-034: Claim extraction is a schema-constrained, locally validated boundary
+
+**Status:** Accepted
+**Issue:** #23
+
+Claim extraction supplies the Anthropic Messages API with an exact root-array-of-strings JSON
+Schema and repeats strict validation locally before any string operation. Markdown fences,
+trailing prose, and malformed JSON are not repaired because accepting a recoverable prefix would
+make commentary outside the payload indistinguishable from a valid response. A valid empty array
+remains a successful zero-claim observation.
+
+Failures are separated into transport/response access (`claim_extraction_failed`), JSON decoding
+(`claim_extraction_parse_failed`), and decoded-schema validation
+(`claim_extraction_schema_failed`). All return an unavailable hedging analysis, and downstream
+ranking must use the status rather than interpreting the numeric placeholders as healthy zeros.
+
+---
