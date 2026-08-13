@@ -53,6 +53,16 @@ reformulation is a reasonable intervention to test. If they answer distant quest
 or corpus coverage deserves investigation. Neither observation proves that query wording caused
 the failure or that the corpus lacks the answer.
 
+When triggered, question generation returns three to five structured candidates with cited chunk
+IDs. A separate structured model judgment checks whether each candidate is directly answerable
+from its cited chunks and sufficiently specific. Citations outside the retrieved set are invalid, and accepted question
+embeddings must remain below `0.90` pairwise cosine similarity to exclude semantic duplicates.
+Only three or more accepted questions can produce a retrieved-context fit label. Otherwise the
+result has `status="error"`, `error="insufficient_valid_questions"`, and no `observed_fit` or mean
+similarity. Accepted and rejected candidates remain inspectable; rejection reasons distinguish
+unsupported or nonspecific questions, semantic duplicates, and invalid chunk citations. These labels concern
+only the retrieved passages and never establish full-corpus coverage.
+
 ## Architecture
 
 ```text

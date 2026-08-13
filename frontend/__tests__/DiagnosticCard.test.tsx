@@ -76,6 +76,7 @@ const BASE_RESPONSE: AnalyzeResponse = {
     triggered: false,
     observed_fit: null,
     suggested_questions: [],
+    rejected_questions: [],
     mean_question_similarity: null,
     status: "not_run",
     error: null,

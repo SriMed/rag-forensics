@@ -264,11 +264,16 @@ export default function DiagnosticCard({ response }: Props) {
                 <ul className="space-y-1 pl-3 border-l-2 border-gray-200">
                   {query_corpus_fit.suggested_questions.map((q, i) => (
                     <li key={i} className="text-xs text-gray-600">
-                      {q.question}
+                      {q.question} <span className="text-gray-400">({q.source_chunk_ids.join(", ")})</span>
                     </li>
                   ))}
                 </ul>
               </div>
+            )}
+            {query_corpus_fit.status === "error" && query_corpus_fit.error && (
+              <p className="text-xs text-red-700">
+                Classification unavailable: {query_corpus_fit.error.replaceAll("_", " ")}.
+              </p>
             )}
           </div>
         )}

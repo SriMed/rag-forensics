@@ -15,11 +15,23 @@ class SuggestedQuestion(BaseModel):
     relevance_to_original: float
 
 
+class RejectedSuggestedQuestion(BaseModel):
+    question: str
+    source_chunk_ids: list[str] = Field(default_factory=list)
+    reason: Literal[
+        "unsupported",
+        "not_specific",
+        "semantic_duplicate",
+        "invalid_source_chunk",
+    ]
+
+
 class QueryCorpusFitMetrics(BaseModel):
     triggered: bool
     trigger_reason: Literal["query_isolation", "context_utilization", "entropy_faithfulness"] | None = None
     observed_fit: Literal["retrieved_context_near_miss", "retrieved_context_topic_gap", "ambiguous"] | None = None
     suggested_questions: list[SuggestedQuestion]
+    rejected_questions: list[RejectedSuggestedQuestion] = Field(default_factory=list)
     mean_question_similarity: float | None
     status: Literal["ok", "not_run", "error"] = "ok"
     error: str | None = None

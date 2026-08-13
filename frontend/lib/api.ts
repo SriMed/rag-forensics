@@ -105,6 +105,11 @@ export interface QueryCorpusFitMetrics {
   triggered: boolean;
   observed_fit: "retrieved_context_near_miss" | "retrieved_context_topic_gap" | "ambiguous" | null;
   suggested_questions: SuggestedQuestion[];
+  rejected_questions: Array<{
+    question: string;
+    source_chunk_ids: string[];
+    reason: "unsupported" | "not_specific" | "semantic_duplicate" | "invalid_source_chunk";
+  }>;
   mean_question_similarity: number | null;
   status: "ok" | "not_run" | "error";
   error: string | null;

@@ -185,11 +185,11 @@ at `backend/services/forensics/query_corpus_fit.py:44–104`.
 
 ### Output contract and current handling
 
-Production strips a leading Markdown fence, requires a JSON list containing strings, and reports an
-explicit error for parse failure or an empty list. It does not enforce the requested item count,
-semantic uniqueness, specificity, or answerability. Each question is later assigned the most
-similar chunk, but similarity does not establish that the chunk answers it. Mean question/query
-similarity then determines retrieved-context near-miss, topic-gap, or ambiguous classification.
+Issue #22 replaced the string-list contract with structured candidates containing inspectable
+chunk IDs. Production rejects unknown citations, uses an independent structured judgment for
+direct answerability and specificity, and rejects semantic duplicates at cosine similarity `>= 0.90`. Fewer than
+three accepted questions makes classification explicitly unavailable; it does not produce a fit
+label from a partial set. Mean question/query similarity is calculated only over a valid set.
 
 ### Representative observations
 
@@ -205,9 +205,9 @@ population failure rate.
 
 ### Recommendation
 
-Require inspectable supporting chunks, semantic-diversity checks, and explicit failure semantics
-when too few valid questions remain. Decide whether downstream fit classification can proceed from
-a partial set. Follow-up: [#22](https://github.com/SriMed/rag-forensics/issues/22).
+The implemented contract preserves accepted and rejected candidates for inspection while limiting
+the resulting label to retrieved-context fit. It does not infer whether the full corpus covers the
+question. Follow-up: [#22](https://github.com/SriMed/rag-forensics/issues/22).
 
 ## 4. Claim extraction
 

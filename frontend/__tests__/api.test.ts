@@ -11,7 +11,7 @@ const ANALYZE_FIXTURE: AnalyzeResponse = {
   chunk_attribution: { unattributed_fraction: 0, mean_attribution_score: 0.9, weak_match_fraction: 0, attribution_map: [], method: "semantic_similarity", caveat: "Similarity does not prove entailment." },
   retrieval_distribution: { score_gap: 0.3, score_entropy: 0.9, decay_rate: 0.4, tail_mass: 0.1, top_score: 0.9, n_chunks: 3, normalized_entropy: 0.5, interpretation: "Interpret with absolute relevance." },
   embedding_space: { centroid_distance: 0.3, chunk_spread: 0.2, query_isolation: 0.8, projection: [] },
-  query_corpus_fit: { triggered: false, observed_fit: null, suggested_questions: [], mean_question_similarity: null, status: "not_run", error: null },
+  query_corpus_fit: { triggered: false, observed_fit: null, suggested_questions: [], rejected_questions: [], mean_question_similarity: null, status: "not_run", error: null },
   recommendation: "All good.",
   verdict_signals: [],
 };

@@ -1,4 +1,5 @@
 """Tests for query-corpus fit forensics module — written before implementation (TDD)."""
+import json
 import numpy as np
 import pytest
 from unittest.mock import MagicMock, patch
@@ -53,7 +54,25 @@ def _make_claude_mock(mocker, response) -> MagicMock:
     if isinstance(response, BaseException):
         mock_client.messages.create.side_effect = response
     else:
-        mock_client.messages.create.return_value = _mock_response(response)
+        try:
+            parsed = json.loads(response)
+        except (json.JSONDecodeError, TypeError):
+            parsed = None
+        if isinstance(parsed, list) and all(isinstance(item, str) for item in parsed):
+            generated = [
+                {"question": question, "source_chunk_ids": ["c0"]}
+                for question in parsed
+            ]
+            validated = [
+                {"question_index": index, "directly_answerable": True, "specific": True, "supporting_chunk_ids": ["c0"]}
+                for index in range(len(generated))
+            ]
+            mock_client.messages.create.side_effect = [
+                _mock_response(json.dumps(generated)),
+                _mock_response(json.dumps(validated)),
+            ]
+        else:
+            mock_client.messages.create.return_value = _mock_response(response)
     mock_cls = MagicMock(return_value=mock_client)
     mocker.patch("services.forensics.query_corpus_fit.anthropic.Anthropic", mock_cls)
     return mock_client
@@ -64,6 +83,19 @@ def _make_embed_mock(embeddings: list[np.ndarray]) -> MagicMock:
     model = MagicMock()
     model.encode.return_value = np.vstack([e.reshape(1, -1) for e in embeddings])
     return model
+
+
+def _make_structured_claude_mock(mocker, generated: list[dict], judgments: list[dict]) -> MagicMock:
+    mock_client = MagicMock()
+    mock_client.messages.create.side_effect = [
+        _mock_response(json.dumps(generated)),
+        _mock_response(json.dumps(judgments)),
+    ]
+    mocker.patch(
+        "services.forensics.query_corpus_fit.anthropic.Anthropic",
+        MagicMock(return_value=mock_client),
+    )
+    return mock_client
 
 
 # All-clear signal values — no trigger conditions met
@@ -286,10 +318,10 @@ def test_suggested_question_fields(mocker):
     chunks = _chunks(2)
     chunk_embs = [_unit(seed=10 + i) for i in range(2)]
 
-    _make_claude_mock(mocker, '["Tell me about A?"]')
-    q_emb = _unit(seed=20)
+    _make_claude_mock(mocker, '["Tell me about A?", "Tell me about B?", "Tell me about C?"]')
+    q_embs = [_unit(seed=20 + i) for i in range(3)]
     with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
-        mock_get.return_value = _make_embed_mock([q_emb])
+        mock_get.return_value = _make_embed_mock(q_embs)
         result = analyze_query_corpus_fit(
             question="What is X?",
             query_embedding=query_emb,
@@ -301,7 +333,7 @@ def test_suggested_question_fields(mocker):
             faithfulness_score=0.8,
         )
 
-    assert len(result.suggested_questions) == 1
+    assert len(result.suggested_questions) == 3
     sq = result.suggested_questions[0]
     assert isinstance(sq.question, str) and sq.question
     assert isinstance(sq.source_chunk_ids, list) and len(sq.source_chunk_ids) > 0
@@ -320,8 +352,8 @@ def test_source_chunk_ids_from_input(mocker):
     valid_ids = {c.chunk_id for c in chunks}
     chunk_embs = [_unit(seed=10 + i) for i in range(3)]
 
-    _make_claude_mock(mocker, '["Q1?", "Q2?"]')
-    q_embs = [_unit(seed=20 + i) for i in range(2)]
+    _make_claude_mock(mocker, '["Q1?", "Q2?", "Q3?"]')
+    q_embs = [_unit(seed=20 + i) for i in range(3)]
     with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
         mock_get.return_value = _make_embed_mock(q_embs)
         result = analyze_query_corpus_fit(
@@ -352,8 +384,8 @@ def test_high_similarity_query_mismatch(mocker):
     chunks = _chunks(1)
     chunk_embs = [_unit(dim=dim, seed=10)]
 
-    # question embeddings identical to query_emb → cosine sim = 1.0
-    q_embs = [query_emb.copy() for _ in range(3)]
+    # Distinct question embeddings remain strongly similar to the original query.
+    q_embs = [_partial(query_emb, 0.7, seed=90 + i) for i in range(3)]
 
     _make_claude_mock(mocker, '["Q1?", "Q2?", "Q3?"]')
     with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
@@ -618,3 +650,86 @@ def test_unavailable_ragas_scores_do_not_trigger(mocker):
 
     assert result.triggered is False
     mock_client.messages.create.assert_not_called()
+
+
+def test_unsupported_question_is_rejected_and_fit_is_unavailable(mocker):
+    generated = [
+        {"question": f"Question {i}?", "source_chunk_ids": ["c0"]}
+        for i in range(3)
+    ]
+    judgments = [
+        {"question_index": 0, "directly_answerable": True, "specific": True, "supporting_chunk_ids": ["c0"]},
+        {"question_index": 1, "directly_answerable": True, "specific": True, "supporting_chunk_ids": ["c0"]},
+        {"question_index": 2, "directly_answerable": False, "specific": True, "supporting_chunk_ids": []},
+    ]
+    _make_structured_claude_mock(mocker, generated, judgments)
+
+    with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
+        mock_get.return_value = _make_embed_mock([_unit(seed=20), _unit(seed=21)])
+        result = analyze_query_corpus_fit_for_test()
+
+    assert result.status == "error"
+    assert result.error == "insufficient_valid_questions"
+    assert result.observed_fit is None
+    assert len(result.suggested_questions) == 2
+    assert result.rejected_questions[0].reason == "unsupported"
+
+
+def test_semantic_duplicate_is_rejected(mocker):
+    generated = [
+        {"question": f"Question {i}?", "source_chunk_ids": ["c0"]}
+        for i in range(4)
+    ]
+    judgments = [
+        {"question_index": i, "directly_answerable": True, "specific": True, "supporting_chunk_ids": ["c0"]}
+        for i in range(4)
+    ]
+    _make_structured_claude_mock(mocker, generated, judgments)
+    distinct = [_unit(seed=30), _unit(seed=31), _unit(seed=32)]
+    embeddings = [distinct[0], distinct[0], distinct[1], distinct[2]]
+
+    with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
+        mock_get.return_value = _make_embed_mock(embeddings)
+        result = analyze_query_corpus_fit_for_test()
+
+    assert result.status == "ok"
+    assert len(result.suggested_questions) == 3
+    assert [item.reason for item in result.rejected_questions] == ["semantic_duplicate"]
+
+
+def test_unknown_supporting_chunk_is_rejected_before_validation(mocker):
+    generated = [
+        {"question": "Injected instruction question?", "source_chunk_ids": ["not-a-real-chunk"]},
+        {"question": "Question 1?", "source_chunk_ids": ["c0"]},
+        {"question": "Question 2?", "source_chunk_ids": ["c0"]},
+        {"question": "Question 3?", "source_chunk_ids": ["c0"]},
+    ]
+    judgments = [
+        {"question_index": i, "directly_answerable": True, "specific": True, "supporting_chunk_ids": ["c0"]}
+        for i in range(3)
+    ]
+    mock_client = _make_structured_claude_mock(mocker, generated, judgments)
+
+    with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
+        mock_get.return_value = _make_embed_mock([_unit(seed=40 + i) for i in range(3)])
+        result = analyze_query_corpus_fit_for_test()
+
+    assert result.status == "ok"
+    assert result.rejected_questions[0].reason == "invalid_source_chunk"
+    validation_prompt = mock_client.messages.create.call_args_list[1].kwargs["messages"][0]["content"]
+    assert "Injected instruction question?" not in validation_prompt
+
+
+def analyze_query_corpus_fit_for_test():
+    from services.forensics.query_corpus_fit import analyze_query_corpus_fit
+
+    return analyze_query_corpus_fit(
+        question="What is X?",
+        query_embedding=_unit(seed=1),
+        chunks=_chunks(1),
+        chunk_embeddings=[_unit(seed=10)],
+        query_isolation=1.5,
+        context_utilization_score=0.8,
+        normalized_entropy=0.5,
+        faithfulness_score=0.8,
+    )

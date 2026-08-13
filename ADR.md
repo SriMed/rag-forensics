@@ -400,3 +400,21 @@ production Anthropic SDK and configured model, and held-out cases must not be us
 prompt tuning.
 
 ---
+
+## ADR-037: Retrieved-context fit requires three validated, semantically distinct questions
+
+**Status:** Accepted
+**Issue:** #22
+
+Generated question candidates cite the retrieved chunk IDs needed to answer them. Production
+rejects citations outside the retrieved set, asks a separate structured model pass to validate
+direct answerability and specificity from the cited text, and greedily rejects later candidates whose embedding
+has cosine similarity `>= 0.90` to an accepted question. At least three accepted questions are
+required before their mean similarity to the original query can produce a retrieved-context fit
+label. A smaller set is preserved for inspection but returns
+`error="insufficient_valid_questions"`, with no label or mean similarity. Proceeding from one or
+two questions would let a narrow or unstable sample drive a confident downstream signal;
+discarding all evidence would make generation failures harder to audit. This contract concerns
+only retrieved passages and does not establish full-corpus coverage.
+
+---
