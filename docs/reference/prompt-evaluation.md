@@ -15,6 +15,22 @@ still cannot establish domain-level performance.
 human-review artifacts. Any hash change requires a new version rather than an in-place baseline
 rewrite.
 
+## Scorer versions and sentence semantics
+
+Dataset and scorer versions are independent. Frozen dataset `1.0.0` remains unchanged, while new
+score reports identify deterministic behavior as `prompt-eval-scorer.v2`. The legacy
+`prompt-eval-scorer.v1` behavior remains callable only to make migration comparisons explicit.
+
+The v2 sentence scorer treats decimal points and periods in common abbreviations as non-terminal.
+Each non-empty bullet is a sentence unit even without terminal punctuation. Markdown headings and
+label-only lines ending in a colon do not count; a final non-empty prose fragment does. Ordinary
+prose still uses `.`, `!`, and `?` as terminal punctuation.
+
+The known v1 held-out verdict with `0.74` and `0.77` was historically reported as five sentences
+and failed its two-to-three-sentence contract. Under v2 the same visibly three-sentence shape counts
+as three and passes. This is a migration difference, not a corrected historical score: the frozen
+v1 manifest, artifacts, and reported result retain their original meaning.
+
 ## Evidence boundary
 
 Each case declares two kinds of expectations:
@@ -67,7 +83,8 @@ contracts; it does not prescribe or claim a particular model-execution workflow.
 `backend/evals/prompt_audit/evaluator.py` produce the exact prompt inputs. Saved response records can
 then be scored with `score_records()`. `compare_record_sets()` rejects duplicate case IDs,
 mismatched dataset versions, and non-identical case sets before producing paired improvement and
-regression rows.
+regression rows. Score and comparison reports include `scorer_version` so future results cannot
+silently mix the v1 and v2 sentence semantics.
 
 The paired report compares deterministic contracts only. Baseline and candidate semantic quality
 must be reviewed using separate human-review records conforming to the frozen schema.

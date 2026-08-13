@@ -16,6 +16,8 @@ from prompts.verdict_prompts import RANKED_SIGNALS_PROMPT
 from services.verdict_generator import RankedSignal, build_verdict_reasoning, reasoning_payload
 
 DATASET_PATH = Path(__file__).parent / "v1" / "cases.json"
+LEGACY_SCORER_VERSION = "prompt-eval-scorer.v1"
+SCORER_VERSION = "prompt-eval-scorer.v2"
 Split = Literal["development", "held_out"]
 ExecutionMode = Literal["production_path", "counterfactual_capability"]
 
@@ -160,12 +162,77 @@ def _json_strings(response: str) -> tuple[list[str] | None, str | None]:
     return parsed, None
 
 
-def _sentence_count(response: str) -> int:
+def _legacy_sentence_count(response: str) -> int:
     return len(re.findall(r"[^.!?]+(?:[.!?]+|$)", response.strip())) if response.strip() else 0
 
 
-def score_response(case: dict[str, Any], response: str) -> dict[str, Any]:
+_ABBREVIATION = re.compile(
+    r"\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|e\.g|i\.e)\.", re.IGNORECASE
+)
+_HEADING = re.compile(r"^#{1,6}\s+\S")
+_BULLET = re.compile(r"^\s*(?:[-*+] |\d+[.)]\s+)(.+)$")
+_PROTECTED_PERIOD = "\u2024"
+
+
+def _protect_nonterminal_periods(value: str) -> str:
+    value = re.sub(r"(?<=\d)\.(?=\d)", _PROTECTED_PERIOD, value)
+    return _ABBREVIATION.sub(
+        lambda match: match.group(0).replace(".", _PROTECTED_PERIOD), value
+    )
+
+
+def _sentence_units(value: str) -> int:
+    """Count terminally punctuated units plus one non-empty final fragment."""
+    protected = _protect_nonterminal_periods(value.strip())
+    if not protected:
+        return 0
+    boundaries = list(re.finditer(r"[.!?]+(?:[\"')\]]+)?(?=\s|$)", protected))
+    if not boundaries:
+        return 1
+    remainder = protected[boundaries[-1].end():].strip()
+    return len(boundaries) + bool(remainder)
+
+
+def _sentence_count(response: str) -> int:
+    """Count prose and bullet units, excluding Markdown and label-only headings."""
+    count = 0
+    prose_lines: list[str] = []
+
+    def flush_prose() -> None:
+        nonlocal count
+        if prose_lines:
+            count += _sentence_units(" ".join(prose_lines))
+            prose_lines.clear()
+
+    for raw_line in response.splitlines():
+        stripped = raw_line.strip()
+        if not stripped:
+            flush_prose()
+            continue
+        if _HEADING.match(stripped) or (
+            stripped.endswith(":") and not re.search(r"[.!?]", stripped[:-1])
+        ):
+            flush_prose()
+            continue
+        bullet = _BULLET.match(raw_line)
+        if bullet:
+            flush_prose()
+            count += _sentence_units(bullet.group(1))
+        else:
+            prose_lines.append(stripped)
+    flush_prose()
+    return count
+
+
+def score_response(
+    case: dict[str, Any],
+    response: str,
+    *,
+    scorer_version: str = SCORER_VERSION,
+) -> dict[str, Any]:
     """Apply declared deterministic scorers; do not infer semantic correctness."""
+    if scorer_version not in {LEGACY_SCORER_VERSION, SCORER_VERSION}:
+        raise ValueError(f"unsupported scorer version: {scorer_version}")
     results: list[dict[str, Any]] = []
     lower = response.lower()
     cached_items: list[str] | None = None
@@ -200,7 +267,10 @@ def score_response(case: dict[str, Any], response: str) -> dict[str, Any]:
             passed = count <= spec["value"]
             detail = f"{count} words; maximum {spec['value']}"
         elif scorer == "sentence_count":
-            count = _sentence_count(response)
+            if scorer_version == LEGACY_SCORER_VERSION:
+                count = _legacy_sentence_count(response)
+            else:
+                count = _sentence_count(response)
             passed = spec["min"] <= count <= spec["max"]
             detail = f"{count} sentences; expected {spec['min']}–{spec['max']}"
         elif scorer.startswith("json_") or scorer == "unique_json_items":
@@ -241,6 +311,7 @@ def score_response(case: dict[str, Any], response: str) -> dict[str, Any]:
 
     return {
         "case_id": case["id"],
+        "scorer_version": scorer_version,
         "passed": all(result["passed"] for result in results),
         "score": sum(result["passed"] for result in results) / len(results),
         "scorer_results": results,
@@ -265,6 +336,7 @@ def score_records(dataset: dict[str, Any], records: list[dict[str, Any]]) -> dic
     passed = sum(result["passed"] for result in scored)
     return {
         "dataset_version": dataset["dataset_version"],
+        "scorer_version": SCORER_VERSION,
         "record_count": len(scored),
         "passed_count": passed,
         "pass_rate": passed / len(scored) if scored else None,
@@ -350,6 +422,7 @@ def compare_record_sets(
     return {
         "schema_version": "prompt-eval-comparison.v1",
         "dataset_version": dataset["dataset_version"],
+        "scorer_version": SCORER_VERSION,
         "case_count": len(rows),
         "transitions": transitions,
         "rows": rows,

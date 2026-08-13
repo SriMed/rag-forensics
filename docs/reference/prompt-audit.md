@@ -325,8 +325,10 @@ separate issue.
 The frozen v1 sentence scorer used punctuation matching that split decimal values into sentence
 boundaries. In the one-time held-out verdict, decimal values `0.74` and `0.77` inflated a visibly
 three-sentence response to five and created a false deterministic failure. Frozen v1 scores and
-hashes were not rewritten. Follow-up [#26](https://github.com/SriMed/rag-forensics/issues/26) will
-version corrected behavior and report migration differences rather than silently changing history.
+hashes were not rewritten. [Issue #26](https://github.com/SriMed/rag-forensics/issues/26) introduced
+`prompt-eval-scorer.v2`; the same response shape counts as three under the decimal-safe semantics.
+This is recorded as a migration difference, not a corrected historical result. See
+[Prompt development evaluation](prompt-evaluation.md#scorer-versions-and-sentence-semantics).
 
 ## Follow-up issues
 

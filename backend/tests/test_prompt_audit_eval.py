@@ -7,6 +7,9 @@ import pytest
 
 from evals.prompt_audit.evaluator import (
     DATASET_PATH,
+    LEGACY_SCORER_VERSION,
+    SCORER_VERSION,
+    _sentence_count,
     compare_record_sets,
     load_dataset,
     render_case,
@@ -143,6 +146,39 @@ def test_json_fences_are_accepted_because_production_parsers_strip_them(dataset)
     assert score_response(case, "```json\n[]\n```")["passed"]
 
 
+@pytest.mark.parametrize(
+    ("response", "expected"),
+    [
+        ("Scores were 0.74 and 0.77. Inspect retrieval. Rerun the judge.", 3),
+        ("Dr. Rao checked the result. It was stable, e.g. across seeds.", 2),
+        ("- Inspect retrieval\n- Compare the chunks\n- Rerun the judge.", 3),
+        ("First sentence. Second sentence! Is this the third?", 3),
+        ("## Recommendation\nInspect retrieval.\nNext step:\nRerun the judge.", 2),
+        ("A final fragment without punctuation", 1),
+    ],
+)
+def test_sentence_count_v2_contract(response, expected):
+    assert _sentence_count(response) == expected
+
+
+def test_sentence_scorer_migration_preserves_v1_and_fixes_decimal_boundaries(dataset):
+    case = next(
+        case for case in dataset["cases"] if case["id"] == "verdict_unavailable"
+    )
+    response = "Scores were 0.74 and 0.77. Inspect retrieval. Rerun the judge."
+    legacy = score_response(case, response, scorer_version=LEGACY_SCORER_VERSION)
+    current = score_response(case, response)
+    assert legacy["scorer_version"] == LEGACY_SCORER_VERSION
+    assert "5 sentences" in next(
+        result["detail"]
+        for result in legacy["scorer_results"]
+        if result["scorer"] == "sentence_count"
+    )
+    assert not legacy["passed"]
+    assert current["scorer_version"] == SCORER_VERSION
+    assert current["passed"]
+
+
 def test_execution_failure_cannot_pass_aggregate_scoring(dataset):
     report = score_records(dataset, [{
         "case_id": "entailment_numeric_conflict",
@@ -152,6 +188,7 @@ def test_execution_failure_cannot_pass_aggregate_scoring(dataset):
     assert report["passed_count"] == 0
     assert report["pass_rate"] == 0.0
     assert report["results"][0]["execution_succeeded"] is False
+    assert report["scorer_version"] == SCORER_VERSION
 
 
 def _run_record(case_id, response):
