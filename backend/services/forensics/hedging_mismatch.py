@@ -14,7 +14,14 @@ import anthropic
 from pydantic import TypeAdapter, ValidationError
 
 from config import CLAUDE_HAIKU
-from models import ClaimEntry, ClaimExtractionError, HedgingMismatchMetrics, RetrievedChunk
+from models import (
+    ClaimEntry,
+    ClaimExtractionError,
+    EntailmentCheck,
+    EntailmentVerdict,
+    HedgingMismatchMetrics,
+    RetrievedChunk,
+)
 from prompts.hedging_prompts import CLAIM_EXTRACTION_PROMPT, ENTAILMENT_PROMPT
 
 logger = logging.getLogger(__name__)
@@ -106,21 +113,29 @@ def classify_confidence(claim: str) -> Literal["definitive", "hedged", "uncertai
 # ---------------------------------------------------------------------------
 
 def _compute_metrics(entries: list[ClaimEntry]) -> HedgingMismatchMetrics:
-    n = len(entries)
-    if n == 0:
+    evaluated = [entry for entry in entries if entry.supported is not None]
+    n = len(evaluated)
+    if not entries:
         return HedgingMismatchMetrics(
             overconfident_fraction=0.0,
             underconfident_fraction=0.0,
             total_claims=0,
             claim_breakdown=[],
         )
-    overconfident = sum(1 for e in entries if e.mismatch_type == "overconfident")
-    underconfident = sum(1 for e in entries if e.mismatch_type == "underconfident")
+    overconfident = sum(1 for e in evaluated if e.mismatch_type == "overconfident")
+    underconfident = sum(1 for e in evaluated if e.mismatch_type == "underconfident")
     return HedgingMismatchMetrics(
-        overconfident_fraction=overconfident / n,
-        underconfident_fraction=underconfident / n,
-        total_claims=n,
+        overconfident_fraction=overconfident / n if n else 0.0,
+        underconfident_fraction=underconfident / n if n else 0.0,
+        total_claims=len(entries),
         claim_breakdown=entries,
+        evaluated_chunk_count=sum(
+            check.status == "evaluated"
+            for entry in entries
+            for check in entry.entailment_checks
+        ),
+        evaluated_claim_count=n,
+        unavailable_claim_count=len(entries) - n,
     )
 
 
@@ -168,7 +183,7 @@ def analyze_hedging_mismatch(
     """Extract claims, classify confidence, check entailment, compute mismatch metrics.
 
     Returns an explicit error status on top-level failure (e.g. claim extraction fails).
-    Per-claim entailment failures fall back to not_supported for that chunk only.
+    Invalid or failed per-chunk judgments remain unavailable rather than becoming negative verdicts.
     """
     client = anthropic.Anthropic()
 
@@ -208,8 +223,9 @@ def analyze_hedging_mismatch(
     for claim_str in claims_list:
         confidence = classify_confidence(claim_str)
 
-        supported = False
+        supported: bool | None = None
         source_chunk_id: str | None = None
+        checks: list[EntailmentCheck] = []
 
         for chunk in top_chunks:
             try:
@@ -225,30 +241,46 @@ def analyze_hedging_mismatch(
                         }
                     ],
                 )
-                verdict = entailment_response.content[0].text.strip().lower()
-                is_negated = "not_supported" in verdict or "not supported" in verdict
-                is_supported = "supported" in verdict and not is_negated
-                is_unrecognized = "supported" not in verdict
-                if is_unrecognized:
+                raw_verdict = entailment_response.content[0].text
+                normalized = raw_verdict.strip()
+                try:
+                    verdict = EntailmentVerdict(normalized)
+                except ValueError:
+                    checks.append(EntailmentCheck(
+                        chunk_id=chunk.chunk_id,
+                        status="invalid_format",
+                        raw_output=raw_verdict,
+                    ))
                     logger.warning(
-                        "Unexpected entailment response for claim '%s' on chunk '%s': %r — defaulting to not_supported",
+                        "Invalid entailment response for claim '%s' on chunk '%s': %r",
                         claim_str,
                         chunk.chunk_id,
-                        verdict,
+                        raw_verdict,
                     )
-                if is_supported:
+                    continue
+                checks.append(EntailmentCheck(
+                    chunk_id=chunk.chunk_id,
+                    status="evaluated",
+                    verdict=verdict,
+                    raw_output=raw_verdict,
+                ))
+                if verdict == EntailmentVerdict.SUPPORTED:
                     supported = True
                     source_chunk_id = chunk.chunk_id
                     break  # short-circuit on first supporting chunk
+                supported = False
             except Exception:
+                checks.append(EntailmentCheck(chunk_id=chunk.chunk_id, status="error"))
                 logger.warning(
-                    "Entailment check failed for claim '%s' on chunk '%s'; treating as not_supported",
+                    "Entailment check failed for claim '%s' on chunk '%s'",
                     claim_str,
                     chunk.chunk_id,
                 )
                 # Continue to next chunk — per-claim failure is isolated
 
-        if confidence == "definitive" and not supported:
+        if supported is None:
+            mismatch_type = None
+        elif confidence == "definitive" and not supported:
             mismatch_type: Literal["overconfident", "underconfident", "matched"] = "overconfident"
         else:
             # Binary entailment cannot determine whether hedging is unnecessarily weak.
@@ -262,8 +294,8 @@ def analyze_hedging_mismatch(
                 supported=supported,
                 mismatch_type=mismatch_type,
                 source_chunk_id=source_chunk_id,
+                entailment_checks=checks,
             )
         )
 
-    result = _compute_metrics(entries)
-    return result.model_copy(update={"evaluated_chunk_count": len(top_chunks)})
+    return _compute_metrics(entries)

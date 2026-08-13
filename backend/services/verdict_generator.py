@@ -71,6 +71,17 @@ def rank_signals(
             description=f"Hedging analysis is unavailable ({hedging_mismatch.error}); do not interpret zero fractions as healthy",
             reliability="unvalidated",
         ))
+    elif hedging_mismatch.unavailable_claim_count > 0:
+        signals.append(RankedSignal(
+            name="hedging_judgments_unavailable",
+            priority_score=0.5,
+            description=(
+                f"Entailment judgments are unavailable for "
+                f"{hedging_mismatch.unavailable_claim_count} of "
+                f"{hedging_mismatch.total_claims} claims; mismatch fractions exclude them"
+            ),
+            reliability="unvalidated",
+        ))
 
     if query_fit.status == "error":
         signals.append(RankedSignal(

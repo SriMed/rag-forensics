@@ -29,9 +29,15 @@ export interface ChunkAttributionMetrics {
 export interface ClaimEntry {
   claim: string;
   confidence_class: "definitive" | "hedged" | "uncertain";
-  supported: boolean;
-  mismatch_type: "overconfident" | "underconfident" | "matched";
+  supported: boolean | null;
+  mismatch_type: "overconfident" | "underconfident" | "matched" | null;
   source_chunk_id: string | null;
+  entailment_checks: Array<{
+    chunk_id: string;
+    status: "evaluated" | "invalid_format" | "error";
+    verdict: "supported" | "not_supported" | null;
+    raw_output: string | null;
+  }>;
 }
 
 export interface HedgingMismatchMetrics {
@@ -46,6 +52,8 @@ export interface HedgingMismatchMetrics {
     | "claim_extraction_schema_failed"
     | null;
   evaluated_chunk_count: number;
+  evaluated_claim_count: number;
+  unavailable_claim_count: number;
 }
 
 export interface RAGASMetrics {

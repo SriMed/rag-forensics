@@ -244,10 +244,9 @@ directly supports one claim. Production checks up to the top three chunks separa
 
 ### Output contract and current handling
 
-The requested contract is the exact label `supported` or `not_supported`. Production recognizes
-substrings, with special handling for the two common negative forms. Unexpected output defaults to
-unsupported; per-chunk exceptions also continue as unsupported. This makes invalid/unavailable
-judgments observationally similar to valid negative judgments in the final claim result.
+Production trims surrounding whitespace and accepts only the exact lowercase typed enum values
+`supported` and `not_supported`. Invalid formats and per-chunk exceptions remain distinct from a
+valid negative judgment, with claim- and chunk-level coverage exposed in the API.
 
 ### Representative observations
 
@@ -267,9 +266,9 @@ multi-sentence reasoning, and annotation granularity remain competing explanatio
 
 ### Recommendation
 
-Use an exact typed enum, preserve invalid/unavailable judgments separately, and retain evaluated
-coverage. This is stricter than the normalization completed in #15. Follow-up:
-[#24](https://github.com/SriMed/rag-forensics/issues/24).
+The exact typed boundary, unavailable state, and evaluated coverage were implemented by
+[#24](https://github.com/SriMed/rag-forensics/issues/24). This deliberately supersedes the
+permissive normalization from #15.
 
 ## 6. Answer generation
 

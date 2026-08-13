@@ -364,3 +364,21 @@ Failures are separated into transport/response access (`claim_extraction_failed`
 ranking must use the status rather than interpreting the numeric placeholders as healthy zeros.
 
 ---
+
+## ADR-035: Exact typed entailment boundary with unavailable judgments
+
+**Status:** Accepted; supersedes ADR-021
+**Issue:** #24
+
+Entailment output is a typed string enum with exactly two values: `supported` and
+`not_supported`. Production trims surrounding whitespace but does not normalize case,
+punctuation, spaces, prefixes, explanations, or other prose. Every attempted chunk records either
+an evaluated enum verdict, invalid format with raw output, or request/response error. A claim is
+unavailable when none of its chunk attempts yields a valid verdict; unavailable claims do not
+enter mismatch-fraction denominators and instead contribute explicit coverage counts and an
+unavailable-judgment signal. Evaluation still continues past negative, invalid, and failed checks
+and short-circuits on the first valid `supported` verdict. This rejects the permissive substring
+strategy in ADR-021 because semantic recognizability is not contract compliance, and because
+coercing invalid output to `not_supported` confounds model-format failure with evidence absence.
+
+---

@@ -106,6 +106,8 @@ preserves verifier errors as unknown states, and avoids treating its outputs as 
 - `/analyze/custom` re-embeds caller text with the project’s MiniLM model, which may not match the
   caller’s production retriever space.
 - Model or evaluator failure is an unknown state and must not be rendered as a clean result.
+- Hedging mismatch fractions exclude claims for which every entailment attempt is invalid or
+  failed; inspect evaluated and unavailable claim counts before interpreting the fraction.
 
 ## Prior-work boundary
 

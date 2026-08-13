@@ -108,6 +108,13 @@ def test_unavailable_ragas_metrics_are_ranked_without_numeric_concerns():
     assert "low_context_utilization" not in names
 
 
+def test_partial_entailment_coverage_is_ranked_separately_from_mismatch():
+    signals = _rank(total_claims=3, evaluated_claim_count=2, unavailable_claim_count=1)
+    signal = next(item for item in signals if item.name == "hedging_judgments_unavailable")
+    assert signal.priority_score == pytest.approx(0.5)
+    assert "1 of 3 claims" in signal.description
+
+
 def test_rank_signals_sorted_descending_by_concern():
     signals = rank_signals(
         distribution=_distribution(score_entropy=1.8, tail_mass=0.5),

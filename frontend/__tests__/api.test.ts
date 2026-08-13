@@ -7,7 +7,7 @@ const ANALYZE_FIXTURE: AnalyzeResponse = {
   generated_answer: "X is Y.",
   retrieved_chunks: [],
   ragas: { context_utilization: { score: 0.8, status: "ok", error: null }, faithfulness: { score: 0.9, status: "ok", error: null }, utilization_context_excerpts: [], faithfulness_context_excerpts: [], excerpt_caveat: "Context excerpts are not score evidence." },
-  hedging_mismatch: { overconfident_fraction: 0, underconfident_fraction: 0, total_claims: 0, claim_breakdown: [], status: "ok", error: null, evaluated_chunk_count: 0 },
+  hedging_mismatch: { overconfident_fraction: 0, underconfident_fraction: 0, total_claims: 0, claim_breakdown: [], status: "ok", error: null, evaluated_chunk_count: 0, evaluated_claim_count: 0, unavailable_claim_count: 0 },
   chunk_attribution: { unattributed_fraction: 0, mean_attribution_score: 0.9, weak_match_fraction: 0, attribution_map: [], method: "semantic_similarity", caveat: "Similarity does not prove entailment." },
   retrieval_distribution: { score_gap: 0.3, score_entropy: 0.9, decay_rate: 0.4, tail_mass: 0.1, top_score: 0.9, n_chunks: 3, normalized_entropy: 0.5, interpretation: "Interpret with absolute relevance." },
   embedding_space: { centroid_distance: 0.3, chunk_spread: 0.2, query_isolation: 0.8, projection: [] },

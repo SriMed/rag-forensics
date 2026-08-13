@@ -67,3 +67,18 @@ array returns `status: "ok"`, `total_claims: 0`, and `error: null`. Extraction f
 `status: "error"` and one of `claim_extraction_failed`, `claim_extraction_parse_failed`, or
 `claim_extraction_schema_failed`; downstream verdicts treat those zero-valued metric placeholders as
 unavailable rather than healthy.
+
+Each extracted claim includes `entailment_checks`, one record for every attempted top-three chunk.
+After trimming surrounding whitespace, the only valid model outputs are the exact lowercase enum
+values `supported` and `not_supported`. Commentary, punctuation, capitalization, alternate spacing,
+and arbitrary prose produce `status: "invalid_format"`; request or response failures produce
+`status: "error"`. Both have `verdict: null` and are distinct from an evaluated
+`not_supported` judgment. Evaluation continues to later chunks and still stops at the first valid
+`supported` result.
+
+Claims with no valid chunk verdict expose `supported: null` and `mismatch_type: null`.
+`overconfident_fraction` and `underconfident_fraction` use only `evaluated_claim_count` as their
+denominator, while `total_claims`, `unavailable_claim_count`, and the per-chunk records preserve
+coverage. Consequently, a zero mismatch fraction is not evidence of a healthy answer when
+`unavailable_claim_count` is nonzero; the verdict layer emits a separate unavailable-judgment
+signal in that case. `evaluated_chunk_count` counts valid chunk verdicts, not attempted chunks.

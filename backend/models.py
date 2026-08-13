@@ -1,3 +1,4 @@
+from enum import StrEnum
 from typing import Literal
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -102,12 +103,33 @@ class RetrievalResult(BaseModel):
     chunk_embeddings: list[list[float]]
 
 
+class EntailmentVerdict(StrEnum):
+    SUPPORTED = "supported"
+    NOT_SUPPORTED = "not_supported"
+
+
+class EntailmentCheck(BaseModel):
+    chunk_id: str
+    status: Literal["evaluated", "invalid_format", "error"]
+    verdict: EntailmentVerdict | None = None
+    raw_output: str | None = None
+
+    @model_validator(mode="after")
+    def status_matches_verdict(self):
+        if self.status == "evaluated" and self.verdict is None:
+            raise ValueError("evaluated entailment checks require a verdict")
+        if self.status != "evaluated" and self.verdict is not None:
+            raise ValueError("unavailable entailment checks cannot include a verdict")
+        return self
+
+
 class ClaimEntry(BaseModel):
     claim: str
     confidence_class: Literal["definitive", "hedged", "uncertain"]
-    supported: bool
-    mismatch_type: Literal["overconfident", "underconfident", "matched"]
+    supported: bool | None
+    mismatch_type: Literal["overconfident", "underconfident", "matched"] | None
     source_chunk_id: str | None
+    entailment_checks: list[EntailmentCheck] = Field(default_factory=list)
 
 
 class HedgingMismatchMetrics(BaseModel):
@@ -118,6 +140,8 @@ class HedgingMismatchMetrics(BaseModel):
     status: Literal["ok", "error"] = "ok"
     error: ClaimExtractionError | None = None
     evaluated_chunk_count: int = 0
+    evaluated_claim_count: int = 0
+    unavailable_claim_count: int = 0
 
     @model_validator(mode="after")
     def status_matches_error(self):

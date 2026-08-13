@@ -61,6 +61,8 @@ export default function DiagnosticCard({ response }: Props) {
   const hedgingVerdict: Verdict =
     hedging_mismatch.status === "error"
       ? "warn"
+      : hedging_mismatch.unavailable_claim_count > 0
+      ? "warn"
       : hedging_mismatch.overconfident_fraction > 0.3
       ? "fail"
       : hedging_mismatch.overconfident_fraction > 0.15
@@ -179,7 +181,7 @@ export default function DiagnosticCard({ response }: Props) {
             {hedging_mismatch.status === "error" ? (
               <>Analysis unavailable: {hedging_mismatch.error}</>
             ) : <>Overconfident: {(hedging_mismatch.overconfident_fraction * 100).toFixed(0)}% ·
-            {hedging_mismatch.total_claims} claims</>}
+            {hedging_mismatch.evaluated_claim_count}/{hedging_mismatch.total_claims} claims evaluated</>}
           </p>
         </div>
 
