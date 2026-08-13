@@ -1,0 +1,417 @@
+{
+  "schema_version": "truncated-evidence-production-results.v2",
+  "run_date": "2026-08-13",
+  "runner": "Claude CLI",
+  "model": "claude-haiku-4-5-20251001",
+  "repetitions": 2,
+  "results": [
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "pre_issue_27",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context, T-cell count appears to play a protective role in severe HAdV-55 infection:\n\n- **Higher T-cell counts are associated with recovery**: The only patient who recovered from severe infection had higher T-cell counts.\n\n- **Low T-cell counts are a potential risk factor**: Three of five patients had relatively low T-cell counts upon admission, and the study suggests these patients may have been relatively immunocompromised.\n\n- **Clinical implication**: The research indicates that a lower T-cell count may be a risk factor for HAdV-55 infection in young adults, suggesting that T-cell count is relevant to disease severity and outcome.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "pre_issue_27",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, T-cell count appears to play a protective role in severe HAdV-55 infection:\n\n- **Higher T-cell counts are associated with recovery:** The only patient who recovered from severe infection had higher T-cell counts.\n\n- **Lower T-cell counts may be a risk factor:** Three of the five patients studied had relatively low T-cell counts upon admission, suggesting they may have been immunocompromised. The study results suggest that lower T-cell counts may represent a risk factor for HAdV-55 infection in young adults.\n\nIn summary, the context indicates that lower T-cell counts are potentially associated with increased susceptibility to or severity of HAdV-55 infection, while higher T-cell counts are associated with better recovery outcomes.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "source_metadata_contract",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context, T-cell count appears to play a protective role in severe HAdV-55 infection:\n\n- **Higher T-cell counts are associated with recovery**: The only patient in the study who recovered from severe infection had higher T-cell counts.\n\n- **Low T-cell counts may increase infection risk**: Three of the five patients had relatively low T-cell counts upon admission, and the study suggests these patients may have been relatively immunocompromised.\n\n- **Low T-cell counts identified as a risk factor**: The authors conclude that a lower T-cell count may be a risk factor for HAdV-55 infection in young adults, implying that T-cell counts are important for immune defense against this virus.\n\nIn summary, the context suggests that lower T-cell counts are associated with increased susceptibility to severe HAdV-55 infection, while higher T-cell counts appear to support recovery from infection.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "source_metadata_contract",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, T-cell count plays the following role in severe HAdV-55 infection:\n\n1. **Protective factor in recovery**: The only patient in the study who recovered from severe infection had higher T-cell counts.\n\n2. **Risk factor**: Lower T-cell counts appear to be a risk factor for HAdV-55 infection in young adults. Three of five patients had relatively low T-cell counts upon admission.\n\n3. **Immunocompromise connection**: The study suggests that patients with lower T-cell counts may have been relatively immunocompromised, making them more susceptible to severe HAdV-55 infection.\n\nIn summary, the evidence presented indicates that **higher T-cell counts are associated with better outcomes** and **lower T-cell counts are associated with increased risk** of severe HAdV-55 infection, suggesting T-cell count as a marker of immune competence in this infection.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "pre_issue_27",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context chunk, T-cell count appears to play a protective role in severe HAdV-55 infection:\n\n1. **Higher T-cell counts associated with recovery**: The one patient who recovered from severe infection had higher T-cell counts.\n\n2. **Low T-cell counts and immunocompromise**: Three of five patients had relatively low T-cell counts upon admission, suggesting they may have been immunocompromised.\n\n3. **Risk factor**: Lower T-cell count appears to be a risk factor for severe outcomes (the context indicates this is incomplete, cutting off mid-sentence at \"may be a risk\").\n\nIn summary, based on this limited excerpt, T-cell count is suggested as an important immunological marker, with higher counts potentially protective and lower counts associated with increased susceptibility to or severity of HAdV-55 infection.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "pre_issue_27",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context:\n\nT-cell count appears to play a role as a potential risk factor in severe HAdV-55 infection. According to the study, the patient who recovered from severe infection had higher T-cell counts. In contrast, three of five admitted patients had relatively low T-cell counts, suggesting they may have been relatively immunocompromised. The results indicate that a lower T-cell count may be a risk factor for severe infection.\n\nHowever, the context is incomplete and does not provide additional details about the specific mechanisms or the full extent of this relationship.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "source_metadata_contract",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context, T-cell count appears to play a role in outcomes of severe HAdV-55 infection:\n\n**What the visible text supports:**\n- Higher T-cell counts are associated with recovery: one patient who recovered from severe infection had higher T-cell counts\n- Lower T-cell counts are associated with immunocompromise: three of five patients with relatively low T-cell counts on admission may have been relatively immunocompromised\n- Lower T-cell count may represent a risk factor\n\n**Limitation:** The chunk ends mid-sentence (\"may be a risk\"), so the complete statement about what T-cell count is a risk factor for cannot be provided. The truncation prevents a full answer about the specific clinical implications.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "source_metadata_contract",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, T-cell count appears to play a protective role in severe HAdV-55 infection:\n\n- **Recovery association**: The only patient who recovered from severe infection had higher T-cell counts.\n- **Risk factor**: Three of the five patients had relatively low T-cell counts upon admission, and the study suggests these patients may have been relatively immunocompromised.\n- **Potential risk indicator**: Lower T-cell count may be a risk factor (though this final thought is incomplete due to truncation).\n\n**Limitation**: The chunk is truncated and does not provide the complete statement about what lower T-cell counts represent as a risk factor, nor does it provide additional details about the mechanistic role of T-cells or the full scope of findings from the study.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "pre_issue_27",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context, the average expected volatility for the years 2007-2009 is:\n\n(41.7% + 37.9% + 30.9%) \u00f7 3 = **36.83%**",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "pre_issue_27",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, the average expected volatility for 2007-2009 is:\n\n(30.9% + 37.9% + 41.7%) \u00f7 3 = **36.83%** (or approximately **36.8%**)",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "source_metadata_contract",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the context provided, the average expected volatility for the years 2007-2009 is:\n\n(30.9% + 37.9% + 41.7%) \u00f7 3 = **36.83%**",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "source_metadata_contract",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, the average expected volatility for the years 2007-2009 is:\n\n(41.7% + 37.9% + 30.9%) \u00f7 3 = **36.83%**",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "pre_issue_27",
+      "repetition": 1,
+      "status": "ok",
+      "response": "I cannot provide the average expected volatility for 2007-2009 based on the provided context. \n\nThe context chunk only contains data for two of the three years requested:\n- 2009: 41.7%\n- 2008: 37.9%\n- 2007: Not provided (the chunk is incomplete)\n\nThe chunk appears to be cut off mid-sentence (\"...and\") and does not include the 2007 volatility figure needed to calculate the three-year average.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "pre_issue_27",
+      "repetition": 2,
+      "status": "ok",
+      "response": "I cannot provide the average expected volatility for 2007-2009 based on the provided context. The chunk only contains complete data for two years:\n- 2009: 41.7%\n- 2008: 37.9%\n\nThe chunk ends with \"and\" but does not include the expected volatility value for 2007, so the required data is incomplete.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "source_metadata_contract",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context, I cannot fully answer this question. \n\nThe chunk provides expected volatility data for only two of the three years requested:\n- 2009: 41.7%\n- 2008: 37.9%\n\nHowever, the chunk is marked as truncated and does not include data for 2007. The text ends mid-sentence (\"and\") before the 2007 volatility figure is provided. Without the 2007 value, I cannot calculate the complete average for 2007-2009.\n\nTo answer your question accurately, I would need the missing expected volatility data for 2007.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "source_metadata_contract",
+      "repetition": 2,
+      "status": "ok",
+      "response": "I cannot provide a complete answer to this question because the context chunk is truncated and missing data for 2007.\n\nBased on the visible text, I can see:\n- 2009: 41.7%\n- 2008: 37.9%\n- 2007: *missing* (the chunk cuts off with \"and\" before providing this value)\n\nTo calculate the average expected volatility for 2007-2009, I would need the 2007 figure, which is not included in the provided context.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "pre_issue_27",
+      "repetition": 1,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "pre_issue_27",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, the Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "source_metadata_contract",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context, the Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "source_metadata_contract",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context:\n\nThe Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "pre_issue_27",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context:\n\nThe Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "pre_issue_27",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context, the Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "source_metadata_contract",
+      "repetition": 1,
+      "status": "ok",
+      "response": "Based on the provided context:\n\nThe Terminate activity stops all further orchestration.\n\n**Note:** The context chunk is marked as truncated, so there may be additional details about this activity's behavior or parameters that are not visible in the provided text.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "source_metadata_contract",
+      "repetition": 2,
+      "status": "ok",
+      "response": "Based on the provided context:\n\nThe Terminate activity **stops all further orchestration**.\n\nNote: The source chunk is marked as truncated, so there may be additional details about this activity that are not visible in the provided context.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      },
+      "human_review": null
+    }
+  ]
+}

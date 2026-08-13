@@ -60,6 +60,30 @@ def test_build_generation_prompt_includes_chunk_text():
     assert "multiple wavelengths" in prompt
 
 
+def test_generation_prompt_preserves_unknown_metadata_without_calling_it_truncated():
+    from prompts.generation_prompts import build_generation_prompt
+    prompt = build_generation_prompt("Why?", CHUNKS)
+    assert "completeness=unknown" in prompt
+    assert "completeness_source=unavailable" in prompt
+
+
+def test_generation_prompt_marks_source_known_truncation():
+    from prompts.generation_prompts import build_generation_prompt
+    chunk = RetrievedChunk(
+        chunk_id="c1", text="The result may be a risk", score=0.9,
+        completeness="truncated", completeness_source="source",
+    )
+    prompt = build_generation_prompt("What is the result?", [chunk])
+    assert "completeness=truncated" in prompt
+    assert "completeness_source=source" in prompt
+
+
+def test_generation_contract_forbids_completing_known_truncation():
+    from prompts.generation_prompts import GENERATION_SYSTEM_PROMPT
+    assert "do not supply or guess the missing continuation" in GENERATION_SYSTEM_PROMPT
+    assert "unknown has unavailable completeness metadata" in GENERATION_SYSTEM_PROMPT
+
+
 def test_generate_answer_propagates_api_exception(mocker):
     mock_client = MagicMock()
     mock_client.messages.create.side_effect = Exception("API error")

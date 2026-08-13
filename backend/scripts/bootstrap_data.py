@@ -63,6 +63,10 @@ def bootstrap():
                         "question": question,
                         "answer": answer,
                         "domain": domain,
+                        # RAGBench supplies already-formed document strings without
+                        # source-boundary metadata. Do not infer completeness from punctuation.
+                        "chunk_completeness": "unknown",
+                        "chunk_completeness_source": "unavailable",
                     }
                 )
 

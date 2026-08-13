@@ -26,6 +26,14 @@ asked to invent causes or tests. If rendering fails, the API deterministically f
 structure instead of falling back to one signal. Unavailable evaluations become missing-evidence
 observations with a restore-and-rerun test, never healthy zeros.
 
+Answer generation also receives an explicit source-boundary contract on every retrieved chunk.
+Completeness is `complete`, `truncated`, or `unknown`, with separate provenance. Known-truncated
+chunks instruct generation not to guess the missing continuation and to disclose material
+incompleteness. Unknown is an unavailable metadata state, not evidence of either completeness or
+truncation. RAGBench's stored document strings lack source-boundary provenance and therefore remain
+unknown; punctuation heuristics do not change that state. See the
+[truncated-evidence evaluation](truncated-evidence.md) for the exact-model comparison and limits.
+
 For a non-technical walkthrough of evidence candidates, competing hypotheses, and follow-up
 tests, see [How RAG Forensics investigates an answer](../explainers/how-rag-forensics-works.md).
 

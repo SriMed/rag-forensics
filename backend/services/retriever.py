@@ -22,6 +22,20 @@ _CHROMA_PATH = "./data/chroma"
 _client: chromadb.PersistentClient | None = None
 
 
+def _chunk_completeness(metadata: dict | None) -> dict[str, str]:
+    """Read authoritative/caller metadata, falling back safely for legacy collections."""
+    metadata = metadata or {}
+    value = metadata.get("chunk_completeness", "unknown")
+    source = metadata.get("chunk_completeness_source", "unavailable")
+    if value not in {"complete", "truncated", "unknown"}:
+        return {"completeness": "unknown", "completeness_source": "unavailable"}
+    if source not in {"source", "caller", "unavailable"}:
+        return {"completeness": "unknown", "completeness_source": "unavailable"}
+    if (value == "unknown") != (source == "unavailable"):
+        return {"completeness": "unknown", "completeness_source": "unavailable"}
+    return {"completeness": value, "completeness_source": source}
+
+
 def _get_client() -> chromadb.PersistentClient:
     global _client
     if _client is None:
@@ -62,11 +76,12 @@ def _retrieve_chunks(question: str, collection: chromadb.Collection, top_k: int)
     query_result = collection.query(
         query_texts=[question],
         n_results=top_k,
-        include=["documents", "distances"],
+        include=["documents", "distances", "metadatas"],
     )
     documents = query_result["documents"][0]
     distances = query_result["distances"][0]
     chunk_ids = query_result["ids"][0]
+    metadatas = query_result.get("metadatas", [[]])[0] or [{} for _ in documents]
 
     if not documents:
         return []
@@ -76,8 +91,9 @@ def _retrieve_chunks(question: str, collection: chromadb.Collection, top_k: int)
             chunk_id=chunk_id,
             text=text,
             score=float(max(0.0, 1.0 - distance)),
+            **_chunk_completeness(metadatas[index] if index < len(metadatas) else {}),
         )
-        for chunk_id, text, distance in zip(chunk_ids, documents, distances)
+        for index, (chunk_id, text, distance) in enumerate(zip(chunk_ids, documents, distances))
     ]
     chunks.sort(key=lambda c: c.score, reverse=True)
     return chunks
@@ -90,11 +106,12 @@ def _retrieve_with_embeddings(
     query_result = collection.query(
         query_texts=[question],
         n_results=top_k,
-        include=["documents", "distances", "embeddings"],
+        include=["documents", "distances", "embeddings", "metadatas"],
     )
     documents = query_result["documents"][0]
     distances = query_result["distances"][0]
     chunk_ids = query_result["ids"][0]
+    metadatas = query_result.get("metadatas", [[]])[0] or [{} for _ in documents]
     # embeddings[0] is a numpy ndarray of shape (n_results, dim)
     raw_chunk_embeddings = query_result["embeddings"][0]
 
@@ -106,8 +123,9 @@ def _retrieve_with_embeddings(
             chunk_id=chunk_id,
             text=text,
             score=float(max(0.0, 1.0 - distance)),
+            **_chunk_completeness(metadatas[index] if index < len(metadatas) else {}),
         )
-        for chunk_id, text, distance in zip(chunk_ids, documents, distances)
+        for index, (chunk_id, text, distance) in enumerate(zip(chunk_ids, documents, distances))
     ]
     # Sort chunks and align chunk embeddings to the same order
     order = sorted(range(len(chunks)), key=lambda i: chunks[i].score, reverse=True)

@@ -86,7 +86,7 @@ def test_select_unknown_case_is_rejected(dataset):
 def test_render_uses_production_prompt_builders(dataset):
     generation = next(case for case in dataset["cases"] if case["id"] == "generation_direct")
     rendered = render_case(generation)
-    assert "[Chunk 1]" in rendered.prompt
+    assert "[Chunk 1; completeness=unknown; completeness_source=unavailable]" in rendered.prompt
     assert generation["inputs"]["question"] in rendered.prompt
     assert rendered.system_prompt is not None
 

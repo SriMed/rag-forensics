@@ -74,6 +74,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         question=question,
         generated_answer=answer,
         retrieved_chunks=[c.text for c in chunks],
+        retrieved_chunk_details=chunks,
         ragas=RAGASMetrics(
             context_utilization=utilization,
             faithfulness=faithfulness,
@@ -148,6 +149,7 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         question=question,
         generated_answer=answer,
         retrieved_chunks=[c.text for c in chunks],
+        retrieved_chunk_details=chunks,
         ragas=RAGASMetrics(
             context_utilization=utilization,
             faithfulness=faithfulness,

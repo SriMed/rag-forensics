@@ -191,3 +191,33 @@ def test_custom_chunks_reflected_in_retrieved_chunks(mocker):
     body = response.json()
     expected_texts = [c["text"] for c in _VALID_REQUEST["chunks"]]
     assert body["retrieved_chunks"] == expected_texts
+
+
+def test_custom_accepts_caller_asserted_truncation(mocker):
+    _patch_services(mocker)
+    payload = {**_VALID_REQUEST, "chunks": [{
+        **_VALID_REQUEST["chunks"][0],
+        "completeness": "truncated",
+        "completeness_source": "caller",
+    }]}
+    response = client.post("/analyze/custom", json=payload)
+    assert response.status_code == 200
+    detail = response.json()["retrieved_chunk_details"][0]
+    assert detail["completeness"] == "truncated"
+    assert detail["completeness_source"] == "caller"
+
+
+def test_custom_rejects_known_completeness_without_caller_provenance(mocker):
+    _patch_services(mocker)
+    payload = {**_VALID_REQUEST, "chunks": [{
+        **_VALID_REQUEST["chunks"][0],
+        "completeness": "truncated",
+        "completeness_source": "source",
+    }]}
+    assert client.post("/analyze/custom", json=payload).status_code == 422
+
+
+def test_custom_legacy_chunks_default_to_unknown(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze/custom", json=_VALID_REQUEST)
+    assert response.status_code == 200

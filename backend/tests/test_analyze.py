@@ -153,6 +153,8 @@ def test_analyze_response_has_question_and_chunks(mocker):
     assert "question" in body
     assert "retrieved_chunks" in body
     assert isinstance(body["retrieved_chunks"], list)
+    assert body["retrieved_chunk_details"][0]["completeness"] == "unknown"
+    assert body["retrieved_chunk_details"][0]["completeness_source"] == "unavailable"
 
 
 

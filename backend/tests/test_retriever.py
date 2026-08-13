@@ -166,6 +166,51 @@ class TestRetrieve:
 
         assert results == []
 
+    def test_legacy_metadata_falls_back_to_unknown(self):
+        from services.retriever import retrieve
+        mock_collection = self._mock_collection(texts=["Text"], distances=[0.1], ids=["c1"])
+        mock_collection.query.return_value["metadatas"] = [[{}]]
+        mock_collection.get.return_value = {"metadatas": [SAMPLE_METADATA[0]]}
+        with patch("services.retriever._get_collection", return_value=mock_collection):
+            chunk = retrieve("techqa-001", domain="techqa", top_k=1)[0]
+        assert chunk.completeness == "unknown"
+        assert chunk.completeness_source == "unavailable"
+
+    def test_source_completeness_metadata_is_preserved(self):
+        from services.retriever import retrieve
+        mock_collection = self._mock_collection(texts=["Cut off"], distances=[0.1], ids=["c1"])
+        mock_collection.query.return_value["metadatas"] = [[{
+            "chunk_completeness": "truncated",
+            "chunk_completeness_source": "source",
+        }]]
+        mock_collection.get.return_value = {"metadatas": [SAMPLE_METADATA[0]]}
+        with patch("services.retriever._get_collection", return_value=mock_collection):
+            chunk = retrieve("techqa-001", domain="techqa", top_k=1)[0]
+        assert chunk.completeness == "truncated"
+        assert chunk.completeness_source == "source"
+
+    def test_invalid_metadata_fails_closed_to_unknown(self):
+        from services.retriever import retrieve
+        mock_collection = self._mock_collection(texts=["Text."], distances=[0.1], ids=["c1"])
+        mock_collection.query.return_value["metadatas"] = [[{
+            "chunk_completeness": "complete",
+            "chunk_completeness_source": "unavailable",
+        }]]
+        mock_collection.get.return_value = {"metadatas": [SAMPLE_METADATA[0]]}
+        with patch("services.retriever._get_collection", return_value=mock_collection):
+            chunk = retrieve("techqa-001", domain="techqa", top_k=1)[0]
+        assert chunk.completeness == "unknown"
+
+    def test_short_metadata_list_does_not_drop_chunks(self):
+        from services.retriever import retrieve
+        mock_collection = self._mock_collection(texts=["One", "Two"], distances=[0.1, 0.2], ids=["c1", "c2"])
+        mock_collection.query.return_value["metadatas"] = [[{}]]
+        mock_collection.get.return_value = {"metadatas": [SAMPLE_METADATA[0]]}
+        with patch("services.retriever._get_collection", return_value=mock_collection):
+            chunks = retrieve("techqa-001", domain="techqa", top_k=2)
+        assert len(chunks) == 2
+        assert chunks[1].completeness == "unknown"
+
 
 class TestGetReferenceAnswer:
     def test_returns_non_empty_string(self):

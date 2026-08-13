@@ -127,6 +127,13 @@ export interface AnalyzeResponse {
   question: string;
   generated_answer: string;
   retrieved_chunks: string[];
+  retrieved_chunk_details: Array<{
+    chunk_id: string;
+    text: string;
+    score: number;
+    completeness: "complete" | "truncated" | "unknown";
+    completeness_source: "source" | "caller" | "unavailable";
+  }>;
   ragas: RAGASMetrics;
   hedging_mismatch: HedgingMismatchMetrics;
   chunk_attribution: ChunkAttributionMetrics;

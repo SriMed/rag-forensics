@@ -47,10 +47,26 @@ class RetrievedChunk(BaseModel):
     chunk_id: str
     text: str
     score: float = Field(ge=0.0, le=1.0)
+    completeness: Literal["complete", "truncated", "unknown"] = "unknown"
+    completeness_source: Literal["source", "caller", "unavailable"] = "unavailable"
+
+    @model_validator(mode="after")
+    def completeness_matches_source(self):
+        if self.completeness == "unknown" and self.completeness_source != "unavailable":
+            raise ValueError("unknown completeness requires an unavailable source")
+        if self.completeness != "unknown" and self.completeness_source == "unavailable":
+            raise ValueError("known completeness requires source or caller provenance")
+        return self
 
 
-# CustomChunk is structurally identical to RetrievedChunk — alias to avoid duplication.
-CustomChunk = RetrievedChunk
+class CustomChunk(RetrievedChunk):
+    """Caller-supplied chunk; known completeness is necessarily caller asserted."""
+
+    @model_validator(mode="after")
+    def custom_completeness_is_caller_asserted(self):
+        if self.completeness != "unknown" and self.completeness_source != "caller":
+            raise ValueError("custom known completeness must use caller provenance")
+        return self
 
 
 class ExampleRequest(BaseModel):
@@ -195,7 +211,7 @@ class AnalyzeRequest(BaseModel):
 class CustomAnalyzeRequest(BaseModel):
     question: str
     answer: str
-    chunks: list[RetrievedChunk]
+    chunks: list[CustomChunk]
     score_semantics: Literal["normalized_similarity"]
 
     @field_validator("chunks")
@@ -246,6 +262,7 @@ class AnalyzeResponse(BaseModel):
     question: str
     generated_answer: str
     retrieved_chunks: list[str]
+    retrieved_chunk_details: list[RetrievedChunk]
     ragas: RAGASMetrics
     hedging_mismatch: HedgingMismatchMetrics
     chunk_attribution: ChunkAttributionMetrics

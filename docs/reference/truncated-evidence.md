@@ -55,3 +55,39 @@ production model and include detector-specificity cases before changing default 
 Revisit this conclusion if production-model comparison does not reproduce the CovidQA behavior,
 if source-aware completeness cannot be recovered, or if a broader representative sample shows that
 the disclosure tradeoff materially reduces usefulness on complete evidence.
+
+## Implemented source-metadata contract
+
+Issue [#27](https://github.com/SriMed/rag-forensics/issues/27) introduced explicit chunk metadata:
+
+- `completeness`: `complete`, `truncated`, or `unknown`;
+- `completeness_source`: `source`, `caller`, or `unavailable`.
+
+`unknown` must pair with `unavailable`; known states must have source or caller provenance. Existing
+Chroma records and custom requests without the new fields remain compatible and resolve to
+`unknown`/`unavailable`. Malformed stored metadata also fails closed to that unavailable state.
+Custom API clients may assert known completeness only with `caller` provenance.
+
+RAGBench provides already-formed document strings without original source-boundary metadata.
+Consequently, bootstrap records their completeness as unknown; terminal punctuation is never
+promoted to provenance. The heuristic used in the investigation flags headings, punctuation-free
+complete prose, scalar values, and serialized tables as possible truncation, demonstrating why it
+is suitable only as a warning or fallback.
+
+For source-known truncated chunks, the production prompt prohibits guessing the missing
+continuation and requires disclosure when the missing text prevents a complete answer. Unknown
+chunks are not described as truncated. The API returns `retrieved_chunk_details` so the state and
+provenance remain inspectable after analysis.
+
+### Exact production-model comparison
+
+The [v2 reviewed run](../../backend/evals/truncated_evidence/v2/README.md) used the exact
+`claude-haiku-4-5-20251001` model for 24 calls. Complete-evidence usefulness remained 6/6 in each
+condition. Truncation disclosure improved from 4/6 with the pre-#27 prompt to 6/6 with the contract.
+Strict avoidance of the held-back phrase remained 4/6: both CovidQA contract responses supplied
+`risk factor`, but neither supplied the missing object and both disclosed that it was unavailable.
+
+No response-level lexical rejection is implemented. The hidden source continuation is unavailable
+at runtime, so a substring rule cannot reliably distinguish completion, paraphrase, negation, or a
+supported phrase elsewhere in the evidence. Strict enforcement would require a source-aware
+comparison boundary or a separately validated verifier.

@@ -6,6 +6,7 @@ const ANALYZE_FIXTURE: AnalyzeResponse = {
   question: "What is X?",
   generated_answer: "X is Y.",
   retrieved_chunks: [],
+  retrieved_chunk_details: [],
   ragas: { context_utilization: { score: 0.8, status: "ok", error: null }, faithfulness: { score: 0.9, status: "ok", error: null }, utilization_context_excerpts: [], faithfulness_context_excerpts: [], excerpt_caveat: "Context excerpts are not score evidence." },
   hedging_mismatch: { overconfident_fraction: 0, underconfident_fraction: 0, total_claims: 0, claim_breakdown: [], status: "ok", error: null, evaluated_chunk_count: 0, evaluated_claim_count: 0, unavailable_claim_count: 0 },
   chunk_attribution: { unattributed_fraction: 0, mean_attribution_score: 0.9, weak_match_fraction: 0, attribution_map: [], method: "semantic_similarity", caveat: "Similarity does not prove entailment." },

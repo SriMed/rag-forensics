@@ -28,8 +28,8 @@ protocols, and reproducible commands.
 - [Installed RAGAS prompt audit](reference/ragas-prompt-audit.md) records the dependency-owned
   prompt contracts, model configuration, parsing and failure behavior, and downstream influence.
 - [Truncated-evidence generation evaluation](reference/truncated-evidence.md) records the paired
-  protocol, observed extrapolation and abstention behavior, evaluated alternatives, and evidence
-  limits from issue #25.
+  protocol, observed extrapolation and abstention behavior, source-metadata contract, exact-model
+  comparison, and evidence limits from issues #25 and #27.
 
 ## Project records
 

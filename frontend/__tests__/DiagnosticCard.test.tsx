@@ -6,6 +6,7 @@ const BASE_RESPONSE: AnalyzeResponse = {
   question: "What causes lightning?",
   generated_answer: "Lightning is caused by electrical discharge. It happens in storm clouds.",
   retrieved_chunks: ["Chunk text one", "Chunk text two"],
+  retrieved_chunk_details: [],
   ragas: {
     context_utilization: { score: 0.82, status: "ok", error: null },
     faithfulness: { score: 0.91, status: "ok", error: null },
