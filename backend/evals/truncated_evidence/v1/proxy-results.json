@@ -1,0 +1,827 @@
+{
+  "schema_version": "truncated-evidence-results.v1",
+  "runner": "Codex CLI",
+  "model_alias": "configured default",
+  "run_date": "2026-08-13",
+  "production_model": "claude-haiku-4-5-20251001",
+  "proxy_model_caveat": "The CLI alias is proxy evidence and may not resolve to the production model ID.",
+  "repetitions": 2,
+  "results": [
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "baseline",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate relative immunocompromise and be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "baseline",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate immunocompromise and be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "metadata",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate immunocompromise and be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "metadata",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate immunocompromise and may be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "qualification",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate relative immunocompromise and could be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "qualification",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate relative immunocompromise and may be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "hybrid",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate immunocompromise and could be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "complete",
+      "condition": "hybrid",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "Lower T-cell counts may indicate immunocompromise and be a risk factor for HAdV-55 infection in young adults. The only patient who recovered from severe infection had higher T-cell counts.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "baseline",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts were associated with recovery, while lower T-cell counts may indicate immunocompromise and increased risk in severe HAdV-55 infection.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "baseline",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts may be associated with recovery, while lower T-cell counts may indicate immunocompromise and could be a risk factor in severe HAdV-55 infection.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "metadata",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts may be associated with recovery, while lower T-cell counts may indicate immunocompromise and potentially increased risk in severe HAdV-55 infection.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "metadata",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts may be associated with recovery from severe HAdV-55 infection, while lower counts may indicate immunocompromise and potentially greater risk. However, the context\u2019s risk statement is incomplete.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "qualification",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts were associated with recovery, while relatively low T-cell counts may indicate immunocompromise. The evidence is truncated before specifying what low T-cell count may be a risk for.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "qualification",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts may be associated with recovery, while lower counts may indicate immunocompromise. The text suggests lower T-cell count may be a risk factor, but the evidence is truncated mid-sentence.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "hybrid",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The only patient who recovered had higher T-cell counts, while three of five patients had relatively low counts and may have been immunocompromised. The text suggests lower T-cell counts may be a risk factor, but the supporting sentence is truncated.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "covidqa_tcell",
+      "variant": "truncated",
+      "condition": "hybrid",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Higher T-cell counts may be associated with recovery from severe HAdV-55 infection, while lower counts may indicate immunocompromise. The evidence about lower T-cell count as a risk factor is truncated, so its precise role cannot be determined.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": true,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "baseline",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was 36.8%.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "baseline",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was **36.8%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "metadata",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was **36.8%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "metadata",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was **36.8%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "qualification",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was **36.83%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "qualification",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was **36.83%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "hybrid",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility was **36.8%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "complete",
+      "condition": "hybrid",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The average expected volatility for 2007\u20132009 was **36.8%**.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "baseline",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Cannot be determined: expected volatility for 2007 is missing, and the 2008\u20132009 average alone is 39.8%.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "baseline",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Cannot be determined: the expected volatility for 2007 is missing.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "metadata",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Cannot be determined from the provided context because the expected volatility for 2007 is missing.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "metadata",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Cannot be determined. The context provides values only for 2008 (37.9%) and 2009 (41.7%), not 2007.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "qualification",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The average cannot be calculated from the provided context because the 2007 value is missing, and the evidence is truncated after the 2008 value.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "qualification",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Cannot be determined. The context provides 41.7% for 2009 and 37.9% for 2008, but the evidence is truncated before the 2007 value.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "hybrid",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The average cannot be determined. The context provides 41.7% for 2009 and 37.9% for 2008, but the truncated evidence does not provide the 2007 value.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "finqa_volatility",
+      "variant": "truncated",
+      "condition": "hybrid",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "Cannot be determined. The context provides 41.7% for 2009 and 37.9% for 2008, but the truncated evidence does not provide the 2007 value.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "baseline",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "baseline",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "metadata",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "metadata",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "qualification",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "qualification",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "hybrid",
+      "repetition": 1,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specified orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": false,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "complete",
+      "condition": "hybrid",
+      "repetition": 2,
+      "detected_incomplete": false,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": true,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "baseline",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "baseline",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "metadata",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "metadata",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "qualification",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "qualification",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": false,
+        "qualified": false,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "hybrid",
+      "repetition": 1,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration. The available evidence is truncated, so no additional details are supported.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    },
+    {
+      "case_id": "techqa_terminate",
+      "variant": "truncated",
+      "condition": "hybrid",
+      "repetition": 2,
+      "detected_incomplete": true,
+      "status": "ok",
+      "response": "The Terminate activity stops all further orchestration. The evidence is truncated after this statement.",
+      "error": null,
+      "assessment": {
+        "forbidden_phrase_present": false,
+        "explicit_truncation": true,
+        "qualified": true,
+        "complete_answer_useful": null,
+        "human_review": null
+      }
+    }
+  ]
+}

@@ -307,10 +307,12 @@ propagate.
 
 ### Recommendation
 
-No broad prompt rewrite is supported by this small set. Investigate complete/truncated passage
-pairs, explicit truncation metadata, qualification instructions, and deterministic incomplete-text
-detection before selecting an intervention. Follow-up:
-[#25](https://github.com/SriMed/rag-forensics/issues/25).
+No broad prompt rewrite is supported by this small set. The completed
+[#25](https://github.com/SriMed/rag-forensics/issues/25) [paired evaluation](truncated-evidence.md)
+found case-dependent extrapolation, abstention, and fragment copying. A deterministic hybrid made
+truncation visible in all six truncated proxy outputs but did not reliably prevent completion of
+the CovidQA fragment. The supported next step is source-aware completeness metadata plus a bounded
+generation contract, evaluated on the production model—not a prompt-only fix.
 
 ## 7. Inactive and empty prompt files
 

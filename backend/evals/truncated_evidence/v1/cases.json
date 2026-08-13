@@ -1,0 +1,46 @@
+{
+  "schema_version": "truncated-evidence.v1",
+  "dataset_version": "1.0.0",
+  "cases": [
+    {
+      "id": "covidqa_tcell",
+      "question": "What role does T-cell count play in severe human adenovirus type 55 (HAdV-55) infection?",
+      "complete": "In our study, the only patient who recovered from severe infection had higher T-cell counts. Three of the five patients had relatively low T-cell counts when admitted. Our results suggest that these three patients may have been relatively immunocompromised and that a lower T-cell count may be a risk factor for HAdV-55 infection in young adults.",
+      "truncated": "In our study, the only patient who recovered from severe infection had higher T-cell counts. Three of the five patients had relatively low T-cell counts when admitted. Our results suggest that these three patients may have been relatively immunocompromised and that a lower T-cell count may be a risk",
+      "provenance": {
+        "complete": "Sun et al., Critical Care 18:456 (2014), PMC4243941, Discussion",
+        "complete_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4243941/",
+        "truncated": "backend/data/chroma/chroma.sqlite3, covidqa embedding 358_chunk_0; exact terminal passage also frozen in prompt-audit v1",
+        "transformation": "The complete source sentence was cut at the exact terminal byte preserved by the local Chroma record."
+      },
+      "forbidden_additions_when_truncated": ["risk factor", "young adults"],
+      "required_complete": ["risk factor", "young adults"]
+    },
+    {
+      "id": "finqa_volatility",
+      "question": "What is the average expected volatility for the years 2007-2009?",
+      "complete": "Expected volatility was 41.7% in 2009, 37.9% in 2008, and 30.9% in 2007.",
+      "truncated": "Expected volatility was 41.7% in 2009, 37.9% in 2008, and",
+      "provenance": {
+        "complete": "backend/data/chroma/chroma.sqlite3, FinQA embedding finqa_664_chunk_1; values preserved in prompt-audit v1",
+        "truncated": "Deterministic prefix of the normalized complete evidence",
+        "transformation": "The complete evidence was normalized from its table row, then cut before the 2007 value."
+      },
+      "forbidden_additions_when_truncated": ["30.9", "36.8", "36.83"],
+      "required_complete": ["36.8"]
+    },
+    {
+      "id": "techqa_terminate",
+      "question": "What does the Terminate activity do?",
+      "complete": "The Terminate activity stops all further orchestration job processing in the specific orchestration branch.",
+      "truncated": "The Terminate activity stops all further orchestration",
+      "provenance": {
+        "complete": "backend/data/chroma/chroma.sqlite3, TechQA embedding techqa_TRAIN_Q500_chunk_0; exact sentence preserved in prompt-audit v1",
+        "truncated": "Deterministic prefix of the exact repository evidence",
+        "transformation": "The exact sentence was cut before the object that specifies what is stopped."
+      },
+      "forbidden_additions_when_truncated": ["job processing", "specific orchestration branch"],
+      "required_complete": ["job processing", "specific orchestration branch"]
+    }
+  ]
+}

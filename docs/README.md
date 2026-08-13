@@ -27,6 +27,9 @@ protocols, and reproducible commands.
   proxy evaluation, recommendations, and linked follow-up work from issue #16.
 - [Installed RAGAS prompt audit](reference/ragas-prompt-audit.md) records the dependency-owned
   prompt contracts, model configuration, parsing and failure behavior, and downstream influence.
+- [Truncated-evidence generation evaluation](reference/truncated-evidence.md) records the paired
+  protocol, observed extrapolation and abstention behavior, evaluated alternatives, and evidence
+  limits from issue #25.
 
 ## Project records
 
