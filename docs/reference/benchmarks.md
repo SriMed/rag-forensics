@@ -234,3 +234,40 @@ still falsely rejected. Claim decomposition, verifier behavior, multi-sentence r
 annotation granularity therefore remain material competing explanations. The FinQA estimate is
 based on only 11 eligible sentences, and per-stratum differences do not have separate confidence
 intervals; their apparent heterogeneity is descriptive rather than conclusive.
+
+## Next empirical program
+
+The highest-information follow-up is a controlled decomposition-by-evidence experiment on the
+same eligible supported-sentence population. It should compare four conditions while holding the
+verifier, model revision, threshold, aggregation, and evaluation population fixed:
+
+| Condition | Claim decomposition | Evidence supplied to verifier |
+|---|---|---|
+| A | Current deterministic clauses | Similarity-selected evidence |
+| B | Current deterministic clauses | Annotated oracle evidence |
+| C | Frozen human-reviewed atomic claims | Similarity-selected evidence |
+| D | Frozen human-reviewed atomic claims | Annotated oracle evidence |
+
+The primary report should preserve paired outcomes and example-clustered uncertainty for each
+intervention and interaction. A frozen review of residual condition-D failures should distinguish
+verifier error, multi-sentence support, numerical or tabular reasoning, annotation-granularity
+mismatch, ambiguous labels, and undetermined cases. Human-reviewed claims and error categories are
+review artifacts, not ground truth; reviewer identity, instructions, disagreements, and revisions
+must remain inspectable.
+
+The experiment should answer which intervention changes false-unsupported judgments and whether
+the two interventions interact. It should not claim production prevalence, a deployable oracle,
+or causal responsibility for a complete RAG pipeline. Swapping verifiers before this localization
+would confound component choice with the unresolved mechanism.
+
+A subsequent public case collection should select diverse examples from the committed public-data
+evaluations and preserve the input, observations, hypotheses, proposed test, intervention result,
+and retrospective interpretation. Its purpose is inspectability and counterexample discovery, not
+a representative incident taxonomy.
+
+Until authentic consumers are available, evaluation of the interactive record should focus on
+diagnostic validity: whether proposed tests actually distinguish their named hypotheses, whether
+retrospective evidence updates the record in the declared direction, whether causal language stays
+within the evidence, whether unavailable states remain unavailable, and whether displayed claims
+are traceable to observations and methods. A single-author review can exercise this protocol but
+must be labeled as such; it cannot establish usability or decision value for external users.

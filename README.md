@@ -11,6 +11,11 @@ RAG Forensics keeps them visible. Given a question, answer, and retrieved contex
 observable signals, evidence candidates, method assumptions, reliability labels, ranked
 hypotheses, and follow-up tests. It is a hypothesis-generation layer—not a root-cause oracle.
 
+The project was motivated by recurring diagnostic ambiguity observed while working with a
+production RAG system. No proprietary incidents, outputs, organizational data, or private user
+research are included. The repository's empirical claims come only from the public datasets and
+committed evaluation artifacts described below.
+
 In practical terms, it helps a reviewer answer three questions:
 
 1. **What evidence appears related to each part of the answer?** These passages are candidates for
@@ -122,6 +127,20 @@ localize evidence-selection versus downstream verification failures on eligible,
 sentences. It is label-derived analysis—not a deployable classifier—and does not explain failures
 for unsupported sentences. Until broader interventions are run, the project should claim that it
 narrows an investigation—not that it explains the cause of a bad answer.
+
+The next contribution goal is to demonstrate, on public labeled examples, a reproducible method
+for preserving competing explanations and designing component-isolating tests, while measuring
+where those tests localize failure and where ambiguity remains. The next experiment should cross
+current versus human-reviewed claim decomposition with similarity-selected versus annotated
+oracle evidence, then classify the residual failures without changing the verifier. A public case
+collection can make those successes and limits inspectable without treating benchmark examples as
+production incidents.
+
+The project has not established that this diagnostic record improves decisions for real users.
+There are currently no external consumers or accessible production incident data on which to make
+that claim. A consumer study should wait for an authentic user population; until then, evaluation
+should target diagnostic validity, provenance, failure semantics, and the behavior of controlled
+interventions on public data.
 
 ## Quick start
 

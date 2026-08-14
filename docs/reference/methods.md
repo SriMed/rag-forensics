@@ -142,3 +142,14 @@ The project’s intended contribution is instance-level diagnostic transparency:
 observations, provenance, competing hypotheses, and proposed interventions for one answer. It is
 not architecture search, automatic RAG optimization, or a claim of state-of-the-art hallucination
 detection.
+
+The motivation comes from the author's experience of diagnostic ambiguity in a production RAG
+system, but no proprietary incidents, outputs, organizational data, or private user research are
+part of this repository's evidence base. Public datasets, committed evaluation artifacts, code,
+and tests support the empirical claims here; production experience supports only the importance
+of the problem.
+
+The implementation has also not been evaluated with external consumers. It may therefore claim
+that the diagnostic structure is inspectable and that particular public-data interventions produce
+the recorded results. It may not yet claim that the structure improves operational decisions,
+reduces investigation time, or transfers to production traffic.
