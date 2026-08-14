@@ -84,6 +84,13 @@ renderer is limited to wording this structure; if its model call fails, `recomme
 deterministic rendering of the full structure. Consumers that need stable diagnostic semantics
 should use `verdict_reasoning`, not parse the prose.
 
+The bundled frontend presents that structure before the generated recommendation. It labels every
+observation's reliability, presents hypotheses as competing explanations, and connects each test
+outcome to the hypothesis IDs it supports. Retrieved evidence displays both `completeness` and
+`completeness_source`; `unknown`/`unavailable` remains an unavailable metadata state. The summary
+uses neutral investigation-priority wording and identifies the ordering as heuristic rather than
+describing pipeline health or calibrated severity.
+
 The `hedging_mismatch` result also carries explicit availability semantics. A validated empty claim
 array returns `status: "ok"`, `total_claims: 0`, and `error: null`. Extraction failures return
 `status: "error"` and one of `claim_extraction_failed`, `claim_extraction_parse_failed`, or

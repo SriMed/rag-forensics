@@ -15,6 +15,15 @@ const ANALYZE_FIXTURE: AnalyzeResponse = {
   query_corpus_fit: { triggered: false, observed_fit: null, suggested_questions: [], rejected_questions: [], mean_question_similarity: null, status: "not_run", error: null },
   recommendation: "All good.",
   verdict_signals: [],
+  verdict_reasoning: {
+    observations: [{ signal_name: "faithfulness_unavailable", description: "Faithfulness evaluation is unavailable.", reliability: "model_judged" }],
+    hypotheses: [{ hypothesis_id: "H1", statement: "The evaluator failed independently of answer quality." }],
+    test: {
+      component: "faithfulness evaluator",
+      action: "Restore the evaluator and rerun the analysis.",
+      interpretations: [{ outcome: "A score is returned", supports_hypothesis_ids: ["H1"] }],
+    },
+  },
 };
 
 beforeEach(() => {
@@ -90,6 +99,7 @@ describe("analyzeExample", () => {
     });
     const result = await analyzeExample("techqa_001");
     expect(result.verdict_signals).toEqual([]);
+    expect(result.verdict_reasoning.test?.component).toBe("faithfulness evaluator");
     expect(result.recommendation).toBe("All good.");
   });
 

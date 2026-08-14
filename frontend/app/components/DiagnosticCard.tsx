@@ -19,25 +19,6 @@ function chunkColor(chunkId: string, index: Map<string, number>): string {
   return CHUNK_COLORS[index.get(chunkId)!];
 }
 
-type Verdict = "pass" | "warn" | "fail";
-
-function verdictClass(verdict: Verdict): string {
-  if (verdict === "pass") return "bg-green-100 text-green-800";
-  if (verdict === "warn") return "bg-amber-100 text-amber-800";
-  return "bg-red-100 text-red-800";
-}
-
-function VerdictBadge({ verdict, testId }: { verdict: Verdict; testId: string }) {
-  return (
-    <span
-      data-testid={testId}
-      className={`inline-block rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${verdictClass(verdict)}`}
-    >
-      {verdict}
-    </span>
-  );
-}
-
 interface Props {
   response: AnalyzeResponse;
 }
@@ -53,54 +34,30 @@ export default function DiagnosticCard({ response }: Props) {
     embedding_space,
     query_corpus_fit,
     verdict_signals,
+    verdict_reasoning,
+    retrieved_chunk_details,
     recommendation,
   } = response;
 
-  // Derive synthetic DimensionResults for continuous-metric modules
-  // so they render consistently in the forensics section.
-  const hedgingVerdict: Verdict =
-    hedging_mismatch.status === "error"
-      ? "warn"
-      : hedging_mismatch.unavailable_claim_count > 0
-      ? "warn"
-      : hedging_mismatch.overconfident_fraction > 0.3
-      ? "fail"
-      : hedging_mismatch.overconfident_fraction > 0.15
-      ? "warn"
-      : "pass";
-
-  const attributionVerdict: Verdict =
-    chunk_attribution.unattributed_fraction > 0.4
-      ? "fail"
-      : chunk_attribution.unattributed_fraction > 0.2
-      ? "warn"
-      : "pass";
-
   const topPriority = verdict_signals[0]?.priority_score ?? 0;
-  const overall: Verdict =
-    topPriority > 0.5 ? "fail" : topPriority > 0.2 ? "warn" : "pass";
+  const priorityLabel =
+    topPriority > 0.5
+      ? "Higher investigation priority"
+      : topPriority > 0.2
+      ? "Moderate investigation priority"
+      : "Lower investigation priority";
 
   const chunkColorIndex = new Map<string, number>();
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-4 min-w-[320px]">
-      {/* Summary banner */}
+      {/* Priority banner: the score is a heuristic ordering index, not health or severity. */}
       <div
         data-testid="summary-banner"
-        className={`rounded-lg px-4 py-3 text-sm font-medium ${
-          overall === "pass"
-            ? "bg-green-50 text-green-800 border border-green-200"
-            : overall === "warn"
-            ? "bg-amber-50 text-amber-800 border border-amber-200"
-            : "bg-red-50 text-red-800 border border-red-200"
-        }`}
+        className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800"
       >
-        {overall === "pass"
-          ? "Pipeline looks healthy"
-          : overall === "warn"
-          ? "Potential issues detected"
-          : "Issues detected"}{" "}
-        — {recommendation}
+        <span className="font-semibold">{priorityLabel}</span>
+        <span className="text-slate-600"> · Heuristic ordering, not calibrated health or severity.</span>
       </div>
 
       {/* Question + Answer */}
@@ -118,6 +75,93 @@ export default function DiagnosticCard({ response }: Props) {
           <p className="text-sm text-gray-700 leading-relaxed">{generated_answer}</p>
         </div>
       </div>
+
+      {/* Inspectable diagnostic record */}
+      <section
+        aria-labelledby="diagnostic-reasoning-heading"
+        className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm space-y-5"
+      >
+        <div>
+          <h2 id="diagnostic-reasoning-heading" className="text-sm font-bold uppercase tracking-wide text-gray-500">
+            Diagnostic Reasoning
+          </h2>
+          <p className="mt-1 text-xs text-gray-500">
+            Observations and competing hypotheses to investigate; these do not establish a cause.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-gray-800">Observations</h3>
+          <ul className="mt-2 space-y-2">
+            {verdict_reasoning.observations.map((observation) => (
+              <li key={observation.signal_name} className="rounded border border-gray-100 bg-gray-50 p-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-medium text-gray-800">{observation.signal_name.replaceAll("_", " ")}</span>
+                  <span className="rounded bg-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+                    Reliability: {observation.reliability.replaceAll("_", " ")}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-gray-600">{observation.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-gray-800">Competing hypotheses</h3>
+          <ul className="mt-2 space-y-2">
+            {verdict_reasoning.hypotheses.map((hypothesis) => (
+              <li key={hypothesis.hypothesis_id} className="text-sm text-gray-700">
+                <span className="font-mono text-xs font-semibold text-gray-500">{hypothesis.hypothesis_id}</span>{" "}
+                <span>Hypothesis: {hypothesis.statement}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {verdict_reasoning.test && (
+          <div data-testid="discriminating-test" className="rounded border border-blue-100 bg-blue-50 p-4 space-y-3">
+            <h3 className="text-sm font-semibold text-blue-900">Discriminating test</h3>
+            <p className="text-sm text-blue-900"><span className="font-semibold">Component:</span> {verdict_reasoning.test.component}</p>
+            <p className="text-sm text-blue-900"><span className="font-semibold">Action:</span> {verdict_reasoning.test.action}</p>
+            <ul className="space-y-2">
+              {verdict_reasoning.test.interpretations.map((interpretation, index) => (
+                <li key={`${interpretation.outcome}-${index}`} className="text-sm text-blue-900">
+                  <span className="font-semibold">Outcome:</span> {interpretation.outcome}{" "}
+                  <span className="text-blue-700">Supports: {interpretation.supports_hypothesis_ids.join(", ") || "none specified"}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="border-t border-gray-100 pt-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Generated recommendation</h3>
+          <p className="mt-1 text-sm text-gray-600">{recommendation}</p>
+        </div>
+      </section>
+
+      {/* Retrieved evidence with source-boundary metadata */}
+      <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm space-y-3">
+        <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500">Retrieved Evidence</h2>
+        {retrieved_chunk_details.length === 0 ? (
+          <p className="text-sm text-gray-500">No retrieved chunk details available.</p>
+        ) : (
+          <ul className="space-y-3">
+            {retrieved_chunk_details.map((chunk) => (
+              <li key={chunk.chunk_id} className="rounded border border-gray-100 p-3">
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500">
+                  <span className="font-mono font-semibold text-gray-700">{chunk.chunk_id}</span>
+                  <span>Score: {chunk.score.toFixed(2)}</span>
+                  <span>Completeness: {chunk.completeness}</span>
+                  <span>Provenance: {chunk.completeness_source}</span>
+                </div>
+                <p className="mt-2 text-sm text-gray-700">{chunk.text}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {/* Baseline Metrics */}
       <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm space-y-4">
@@ -171,12 +215,7 @@ export default function DiagnosticCard({ response }: Props) {
 
         {/* Hedging Mismatch — continuous metrics */}
         <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">
-              Hedging Mismatch
-            </span>
-            <VerdictBadge verdict={hedgingVerdict} testId="badge-hedging_mismatch" />
-          </div>
+          <span className="text-sm font-medium text-gray-700">Hedging Mismatch</span>
           <p className="text-xs text-gray-500">
             {hedging_mismatch.status === "error" ? (
               <>Analysis unavailable: {hedging_mismatch.error}</>
@@ -187,12 +226,7 @@ export default function DiagnosticCard({ response }: Props) {
 
         {/* Chunk Attribution — annotated answer */}
         <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">
-              Chunk Attribution
-            </span>
-            <VerdictBadge verdict={attributionVerdict} testId="badge-chunk_attribution" />
-          </div>
+          <span className="text-sm font-medium text-gray-700">Chunk Attribution</span>
           <p className="text-xs text-gray-500">
             No close semantic source: {(chunk_attribution.unattributed_fraction * 100).toFixed(0)}% ·
             Mean score: {chunk_attribution.mean_attribution_score.toFixed(2)}

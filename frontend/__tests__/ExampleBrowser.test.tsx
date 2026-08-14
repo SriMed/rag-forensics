@@ -14,8 +14,13 @@ const ANALYZE_FIXTURE: AnalyzeResponse = {
   retrieval_distribution: { score_gap: 0.3, score_entropy: 0.9, decay_rate: 0.4, tail_mass: 0.1, top_score: 0.9, n_chunks: 3, normalized_entropy: 0.5, interpretation: "Interpret with absolute relevance." },
   embedding_space: { centroid_distance: 0.3, chunk_spread: 0.2, query_isolation: 0.8, projection: [] },
   query_corpus_fit: { triggered: false, observed_fit: null, suggested_questions: [], rejected_questions: [], mean_question_similarity: null, status: "not_run", error: null },
-  recommendation: "Pipeline looks healthy.",
+  recommendation: "Rerun the evaluator before interpreting answer quality.",
   verdict_signals: [],
+  verdict_reasoning: {
+    observations: [{ signal_name: "faithfulness_unavailable", description: "Faithfulness evaluation is unavailable.", reliability: "model_judged" }],
+    hypotheses: [{ hypothesis_id: "H1", statement: "The evaluator failed independently of answer quality." }],
+    test: null,
+  },
 };
 
 // Deferred promise helper: gives tests explicit control over when a mock resolves,
@@ -201,7 +206,8 @@ describe("ExampleBrowser", () => {
     await waitFor(() =>
       expect(screen.getByTestId("summary-banner")).toBeInTheDocument()
     );
-    expect(screen.getByTestId("summary-banner")).toHaveTextContent(ANALYZE_FIXTURE.recommendation);
+    expect(screen.getByText(ANALYZE_FIXTURE.recommendation)).toBeInTheDocument();
+    expect(screen.getByTestId("summary-banner")).not.toHaveTextContent(ANALYZE_FIXTURE.recommendation);
   });
 
   // 13. Error message shown on analyzeExample rejection

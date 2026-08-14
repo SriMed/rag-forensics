@@ -6,7 +6,10 @@ const BASE_RESPONSE: AnalyzeResponse = {
   question: "What causes lightning?",
   generated_answer: "Lightning is caused by electrical discharge. It happens in storm clouds.",
   retrieved_chunks: ["Chunk text one", "Chunk text two"],
-  retrieved_chunk_details: [],
+  retrieved_chunk_details: [
+    { chunk_id: "chunk-1", text: "Complete source text.", score: 0.88, completeness: "complete", completeness_source: "source" },
+    { chunk_id: "chunk-2", text: "Boundary metadata unavailable", score: 0.61, completeness: "unknown", completeness_source: "unavailable" },
+  ],
   ragas: {
     context_utilization: { score: 0.82, status: "ok", error: null },
     faithfulness: { score: 0.91, status: "ok", error: null },
@@ -82,8 +85,26 @@ const BASE_RESPONSE: AnalyzeResponse = {
     status: "not_run",
     error: null,
   },
-  recommendation: "Pipeline looks healthy — no action required.",
+  recommendation: "Review the structured record before choosing the next experiment.",
   verdict_signals: [],
+  verdict_reasoning: {
+    observations: [
+      { signal_name: "retrieval_distribution", description: "Retrieval scores are relatively flat.", reliability: "unvalidated" },
+      { signal_name: "faithfulness_unavailable", description: "Faithfulness evaluation is unavailable.", reliability: "model_judged" },
+    ],
+    hypotheses: [
+      { hypothesis_id: "H1", statement: "Retrieval returned weakly relevant context." },
+      { hypothesis_id: "H2", statement: "Generation did not use relevant retrieved evidence." },
+    ],
+    test: {
+      component: "retriever",
+      action: "Rerun with a retrieval configuration that raises absolute relevance.",
+      interpretations: [
+        { outcome: "Answer grounding improves", supports_hypothesis_ids: ["H1"] },
+        { outcome: "Answer grounding does not improve", supports_hypothesis_ids: ["H2"] },
+      ],
+    },
+  },
 };
 
 test("renders unavailable RAGAS metrics explicitly", () => {
@@ -131,13 +152,12 @@ describe("DiagnosticCard", () => {
     expect(screen.getByText(/forensics/i)).toBeInTheDocument();
   });
 
-  // 3. Verdict badge colors
-  it("applies green class for pass verdict, red for fail", () => {
+  it("uses neutral investigation-priority language for heuristic scores", () => {
     render(<DiagnosticCard response={FAIL_RESPONSE} />);
-    const passBadge = screen.getByTestId("badge-chunk_attribution"); // 10% unattributed → pass
-    const failBadge = screen.getByTestId("badge-hedging_mismatch");  // 40% overconfident → fail
-    expect(passBadge.className).toMatch(/green/);
-    expect(failBadge.className).toMatch(/red/);
+    const banner = screen.getByTestId("summary-banner");
+    expect(banner).toHaveTextContent(/higher investigation priority/i);
+    expect(banner).toHaveTextContent(/not calibrated health or severity/i);
+    expect(banner).not.toHaveTextContent(/healthy|issues detected/i);
   });
 
   // 4. Attribution renders one element per sentence
@@ -154,15 +174,33 @@ describe("DiagnosticCard", () => {
     expect(unattributed.className).toMatch(/red/);
   });
 
-  // 6. Summary reflects worst verdict when any dimension fails
-  it("shows 'Issues detected' in the summary when any dimension is fail", () => {
-    render(<DiagnosticCard response={FAIL_RESPONSE} />);
-    expect(screen.getByTestId("summary-banner")).toHaveTextContent(/issues detected/i);
+  it("renders observations with reliability, including unavailable evaluator state", () => {
+    render(<DiagnosticCard response={BASE_RESPONSE} />);
+    expect(screen.getByText("Faithfulness evaluation is unavailable.")).toBeInTheDocument();
+    expect(screen.getByText(/reliability: model judged/i)).toBeInTheDocument();
+    expect(screen.getByText(/reliability: unvalidated/i)).toBeInTheDocument();
   });
 
-  // 7. Empty evidence array does not crash
-  it("renders without crashing when evidence arrays are empty", () => {
-    expect(() => render(<DiagnosticCard response={BASE_RESPONSE} />)).not.toThrow();
-    expect(screen.getByTestId("badge-chunk_attribution")).toBeInTheDocument();
+  it("renders competing retrieval and generation hypotheses as hypotheses", () => {
+    render(<DiagnosticCard response={BASE_RESPONSE} />);
+    expect(screen.getByText(/hypothesis: retrieval returned weakly relevant context/i)).toBeInTheDocument();
+    expect(screen.getByText(/hypothesis: generation did not use relevant retrieved evidence/i)).toBeInTheDocument();
+  });
+
+  it("renders the named component, action, and outcome-dependent hypothesis support", () => {
+    render(<DiagnosticCard response={BASE_RESPONSE} />);
+    const test = screen.getByTestId("discriminating-test");
+    expect(test).toHaveTextContent(/component: retriever/i);
+    expect(test).toHaveTextContent(/rerun with a retrieval configuration/i);
+    expect(test).toHaveTextContent(/answer grounding improves supports: h1/i);
+    expect(test).toHaveTextContent(/answer grounding does not improve supports: h2/i);
+  });
+
+  it("renders chunk completeness and provenance, preserving unavailable metadata", () => {
+    render(<DiagnosticCard response={BASE_RESPONSE} />);
+    expect(screen.getByText(/completeness: complete/i)).toBeInTheDocument();
+    expect(screen.getByText(/provenance: source/i)).toBeInTheDocument();
+    expect(screen.getByText(/completeness: unknown/i)).toBeInTheDocument();
+    expect(screen.getByText(/provenance: unavailable/i)).toBeInTheDocument();
   });
 });

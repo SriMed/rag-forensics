@@ -123,6 +123,36 @@ export interface VerdictSignal {
   reliability: "unvalidated" | "partially_calibrated" | "model_judged";
 }
 
+export type VerdictReliability = VerdictSignal["reliability"];
+
+export interface VerdictObservation {
+  signal_name: string;
+  description: string;
+  reliability: VerdictReliability;
+}
+
+export interface VerdictHypothesis {
+  hypothesis_id: string;
+  statement: string;
+}
+
+export interface VerdictOutcomeInterpretation {
+  outcome: string;
+  supports_hypothesis_ids: string[];
+}
+
+export interface VerdictDiscriminatingTest {
+  component: string;
+  action: string;
+  interpretations: VerdictOutcomeInterpretation[];
+}
+
+export interface VerdictReasoning {
+  observations: VerdictObservation[];
+  hypotheses: VerdictHypothesis[];
+  test: VerdictDiscriminatingTest | null;
+}
+
 export interface AnalyzeResponse {
   question: string;
   generated_answer: string;
@@ -141,6 +171,7 @@ export interface AnalyzeResponse {
   embedding_space: EmbeddingSpaceMetrics;
   query_corpus_fit: QueryCorpusFitMetrics;
   verdict_signals: VerdictSignal[];
+  verdict_reasoning: VerdictReasoning;
   recommendation: string;
 }
 
