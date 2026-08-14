@@ -76,8 +76,11 @@ The project now evaluates its grounding methods without regenerating RAGBench an
 their source documents. Thresholds are selected on validation data and evaluated on untouched
 test data with clustered confidence intervals.
 
-The principal comparison is:
+The principal comparison uses labels introduced for one offline benchmark experiment. `B` marks a
+benchmark condition rather than a product component or version, and the number identifies the
+method:
 
+- **B0:** always-supported and always-unsupported prevalence checks;
 - **B1:** whole-sentence embedding similarity;
 - **B2:** deterministic claim decomposition plus similarity;
 - **B3:** the same claims and evidence candidates scored by a pinned NLI cross-encoder.
@@ -103,9 +106,11 @@ present claim-plus-NLI pipeline as a reliable standalone grounding detector. Sim
 useful for navigating to candidate evidence. The stronger contribution is the transparent,
 label-preserving framework that makes this null result—and its remaining uncertainty—inspectable.
 
-A follow-up oracle-evidence diagnostic on 188 eligible supported sentences reduced the
-false-unsupported rate from `0.452` with similarity-selected evidence to `0.287` with annotated
-evidence. The paired difference was `-0.165` with a 95% example-clustered interval of
+A follow-up **oracle-evidence diagnostic** replaced B3's selected evidence with RAGBench's
+human-annotated supporting evidence, allowing the verification step to be tested separately. On
+188 eligible supported sentences, it reduced the false-unsupported rate from `0.452` with
+similarity-selected evidence to `0.287` with annotated evidence. The paired difference was `-0.165`
+with a 95% example-clustered interval of
 `[-0.230, -0.101]`. This supports evidence selection as a meaningful—but not exclusive—bottleneck;
 substantial errors persist even when annotated evidence is supplied.
 

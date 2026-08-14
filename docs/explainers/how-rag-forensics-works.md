@@ -70,7 +70,20 @@ A useful follow-up changes one part of the pipeline while holding the others fix
 RAG Forensics ranks such leads using heuristic priorities and reliability labels. Those priorities
 are investigation orderings—not probabilities, calibrated severities, or causal attributions.
 
-## Where B3 fits
+## Where the benchmark conditions fit
+
+The labels **B0**, **B1**, **B2**, and **B3** name conditions in one offline benchmark experiment.
+Here, `B` is only a prefix for the benchmark conditions; it is not a product module or a technical
+concept the reader needs to decode. The number marks the method being compared:
+
+- **B0:** two prevalence checks that always predict supported or always predict unsupported;
+- **B1:** whole-sentence semantic similarity;
+- **B2:** deterministic claim splitting followed by semantic similarity; and
+- **B3:** the same split claims and evidence candidates evaluated with an NLI verifier.
+
+This sequence isolates what changes: B1 to B2 adds claim splitting, while B2 to B3 changes the
+scoring method from similarity to entailment-aware verification. These are evaluation conditions,
+not successive product versions.
 
 B3 is an offline benchmark method used to test one possible grounding signal. It is not the whole
 RAG Forensics product. B3:
@@ -94,11 +107,13 @@ claim-decomposition, and verifier failures easier to distinguish.
 Normally, B3 both chooses evidence and verifies it. If B3 rejects a supported answer, the final
 decision does not reveal which step failed.
 
-In the oracle condition, RAGBench's human-annotated supporting sentence temporarily replaces
-B3's evidence choice. This is like guiding a delivery driver to the correct address so you can
-test whether the driver can complete the delivery. If the verifier succeeds only after receiving
-annotated evidence, evidence selection contributed to the original failure. If it still fails,
-downstream explanations remain.
+An **oracle condition** is an experimental diagnostic in which the benchmark supplies the trusted
+answer to one intermediate step so the next step can be tested separately. In this oracle
+condition, RAGBench's human-annotated supporting sentence temporarily replaces B3's evidence
+choice. This is like guiding a delivery driver to the correct address so you can test whether the
+driver can complete the delivery. If the verifier succeeds only after receiving annotated
+evidence, evidence selection contributed to the original failure. If it still fails, downstream
+explanations remain.
 
 The annotations are unavailable for new production answers, so this is a diagnostic experiment,
 not a deployable feature. See [Understanding the oracle-evidence experiment](oracle-evidence.md)

@@ -37,7 +37,9 @@ hallucination boundary.
 
 ## B0–B3 experiment
 
-The scientific runner compares:
+`B` is the prefix for conditions in this benchmark experiment, not a product component or an
+acronym with additional technical meaning. The number distinguishes the comparison method. The
+scientific runner evaluates every condition through the same label-preserving interface:
 
 - `b0_always_supported`;
 - `b0_always_unsupported`;

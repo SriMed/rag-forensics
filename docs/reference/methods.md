@@ -101,9 +101,12 @@ call Anthropic or RAGAS.
 
 ## Offline grounding methods are evaluation tools
 
-B1, B2, and B3 belong to the offline benchmark path shown above. They test whether particular
-grounding signals correspond to RAGBench labels; they are not additional interactive product
-modules.
+The `B0`–`B3` names identify conditions in the offline benchmark path shown above. `B` is the
+benchmark-condition prefix, not the name of a product subsystem, and the number distinguishes the
+method under comparison: B0 is the pair of constant prevalence checks, B1 uses whole-sentence
+similarity, B2 adds deterministic claim splitting, and B3 replaces claim-level similarity scoring
+with an NLI verifier. They test whether particular grounding signals correspond to RAGBench
+labels; they are not additional interactive product modules or successive product versions.
 
 B3 performs four steps:
 

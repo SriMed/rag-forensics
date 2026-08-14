@@ -20,7 +20,10 @@ The source documents contain:
 
 > Revenue for 2024 was $20 million.
 
-The current B3 method performs two jobs after splitting the answer into claims:
+The current **B3 benchmark condition** splits an answer into claims, selects evidence by semantic
+similarity, and uses an NLI verifier to judge support. (The `B0`–`B3` labels are defined in the
+[main walkthrough](how-rag-forensics-works.md#where-the-benchmark-conditions-fit).) After claim
+splitting, B3 performs two jobs relevant to this experiment:
 
 1. **Evidence selection:** find the source sentence most relevant to the answer's claim.
 2. **Verification:** decide whether the selected source sentence supports the claim.
