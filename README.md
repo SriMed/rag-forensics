@@ -117,9 +117,9 @@ substantial errors persist even when annotated evidence is supplied.
 Detailed protocols, commands, revisions, results, and limitations are in
 [Benchmarking and current evidence](docs/reference/benchmarks.md).
 
-## Current research boundary
+## Open research questions
 
-The next useful analysis is not another unstructured model swap. It should further separate:
+Further evaluation should separate:
 
 - claim-decomposition errors;
 - evidence-selection errors;
@@ -130,22 +130,19 @@ The next useful analysis is not another unstructured model swap. It should furth
 The completed oracle-evidence diagnostic uses RAGBench’s annotated supporting sentences to
 localize evidence-selection versus downstream verification failures on eligible, fully supported
 sentences. It is label-derived analysis—not a deployable classifier—and does not explain failures
-for unsupported sentences. Until broader interventions are run, the project should claim that it
-narrows an investigation—not that it explains the cause of a bad answer.
+for unsupported sentences. The available evidence supports interpreting the system as narrowing an
+investigation, not as identifying the cause of a bad answer.
 
-The next contribution goal is to demonstrate, on public labeled examples, a reproducible method
-for preserving competing explanations and designing component-isolating tests, while measuring
-where those tests localize failure and where ambiguity remains. The next experiment should cross
-current versus human-reviewed claim decomposition with similarity-selected versus annotated
-oracle evidence, then classify the residual failures without changing the verifier. A public case
-collection can make those successes and limits inspectable without treating benchmark examples as
-production incidents.
+A controlled factorial experiment can cross automated versus human-reviewed claim decomposition
+with similarity-selected versus annotated oracle evidence, then classify the residual failures
+without changing the verifier. Such an experiment would measure where component-isolating tests
+localize failure and where ambiguity remains. A public case collection could make those successes
+and limits inspectable without treating benchmark examples as production incidents.
 
 The project has not established that this diagnostic record improves decisions for real users.
-There are currently no external consumers or accessible production incident data on which to make
-that claim. A consumer study should wait for an authentic user population; until then, evaluation
-should target diagnostic validity, provenance, failure semantics, and the behavior of controlled
-interventions on public data.
+There are no external-consumer or production-incident data supporting that claim. Evaluation of
+developer outcomes requires an authentic user population; the present evaluation therefore targets
+diagnostic validity, provenance, failure semantics, and controlled interventions on public data.
 
 ## Quick start
 
@@ -171,6 +168,7 @@ External API calls are mocked in tests; no API key is required.
 - [Documentation guide](docs/README.md)
 - [Worked example of the investigation workflow](docs/explainers/how-rag-forensics-works.md)
 - [Methods, outputs, architecture, and limitations](docs/reference/methods.md)
+- [Related work in RAG evaluation and debugging](docs/reference/related-work.md)
 - [Benchmark protocol, results, and reproducible commands](docs/reference/benchmarks.md)
 - [Plain-language guide to the oracle-evidence experiment](docs/explainers/oracle-evidence.md)
 - [Custom API integration](docs/reference/api-integration.md)

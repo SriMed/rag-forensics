@@ -1,6 +1,6 @@
 # Truncated evidence in answer generation
 
-This reference records issue #25's paired evaluation of generation from complete versus visibly
+This reference reports a paired evaluation of generation from complete versus visibly
 truncated evidence. Its evidence boundary is narrow: three purposively selected pairs, four prompt
 conditions, two repetitions, and a Codex CLI proxy model. It is not a production-model evaluation
 or a failure-rate estimate.
@@ -43,22 +43,21 @@ of exact repository-derived evidence already preserved by the prompt-audit datas
 | Qualification instruction | Disclosure improved, but one CovidQA output still supplied the missing phrase. | Prompt compliance is not an enforcement boundary. |
 | Deterministic hybrid | The simple detector separated all three constructed pairs and hybrid outputs disclosed truncation 6/6 times. | Terminal punctuation is a heuristic and can flag complete punctuation-free prose or tables. |
 
-## Recommendation and update conditions
+## Implications and update conditions
 
-Do not broadly rewrite the generation prompt based on these three pairs. A focused follow-up should
-preserve source-aware chunk-completeness metadata at ingestion, carry it through `RetrievedChunk`,
-and give generation a bounded contract for incomplete evidence. The terminal detector is suitable
-as a warning or fallback, not authoritative provenance. The follow-up should test the exact
-production model and include detector-specificity cases before changing default behavior.
-[Issue #27](https://github.com/SriMed/rag-forensics/issues/27) tracks that implementation work.
+These three pairs do not support a broad conclusion about generation prompts. They motivate
+preserving source-aware chunk-completeness metadata at ingestion, carrying it through
+`RetrievedChunk`, and giving generation a bounded contract for incomplete evidence. The terminal
+detector is suitable as a warning or fallback, not authoritative provenance. Evaluation with the
+exact production model and detector-specificity cases is required before generalizing the result.
 
 Revisit this conclusion if production-model comparison does not reproduce the CovidQA behavior,
 if source-aware completeness cannot be recovered, or if a broader representative sample shows that
 the disclosure tradeoff materially reduces usefulness on complete evidence.
 
-## Implemented source-metadata contract
+## Source-metadata contract
 
-Issue [#27](https://github.com/SriMed/rag-forensics/issues/27) introduced explicit chunk metadata:
+The resulting implementation uses explicit chunk metadata:
 
 - `completeness`: `complete`, `truncated`, or `unknown`;
 - `completeness_source`: `source`, `caller`, or `unavailable`.
@@ -83,7 +82,7 @@ provenance remain inspectable after analysis.
 
 The [v2 reviewed run](../../backend/evals/truncated_evidence/v2/README.md) used the exact
 `claude-haiku-4-5-20251001` model for 24 calls. Complete-evidence usefulness remained 6/6 in each
-condition. Truncation disclosure improved from 4/6 with the pre-#27 prompt to 6/6 with the contract.
+condition. Truncation disclosure improved from 4/6 with the baseline prompt to 6/6 with the contract.
 Strict avoidance of the held-back phrase remained 4/6: both CovidQA contract responses supplied
 `risk factor`, but neither supplied the missing object and both disclosed that it was unavailable.
 

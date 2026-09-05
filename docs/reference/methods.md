@@ -36,6 +36,8 @@ unknown; punctuation heuristics do not change that state. See the
 
 For a non-technical walkthrough of evidence candidates, competing hypotheses, and follow-up
 tests, see [How RAG Forensics investigates an answer](../explainers/how-rag-forensics-works.md).
+For the boundary between this design and related diagnostic evaluators and debugging systems, see
+[Related work in RAG evaluation and debugging](related-work.md).
 
 ## Interpretation examples
 

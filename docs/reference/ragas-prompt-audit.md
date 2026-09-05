@@ -49,8 +49,8 @@ ground truth or a calibrated probability. It affects:
 
 Because statement generation changes the units being judged, variation or decomposition errors in
 the first LLM stage can change the final score even when the answer and evidence remain fixed.
-Issue #18's mixed/null decomposition result and issue #19's residual oracle-evidence error are
-direct reasons not to interpret this score as an isolated measurement of evidence selection.
+The mixed decomposition result and residual errors in the oracle-evidence experiment are direct
+reasons not to interpret this score as an isolated measurement of evidence selection.
 
 ## Context utilization
 
@@ -94,8 +94,8 @@ not be described as a direct retriever measurement.
 
 ### Labeled comparison
 
-On 2026-08-05, the issue #20 comparison runner evaluated four synthetic cases containing six
-human-labeled relevant or irrelevant contexts through the Claude CLI `haiku` alias. The superseded
+On 2026-08-05, the comparison runner evaluated four synthetic cases containing six human-labeled
+relevant or irrelevant contexts through the Claude CLI `haiku` alias. The incompatible
 `reference="N/A"` configuration scored every case `0.0` and matched 3 of 6 context labels. The
 selected context-utilization configuration matched all 6 labels and produced aggregate scores of
 `1.0` for relevant-only, `0.0` for irrelevant-only, `1.0` for relevant-then-irrelevant, and `0.5`

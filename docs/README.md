@@ -18,14 +18,17 @@ protocols, and reproducible commands.
 
 - [Methods and architecture](reference/methods.md) documents the diagnostic methods, output
   semantics, architecture, and limitations.
+- [Related work in RAG evaluation and debugging](reference/related-work.md) compares the project's
+  contribution and evidence with diagnostic evaluators, interactive debuggers, and pipeline
+  optimizers while recording the limits of that comparison.
 - [Benchmarking and current evidence](reference/benchmarks.md) records protocols, commands,
-  empirical results, uncertainty, and the current research boundary.
+  empirical results, uncertainty, and open research questions.
 - [Custom API integration](reference/api-integration.md) describes the request and response
   contracts for analyzing caller-provided RAG outputs.
 - [Prompt development evaluation](reference/prompt-evaluation.md) documents the versioned prompt
   cases, deterministic scorers, held-out split, review schema, and evidence limits.
 - [LLM prompt and model-boundary audit](reference/prompt-audit.md) records the decisive findings,
-  proxy evaluation, recommendations, and linked follow-up work from issue #16.
+  proxy evaluation, implemented mitigations, and remaining limitations.
 - [Installed RAGAS prompt audit](reference/ragas-prompt-audit.md) records the dependency-owned
   prompt contracts, model configuration, parsing and failure behavior, and downstream influence.
 - [Truncated-evidence generation evaluation](reference/truncated-evidence.md) records the paired

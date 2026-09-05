@@ -4,15 +4,15 @@
 
 RAG Forensics has several materially different LLM boundaries, and their risks should not be
 collapsed into “prompt quality.” The most consequential finding is an installed input-contract
-mismatch in the RAGAS value formerly exposed as retrieval relevance. The most consequential repository-owned
+mismatch in the RAGAS value formerly exposed as retrieval relevance. The most consequential project-controlled
 prompt risk is verdict rendering: free-form prose can turn mixed diagnostic signals into causal
 claims stronger than their reliability supports.
 
 On a small frozen proxy-model evaluation, an observation → competing hypotheses → discriminating
 test structure avoided the observed verdict causal-overreach failure while remaining actionable.
-That result supports a focused implementation issue; it does not establish general verdict
-reliability or prove that deterministic scaffolding is superior. The current production prompts
-remain unchanged by this audit.
+That result supports a focused implementation change; it does not establish general verdict
+reliability or prove that deterministic scaffolding is superior. Subsequent sections distinguish
+the frozen audit evidence from the resulting production contracts.
 
 Other observed risks were narrower but actionable: generated query-fit questions could be
 semantically duplicative or unanswerable, structured-output prompts sometimes returned correct
@@ -21,15 +21,15 @@ elicited extrapolation beyond the stored evidence.
 
 ## Decisive findings
 
-| Priority | Boundary | Finding | Support | Decision |
+| Priority | Boundary | Finding | Support | Resulting action |
 |---|---|---|---|---|
-| 1 | RAGAS context precision | `reference="N/A"` is supplied where installed RAGAS 0.4.3 prompts for the answer/reference whose contexts are judged | Direct installed-code inspection | Validate and replace the mismatched configuration in [#20](https://github.com/SriMed/rag-forensics/issues/20) |
-| 2 | Verdict rendering | Free-form rendering produced causal overreach from mixed, partly calibrated/model-judged signals | Frozen proxy samples plus human review | Implement inspectable verdict structure in [#21](https://github.com/SriMed/rag-forensics/issues/21) |
-| 3 | Query-fit generation | Exact-string-valid questions could be semantically duplicate or not answerable from the chunks | Repeated proxy samples plus human review | Validate diversity, support, and failure semantics in [#22](https://github.com/SriMed/rag-forensics/issues/22) |
-| 4 | Claim extraction | A correct empty JSON array was followed by commentary, making the production parse fail | Proxy sample plus code inspection | Enforce typed structured output in [#23](https://github.com/SriMed/rag-forensics/issues/23) |
-| 5 | Entailment | Correct labels were repeatedly followed by explanations; production accepts recognizable substrings | Repeated proxy samples plus code inspection | Separate enum compliance from invalid format in [#24](https://github.com/SriMed/rag-forensics/issues/24) |
-| 6 | Answer generation | A truncated repository passage repeatedly elicited completion or strengthening of the unfinished claim | One repository-derived case across repeated proxy runs | Investigate complete/truncated pairs in [#25](https://github.com/SriMed/rag-forensics/issues/25) |
-| 7 | Evaluation scorer | Decimal points were counted as sentence boundaries, creating a false held-out contract failure | Direct output/scorer inspection | Version the corrected scorer in [#26](https://github.com/SriMed/rag-forensics/issues/26) |
+| 1 | RAGAS context precision | The audited configuration supplied `reference="N/A"` where installed RAGAS 0.4.3 prompted for the answer/reference whose contexts were judged | Direct installed-code inspection | Replace the mismatched configuration with answer-conditioned context utilization |
+| 2 | Verdict rendering | Free-form rendering produced causal overreach from mixed, partly calibrated/model-judged signals | Frozen proxy samples plus human review | Implement an inspectable verdict structure |
+| 3 | Query-fit generation | Exact-string-valid questions could be semantically duplicate or not answerable from the chunks | Repeated proxy samples plus human review | Validate diversity, support, and failure semantics |
+| 4 | Claim extraction | A correct empty JSON array was followed by commentary, making the production parse fail | Proxy sample plus code inspection | Enforce typed structured output |
+| 5 | Entailment | Correct labels were repeatedly followed by explanations; production accepts recognizable substrings | Repeated proxy samples plus code inspection | Separate enum compliance from invalid format |
+| 6 | Answer generation | A truncated repository passage repeatedly elicited completion or strengthening of the unfinished claim | One repository-derived case across repeated proxy runs | Evaluate paired complete and truncated evidence |
+| 7 | Evaluation scorer | Decimal points were counted as sentence boundaries, creating a false held-out contract failure | Direct output/scorer inspection | Introduce a decimal-safe scorer version |
 
 ## Evidence and method
 
@@ -54,7 +54,7 @@ not results from the exact production Anthropic SDK/model configuration. Raw run
 preserved locally outside version control; the committed repository contains the frozen cases,
 scoring logic, review schema, and comparison method without claiming model execution.
 
-Issue #21 subsequently implemented deterministic verdict reasoning and evaluated its two frozen
+The resulting implementation uses deterministic verdict reasoning and was evaluated on two frozen
 development verdict cases plus the single frozen held-out verdict case through the Anthropic SDK
 with the configured `claude-sonnet-4-6` model. The held-out case was executed once after development
 was complete and was not used for tuning. Its raw response and review are preserved in
@@ -104,30 +104,27 @@ precision.
 
 ### Finding and downstream consequence
 
-`score_retrieval_relevance()` supplies `reference="N/A"` at
-`backend/services/ragas_scorer.py:43–49`. Installed RAGAS therefore asks whether each context was
-useful for arriving at the literal answer `N/A`. This is a direct contract mismatch, although its
-quantitative effect has not yet been isolated.
+The audited `score_retrieval_relevance()` implementation supplied `reference="N/A"`. Installed
+RAGAS therefore asked whether each context was useful for arriving at the literal answer `N/A`.
+This was a direct contract mismatch, although its quantitative effect was not isolated.
 
-The resulting value is exposed as `retrieval_relevance_score`, triggers query-fit below `0.5`,
-contributes a ranked low-relevance concern, enters the verdict prompt, and appears in the API. An
-issue #9 smoke test recorded zero relevance across three domains; the mismatch is a plausible
-explanation, not a proven cause.
+The resulting value was exposed as `retrieval_relevance_score`, triggered query-fit below `0.5`,
+contributed a ranked low-relevance concern, entered the verdict prompt, and appeared in the API. A
+three-domain smoke test recorded zero relevance; the mismatch is a plausible explanation, not a
+proven cause.
 
-### Recommendation
+### Evaluation design
 
-Do not merely replace the sentinel string. Compare input-compatible reference-aware or
-reference-free configurations on human-labeled relevant and irrelevant contexts, make non-finite
-or failed judgments explicitly unavailable, and pin the installed contract. Follow-up:
-[#20](https://github.com/SriMed/rag-forensics/issues/20).
+The corrective evaluation compared input-compatible configurations on human-labeled relevant and
+irrelevant contexts. It also required non-finite or failed judgments to remain explicitly
+unavailable and the installed dependency contract to be recorded.
 
-### Issue #20 resolution
+### Implemented resolution
 
 The production path now uses installed RAGAS 0.4.3 `ContextUtilization`, supplies the actual
 generated or caller-provided answer as `response`, and exposes the narrower answer-conditioned
 construct as `ragas.context_utilization`. Exceptions and non-finite results are explicit unavailable
-states. The earlier paragraphs remain the audit evidence that motivated this change; they describe
-the superseded implementation rather than current behavior. See
+states. The preceding paragraphs describe the evaluated mismatch rather than current behavior. See
 [Installed RAGAS prompt contract audit](ragas-prompt-audit.md) for the current contract.
 
 ## 2. Verdict rendering
@@ -170,8 +167,8 @@ missing evidence. This is one case-level contract result, not a production failu
 
 ### Recommendation
 
-Issue [#21](https://github.com/SriMed/rag-forensics/issues/21) implemented the recommended
-inspectable intermediate representation, bounded rendering, and deterministic fallback. The exact
+The system implements the recommended inspectable intermediate representation, bounded rendering,
+and deterministic fallback. The exact
 production SDK/model checks support closing that implementation issue while preserving the narrow
 evidence boundary above.
 
@@ -185,7 +182,7 @@ at `backend/services/forensics/query_corpus_fit.py:44–104`.
 
 ### Output contract and current handling
 
-Issue #22 replaced the string-list contract with structured candidates containing inspectable
+The string-list contract was replaced with structured candidates containing inspectable
 chunk IDs. Production rejects unknown citations, uses an independent structured judgment for
 direct answerability and specificity, and rejects semantic duplicates at cosine similarity `>= 0.90`. Fewer than
 three accepted questions makes classification explicitly unavailable; it does not produce a fit
@@ -207,7 +204,7 @@ population failure rate.
 
 The implemented contract preserves accepted and rejected candidates for inspection while limiting
 the resulting label to retrieved-context fit. It does not infer whether the full corpus covers the
-question. Follow-up: [#22](https://github.com/SriMed/rag-forensics/issues/22).
+question.
 
 ## 4. Claim extraction
 
@@ -239,14 +236,14 @@ confidence classification. Fences, trailing commentary, and other invalid JSON p
 
 Sentence splitting could provide candidate spans or a fallback, but it is not equivalent to claim
 extraction: compound sentences can contain independently supportable propositions, while some
-claims span clauses or sentences. Issue #18 did not show that the tested decomposition/entailment
+claims span clauses or sentences. The evaluation did not show that the tested decomposition/entailment
 pipeline improved grounding classification. A hybrid typed boundary is better supported than full
 replacement by sentence splitting.
 
 ### Recommendation
 
-The typed boundary and failure distinction were implemented by
-[#23](https://github.com/SriMed/rag-forensics/issues/23). Production-model reliability is still an
+The typed boundary and failure distinction prevent invalid values from reaching downstream
+analysis. Production-model reliability is still an
 empirical question, but invalid values cannot reach confidence classification or entailment.
 
 ## 5. Entailment
@@ -275,15 +272,14 @@ valid negative judgment, with claim- and chunk-level coverage exposed in the API
 ### Deterministic offload assessment
 
 Chunk/claim cosine similarity is useful for candidate selection, not a demonstrated entailment
-replacement. Issue #18 found B3 did not improve on B1, and issue #19 showed oracle evidence reduced
+replacement. B3 did not improve on B1, while the oracle-evidence experiment reduced
 false unsupported judgments without eliminating them. Verifier behavior, decomposition,
 multi-sentence reasoning, and annotation granularity remain competing explanations.
 
 ### Recommendation
 
-The exact typed boundary, unavailable state, and evaluated coverage were implemented by
-[#24](https://github.com/SriMed/rag-forensics/issues/24). This deliberately supersedes the
-permissive normalization from #15.
+The exact typed boundary, unavailable state, and evaluated coverage replace permissive output
+normalization.
 
 ## 6. Answer generation
 
@@ -308,11 +304,11 @@ propagate.
 ### Recommendation
 
 No broad prompt rewrite is supported by this small set. The completed
-[#25](https://github.com/SriMed/rag-forensics/issues/25) [paired evaluation](truncated-evidence.md)
+[paired evaluation](truncated-evidence.md)
 found case-dependent extrapolation, abstention, and fragment copying. A deterministic hybrid made
 truncation visible in all six truncated proxy outputs but did not reliably prevent completion of
-the CovidQA fragment. [#27](https://github.com/SriMed/rag-forensics/issues/27) subsequently
-implemented source-aware completeness metadata and a bounded generation contract. Its exact-model
+the CovidQA fragment. The system subsequently implemented source-aware completeness metadata and a
+bounded generation contract. Its exact-model
 comparison improved disclosure without providing lexical enforcement; see the linked evaluation.
 
 ## 7. Inactive and empty prompt files
@@ -320,28 +316,27 @@ comparison improved disclosure without providing lexical enforcement; see the li
 `backend/prompts/calibration_prompts.py` is empty and has no call site. It is not an active prompt
 boundary and no replacement prompt should be invented. `backend/prompts/__init__.py` is also empty.
 `DIMENSION_EXPLANATION_PROMPT` is defined but unused. These states should remain visible in the
-inventory; cleanup of the verdict-adjacent unused constant can be decided under #21 without a
-separate issue.
+inventory; the verdict-adjacent unused constant does not affect the active prompt boundary.
 
 ## Evaluation-scaffold finding
 
 The frozen v1 sentence scorer used punctuation matching that split decimal values into sentence
 boundaries. In the one-time held-out verdict, decimal values `0.74` and `0.77` inflated a visibly
 three-sentence response to five and created a false deterministic failure. Frozen v1 scores and
-hashes were not rewritten. [Issue #26](https://github.com/SriMed/rag-forensics/issues/26) introduced
-`prompt-eval-scorer.v2`; the same response shape counts as three under the decimal-safe semantics.
+hashes were not rewritten. The `prompt-eval-scorer.v2` revision introduced decimal-safe semantics;
+the same response shape counts as three sentences.
 This is recorded as a migration difference, not a corrected historical result. See
 [Prompt development evaluation](prompt-evaluation.md#scorer-versions-and-sentence-semantics).
 
-## Follow-up issues
+## Implemented mitigations
 
-1. [#20 — Fix RAGAS retrieval-relevance input-contract mismatch](https://github.com/SriMed/rag-forensics/issues/20)
-2. [#21 — Implement inspectable structured verdict reasoning](https://github.com/SriMed/rag-forensics/issues/21)
-3. [#22 — Validate query-fit question diversity and answerability](https://github.com/SriMed/rag-forensics/issues/22)
-4. [#23 — Enforce claim-extraction structured output contract](https://github.com/SriMed/rag-forensics/issues/23)
-5. [#24 — Enforce exact entailment output contract and failure semantics](https://github.com/SriMed/rag-forensics/issues/24)
-6. [#25 — Investigate generation extrapolation from truncated evidence](https://github.com/SriMed/rag-forensics/issues/25)
-7. [#26 — Fix decimal-sensitive sentence counting in prompt evaluator](https://github.com/SriMed/rag-forensics/issues/26)
+1. Replace the RAGAS retrieval-relevance input mismatch with answer-conditioned context utilization.
+2. Represent verdict reasoning as an inspectable structure before rendering prose.
+3. Validate query-fit question diversity and answerability.
+4. Enforce typed claim-extraction output.
+5. Enforce exact entailment labels and explicit failure semantics.
+6. Evaluate generation from paired complete and truncated evidence.
+7. Use decimal-safe sentence counting in the prompt evaluator.
 
 ## Open questions and update conditions
 
