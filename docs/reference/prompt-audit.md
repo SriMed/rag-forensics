@@ -272,7 +272,7 @@ valid negative judgment, with claim- and chunk-level coverage exposed in the API
 ### Deterministic offload assessment
 
 Chunk/claim cosine similarity is useful for candidate selection, not a demonstrated entailment
-replacement. B3 did not improve on B1, while the oracle-evidence experiment reduced
+replacement. The claim-entailment evaluator did not improve on whole-sentence similarity, while the oracle-evidence experiment reduced
 false unsupported judgments without eliminating them. Verifier behavior, decomposition,
 multi-sentence reasoning, and annotation granularity remain competing explanations.
 

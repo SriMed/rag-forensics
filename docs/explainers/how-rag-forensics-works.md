@@ -70,23 +70,21 @@ A useful follow-up changes one part of the pipeline while holding the others fix
 RAG Forensics ranks such leads using heuristic priorities and reliability labels. Those priorities
 are investigation orderings—not probabilities, calibrated severities, or causal attributions.
 
-## Where the benchmark conditions fit
+## Where the grounding evaluators fit
 
-The labels **B0**, **B1**, **B2**, and **B3** name conditions in one offline benchmark experiment.
-Here, `B` is only a prefix for the benchmark conditions; it is not a product module or a technical
-concept the reader needs to decode. The number marks the method being compared:
+One offline benchmark compares:
 
-- **B0:** two prevalence checks that always predict supported or always predict unsupported;
-- **B1:** whole-sentence semantic similarity;
-- **B2:** deterministic claim splitting followed by semantic similarity; and
-- **B3:** the same split claims and evidence candidates evaluated with an NLI verifier.
+- two prevalence checks that always predict supported or always predict unsupported;
+- a **whole-sentence similarity evaluator**;
+- a **claim-similarity evaluator** using deterministic claim splitting; and
+- a **claim-entailment evaluator** using the same claims and evidence candidates with an NLI verifier.
 
-This sequence isolates what changes: B1 to B2 adds claim splitting, while B2 to B3 changes the
-scoring method from similarity to entailment-aware verification. These are evaluation conditions,
-not successive product versions.
+This sequence isolates what changes: the second evaluator adds claim splitting, while the third
+changes the scoring method from similarity to entailment-aware verification. These are evaluation
+conditions, not successive product versions.
 
-B3 is an offline benchmark method used to test one possible grounding signal. It is not the whole
-RAG Forensics product. B3:
+The claim-entailment evaluator is an offline benchmark method used to test one possible grounding
+signal. It is not the whole RAG Forensics product. It:
 
 1. splits a response sentence into smaller claims;
 2. selects the most semantically similar source sentence for each claim;
@@ -94,26 +92,26 @@ RAG Forensics product. B3:
 4. combines the claim judgments into a supported/unsupported sentence decision.
 
 The NLI verifier is a pinned third-party pretrained model. RAG Forensics did not train or invent
-it. The project evaluates it because B3 relies on its output: before presenting a component's score
+it. The project evaluates it because the claim-entailment evaluator relies on its output: before presenting a component's score
 as a useful diagnostic signal, the project must test whether that component is suitable for the
 assigned job.
 
-The held-out benchmark did not show that B3 was a reliable standalone grounding detector. Its
+The held-out benchmark did not show that the claim-entailment evaluator was a reliable standalone grounding detector. Its
 value in the project is experimental: its preserved intermediate steps make evidence-selection,
 claim-decomposition, and verifier failures easier to distinguish.
 
 ## Where the oracle condition fits
 
-Normally, B3 both chooses evidence and verifies it. If B3 rejects a supported answer, the final
+Normally, the claim-entailment evaluator both chooses evidence and verifies it. If it rejects a supported answer, the final
 decision does not reveal which step failed.
 
 An **oracle condition** is an experimental diagnostic in which the benchmark supplies the trusted
 answer to one intermediate step so the next step can be tested separately. In this oracle
-condition, RAGBench's human-annotated supporting sentence temporarily replaces B3's evidence
-choice. This is like guiding a delivery driver to the correct address so you can test whether the
-driver can complete the delivery. If the verifier succeeds only after receiving annotated
-evidence, evidence selection contributed to the original failure. If it still fails, downstream
-explanations remain.
+condition, RAGBench's human-annotated supporting sentence temporarily replaces the evidence chosen
+by the claim-entailment evaluator. This is like guiding a delivery driver to the correct address
+so you can test whether the driver can complete the delivery. If the verifier succeeds only after
+receiving annotated evidence, evidence selection contributed to the original failure. If it still
+fails, downstream explanations remain.
 
 The annotations are unavailable for new production answers, so this is a diagnostic experiment,
 not a deployable feature. See [Understanding the oracle-evidence experiment](oracle-evidence.md)

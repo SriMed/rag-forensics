@@ -1,7 +1,7 @@
 """Oracle-evidence failure localization for supported RAGBench sentences.
 
 This diagnostic uses label-derived evidence and is therefore not a deployable
-grounding method. It asks whether B3 false negatives persist when evidence
+grounding method. It asks whether claim-entailment false negatives persist when evidence
 selection is replaced with RAGBench's annotated supporting sentences.
 """
 

@@ -80,38 +80,40 @@ The project now evaluates its grounding methods without regenerating RAGBench an
 their source documents. Thresholds are selected on validation data and evaluated on untouched
 test data with clustered confidence intervals.
 
-The principal comparison uses labels introduced for one offline benchmark experiment. `B` marks a
-benchmark condition rather than a product component or version, and the number identifies the
-method:
+The principal comparison evaluates:
 
-- **B0:** always-supported and always-unsupported prevalence checks;
-- **B1:** whole-sentence embedding similarity;
-- **B2:** deterministic claim decomposition plus similarity;
-- **B3:** the same claims and evidence candidates scored by a pinned NLI cross-encoder.
+- always-supported and always-unsupported prevalence checks;
+- a **whole-sentence similarity evaluator**;
+- a **claim-similarity evaluator** using deterministic decomposition; and
+- a **claim-entailment evaluator** using the same claims and evidence candidates with a pinned NLI
+  cross-encoder.
 
-B3 is an offline experimental method, not the entire product. It splits an answer into claims,
-selects evidence for each claim, asks a third-party pretrained NLI model whether the evidence
-supports the claim, and aggregates the claim judgments. RAG Forensics did not create the verifier;
-it tests the verifier because B3 relies on that component's output.
+The claim-entailment evaluator is an offline experimental method, not the entire product. It
+splits an answer into claims, selects evidence for each claim, asks a third-party pretrained NLI
+model whether the evidence supports the claim, and aggregates the claim judgments. RAG Forensics
+did not create the verifier; it tests the verifier because the evaluator relies on that
+component's output.
 
 On a seeded sample of up to 100 validation and 100 test examples from each RAGBench domain:
 
-| Held-out macro metric | B1 | B3 |
+| Held-out macro metric | Whole-sentence similarity | Claim-entailment |
 |---|---:|---:|
 | F1 | 0.301 | 0.278 |
 | AUPRC | 0.215 | 0.247 |
 
-The paired B3−B1 macro-F1 difference was `-0.022` with a 95% interval of
-`[-0.066, 0.025]`. Macro AUPRC increased, but its interval also included no improvement, and the
-direction varied by domain. A small RAGTruth external-validation run was similarly mixed.
+The paired claim-entailment minus whole-sentence-similarity macro-F1 difference was `-0.022` with
+a 95% interval of `[-0.066, 0.025]`. Macro AUPRC increased, but its interval also included no
+improvement, and the direction varied by domain. A small RAGTruth external-validation run was
+similarly mixed.
 
 Therefore the current evidence does **not** support either whole-sentence similarity or the
-present claim-plus-NLI pipeline as a reliable standalone grounding detector. Similarity remains
-useful for navigating to candidate evidence. The stronger contribution is the transparent,
-label-preserving framework that makes this null result—and its remaining uncertainty—inspectable.
+present claim-entailment evaluator as a reliable standalone grounding detector. Similarity remains
+useful for navigating to candidate evidence. The best-supported contribution within this repository
+is the transparent, label-preserving framework that makes this null result—and its remaining
+uncertainty—inspectable.
 
-A follow-up **oracle-evidence diagnostic** replaced B3's selected evidence with RAGBench's
-human-annotated supporting evidence, allowing the verification step to be tested separately. On
+A follow-up **oracle-evidence diagnostic** replaced the claim-entailment evaluator's selected
+evidence with RAGBench's human-annotated supporting evidence, allowing the verification step to be tested separately. On
 188 eligible supported sentences, it reduced the false-unsupported rate from `0.452` with
 similarity-selected evidence to `0.287` with annotated evidence. The paired difference was `-0.165`
 with a 95% example-clustered interval of

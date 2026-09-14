@@ -40,7 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--entailment-threshold",
         type=float,
         required=True,
-        help="Frozen B3 entailment threshold; use the calibrated run value when available.",
+        help="Frozen claim-entailment threshold; use the calibrated run value when available.",
     )
     parser.add_argument("--output", required=True)
     return parser

@@ -35,11 +35,10 @@ An in-sample threshold sweep mostly improved recall by predicting nearly every s
 unsupported. This established that the original `0.4` threshold was not a defensible standalone
 hallucination boundary.
 
-## B0–B3 experiment
+## Grounding-evaluator comparison
 
-`B` is the prefix for conditions in this benchmark experiment, not a product component or an
-acronym with additional technical meaning. The number distinguishes the comparison method. The
-scientific runner evaluates every condition through the same label-preserving interface:
+The scientific runner evaluates constant baselines and three grounding evaluators through the
+same label-preserving interface. The internal keys remain unchanged for report compatibility:
 
 - `b0_always_supported`;
 - `b0_always_unsupported`;
@@ -47,14 +46,15 @@ scientific runner evaluates every condition through the same label-preserving in
 - `b2_claim_similarity`;
 - `b3_claim_entailment`.
 
-B2 and B3 use identical claims and evidence candidates. B3 preserves entailment, neutral, and
+The claim-similarity and claim-entailment evaluators use identical claims and evidence candidates.
+The claim-entailment evaluator preserves entailment, neutral, and
 contradiction probabilities rather than collapsing all non-entailment outcomes.
 
-More concretely, B3 splits a response sentence into claims, selects one candidate source sentence
-per claim using similarity, scores each pair with a pinned third-party pretrained NLI verifier,
-and aggregates the claim decisions back to the response sentence. RAG Forensics did not develop
-the verifier; the experiment evaluates whether the assembled method is valid for the diagnostic
-role assigned to it.
+More concretely, the claim-entailment evaluator splits a response sentence into claims, selects
+one candidate source sentence per claim using similarity, scores each pair with a pinned
+third-party pretrained NLI verifier, and aggregates the claim decisions back to the response
+sentence. RAG Forensics did not develop the verifier; the experiment evaluates whether the
+assembled method is valid for the diagnostic role assigned to it.
 
 RAGBench’s official validation split selects each threshold. The test split is evaluated with
 those frozen thresholds. Calibration and test example IDs are checked for overlap.
@@ -75,7 +75,7 @@ The report includes:
 - per-domain and pooled confusion counts, precision, recall, F1, AUROC, AUPRC, prevalence, and
   coverage;
 - example-clustered 95% confidence intervals;
-- paired macro-F1 and macro-AUPRC intervals for B3 versus B1;
+- paired macro-F1 and macro-AUPRC intervals for claim entailment versus whole-sentence similarity;
 - claim-to-parent-sentence and evidence provenance;
 - raw verifier scores, failures, configuration, immutable data/model revisions, and code state;
 - false-positive and false-negative categories for numbers, negation, qualifiers, partial
@@ -86,19 +86,19 @@ The report includes:
 A seeded run sampled up to 100 validation and 100 test examples per domain. It retained 299
 records in each partition after one explicit skip and used 500 bootstrap iterations.
 
-| Held-out macro metric | B1 | B2 | B3 |
+| Held-out macro metric | Whole-sentence similarity | Claim similarity | Claim entailment |
 |---|---:|---:|---:|
 | F1 | 0.301 | 0.291 | 0.278 |
 | AUPRC | 0.215 | 0.198 | 0.247 |
 
-Paired B3−B1 results:
+Paired claim-entailment minus whole-sentence-similarity results:
 
 | Metric | Difference | 95% interval |
 |---|---:|---:|
 | Macro F1 | -0.022 | [-0.066, 0.025] |
 | Macro AUPRC | 0.032 | [-0.016, 0.123] |
 
-The predeclared success rule required B3 to improve both macro F1 and AUPRC, exclude no
+The predeclared success rule required claim entailment to improve both macro F1 and AUPRC, exclude no
 improvement on the primary paired interval, and improve consistently across domains. This run
 does not meet that rule. It is a mixed/null result, not evidence of superiority or inferiority.
 It remains a sampled experiment rather than a final full-corpus estimate.
@@ -129,14 +129,14 @@ poetry run python -m benchmark.ragtruth_cli \
 A 25-train/25-test adapter-validation run at RAGTruth commit
 `c103204b9ce28d6bbad859304bf30de72b8ed8fe` produced:
 
-| Held-out macro metric | B1 | B3 |
+| Held-out macro metric | Whole-sentence similarity | Claim entailment |
 |---|---:|---:|
 | F1 | 0.093 | 0.256 |
 | AUPRC | 0.295 | 0.211 |
 
-B3 improved F1 but reduced AUPRC and was inconsistent across QA, summarization, and data-to-text.
-Under the same decision rule this is mixed. The small sample and 100-bootstrap interval are
-runtime validation, not final estimates.
+Claim entailment improved F1 but reduced AUPRC and was inconsistent across QA, summarization, and
+data-to-text. Under the same decision rule this is mixed. The small sample and 100-bootstrap
+interval are runtime validation, not final estimates.
 
 ## What these benchmarks establish
 
@@ -165,7 +165,8 @@ dataset does not identify a corresponding "correct negative evidence" sentence.
 The paired conditions hold claim decomposition, NLI verifier and revision, and entailment
 threshold fixed:
 
-- **selected evidence:** B3's top cosine-similarity evidence for each claim;
+- **selected evidence:** the claim-entailment evaluator's top cosine-similarity evidence for each
+  claim;
 - **oracle evidence:** every annotated sentence is scored for every claim, with maximum entailment
   used for the decision while all raw claim/evidence pairs remain in the report.
 
@@ -261,6 +262,44 @@ The experiment should answer which intervention changes false-unsupported judgme
 the two interventions interact. It should not claim production prevalence, a deployable oracle,
 or causal responsibility for a complete RAG pipeline. Swapping verifiers before this localization
 would confound component choice with the unresolved mechanism.
+
+### Decomposition-by-evidence protocol
+
+**Interpretation constraint.** This design cannot isolate "decomposition quality" by itself.
+Replacing the deterministic clauses with reviewed claims can change claim count, which evidence
+is selected per claim, what the verifier receives, and the probability that all claims in a
+sentence pass aggregation — any of these, not atomicity accuracy alone, can move the C and D
+conditions. The C−A and D−B contrasts therefore measure the effect of substituting the reviewed
+claim representation on the assembled evaluator, not a clean atomicity effect. The primary report
+must accompany the factorial effects with: the reviewed-versus-accepted decomposition counts,
+claim-count distributions before and after review, the unchanged/rewritten rate, evidence-selection
+changes caused by reviewed claims, and aggregation exposure (how often a sentence's outcome
+depends on more than one claim passing). Without these, a reader could mistake an evaluator-level
+effect for a decomposition-accuracy effect. None of this reporting exists yet — the report schema
+currently exposes only the four condition rates and the five paired contrasts below.
+
+Issue #29 implements this comparison as a blinded, gated two-stage workflow. The versioned
+`backend/evals/decomposition_evidence/v1/claim-review.json` packet contains the same 188 eligible
+sentences, their current deterministic clauses, original question, and response. It contains no
+selected evidence, annotated evidence, verifier scores, condition assignments, or downstream
+outcomes. The packet begins in `draft` state. A human reviewer must accept
+the proposed clauses or supply replacements for every sentence, identify themselves, record
+remaining uncertainties alongside a best executable decision, and freeze the artifact before any comparative run. The runner rejects
+drafts and population mismatches. Evidence appears only in a separate residual-review artifact
+created after the claim decomposition and primary factorial comparison are frozen.
+
+The four conditions use the same retained records, pinned DeBERTa verifier revision, frozen
+entailment threshold (`0.0017914474026707317`), all-claims-supported aggregation, and seed. Reports
+preserve every claim, evidence candidate, score, unavailable verifier state, and sentence outcome.
+They report the four false-unsupported rates and example-clustered 95% intervals for B−A, C−A,
+D−C, D−B, and the difference-in-differences interaction `(D−C)−(B−A)`.
+
+Commands and field-level review instructions live beside the artifacts in
+[`backend/evals/decomposition_evidence/v1/README.md`](../../backend/evals/decomposition_evidence/v1/README.md).
+Final rates and residual counts are intentionally not reported while the claim artifact remains a
+draft. After it is frozen, the run creates a second review packet containing only residual
+condition-D failures; each must receive one predeclared category or `undetermined` before the
+result is considered complete.
 
 A subsequent public case collection should select diverse examples from the committed public-data
 evaluations and preserve the input, observations, hypotheses, proposed test, intervention result,

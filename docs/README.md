@@ -8,7 +8,7 @@ protocols, and reproducible commands.
 
 - [How RAG Forensics investigates an answer](explainers/how-rag-forensics-works.md) follows one
   example from retrieved passages through evidence candidates, competing hypotheses, follow-up
-  tests, the B0–B3 offline benchmark conditions, and an oracle condition that substitutes annotated
+  tests, the offline grounding evaluators, and an oracle condition that substitutes annotated
   evidence to isolate one step of the method.
 - [Understanding the oracle-evidence experiment](explainers/oracle-evidence.md) explains how the
   completed experiment separates evidence-selection errors from downstream verification errors,
@@ -38,5 +38,7 @@ protocols, and reproducible commands.
 ## Project records
 
 - [Architectural decisions](../ADR.md) preserves the project's append-only decision history.
+- [Domain language](../CONTEXT.md) defines the canonical names used for grounding evaluators and
+  oracle-evidence conditions.
 
 The repository's main [README](../README.md) gives the shortest overview and quick-start path.

@@ -1,4 +1,4 @@
-"""CLI for calibrated, multi-domain B0-B3 grounding experiments."""
+"""CLI for calibrated, multi-domain grounding-evaluator experiments."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ DOMAINS = ("techqa", "finqa", "covidqa")
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Calibrate and compare B0-B3 grounding methods without test leakage."
+        description="Calibrate and compare grounding evaluators without test leakage."
     )
     parser.add_argument("--domains", nargs="+", choices=DOMAINS, default=list(DOMAINS))
     parser.add_argument("--calibration-split", default="validation")

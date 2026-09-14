@@ -103,14 +103,13 @@ call Anthropic or RAGAS.
 
 ## Offline grounding methods are evaluation tools
 
-The `B0`–`B3` names identify conditions in the offline benchmark path shown above. `B` is the
-benchmark-condition prefix, not the name of a product subsystem, and the number distinguishes the
-method under comparison: B0 is the pair of constant prevalence checks, B1 uses whole-sentence
-similarity, B2 adds deterministic claim splitting, and B3 replaces claim-level similarity scoring
-with an NLI verifier. They test whether particular grounding signals correspond to RAGBench
-labels; they are not additional interactive product modules or successive product versions.
+The offline comparison includes constant prevalence checks, whole-sentence similarity, claim
+similarity after deterministic splitting, and claim-level entailment verification. These are
+evaluation tools, not additional interactive product modules or successive product versions. The
+machine-readable report retains its original keys (`b1_sentence_similarity`,
+`b2_claim_similarity`, and `b3_claim_entailment`) for compatibility.
 
-B3 performs four steps:
+The **claim-entailment evaluator** performs four steps:
 
 1. deterministically split each response sentence into smaller claims;
 2. choose the most similar document sentence for each claim;
@@ -118,7 +117,7 @@ B3 performs four steps:
 4. mark the parent sentence supported only when all evaluated claims pass the frozen threshold.
 
 The NLI cross-encoder is a third-party general-purpose model, not a verifier developed or trained
-by RAG Forensics. Its suitability is still part of this project's measurement validity because B3
+by RAG Forensics. Its suitability is still part of this project's measurement validity because the evaluator
 uses its scores to make grounding decisions. The benchmark therefore tests the assembled method,
 preserves verifier errors as unknown states, and avoids treating its outputs as ground truth.
 

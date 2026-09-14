@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RAG Forensics — Frontend
 
-## Getting Started
+A Next.js interface for the RAG Forensics internal demo. It loads a seeded RAGBench example,
+sends it to the backend for analysis, and renders the resulting diagnostic record — heuristic
+priorities, reliability labels, and the underlying forensics evidence — for inspection.
 
-First, run the development server:
+This app is a viewer for the backend's diagnostic output. It does not run any forensics analysis
+itself; all retrieval, generation, and scoring happen in the FastAPI backend documented in the
+[repository root README](../README.md) and [`docs/`](../docs/).
+
+## Backend dependency
+
+This interface requires the backend running and reachable at `NEXT_PUBLIC_API_URL` (defaults to
+`http://localhost:8000`). Start the backend first — see the root
+[README's Quick start](../README.md#quick-start) — then point this app at it.
+
+## Setup
 
 ```bash
+npm install
+cp .env.local.example .env.local   # edit NEXT_PUBLIC_API_URL if the backend isn't on localhost:8000
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Pick a RAGBench domain, load a seeded
+example, then run analysis to see the assembled diagnostic record.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev     # start the dev server
+npm run build   # production build
+npm run start   # serve a production build
+npm run lint    # eslint
+npm test        # jest + testing-library
+```
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/page.tsx
+  → app/components/ExampleBrowser.tsx   (domain selection, example loading, triggers analysis)
+    → lib/api.ts                        (typed fetch client: GET /example, POST /analyze)
+    → app/components/DiagnosticCard.tsx (renders one forensics result)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`lib/api.ts` defines the response types this app consumes — `ChunkAttributionMetrics`,
+`HedgingMismatchMetrics`, `RAGASMetrics`, and the other forensics shapes described in the backend's
+architecture docs. Keep these types in sync with `backend/models.py` when the backend's response
+shapes change.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Evidence semantics
 
-## Deploy on Vercel
+The values this app renders are heuristic observations and reliability labels, not proofs of root
+cause. In particular:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Priority scores from `verdict_signals` are not probabilities or calibrated severities.
+- `ChunkAttributionMetrics` reports semantic similarity between an answer sentence and a chunk —
+  it does not establish entailment.
+- RAGAS scores (`retrieval_relevance_score`, `faithfulness_score`) are raw continuous values with
+  no verdict attached; interpretation is left to the verdict generator's output, which this app
+  also displays.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [`docs/reference/methods.md`](../docs/reference/methods.md) for the full definition of each
+metric and its evidentiary weight.

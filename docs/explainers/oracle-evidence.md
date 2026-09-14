@@ -20,22 +20,21 @@ The source documents contain:
 
 > Revenue for 2024 was $20 million.
 
-The current **B3 benchmark condition** splits an answer into claims, selects evidence by semantic
-similarity, and uses an NLI verifier to judge support. (The `B0`–`B3` labels are defined in the
-[main walkthrough](how-rag-forensics-works.md#where-the-benchmark-conditions-fit).) After claim
-splitting, B3 performs two jobs relevant to this experiment:
+The **claim-entailment evaluator** splits an answer into claims, selects evidence by semantic
+similarity, and uses an NLI verifier to judge support. After claim splitting, it performs two jobs
+relevant to this experiment:
 
 1. **Evidence selection:** find the source sentence most relevant to the answer's claim.
 2. **Verification:** decide whether the selected source sentence supports the claim.
 
 The verifier is a pinned third-party pretrained NLI model. RAG Forensics did not create it. The
-project tests it because B3 uses its output to make a supported/unsupported decision; validating
-an assembled diagnostic requires checking whether each relied-upon component is suitable for its
-assigned role.
+project tests it because the claim-entailment evaluator uses its output to make a
+supported/unsupported decision; validating an assembled diagnostic requires checking whether each
+relied-upon component is suitable for its assigned role.
 
-If B3 incorrectly reports that the answer is unsupported, the final result alone does not reveal
-which job failed. It may have selected an irrelevant sentence, or it may have selected suitable
-evidence that the verifier failed to interpret.
+If the claim-entailment evaluator incorrectly reports that the answer is unsupported, the final
+result alone does not reveal which job failed. It may have selected an irrelevant sentence, or it
+may have selected suitable evidence that the verifier failed to interpret.
 
 ## What “oracle evidence” means
 
@@ -51,7 +50,7 @@ For example:
 
 | Condition | Evidence given to the verifier | Verifier result |
 |---|---|---|
-| Normal B3 | “Operating costs were $12 million.” | Unsupported |
+| Selected-evidence condition | “Operating costs were $12 million.” | Unsupported |
 | Oracle evidence | “Revenue for 2024 was $20 million.” | Supported |
 
 If the verifier succeeds when given the annotated evidence, the original error is consistent
@@ -61,7 +60,7 @@ In a different case:
 
 | Condition | Evidence given to the verifier | Verifier result |
 |---|---|---|
-| Normal B3 | The annotated supporting sentence | Unsupported |
+| Selected-evidence condition | The annotated supporting sentence | Unsupported |
 | Oracle evidence | The same annotated supporting sentence | Unsupported |
 
 Here, improved evidence selection does not resolve the error. The remaining explanations include
@@ -95,7 +94,7 @@ than a deployable system really is.
 
 Accordingly, this experiment should not be described as:
 
-- a new B4 grounding detector;
+- a new deployable grounding detector;
 - a direct improvement to overall classification F1; or
 - proof of the cause of every grounding error.
 
@@ -116,8 +115,8 @@ competing explanations testable; it does not turn a diagnostic signal into a cau
 
 ## What the completed result means in counts
 
-The seeded cross-domain run contained 188 eligible supported sentences. With B3's selected
-evidence, 85 were falsely rejected (`45.2%`). With annotated evidence, 54 were falsely rejected
+The seeded cross-domain run contained 188 eligible supported sentences. With the claim-entailment
+evaluator's selected evidence, 85 were falsely rejected (`45.2%`). With annotated evidence, 54 were falsely rejected
 (`28.7%`). At the sentence level, annotated evidence corrected 37 previous false rejections but
 introduced 6 new ones, for a net reduction of 31—or 16.5 percentage points. The
 example-clustered 95% interval ranged from a 10.1- to 23.0-point reduction.
