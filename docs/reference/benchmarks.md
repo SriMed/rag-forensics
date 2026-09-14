@@ -255,8 +255,13 @@ The primary report should preserve paired outcomes and example-clustered uncerta
 intervention and interaction. A frozen review of residual condition-D failures should distinguish
 verifier error, multi-sentence support, numerical or tabular reasoning, annotation-granularity
 mismatch, ambiguous labels, and undetermined cases. Human-reviewed claims and error categories are
-review artifacts, not ground truth; reviewer identity, instructions, disagreements, and revisions
-must remain inspectable.
+review artifacts, not ground truth. The frozen claim-review and residual-review files — including
+the reviewer's identity, the specific per-item decisions, and any reasoning notes — are kept
+private rather than published in this repository. What is public instead is the documented
+failure-pattern taxonomy that motivated the kinds of corrections reviewers make (see
+[the reviewer README](../../backend/evals/decomposition_evidence/v1/README.md#common-decomposition-failure-patterns)):
+enough for a reader to understand and evaluate the review *methodology*, without exposing any
+individual reviewer's specific calls.
 
 The experiment should answer which intervention changes false-unsupported judgments and whether
 the two interventions interact. It should not claim production prevalence, a deployable oracle,
@@ -276,7 +281,10 @@ claim-count distributions before and after review, the unchanged/rewritten rate,
 changes caused by reviewed claims, and aggregation exposure (how often a sentence's outcome
 depends on more than one claim passing). Without these, a reader could mistake an evaluator-level
 effect for a decomposition-accuracy effect. None of this reporting exists yet — the report schema
-currently exposes only the four condition rates and the five paired contrasts below.
+currently exposes only the four condition rates and the five paired contrasts below. See
+[Understanding the decomposition-by-evidence experiment](../explainers/decomposition-by-evidence.md)
+for why claim count moves the measured rate independent of correctness, and for a worked example of
+the atomicity test each reviewed claim has to pass.
 
 Issue #29 implements this comparison as a blinded, gated two-stage workflow. The versioned
 `backend/evals/decomposition_evidence/v1/claim-review.json` packet contains the same 188 eligible

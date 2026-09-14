@@ -13,6 +13,10 @@ protocols, and reproducible commands.
 - [Understanding the oracle-evidence experiment](explainers/oracle-evidence.md) explains how the
   completed experiment separates evidence-selection errors from downstream verification errors,
   with its interpretation and explicit limits.
+- [Understanding the decomposition-by-evidence experiment](explainers/decomposition-by-evidence.md)
+  explains what makes a claim well-formed enough to verify, why the blinded review can't reason
+  from evidence, why claim count affects the measured outcome on its own, and how the four-condition
+  design isolates decomposition quality from evidence-selection quality.
 
 ## Reference
 
