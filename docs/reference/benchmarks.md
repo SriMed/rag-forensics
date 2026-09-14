@@ -304,10 +304,44 @@ D−C, D−B, and the difference-in-differences interaction `(D−C)−(B−A)`.
 
 Commands and field-level review instructions live beside the artifacts in
 [`backend/evals/decomposition_evidence/v1/README.md`](../../backend/evals/decomposition_evidence/v1/README.md).
-Final rates and residual counts are intentionally not reported while the claim artifact remains a
-draft. After it is frozen, the run creates a second review packet containing only residual
-condition-D failures; each must receive one predeclared category or `undetermined` before the
-result is considered complete.
+The full 188-item, three-domain `v1` packet described above remains an unreviewed draft; final
+rates and residual counts are not reported for it until it is frozen. After it is frozen, the run
+creates a second review packet containing only residual condition-D failures; each must receive
+one predeclared category or `undetermined` before the result is considered complete.
+
+### TechQA pilot result
+
+A smaller, TechQA-only population was reviewed, frozen, and run to completion — see
+[`v1-techqa/README.md`](../../backend/evals/decomposition_evidence/v1-techqa/README.md) for why
+this population is TechQA-scoped rather than the full three-domain one. On 39 eligible sentences:
+
+| Condition | A (deterministic, selected) | B (deterministic, oracle) | C (reviewed, selected) | D (reviewed, oracle) |
+|---|---:|---:|---:|---:|
+| False-unsupported rate | 35.9% | 23.1% | 46.2% | 38.5% |
+
+| Contrast | Point estimate | 95% interval |
+|---|---:|---:|
+| evidence at deterministic (B−A) | −0.128 | [−0.279, 0.000] |
+| decomposition at selected (C−A) | +0.103 | [−0.070, 0.304] |
+| evidence at reviewed (D−C) | −0.077 | [−0.273, 0.073] |
+| decomposition at oracle (D−B) | +0.154 | [−0.065, 0.346] |
+| interaction | +0.051 | [−0.182, 0.176] |
+
+Every interval includes zero — at n=39 this is not a statistically conclusive result in either
+direction. The reviewed-claim conditions (C, D) came out numerically *higher* than their
+deterministic counterparts, the opposite of the naive expectation, and not explained by claim
+count (mean claims per sentence went down under review, 1.38 → 1.10). Inspecting individual cases
+traced this to evidence selection and entailment scoring reacting to the reviewed claim text, not
+to aggregation exposure — see [Understanding the decomposition-by-evidence
+experiment](../explainers/decomposition-by-evidence.md) for the mechanism and a preliminary finding
+from the residual review. The residual review of the 15 sentences still false-unsupported under
+oracle evidence categorized 10 as `multi_sentence_support`, 4 as `ambiguous_label`, and 1 as
+`undetermined`; zero as `verifier_error`, numerical/tabular reasoning, or an annotation-granularity
+mismatch.
+
+The frozen claim review, the raw results, and the residual review's per-item reasoning are kept as
+private review artifacts and are not published in this repository (see the interpretation
+constraint above); the aggregate numbers here are the full extent of what this pilot publishes.
 
 A subsequent public case collection should select diverse examples from the committed public-data
 evaluations and preserve the input, observations, hypotheses, proposed test, intervention result,

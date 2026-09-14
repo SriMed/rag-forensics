@@ -33,9 +33,18 @@ A result run against this population supports a claim about **TechQA only**. It 
 generalize to `finqa` or `covidqa` without separately running and reporting on those domains — see
 the companion tiny three-domain sample (planned, not yet run) for that.
 
+## Result
+
+The four conditions have been run to completion and the residual review is frozen. The aggregate
+numbers are published in [`docs/reference/benchmarks.md`](../../../../docs/reference/benchmarks.md#techqa-pilot-result);
+the raw `results.json` and `residual-review.json` are kept as private review artifacts alongside
+`claim-review.json` (see `.git/info/exclude`) and are not published here.
+
 ## Commands
 
-Run all four conditions and create the residual-review draft:
+The command below was used to produce that result and remains here for reproducibility. It reads
+the frozen `claim-review.json` and writes `results.json`/`residual-review.json`; rerunning it
+overwrites those two output files but never touches the frozen claim review itself:
 
 ```bash
 cd backend

@@ -134,7 +134,36 @@ experiment exists to sanity-check, offline and against known labels, whether the
 step inside one of RAG Forensics' evaluation tools is trustworthy enough to keep relying on — before
 that method's assumptions are extended anywhere near a live request.
 
+## A preliminary finding from the TechQA pilot
+
+A 39-item TechQA-only pilot run (not the full population — see the companion `v1-techqa`
+protocol) surfaced a mechanism worth naming even at this small scale. Of the sentences still
+false-unsupported under oracle evidence (condition D), the great majority were categorized
+`multi_sentence_support` in the residual review — and in this pilot, **all** of them traced back to
+one of two specific corrections: resolving a cross-sentence pronoun (failure pattern 4) or
+resolving list-position context (failure pattern 5). Zero traced to `verifier_error`, numerical
+reasoning, or an annotation-granularity mismatch.
+
+The likely mechanism: the entailment step is only ever given one evidence sentence per claim.
+Correctly resolving a reference or a list-header dependency — which atomicity requires — produces
+a claim whose truth now depends on two facts stated in two different sentences, but the pipeline
+never supplies a second evidence candidate to check the second half. That reads as a structural
+ceiling in a single-evidence-sentence grounding check, not as evidence that the underlying RAG
+answers require genuine multi-document reasoning, and not as a decomposition-quality finding either
+— a correctly atomized claim is exactly what produces this failure mode.
+
+This is a 15-item, single-domain, single-pilot observation. It should be treated as a hypothesis
+to test at larger scale (does the pattern hold outside TechQA? does it hold with a top-k evidence
+candidate set instead of top-1?), not as an established result.
+
 ## What this experiment does not establish
+
+This experiment analyzes the measurement validity of the claim-entailment grounding evaluator — one
+evaluation tool among several this project has benchmarked. It does not establish the effectiveness
+of the complete RAG Forensics diagnostic record, and it does not differentiate that record from
+related systems such as RAGChecker or RAGVUE (see [Related work in RAG evaluation and
+debugging](../reference/related-work.md)). This is evaluator-component localization, not validation
+of the diagnostic record a user actually receives.
 
 - It does not prove that any single sentence's rejection was "caused by" decomposition — only that,
   in aggregate and holding evidence-selection fixed, corrected claims shift the measured rate.

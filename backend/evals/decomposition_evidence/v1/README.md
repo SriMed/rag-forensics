@@ -81,6 +81,14 @@ General rules across all five: never add a fact the sentence doesn't state; keep
 quantity, and qualifier attached to its claim; and when genuinely torn, still make a call, then
 record it in `unresolved_judgments` rather than leaving the decision blank.
 
+**A downstream note on patterns 4 and 5.** In a 39-item TechQA pilot, every residual condition-D
+failure categorized `multi_sentence_support` traced back to a pattern-4 or pattern-5 correction —
+resolving a cross-sentence reference or a list-position dependency correctly produces a claim that
+needs two evidence sentences, but the pipeline only ever supplies one. That's a property of the
+single-evidence-sentence verifier design surfacing once decomposition is done carefully, not a sign
+the correction was wrong. See [Understanding the decomposition-by-evidence
+experiment](../../../../docs/explainers/decomposition-by-evidence.md#a-preliminary-finding-from-the-techqa-pilot).
+
 ## Interpretation constraint
 
 This experiment cannot isolate "decomposition quality" by itself — see the **Interpretation

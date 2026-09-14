@@ -124,6 +124,54 @@ def test_claim_template_preserves_review_context_without_prefilling_judgment():
     assert item.reviewed_claims == []
 
 
+def test_experiment_reports_exclusions_from_ineligible_sentences():
+    ineligible_record = adapt_ragbench_row(
+        {
+            "id": "example-2",
+            "question": "What else?",
+            "documents": ["Revenue rose. Unrelated material."],
+            "documents_sentences": [[
+                ["0a", "Revenue rose."], ["0b", "Unrelated material."]
+            ]],
+            "response": "Costs fell. Margins widened.",
+            "response_sentences": [["b", "Costs fell."], ["c", "Margins widened."]],
+            "sentence_support_information": [
+                {"response_sentence_key": "b", "fully_supported": True, "supporting_sentence_keys": []},
+                {"response_sentence_key": "c", "fully_supported": True, "supporting_sentence_keys": ["well_known_fact"]},
+            ],
+            "unsupported_response_sentence_keys": [],
+        },
+        domain="finqa",
+    )
+    verifier = FixtureEntailmentVerifier({
+        ("Revenue rose according to the report.", "0b"): 0.1,
+        ("Revenue rose according to the report.", "0a"): 0.9,
+        ("Revenue rose.", "0a"): 0.9,
+    })
+    report = run_decomposition_evidence_experiment(
+        [_record(), ineligible_record], TextEmbedding(), DeterministicClaimDecomposer(), verifier,
+        0.5, _review(), "b" * 64, bootstrap_iterations=20, seed=7,
+    )
+
+    assert report.population_size == 1
+    assert report.exclusions == {"missing_annotation": 1, "non_document_support": 1}
+
+
+def test_experiment_marks_unavailable_verifier_states_and_excludes_from_rate():
+    verifier = FixtureEntailmentVerifier({})  # every lookup raises KeyError -> verifier_error
+    report = run_decomposition_evidence_experiment(
+        [_record()], TextEmbedding(), DeterministicClaimDecomposer(), verifier,
+        0.5, _review(), "b" * 64, bootstrap_iterations=20, seed=7,
+    )
+
+    condition_a = report.conditions["A"]
+    assert condition_a.evaluated == 0
+    assert condition_a.false_unsupported_rate is None
+    assert condition_a.predictions[0].predicted_unsupported is None
+    assert condition_a.predictions[0].claims[0].status == "verifier_error"
+    assert report.effects["evidence_at_deterministic"].interval is None
+
+
 def test_residual_review_is_separate_and_contains_post_run_evidence():
     verifier = FixtureEntailmentVerifier({
         ("Revenue rose according to the report.", "0b"): 0.1,
