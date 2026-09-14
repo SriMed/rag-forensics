@@ -44,7 +44,7 @@ The RAGBench benchmark spans three domains: `techqa`, `finqa`, `covidqa`. Each d
 
 ## ADR-005: L2 distance converted to similarity via `1 - distance`
 
-**Status:** Accepted
+**Status:** Accepted; interpretation narrowed by ADR-042
 **Issue:** #3
 
 ChromaDB returns L2 distances (lower = closer). For the rest of the pipeline to reason about scores uniformly, distances are converted to similarity scores clamped to `[0.0, 1.0]` via `score = max(0.0, 1.0 - distance)`. All downstream code (forensics, scoring, API responses) works with similarity scores, not raw distances.
@@ -53,7 +53,7 @@ ChromaDB returns L2 distances (lower = closer). For the rest of the pipeline to 
 
 ## ADR-006: Claude (Anthropic SDK) for answer generation, not an OpenAI-compatible wrapper
 
-**Status:** Accepted
+**Status:** Accepted; grounding contract extended by ADR-041
 **Issue:** #4
 
 Used the Anthropic Python SDK directly rather than routing through LangChain or an OpenAI-compatible shim. This keeps the dependency surface smaller and avoids abstraction layers that can obscure errors. Model: `claude-haiku-4-5-20251001` (fast and cheap for generation).
@@ -64,7 +64,7 @@ The generator's system prompt enforces grounding: "use ONLY information from the
 
 ## ADR-007: RAGAS for faithfulness and retrieval relevance scoring
 
-**Status:** Accepted
+**Status:** Superseded by ADR-033
 **Issue:** #4
 
 Rather than writing custom faithfulness/relevance scoring from scratch, delegated to the RAGAS library (`faithfulness` + `context_precision` metrics). RAGAS is purpose-built for RAG evaluation and uses an LLM judge internally. Bound RAGAS to Claude via the `ChatAnthropic` LangChain adapter.
@@ -73,7 +73,7 @@ Rather than writing custom faithfulness/relevance scoring from scratch, delegate
 
 ## ADR-008: Tri-state verdicts (pass / warn / fail) rather than raw scores
 
-**Status:** Accepted
+**Status:** Superseded by ADR-038
 **Issue:** #4
 
 RAGAS returns continuous scores in `[0.0, 1.0]`. These are bucketed into `pass` (≥ 0.75), `warn` (≥ 0.5), and `fail` (< 0.5) before being returned to the caller. Continuous scores are ambiguous for users — tri-state verdicts force a clear interpretation. The thresholds are explicit constants, easy to tune.
@@ -82,7 +82,7 @@ RAGAS returns continuous scores in `[0.0, 1.0]`. These are bucketed into `pass` 
 
 ## ADR-009: Each forensics module is independent and callable in isolation
 
-**Status:** Accepted
+**Status:** Superseded by ADR-038
 **Issues:** #5–#8
 
 The four forensics modules (`retrieval_distribution`, `hedging_mismatch`, `chunk_attribution`, `confidence_calibration`) share no internal state and have no dependencies on each other. Each accepts only what it needs (chunks, answer, question) and returns a `DimensionResult`. This makes them independently testable and allows partial implementation without breaking the endpoint.
@@ -102,7 +102,7 @@ LLM prompts (system instructions and context builders) live in `backend/prompts/
 
 ## ADR-011: Retrieval distribution analyzed as a probabilistic signal
 
-**Status:** Accepted
+**Status:** Superseded by ADR-038
 **Issue:** #5
 
 Rather than treating retrieval as a binary pass/fail (did we get good chunks?), the `retrieval_distribution` module analyzes the *shape* of the score distribution using five metrics:
@@ -139,10 +139,10 @@ All Python dependencies are managed via Poetry. `pyproject.toml` is the single s
 
 ## ADR-014: CORS enabled only for localhost:3000
 
-**Status:** Accepted
+**Status:** Accepted; deployment assumption superseded by ADR-043
 **Issue:** #2
 
-The FastAPI backend allows cross-origin requests only from `http://localhost:3000`, which is the Next.js dev server. No wildcard origins. This will need revisiting when the project is deployed (Vercel URL will need to be added).
+The FastAPI backend allows cross-origin requests only from `http://localhost:3000`, which is the Next.js dev server. No wildcard origins. ADR-043 retains localhost operation as the intended delivery boundary rather than anticipating a hosted frontend origin.
 
 ---
 
@@ -208,7 +208,7 @@ Confidence classification (definitive / hedged / uncertain) in `hedging_mismatch
 
 ## ADR-021: Entailment response parsed with substring containment, not exact equality
 
-**Status:** Accepted
+**Status:** Superseded by ADR-035
 **Issue:** #15
 
 The entailment step in `hedging_mismatch.py` checks whether Claude's response indicates `supported` or `not_supported`. The original implementation used exact equality after `.strip().lower()`. This silently misclassified any response with trailing punctuation (`"supported."`) or a prefix (`"yes, supported"`) as `not_supported`, biasing `overconfident_fraction` downward. The fix uses an order-of-operations substring check: first reject if `"not_supported"` or `"not supported"` appears, then accept if `"supported"` appears, otherwise log a warning and default to `not_supported`. The warning makes silent misparsing observable without raising an exception that would abort the per-claim loop.
@@ -235,7 +235,7 @@ Frontend tests that assert loading spinner visibility use a `deferred()` helper 
 
 ## ADR-024: `get_embedding_model()` singleton placed in `retriever.py`, not a separate module
 
-**Status:** Accepted
+**Status:** Superseded by ADR-039
 **Issue:** #7
 
 Chunk attribution needs to embed answer sentences using the same model that ChromaDB uses to embed chunks (`sentence-transformers/all-MiniLM-L6-v2`). Rather than creating a separate `services/embedding.py` module, `get_embedding_model()` was added to `retriever.py` as a module-level cached singleton. The alternative (a dedicated embedding module) would be cleaner if more than one service needed the model, but currently only `chunk_attribution.py` calls it. Colocating it in the retriever keeps the model name in one place and avoids a one-function module with no other responsibility. If a second consumer appears, extract to `services/embedding.py`.
@@ -253,7 +253,7 @@ Chunk attribution needs to embed answer sentences using the same model that Chro
 
 ## ADR-026: Query-corpus fit module is conditional — triggered by upstream forensics signals
 
-**Status:** Accepted
+**Status:** Superseded by ADR-040
 **Issue:** #8
 
 `analyze_query_corpus_fit` is the only forensics module that can short-circuit to a no-op. It checks three trigger conditions (`query_isolation > 1.2`, `retrieval_relevance_score < 0.5`, or `score_entropy > 1.5 AND faithfulness_score < 0.5`) before making any LLM calls; if none are met it returns a sentinel `_UNTRIGGERED` object immediately. The alternatives were: always run question generation (expensive, noisy for queries that retrieved well), or gate it at the router (spreads conditional logic across layers). Putting the gate inside the module keeps the router unconditional and makes the module self-contained and independently testable — a test can assert the Anthropic client is never called when signals are below threshold.
@@ -262,7 +262,7 @@ Chunk attribution needs to embed answer sentences using the same model that Chro
 
 ## ADR-027: Mismatch type classified by mean cosine similarity between suggested questions and original query
 
-**Status:** Accepted
+**Status:** Superseded by ADR-040
 **Issue:** #8
 
 After generating suggested questions, each is embedded and its cosine similarity to the original query embedding is computed. The mean of these scores determines `mismatch_type`: `> 0.6` → `query_mismatch` (user was in the right neighborhood, just phrased it differently), `< 0.3` → `coverage_gap` (corpus doesn't cover the topic), otherwise `ambiguous`. The alternative was an additional LLM call to classify the mismatch. Using cosine similarity is zero-cost (model already loaded), deterministic, and directly measures the geometric relationship that defines the two failure modes — it is the most natural signal for this classification.
@@ -280,7 +280,7 @@ After generating suggested questions, each is embedded and its cosine similarity
 
 ## ADR-029: Verdict generation is a two-stage pipeline — deterministic rule match, then Claude render
 
-**Status:** Accepted
+**Status:** Superseded by ADR-036
 **Issue:** #9
 
 ## ADR-030: `/analyze/custom` computes embeddings inline using the cached singleton from `retriever.py`
@@ -294,10 +294,10 @@ The `/analyze/custom` endpoint accepts pre-scored BYO chunks (no ChromaDB) but s
 
 ## ADR-031: Frontend API URL injected via `NEXT_PUBLIC_API_URL` env var, defaulting to localhost
 
-**Status:** Accepted
+**Status:** Accepted; deployment assumption superseded by ADR-043
 **Issue:** #11
 
-`frontend/lib/api.ts` reads `process.env.NEXT_PUBLIC_API_URL` with a fallback of `http://localhost:8000`. This lets the same build target both local development and production without code changes — Vercel sets the env var at build time; local dev gets the default. The snake_case → camelCase mapping from backend response fields is done inside `lib/api.ts` so components work with idiomatic TypeScript field names and are decoupled from the backend's naming conventions.
+`frontend/lib/api.ts` reads `process.env.NEXT_PUBLIC_API_URL` with a fallback of `http://localhost:8000`. This supports configurable local ports and integration environments without code changes; the default serves the local workflow adopted in ADR-043. The snake_case → camelCase mapping from backend response fields is done inside `lib/api.ts` so components work with idiomatic TypeScript field names and are decoupled from the backend's naming conventions.
 
 ---
 
@@ -416,5 +416,117 @@ label. A smaller set is preserved for inspection but returns
 two questions would let a narrow or unstable sample drive a confident downstream signal;
 discarding all evidence would make generation failures harder to audit. This contract concerns
 only retrieved passages and does not establish full-corpus coverage.
+
+---
+
+## ADR-038: Diagnostic modules return typed observations, not tri-state verdicts
+
+**Status:** Accepted; supersedes ADR-008, ADR-009, and ADR-011
+
+The interactive analysis path exposes five complementary forensics modules:
+`retrieval_distribution`, `embedding_space`, `chunk_attribution`, `hedging_mismatch`, and
+`query_corpus_fit`. Each returns its own typed metrics and method-specific availability semantics;
+modules do not return a shared `DimensionResult`, development stubs, or `pass`/`warn`/`fail`
+labels. RAGAS metrics similarly return `{score, status, error}` rather than coerced verdicts.
+
+Numeric observations remain inspectable at their native granularity. Retrieval-distribution shape
+is descriptive rather than probabilistic evidence of quality, and a failed decay fit is represented
+as `null`, not zero. The verdict layer may rank observations for investigation, but its priorities
+are heuristic ordering indices rather than calibrated severities or replacements for the underlying
+typed results. This structure preserves method differences and prevents unavailable measurements
+from appearing healthy.
+
+---
+
+## ADR-039: One retriever-owned embedding model defines the local analysis space
+
+**Status:** Accepted; supersedes ADR-024
+
+The cached `sentence-transformers/all-MiniLM-L6-v2` instance remains owned by `retriever.py`, but it
+is a shared project service used by retrieval, sentence attribution, retrieved-context-fit analysis,
+and `/analyze/custom`. Keeping one canonical instance prevents the embedded retrieval path from
+silently comparing vectors produced by different models and avoids duplicate model loading.
+
+This choice deliberately couples the local analyses to the project's embedding space. Caller
+scores and text from an external RAG system may have been produced in a different space;
+`/analyze/custom` therefore re-embeds caller text locally and must disclose that its geometric
+observations do not reproduce the caller's production retriever geometry. If the project later
+supports multiple embedding models or caller-supplied embeddings, model identity and revision must
+become explicit request and provenance fields before cross-space comparisons are allowed.
+
+---
+
+## ADR-040: Retrieved-context fit is conditional and cannot establish corpus coverage
+
+**Status:** Accepted; supersedes ADR-026 and ADR-027; complements ADR-037
+
+Retrieved-context-fit analysis runs only when query isolation exceeds `1.2`, answer-conditioned
+context utilization is available and below `0.5`, or normalized retrieval entropy exceeds `0.9`
+while available faithfulness is below `0.5`. Unavailable upstream scores do not satisfy numeric
+triggers. Triggering initiates question generation and validation; it does not itself produce a fit
+label.
+
+After the validation and diversity requirements in ADR-037 are satisfied, mean cosine similarity
+to the original question yields `retrieved_context_near_miss` above `0.6`,
+`retrieved_context_topic_gap` below `0.3`, and `ambiguous` otherwise. These labels describe only the
+retrieved passages. They do not show that query wording caused a failure or that the full corpus
+contains or lacks an answer. The rename from `query_mismatch` and `coverage_gap` makes that evidence
+boundary part of the public contract.
+
+---
+
+## ADR-041: Chunk completeness is a provenance-bearing source-boundary state
+
+**Status:** Accepted
+
+Every retrieved chunk carries `completeness` (`complete`, `truncated`, or `unknown`) separately from
+`completeness_source` (`source`, `caller`, or `unavailable`). Known states require source or caller
+provenance; unknown requires unavailable provenance. Missing or malformed stored metadata fails
+closed to `unknown`/`unavailable`, and custom callers may assert a known state only with caller
+provenance. Terminal punctuation is never promoted to source-boundary evidence.
+
+Generation receives these states explicitly. It must not guess a known-truncated continuation and
+must disclose truncation when it prevents a complete answer; it must not describe an unknown chunk
+as truncated. The API returns structured chunk details so consumers can inspect the state without
+parsing prompt text. This extends the grounding instruction recorded in ADR-006: source-boundary
+metadata constrains generation but is not evidence that a chunk is relevant or sufficient.
+
+---
+
+## ADR-042: Retrieval scores are bounded observations, not cross-retriever calibrated quantities
+
+**Status:** Accepted; narrows ADR-005
+
+The embedded Chroma path continues to convert its configured distance with
+`max(0, 1 - distance)`, while `/analyze/custom` accepts caller-declared
+`normalized_similarity` values in `[0, 1]`. The common numeric range is an API bound, not evidence
+that scores from different retrievers, embedding models, rerankers, or corpora have equivalent
+meaning or calibration.
+
+Distribution shape and absolute thresholds may be interpreted only within a documented score
+semantics and compatible retrieval configuration. Comparative studies must preserve native scores
+and provenance rather than treating the range as a shared measurement scale. Supporting BM25,
+distances, logits, or additional retrievers requires an explicit score-semantics contract rather
+than automatic conversion.
+
+---
+
+## ADR-043: RAG Forensics is distributed for local operation, not hosted as a service
+
+**Status:** Accepted
+
+The intended delivery model is a reproducible local tool that a researcher or developer can run
+beside an existing RAG system and call through `/analyze/custom`. A centrally hosted, public, or
+multi-tenant deployment is not a project end goal. Local operation keeps caller-provided questions,
+answers, and retrieved context under the operator's control and avoids turning research software
+into an externally operated data-processing service.
+
+Packaging should minimize setup friction while preserving inspectability: dependencies and model
+revisions remain pinned, data bootstrap is explicit and idempotent, local persistence is
+documented, configuration failures are visible, and an end-to-end example verifies integration.
+Container or release artifacts may support reproducible local installation, but they must not
+introduce a hosted-service requirement. The localhost CORS and API URL defaults in ADR-014 and
+ADR-031 remain appropriate for development; their assumptions about an eventual Vercel/Railway
+deployment are superseded by this decision.
 
 ---

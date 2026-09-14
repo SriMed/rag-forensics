@@ -11,6 +11,10 @@ RAG Forensics keeps them visible. Given a question, answer, and retrieved contex
 observable signals, evidence candidates, method assumptions, reliability labels, ranked
 hypotheses, and follow-up tests. It is a hypothesis-generation layer—not a root-cause oracle.
 
+The project is intended to run locally beside an existing RAG system. It is distributed as
+inspectable research software rather than operated as a hosted service; callers can submit their
+own question, answer, and retrieved chunks through the local API.
+
 The project was motivated by recurring diagnostic ambiguity observed while working with a
 production RAG system. No proprietary incidents, outputs, organizational data, or private user
 research are included. The repository's empirical claims come only from the public datasets and

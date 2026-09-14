@@ -17,7 +17,7 @@ chunks = [
     {"chunk_id": "doc_17_chunk_1", "text": "...", "score": 0.74},
 ]
 
-response = requests.post("https://your-deployment.railway.app/analyze/custom", json={
+response = requests.post("http://localhost:8000/analyze/custom", json={
     "question": "What is the refund policy?",
     "answer": "Refunds are processed within 5-7 business days.",
     "score_semantics": "normalized_similarity",
