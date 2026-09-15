@@ -16,7 +16,7 @@ protocols, and reproducible commands.
 - [Understanding the decomposition-by-evidence experiment](explainers/decomposition-by-evidence.md)
   explains what makes a claim well-formed enough to verify, why the blinded review can't reason
   from evidence, why claim count affects the measured outcome on its own, and how the four-condition
-  design isolates decomposition quality from evidence-selection quality.
+  design compares claim representations and evidence conditions without isolating decomposition quality.
 
 ## Reference
 

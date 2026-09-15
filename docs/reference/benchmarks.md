@@ -240,9 +240,10 @@ intervals; their apparent heterogeneity is descriptive rather than conclusive.
 
 ## Next empirical program
 
-The highest-information follow-up is a controlled decomposition-by-evidence experiment on the
-same eligible supported-sentence population. It should compare four conditions while holding the
-verifier, model revision, threshold, aggregation, and evaluation population fixed:
+The decomposition-by-evidence experiment has completed a 39-sentence TechQA pilot; the full
+188-sentence, three-domain review remains an unreviewed draft. The protocol compares four conditions
+while holding the verifier, model revision, threshold, aggregation rule, and evaluation population
+fixed within each run:
 
 | Condition | Claim decomposition | Evidence supplied to verifier |
 |---|---|---|
@@ -280,8 +281,9 @@ must accompany the factorial effects with: the reviewed-versus-accepted decompos
 claim-count distributions before and after review, the unchanged/rewritten rate, evidence-selection
 changes caused by reviewed claims, and aggregation exposure (how often a sentence's outcome
 depends on more than one claim passing). Without these, a reader could mistake an evaluator-level
-effect for a decomposition-accuracy effect. None of this reporting exists yet — the report schema
-currently exposes only the four condition rates and the five paired contrasts below. See
+effect for a decomposition-accuracy effect. The pilot summary below includes mean claim counts,
+but the report schema does not yet expose the full set of representation-change diagnostics listed
+above alongside its condition rates and paired contrasts. See
 [Understanding the decomposition-by-evidence experiment](../explainers/decomposition-by-evidence.md)
 for why claim count moves the measured rate independent of correctness, and for a worked example of
 the atomicity test each reviewed claim has to pass.

@@ -139,11 +139,14 @@ sentences. It is label-derived analysis—not a deployable classifier—and does
 for unsupported sentences. The available evidence supports interpreting the system as narrowing an
 investigation, not as identifying the cause of a bad answer.
 
-A controlled factorial experiment can cross automated versus human-reviewed claim decomposition
-with similarity-selected versus annotated oracle evidence, then classify the residual failures
-without changing the verifier. Such an experiment would measure where component-isolating tests
-localize failure and where ambiguity remains. A public case collection could make those successes
-and limits inspectable without treating benchmark examples as production incidents.
+A completed TechQA pilot crossed deterministic versus human-reviewed claims with selected versus
+annotated evidence on 39 eligible sentences. All paired-effect 95% intervals included zero.
+Residual review raised a hypothesis that some rejections require evidence sentences to be supplied
+jointly; it did not establish a decomposition-quality effect or a general verifier limitation.
+See the [pilot results](docs/reference/benchmarks.md#techqa-pilot-result) and
+[interpretation](docs/explainers/decomposition-by-evidence.md#a-preliminary-finding-from-the-techqa-pilot).
+A public comparative case collection could make these investigations and their limits inspectable
+without treating selected benchmark examples as production incidents.
 
 The project has not established that this diagnostic record improves decisions for real users.
 There are no external-consumer or production-incident data supporting that claim. Evaluation of

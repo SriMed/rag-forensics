@@ -93,7 +93,7 @@ report to publish claim-count distributions and aggregation exposure alongside t
 rather than letting one clean-looking percentage stand for a decomposition-quality finding on its
 own.
 
-## How the four conditions isolate decomposition from evidence selection
+## What the four conditions compare
 
 The experiment holds the verifier, threshold, and evaluation population fixed and crosses two
 independent manipulations — which claims are used, and which evidence is supplied:
@@ -103,14 +103,16 @@ independent manipulations — which claims are used, and which evidence is suppl
 | deterministic claims | A | B |
 | reviewed claims | C | D |
 
-Condition A and C are identical except for which claims feed evidence-matching and entailment.
-Comparing their false-unsupported rates isolates the causal effect of the decomposition step alone:
-if C's rate is meaningfully lower than A's, the reviewed claims caught sentences that were being
-wrongly rejected specifically because of how they were split — decomposition quality was a real
-contributor to the earlier mixed benchmark result. If C looks like A, decomposition wasn't the
-bottleneck, and the earlier result is better explained by the verifier or by reasoning that needs
-more than one sentence at a time. B versus D repeats the same isolation under oracle evidence, to
-check whether decomposition still matters once evidence is no longer the limiting factor.
+Comparing C with A measures the effect of substituting reviewed claims in the assembled evaluator.
+That substitution can change claim count, evidence selection, verifier inputs, and the all-claims-pass
+outcome. A lower false-unsupported rate would therefore support using that representation under
+these conditions, but would not isolate decomposition quality. Similar rates would not rule out a
+bottleneck: opposing effects or an imprecise estimate could hide a difference.
+
+Comparing D with B repeats the substitution using the same annotated evidence pool. Even here,
+the verifier scores each evidence sentence separately and takes the maximum for each claim;
+rewriting a claim can change those scores and which sentence supplies the maximum. Oracle evidence
+does not guarantee adequate joint support when a claim requires several sentences together.
 
 See [Benchmarking and current evidence](../reference/benchmarks.md#decomposition-by-evidence-protocol)
 for the full protocol, the frozen threshold, and the blinded two-stage review process that produces
@@ -144,17 +146,20 @@ one of two specific corrections: resolving a cross-sentence pronoun (failure pat
 resolving list-position context (failure pattern 5). Zero traced to `verifier_error`, numerical
 reasoning, or an annotation-granularity mismatch.
 
-The likely mechanism: the entailment step is only ever given one evidence sentence per claim.
-Correctly resolving a reference or a list-header dependency — which atomicity requires — produces
-a claim whose truth now depends on two facts stated in two different sentences, but the pipeline
-never supplies a second evidence candidate to check the second half. That reads as a structural
-ceiling in a single-evidence-sentence grounding check, not as evidence that the underlying RAG
-answers require genuine multi-document reasoning, and not as a decomposition-quality finding either
-— a correctly atomized claim is exactly what produces this failure mode.
+The hypothesized mechanism is a limit of supplying evidence one sentence at a time. Resolving a
+reference or list-header dependency can produce a claim that needs facts from two source sentences.
+The selected-evidence condition supplies one sentence per claim. The oracle condition tries every
+annotated sentence separately and takes the maximum entailment score; it never supplies them jointly.
+The review therefore raises an evidence-combination hypothesis, rather than establishing that claim
+decomposition is wrong or that the verifier itself cannot reason across sentences.
 
-This is a 15-item, single-domain, single-pilot observation. It should be treated as a hypothesis
-to test at larger scale (does the pattern hold outside TechQA? does it hold with a top-k evidence
-candidate set instead of top-1?), not as an established result.
+This is a single-reviewer interpretation of 15 residual failures in one domain, including 10
+categorized as `multi_sentence_support`. A discriminating follow-up would compare the same annotated
+evidence scored separately versus supplied jointly, holding claims and verifier settings fixed.
+Merely increasing the number of separately scored candidates would not test evidence combination.
+Jointly supplying similarity-selected top-k evidence could then test whether any benefit survives
+ordinary evidence selection. Neither follow-up has been run, and generalization beyond TechQA
+remains untested.
 
 ## What this experiment does not establish
 
@@ -165,8 +170,8 @@ related systems such as RAGChecker or RAGVUE (see [Related work in RAG evaluatio
 debugging](../reference/related-work.md)). This is evaluator-component localization, not validation
 of the diagnostic record a user actually receives.
 
-- It does not prove that any single sentence's rejection was "caused by" decomposition — only that,
-  in aggregate and holding evidence-selection fixed, corrected claims shift the measured rate.
+- It does not prove that any single sentence's rejection was "caused by" decomposition — the contrasts measure
+  the effect of substituting a claim representation, and all pilot contrast intervals include zero.
 - It does not produce a deployable improvement to the claim decomposer; the reviewed claims are a
   frozen, blinded research artifact, not a new production component.
 - A result on one domain's population does not generalize to the others without also running them
