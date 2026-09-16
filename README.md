@@ -146,7 +146,15 @@ jointly; it did not establish a decomposition-quality effect or a general verifi
 See the [pilot results](docs/reference/benchmarks.md#techqa-pilot-result) and
 [interpretation](docs/explainers/decomposition-by-evidence.md#a-preliminary-finding-from-the-techqa-pilot).
 A public comparative case collection could make these investigations and their limits inspectable
-without treating selected benchmark examples as production incidents.
+without treating selected benchmark examples as production incidents. A feasibility check for that
+collection confirmed RAGChecker and RAGVue are both real, runnable tools compatible with an
+Anthropic-only setup, but only from isolated environments — installing either alongside this
+project's own dependencies conflicts with the Anthropic SDK version the backend requires — and
+surfaced a provenance gap worth designing around: RAGVue's own output can mislabel which model
+produced a judgment. The frozen shared schema, feasibility findings, and case-selection protocol
+are in
+[`backend/evals/comparative_diagnostics/v1/`](backend/evals/comparative_diagnostics/v1/README.md);
+no cases have been selected yet.
 
 The project has not established that this diagnostic record improves decisions for real users.
 There are no external-consumer or production-incident data supporting that claim. Evaluation of

@@ -530,3 +530,31 @@ ADR-031 remain appropriate for development; their assumptions about an eventual 
 deployment are superseded by this decision.
 
 ---
+
+## ADR-044: Comparative diagnostic tools run in isolated environments, never as backend dependencies
+
+**Status:** Accepted
+**Issue:** #30
+
+A feasibility check installing RAGChecker and RAGVue together confirmed a real dependency
+conflict: RAGChecker's `refchecker` dependency pins `anthropic<0.30,>=0.29`, while this project
+pins `anthropic>=0.86,<0.87` for its own generation and forensics LLM calls. The two cannot coexist
+in one resolved environment without downgrading the SDK the backend itself depends on — and the
+older SDK version is independently broken against the project's pinned `httpx`
+(`Client.__init__() got an unexpected keyword argument 'proxies'`), which surfaced as a live
+failure in RAGVue's Anthropic-backed judge when both tools shared a venv.
+
+RAGChecker and RAGVue are therefore never added to `backend/pyproject.toml`. Each runs in its own
+isolated virtual environment, invoked as a subprocess or driver script whose JSON output is read
+back verbatim into `NativeSystemOutput.raw_output`
+(`backend/benchmark/comparative_diagnostics.py`). This preserves each tool's own dependency
+resolution and intended semantics, keeps the backend's dependency graph untouched, and matches how
+an external user would actually run these tools — as independent processes, not library imports.
+
+A related finding shaped the schema itself: RAGVue's own metadata mislabeled which model produced
+a judgment (`raw.model: "gpt-4o-mini"` even when configured for and actually using Claude via
+`RAGVUE_JUDGE_PROVIDER=anthropic`). A comparative record must not trust a system's self-reported
+provenance field; the run configuration we actually set is the source of truth for `method`, while
+the raw self-reported output is preserved unmodified for inspection.
+
+---
