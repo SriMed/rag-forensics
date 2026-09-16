@@ -17,7 +17,31 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from benchmark.experiment_cli import DATASET_REVISION, DOMAINS, _load_records
+from benchmark.oracle_evidence import _eligible_records
 from models import RAGBenchEvaluationRecord, VerdictSignal
+
+# The candidate pool for issue #30 is, by decision, the distinct parent examples of issue #29's
+# 188-eligible-sentence population — not a fresh sample. `_eligible_records` already deduplicates
+# to one entry per example that has at least one eligible sentence (see
+# `benchmark.decomposition_evidence.make_claim_review_template`, which iterates the same
+# `eligible` list's `response_sentences` to reach 188 sentence-level review items from a smaller
+# number of distinct examples). These parameters must match #29's population exactly, or the pool
+# is a different population under the same name.
+CANDIDATE_POOL_DOMAINS = DOMAINS
+CANDIDATE_POOL_SPLIT = "test"
+CANDIDATE_POOL_LIMIT = 100
+CANDIDATE_POOL_SEED = 42
+CANDIDATE_POOL_REVISION = DATASET_REVISION
+
+
+def load_case_candidate_pool() -> list[RAGBenchEvaluationRecord]:
+    records, _skipped = _load_records(
+        list(CANDIDATE_POOL_DOMAINS), CANDIDATE_POOL_SPLIT, CANDIDATE_POOL_LIMIT,
+        CANDIDATE_POOL_SEED, CANDIDATE_POOL_REVISION,
+    )
+    eligible, _total, _excluded = _eligible_records(records)
+    return eligible
 
 SystemName = Literal["rag_forensics", "ragchecker", "ragvue", "ragas_baseline"]
 

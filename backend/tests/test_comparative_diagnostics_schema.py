@@ -2,6 +2,11 @@ import pytest
 from pydantic import ValidationError
 
 from benchmark.comparative_diagnostics import (
+    CANDIDATE_POOL_DOMAINS,
+    CANDIDATE_POOL_LIMIT,
+    CANDIDATE_POOL_REVISION,
+    CANDIDATE_POOL_SEED,
+    CANDIDATE_POOL_SPLIT,
     CaseJudgments,
     ComparativeCase,
     ComparativeCaseSet,
@@ -10,6 +15,7 @@ from benchmark.comparative_diagnostics import (
     SystemDiagnosticRecord,
     assert_ragchecker_metrics_computable,
     dataset_label_for_record,
+    load_case_candidate_pool,
     make_population_sha256,
     map_rag_forensics_native,
     map_ragchecker_native,
@@ -17,7 +23,13 @@ from benchmark.comparative_diagnostics import (
     ragchecker_result_input,
     ragvue_item_from_record,
 )
-from models import RAGBenchEvaluationRecord, RetrievedChunk, VerdictSignal
+from models import (
+    BenchmarkSentence,
+    BenchmarkSentenceSupport,
+    RAGBenchEvaluationRecord,
+    RetrievedChunk,
+    VerdictSignal,
+)
 
 
 def _native(status="healthy", raw=None):
@@ -348,6 +360,58 @@ class TestMapRagcheckerNative:
         )
         assert record.native.availability == "failed"
         assert record.native.error == "litellm timeout"
+
+
+class TestLoadCaseCandidatePool:
+    def test_reuses_issue_29s_exact_population_parameters(self, mocker):
+        load_records = mocker.patch(
+            "benchmark.comparative_diagnostics._load_records", return_value=([], [])
+        )
+        load_case_candidate_pool()
+        load_records.assert_called_once_with(
+            list(CANDIDATE_POOL_DOMAINS), CANDIDATE_POOL_SPLIT, CANDIDATE_POOL_LIMIT,
+            CANDIDATE_POOL_SEED, CANDIDATE_POOL_REVISION,
+        )
+
+    def test_pool_is_deduplicated_to_one_entry_per_eligible_parent_example(self, mocker):
+        # Two eligible sentences sharing one parent example must yield one case, not two — the
+        # comparative pipeline compares whole answers, not isolated sentences (see
+        # CASE-SELECTION-PROTOCOL.md, "candidate pool").
+        multi_sentence_record = RAGBenchEvaluationRecord(
+            example_id="techqa_multi",
+            domain="techqa",
+            question="Q",
+            response="A. B.",
+            chunks=[RetrievedChunk(chunk_id="d0", text="Evidence.", score=0.9)],
+            response_sentences=[BenchmarkSentence(key="a", text="A."), BenchmarkSentence(key="b", text="B.")],
+            document_sentences=[],
+            document_sentence_keys={"d0"},
+            unsupported_response_sentence_keys=set(),
+            sentence_support={
+                "a": BenchmarkSentenceSupport(response_sentence_key="a", fully_supported=True, supporting_sentence_keys=["d0"]),
+                "b": BenchmarkSentenceSupport(response_sentence_key="b", fully_supported=True, supporting_sentence_keys=["d0"]),
+            },
+        )
+        ineligible_record = RAGBenchEvaluationRecord(
+            example_id="techqa_none",
+            domain="techqa",
+            question="Q2",
+            response="C.",
+            chunks=[RetrievedChunk(chunk_id="d0", text="Evidence.", score=0.9)],
+            response_sentences=[BenchmarkSentence(key="c", text="C.")],
+            document_sentences=[],
+            document_sentence_keys={"d0"},
+            unsupported_response_sentence_keys={"c"},
+            sentence_support={
+                "c": BenchmarkSentenceSupport(response_sentence_key="c", fully_supported=False, supporting_sentence_keys=[]),
+            },
+        )
+        mocker.patch(
+            "benchmark.comparative_diagnostics._load_records",
+            return_value=([multi_sentence_record, ineligible_record], []),
+        )
+        pool = load_case_candidate_pool()
+        assert [record.example_id for record in pool] == ["techqa_multi"]
 
 
 class TestMapRagvueNative:

@@ -190,6 +190,13 @@ no interpretation of it is offered here.
 ## 4. What is not done yet
 
 No cases are selected under the frozen protocol. `run_pilot.py`'s 3-case output demonstrates the
-pipeline works end to end; the actual 12–20 selected cases across the declared strata require
-running this same pipeline over the full candidate pool (`CASE-SELECTION-PROTOCOL.md` §"Candidate
-pool") and applying the seeded per-stratum draw, which is follow-up work.
+pipeline works end to end and uses its own independent sample, not the pool below.
+
+The candidate pool itself is now decided and implemented:
+`benchmark.comparative_diagnostics.load_case_candidate_pool()` returns the deduplicated parent
+examples of issue #29's 188-eligible-sentence population (see `CASE-SELECTION-PROTOCOL.md`
+§"Candidate pool" for why the sentence-level population isn't used directly). It has not been run
+yet — running the full pool through all three systems is a much larger live-API operation than the
+3-case pilot (roughly 60x), and was deliberately deferred pending explicit go-ahead rather than run
+automatically. Once run, the seeded per-stratum draw (`CASE-SELECTION-PROTOCOL.md` §"Selection
+procedure") produces the actual 12–20 selected, frozen cases.

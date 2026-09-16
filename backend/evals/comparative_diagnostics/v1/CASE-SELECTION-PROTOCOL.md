@@ -7,13 +7,24 @@ result shape the method; freezing first prevents that, per issue #30's explicit 
 ## Candidate pool
 
 Candidates are drawn only from populations already committed in this repository or directly
-derivable from them without new human judgment:
+derivable from them without new human judgment. **Decision, made explicitly rather than left
+implicit:** the primary pool is the *distinct parent examples* of issue #29's 188-eligible-sentence
+population, not the sentences themselves and not a fresh sample. RAGChecker and RAGVue compare
+whole answers, not isolated sentences, so the unit of comparison must be the parent example; using
+a fresh independent sample instead would have severed the link to a population this project has
+already reviewed once.
 
-- The 188-item oracle-evidence-eligible RAGBench population (`backend/evals/decomposition_evidence/v1/`,
-  `docs/reference/benchmarks.md`), across `techqa`, `finqa`, `covidqa`.
-- The frozen 39-item TechQA decomposition-by-evidence population
-  (`backend/evals/decomposition_evidence/v1-techqa/`).
-- The committed RAGTruth adapter population (`benchmark/ragtruth.py`, `benchmark/ragtruth_cli.py`).
+- **Primary pool**: `benchmark.comparative_diagnostics.load_case_candidate_pool()` — reuses
+  `benchmark.experiment_cli._load_records` and `benchmark.oracle_evidence._eligible_records` with
+  the exact parameters issue #29 used (`domains=["techqa","finqa","covidqa"]`, `split="test"`,
+  `limit=100`, `seed=42`, `revision=DATASET_REVISION`), then takes `_eligible_records`'s
+  already-deduplicated output — one entry per example with at least one eligible sentence, not one
+  per sentence. This never touches the private `claim-review.json`/`results.json` review artifacts;
+  eligibility is a deterministic function of RAGBench's own labels.
+- **Secondary pool (not yet used)**: the frozen 39-item TechQA decomposition-by-evidence population
+  (`backend/evals/decomposition_evidence/v1-techqa/`) and the committed RAGTruth adapter population
+  (`benchmark/ragtruth.py`, `benchmark/ragtruth_cli.py`) remain available if the primary pool proves
+  too thin for a given stratum.
 
 No new RAGBench/RAGTruth examples are pulled in ad hoc; every candidate must already have a stable
 example id, a domain, and a dataset revision recorded somewhere in the repository.
