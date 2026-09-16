@@ -1,0 +1,1760 @@
+{
+  "schema_version": "comparative-diagnostics.v1",
+  "status": "frozen",
+  "reviewer_identity": "meds31510@gmail.com",
+  "population_sha256": "11cb04dd2f2117217edc95ab9ab63a7d5b72c071c47b0069993560798f75f2aa",
+  "cases": [
+    {
+      "case_id": "techqa_DEV_Q099",
+      "dataset": "ragbench",
+      "domain": "techqa",
+      "dataset_revision": "galileo-ai/ragbench@97808f3e5fd16ede40bbff6c2949af8139b2eb7b",
+      "stratum": "systems_agree_labels_support",
+      "selection_rationale": "Pilot: first N shuffled techqa test examples, not stratified selection.",
+      "systems": {
+        "rag_forensics": {
+          "system": "rag_forensics",
+          "native": {
+            "system": "rag_forensics",
+            "system_version": "0.1.0",
+            "availability": "healthy",
+            "raw_output": {
+              "question": "Is ITCAM Agent for WebSphere Applications 7.2.0.0.7 available? Is ITCAM Agent for WebSphere Applications 7.2.0.0.7 available? ",
+              "generated_answer": "Yes, ITCAM Agent for WebSphere Applications 7.2.0.0.7 is available.",
+              "retrieved_chunks": [
+                " SUBSCRIBE TO THIS APAR\nBy subscribing, you receive periodic emails alerting you to the status of the APAR, along with a link to the fix after it becomes available. You can track this item individually or track all items by product.\n\nNotify me when this APAR changes.\n\nNotify me when an APAR for this component changes.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  * Problem Description -\n   (configtemplate.sh fails on DMGR)\n       Creating server templates with ITCAM v7.2-IF010 fails in\n       main routine with following error message:\n   \n       CFG2056E Unexpected exception detected in\n       configtemplatexd.py\n   \n   \".../opt/IBM/ITM/dchome/7.2.0.0.10/bin/configtemplatexd.py\"\n       -----------------------------------------------------\n   \n   * Recreating Senario -\n      Following the installation steps under 7.2.0.0.10:\n   \n     export JAVA_HOME=/sims110/WebSphere/AppServer/java_1.7.1_64\n     wasadm@sims110:/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin\n     # ./configtemplate.sh\n   \n   ----------------------------------------------------------------\n   - ITCAM Data Collector for WebSphere XD Template Creation\n     Utility     -\n   -\n   -  The utility guides you through the steps involved in\n   -  creating a XD template\n   -\n   -  At each prompt, enter 'q' to quit the utility or enter '?'\n      for help.-\n   ----------------------------------------------------------------\n   Environment Variables:\n     ITCAM_CONFIGHOME=/sims110/opt/IBM/ITM/dchome/7.2.0.0.10\n   \n   Log file name:\n    /sims110/opt/IBM/ITM/dchome/7.2.0.0.10/data/configtemplate-trac\n   e.log.\n   \n   List of WebSphere Application Server home directories\n   discovered:\n     1. /sims110/WebSphere/AppServer\n   Enter a number or enter the full path to a home directory\n   [default is:\n   1]:\n   1\n   \n   List of WebSphere profiles discovered:\n     1. JobMgr01\n     2. BDmgr\n     3. FDmgr\n     4. MDmgr\n     5. SDmgr\n     6. DBDmgr\n     7. DFDmgr\n     8. DMDmgr\n     9. DSDmgr\n     10. DBSCCDDmgr\n     11. DFSCCDDmgr\n   Enter a number [default is: 1]:\n   11\n   \n   Specify the Data Collector home directory:\n   /opt/IBM/ITM/dchome/currentVersion\n   List of Operating Systems supported\n     1. linux-ppc\n     2. linux-ppc64\n     3. linux-s390\n     4. linux-s390-64\n     5. hpux10\n     6. hpux-64\n     7. hpux-ia64n\n     8. hpux-ia64\n     9. aix4-r1\n     10. aix-64\n     11. solaris2\n     12. solaris-64\n     13. solaris2-ix86\n     14. solaris2-ix86-64\n     15. linux-ix86\n     16. linux-ix64\n     17. win32-ix86\n     18. win64-x64\n     19. zos\n   Enter a number:\n   10\n   List of JDK versions supported\n     1. 15\n     2. 16\n   Enter a number:\n   2\n   \n   ----------------------------------------------------------------\n   -         [Optional] integration with ITCAM for SOA Agent\n   ----------------------------------------------------------------\n   Do you want to integrate with an ITCAM for SOA Agent? [1 - YES,\n   2 - NO]\n   [default is: 2]:\n   1\n   \n   ----------------------------------------------------------------\n   -  [Optional] integration with ITCAM Agent for WebSphere\n   Applications  -\n   ----------------------------------------------------------------\n   Do you want to integrate with an ITCAM Agent for WebSphere\n   Applications?\n   [1 - YES, 2 - NO] [default is: 2]:\n   1\n   \n   +--------------------------------------------------------------+\n   |  [Optional] For full monitoring capabilities and for\n   |  integration with other monitoring components, configure the\n   |  data collector within the application server.  This\n   |  configuration requires an application server restart.\n   +---------------------------------------------------------------\n   -+\n   Do you want to configure a data collector within the application\n   server?\n   [1 - YES, 2 - NO] [default is: 1]:\n   1\n   \n   Enter the host name or IP address of the ITCAM Agent for\n   WebSphere\n   Applications TEMA:  [default is: 127.0.0.1]:\n   \n   Enter the port number of the ITCAM Agent for WebSphere\n   Applications\n   TEMA:  [default is: 63335]:\n   \n   CFG2056E Unexpected exception detected in configtemplatexd.py\n   \n   Traceback (most recent call last):\n     File\n   \"/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin/configtemplatexd.py\"\n   ,line 181, in <module>\n       configtema.config_tema(pdl)\n     File\n   \"/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin/lib/configtema.py\",\n   line 182, in config_tema\n       for fullserveri in xrange(len(fullservers)):\n   TypeError: object of type 'NoneType' has no len()\n   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n   \n   * Approver :\n       L2- JH, IS\n   \n   \n    \n   \n   \n\nLOCAL FIX\n\nPROBLEM SUMMARY\n *  Creating server templates with ITCAM v7.2-IF010 fails in\n   configtemplte.sh.\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  The fix for this APAR is contained in the following maintenance\n   release:\n   \n    | Interim Fix | 7.2.0.0-TIV-ITCAM_DC-IF0012\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   PI35893\n   \n   \n * REPORTED COMPONENT NAME\n   TCAM AD WAS TEM\n   \n   \n * REPORTED COMPONENT ID\n   5724Y92WD\n   \n   \n * REPORTED RELEASE\n   720\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   NoSpecatt\n   \n   \n * SUBMITTED DATE\n   2015-02-26\n   \n   \n * CLOSED DATE\n   2015-11-11\n   \n   \n * LAST MODIFIED DATE\n   2015-11-11\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   TCAM AD WAS TEM\n   \n   \n * FIXED COMPONENT ID\n   5724Y92WD\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R720 PSY\n   UP",
+                "TCR package reports ITCAM TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Are there any TCR reports for ITCAM for AD v7.1 and what kind of reporting is available? \n\nANSWER\n\nThis package of Tivoli Common Reports (TCR) is based on data collected by the ITCAM Agent for WebSphere Applications, which is packaged with ITCAM for Application Diagnostics and ITCAM for Applications. \n\nThe package depends on IBM Tivoli Monitoring (ITM), which includes Tivoli Common Reporting and the Tivoli Data Warehouse. \n\nThe reports are installed on Tivoli Common Reporting. The user interface for Tivoli Common Reporting is the Tivoli Integrated Portal; the data source is Tivoli Data Warehouse. Historical data collection must be enabled for the ITCAM Agent for WebSphere Applications, so that historical data is stored in Tivoli Data Warehouse. \n\nThe following predefined reports are available in this package: \n\n * Application Request Performance \n * DB Connection Pools \n * EJB Performance \n * GC Usage of Application Server \n * JVM Usage of Application Server \n * Request Performance for an Application \n * Servlet-JSP Performance for an Application \n * Threadpools \n * Web Application Performance \n * Application Request Performance for Clusters \n * JVM and GC Usage for Clusters\n\n\nThe following software prerequisites are required for these reports:  * Tivoli Monitoring 6.2.2 fix pack 3 or higher \n * Tivoli Common Reporting 2.1 or higher \n * ITCAM Agent for WebSphere Applications 7.1 Fix Pack 2, interim fix 3, or higher \n * Tivoli Data Warehouse (including Summarization and Pruning agent [S&P]) \n * TCR wiki page [https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/W22ac5f3ebabf_4ff4_bd55_1a897c9a443e]\n\n \n\nPRODUCT ALIAS/SYNONYM\n ITCAM ITCAM4AD ITCAMfAD ITCAM for App Diagnostics",
+                "ITCAM for WAS; Tivoli Enterprise Portal; Data Collector; monitored applications; CAMADALL; CAMADAGENT TECHNOTE (FAQ)\n\nQUESTION\n What types of data are collected by ITCAM for WAS TEMA (YN agent) and displayed on TEP and how are they obtained? What monitoring data available on ITCAM for Websphere Web UI are unavailable on TEP? \n\nANSWER\nThere are four types of data collected by YN TEMA:\nResource Data: obtained from Performance Monitoring Infrastructure (PMI) modules provided by WAS. They consist of aggregated data of how different resources in the system are being used.\nThey populate following TEP workspaces: Pool Analysis, Web Applications, EJB Containers, DB Connection Pools, J2C connection Pool, Thread Pools, Cache Analysis, Workload Management, Scheduler, Web Services, Platform Messaging.\n\nRequest Data: obtained from the Byte Code Injection (BCI) of WebSphere and application classes by the ITCAM Data Collector. They mainly track individual user transactions and the elapsed time to perform various operations.\nThey populate following TEP workspaces: Application Health, Request Analysis, Datasources and JMS Summary.\n\nGarbage Collection Data: obtained from parsing verbose GC file (on WAS/DC server). They are displayed in Garbage Collection Analysis workspace.\n\nWebSphere Log Entries: obtained from parsing WAS Logs (on TEMA server). They are displayed in Log Analysis workspace.\n\n\nData is always “pulled” by TEMA from Data Collector and can be obtained either at Fixed Interval or On-demand, depending on TEMA configuration.\nEither Resource Data Monitoring, or Request Data Monitoring, or Garbage Collection Data Monitoring can be enabled or disabled.\n\nThere are monitored data from ITCAM for WAS Managing Server (MS) Web UI that are not available on TEMA (can't be displayed on TEP). Those mainly are Deep-dive diagnostics like:\n\n- Level 3 monitoring data.\n- Application profiling (Method/Component tracing, Memory leaks, Lock analysis).\n- In-flight requests, misbehaving transactions. \n- Thread dumps, Thread cancellation.\n- Memory management .\n- Heap dumps, memory leaks.\n\n \n\n\nCross reference information Segment Product Component Platform Version Edition Systems and Asset Management Tivoli Composite Application Manager for Application Diagnostics",
+                "hypervisor; agent; websphere TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n For WebSphere Application Server version 8.5.5 on SuSe Enterprise Linux Server 11, installaton of ITCAM Agent for WebSphere Applications in hypervisor mode fails. \n\nCAUSE\nWebSphere Application Server version 8.5.5 on SuSe Enterprise Linux Server 11 in hypervisor mode is not supported by ITCAM Agent for WebSphere Applications.\n\nRESOLVING THE PROBLEM\nUse another application server version, for example, WebSphere Application Server 8.5. Alternatively, use another Linux distribution, for example, RedHat version 6.",
+                " FIX README\n\nABSTRACT\n IBM Tivoli Composite Application Manager Agent for WebSphere Applications V7.2 fixes\n\n\nCONTENT\n\nInstallation Instructions \n\nRefer to the README file located in Fix Central for additional information \n\n\n\nDownload \nWhat is Fix Central? [http://www.ibm.com/systems/support/fixes/en/fixcentral/help/faq_sw.html] Embedded DC RELEASE DATE APAR numbers 7.2.0.0.8 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0008&includeSupersedes=0&source=fc] 7.2.0.0.15 April 17, 2018 PI84591 7.2.0.0.7 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0007&includeSupersedes=0&source=fc] 7.2.0.0.14 March 9, 2017 IV85603 PI05433 PI67994 PI52132 PI52407 PI71243 PI22174 PI71124 PI22832 PI77911 7.2.0.0.6 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0006&includeSupersedes=0&source=fc] 7.2.0.0.13 May 6, 2016 PM92340 PI33522 PI47001 PI53858 PI00024 PI50832 PI48106 PI53964 PI41634 PI53691 PI52367 PI51119 PI57148 PI59839 PI42952 PI39907 PI42603 PI30133 PI35027 PI35893 PI34945 PI39525 PI43321 PI48106 PI53964 PI41634 PI53691 PI11450 PI16745 PI18682 PI21062 PI24319 PI25035 PI25663 PI27187 PI33891 PI34061 PI35680 PI36215 PI37162 PM70256 PM74078 PM75193 PM75581 PM87883 PM93570 IV47342 IV69645 7.2.0.0.5 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0005&includeSupersedes=0&source=fc] 7.2.0.0.10 Oct 8, 2014 PM98778 PI06311 PI07084 PI22743 PI08200 PM88373 PM99070 PM94101 IV47342 PI06761 PI08473 PI08257 7.2.0.0.4 7.2.0.0.9 This is Limited Availability Interim Fix. Please contact Customer Support to obtain this fix . 7.2.0.0.3 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0003&includeSupersedes=0&source=fc] 7.2.0.0.8 Oct 10, 2013 PM93570 7.2.0.0.2 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0002&includeSupersedes=0&source=fc] 7.2.0.0.7 Aug 23, 2013 7.2.0.0.1 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0001&includeSupersedes=0&source=fc] 7.2.0.0.5 Jul 17, 2013 PM81890; PM77662; PM79101; PM82318; PM80120; PM88932; PM76203"
+              ],
+              "retrieved_chunk_details": [
+                {
+                  "chunk_id": "document_0",
+                  "text": " SUBSCRIBE TO THIS APAR\nBy subscribing, you receive periodic emails alerting you to the status of the APAR, along with a link to the fix after it becomes available. You can track this item individually or track all items by product.\n\nNotify me when this APAR changes.\n\nNotify me when an APAR for this component changes.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  * Problem Description -\n   (configtemplate.sh fails on DMGR)\n       Creating server templates with ITCAM v7.2-IF010 fails in\n       main routine with following error message:\n   \n       CFG2056E Unexpected exception detected in\n       configtemplatexd.py\n   \n   \".../opt/IBM/ITM/dchome/7.2.0.0.10/bin/configtemplatexd.py\"\n       -----------------------------------------------------\n   \n   * Recreating Senario -\n      Following the installation steps under 7.2.0.0.10:\n   \n     export JAVA_HOME=/sims110/WebSphere/AppServer/java_1.7.1_64\n     wasadm@sims110:/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin\n     # ./configtemplate.sh\n   \n   ----------------------------------------------------------------\n   - ITCAM Data Collector for WebSphere XD Template Creation\n     Utility     -\n   -\n   -  The utility guides you through the steps involved in\n   -  creating a XD template\n   -\n   -  At each prompt, enter 'q' to quit the utility or enter '?'\n      for help.-\n   ----------------------------------------------------------------\n   Environment Variables:\n     ITCAM_CONFIGHOME=/sims110/opt/IBM/ITM/dchome/7.2.0.0.10\n   \n   Log file name:\n    /sims110/opt/IBM/ITM/dchome/7.2.0.0.10/data/configtemplate-trac\n   e.log.\n   \n   List of WebSphere Application Server home directories\n   discovered:\n     1. /sims110/WebSphere/AppServer\n   Enter a number or enter the full path to a home directory\n   [default is:\n   1]:\n   1\n   \n   List of WebSphere profiles discovered:\n     1. JobMgr01\n     2. BDmgr\n     3. FDmgr\n     4. MDmgr\n     5. SDmgr\n     6. DBDmgr\n     7. DFDmgr\n     8. DMDmgr\n     9. DSDmgr\n     10. DBSCCDDmgr\n     11. DFSCCDDmgr\n   Enter a number [default is: 1]:\n   11\n   \n   Specify the Data Collector home directory:\n   /opt/IBM/ITM/dchome/currentVersion\n   List of Operating Systems supported\n     1. linux-ppc\n     2. linux-ppc64\n     3. linux-s390\n     4. linux-s390-64\n     5. hpux10\n     6. hpux-64\n     7. hpux-ia64n\n     8. hpux-ia64\n     9. aix4-r1\n     10. aix-64\n     11. solaris2\n     12. solaris-64\n     13. solaris2-ix86\n     14. solaris2-ix86-64\n     15. linux-ix86\n     16. linux-ix64\n     17. win32-ix86\n     18. win64-x64\n     19. zos\n   Enter a number:\n   10\n   List of JDK versions supported\n     1. 15\n     2. 16\n   Enter a number:\n   2\n   \n   ----------------------------------------------------------------\n   -         [Optional] integration with ITCAM for SOA Agent\n   ----------------------------------------------------------------\n   Do you want to integrate with an ITCAM for SOA Agent? [1 - YES,\n   2 - NO]\n   [default is: 2]:\n   1\n   \n   ----------------------------------------------------------------\n   -  [Optional] integration with ITCAM Agent for WebSphere\n   Applications  -\n   ----------------------------------------------------------------\n   Do you want to integrate with an ITCAM Agent for WebSphere\n   Applications?\n   [1 - YES, 2 - NO] [default is: 2]:\n   1\n   \n   +--------------------------------------------------------------+\n   |  [Optional] For full monitoring capabilities and for\n   |  integration with other monitoring components, configure the\n   |  data collector within the application server.  This\n   |  configuration requires an application server restart.\n   +---------------------------------------------------------------\n   -+\n   Do you want to configure a data collector within the application\n   server?\n   [1 - YES, 2 - NO] [default is: 1]:\n   1\n   \n   Enter the host name or IP address of the ITCAM Agent for\n   WebSphere\n   Applications TEMA:  [default is: 127.0.0.1]:\n   \n   Enter the port number of the ITCAM Agent for WebSphere\n   Applications\n   TEMA:  [default is: 63335]:\n   \n   CFG2056E Unexpected exception detected in configtemplatexd.py\n   \n   Traceback (most recent call last):\n     File\n   \"/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin/configtemplatexd.py\"\n   ,line 181, in <module>\n       configtema.config_tema(pdl)\n     File\n   \"/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin/lib/configtema.py\",\n   line 182, in config_tema\n       for fullserveri in xrange(len(fullservers)):\n   TypeError: object of type 'NoneType' has no len()\n   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n   \n   * Approver :\n       L2- JH, IS\n   \n   \n    \n   \n   \n\nLOCAL FIX\n\nPROBLEM SUMMARY\n *  Creating server templates with ITCAM v7.2-IF010 fails in\n   configtemplte.sh.\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  The fix for this APAR is contained in the following maintenance\n   release:\n   \n    | Interim Fix | 7.2.0.0-TIV-ITCAM_DC-IF0012\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   PI35893\n   \n   \n * REPORTED COMPONENT NAME\n   TCAM AD WAS TEM\n   \n   \n * REPORTED COMPONENT ID\n   5724Y92WD\n   \n   \n * REPORTED RELEASE\n   720\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   NoSpecatt\n   \n   \n * SUBMITTED DATE\n   2015-02-26\n   \n   \n * CLOSED DATE\n   2015-11-11\n   \n   \n * LAST MODIFIED DATE\n   2015-11-11\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   TCAM AD WAS TEM\n   \n   \n * FIXED COMPONENT ID\n   5724Y92WD\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R720 PSY\n   UP",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_1",
+                  "text": "TCR package reports ITCAM TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Are there any TCR reports for ITCAM for AD v7.1 and what kind of reporting is available? \n\nANSWER\n\nThis package of Tivoli Common Reports (TCR) is based on data collected by the ITCAM Agent for WebSphere Applications, which is packaged with ITCAM for Application Diagnostics and ITCAM for Applications. \n\nThe package depends on IBM Tivoli Monitoring (ITM), which includes Tivoli Common Reporting and the Tivoli Data Warehouse. \n\nThe reports are installed on Tivoli Common Reporting. The user interface for Tivoli Common Reporting is the Tivoli Integrated Portal; the data source is Tivoli Data Warehouse. Historical data collection must be enabled for the ITCAM Agent for WebSphere Applications, so that historical data is stored in Tivoli Data Warehouse. \n\nThe following predefined reports are available in this package: \n\n * Application Request Performance \n * DB Connection Pools \n * EJB Performance \n * GC Usage of Application Server \n * JVM Usage of Application Server \n * Request Performance for an Application \n * Servlet-JSP Performance for an Application \n * Threadpools \n * Web Application Performance \n * Application Request Performance for Clusters \n * JVM and GC Usage for Clusters\n\n\nThe following software prerequisites are required for these reports:  * Tivoli Monitoring 6.2.2 fix pack 3 or higher \n * Tivoli Common Reporting 2.1 or higher \n * ITCAM Agent for WebSphere Applications 7.1 Fix Pack 2, interim fix 3, or higher \n * Tivoli Data Warehouse (including Summarization and Pruning agent [S&P]) \n * TCR wiki page [https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/W22ac5f3ebabf_4ff4_bd55_1a897c9a443e]\n\n \n\nPRODUCT ALIAS/SYNONYM\n ITCAM ITCAM4AD ITCAMfAD ITCAM for App Diagnostics",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_2",
+                  "text": "ITCAM for WAS; Tivoli Enterprise Portal; Data Collector; monitored applications; CAMADALL; CAMADAGENT TECHNOTE (FAQ)\n\nQUESTION\n What types of data are collected by ITCAM for WAS TEMA (YN agent) and displayed on TEP and how are they obtained? What monitoring data available on ITCAM for Websphere Web UI are unavailable on TEP? \n\nANSWER\nThere are four types of data collected by YN TEMA:\nResource Data: obtained from Performance Monitoring Infrastructure (PMI) modules provided by WAS. They consist of aggregated data of how different resources in the system are being used.\nThey populate following TEP workspaces: Pool Analysis, Web Applications, EJB Containers, DB Connection Pools, J2C connection Pool, Thread Pools, Cache Analysis, Workload Management, Scheduler, Web Services, Platform Messaging.\n\nRequest Data: obtained from the Byte Code Injection (BCI) of WebSphere and application classes by the ITCAM Data Collector. They mainly track individual user transactions and the elapsed time to perform various operations.\nThey populate following TEP workspaces: Application Health, Request Analysis, Datasources and JMS Summary.\n\nGarbage Collection Data: obtained from parsing verbose GC file (on WAS/DC server). They are displayed in Garbage Collection Analysis workspace.\n\nWebSphere Log Entries: obtained from parsing WAS Logs (on TEMA server). They are displayed in Log Analysis workspace.\n\n\nData is always “pulled” by TEMA from Data Collector and can be obtained either at Fixed Interval or On-demand, depending on TEMA configuration.\nEither Resource Data Monitoring, or Request Data Monitoring, or Garbage Collection Data Monitoring can be enabled or disabled.\n\nThere are monitored data from ITCAM for WAS Managing Server (MS) Web UI that are not available on TEMA (can't be displayed on TEP). Those mainly are Deep-dive diagnostics like:\n\n- Level 3 monitoring data.\n- Application profiling (Method/Component tracing, Memory leaks, Lock analysis).\n- In-flight requests, misbehaving transactions. \n- Thread dumps, Thread cancellation.\n- Memory management .\n- Heap dumps, memory leaks.\n\n \n\n\nCross reference information Segment Product Component Platform Version Edition Systems and Asset Management Tivoli Composite Application Manager for Application Diagnostics",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_3",
+                  "text": "hypervisor; agent; websphere TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n For WebSphere Application Server version 8.5.5 on SuSe Enterprise Linux Server 11, installaton of ITCAM Agent for WebSphere Applications in hypervisor mode fails. \n\nCAUSE\nWebSphere Application Server version 8.5.5 on SuSe Enterprise Linux Server 11 in hypervisor mode is not supported by ITCAM Agent for WebSphere Applications.\n\nRESOLVING THE PROBLEM\nUse another application server version, for example, WebSphere Application Server 8.5. Alternatively, use another Linux distribution, for example, RedHat version 6.",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_4",
+                  "text": " FIX README\n\nABSTRACT\n IBM Tivoli Composite Application Manager Agent for WebSphere Applications V7.2 fixes\n\n\nCONTENT\n\nInstallation Instructions \n\nRefer to the README file located in Fix Central for additional information \n\n\n\nDownload \nWhat is Fix Central? [http://www.ibm.com/systems/support/fixes/en/fixcentral/help/faq_sw.html] Embedded DC RELEASE DATE APAR numbers 7.2.0.0.8 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0008&includeSupersedes=0&source=fc] 7.2.0.0.15 April 17, 2018 PI84591 7.2.0.0.7 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0007&includeSupersedes=0&source=fc] 7.2.0.0.14 March 9, 2017 IV85603 PI05433 PI67994 PI52132 PI52407 PI71243 PI22174 PI71124 PI22832 PI77911 7.2.0.0.6 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0006&includeSupersedes=0&source=fc] 7.2.0.0.13 May 6, 2016 PM92340 PI33522 PI47001 PI53858 PI00024 PI50832 PI48106 PI53964 PI41634 PI53691 PI52367 PI51119 PI57148 PI59839 PI42952 PI39907 PI42603 PI30133 PI35027 PI35893 PI34945 PI39525 PI43321 PI48106 PI53964 PI41634 PI53691 PI11450 PI16745 PI18682 PI21062 PI24319 PI25035 PI25663 PI27187 PI33891 PI34061 PI35680 PI36215 PI37162 PM70256 PM74078 PM75193 PM75581 PM87883 PM93570 IV47342 IV69645 7.2.0.0.5 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0005&includeSupersedes=0&source=fc] 7.2.0.0.10 Oct 8, 2014 PM98778 PI06311 PI07084 PI22743 PI08200 PM88373 PM99070 PM94101 IV47342 PI06761 PI08473 PI08257 7.2.0.0.4 7.2.0.0.9 This is Limited Availability Interim Fix. Please contact Customer Support to obtain this fix . 7.2.0.0.3 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0003&includeSupersedes=0&source=fc] 7.2.0.0.8 Oct 10, 2013 PM93570 7.2.0.0.2 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0002&includeSupersedes=0&source=fc] 7.2.0.0.7 Aug 23, 2013 7.2.0.0.1 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0001&includeSupersedes=0&source=fc] 7.2.0.0.5 Jul 17, 2013 PM81890; PM77662; PM79101; PM82318; PM80120; PM88932; PM76203",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                }
+              ],
+              "ragas": {
+                "context_utilization": {
+                  "score": 0.19999999998,
+                  "status": "ok",
+                  "error": null
+                },
+                "faithfulness": {
+                  "score": 1.0,
+                  "status": "ok",
+                  "error": null
+                },
+                "utilization_context_excerpts": [
+                  "SUBSCRIBE TO THIS APAR\nBy subscribing, you receive periodic emails alerting you to the status of the APAR, along with a link to the fix after it becomes available.",
+                  "TCR package reports ITCAM TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Are there any TCR r",
+                  "ITCAM for WAS; Tivoli Enterprise Portal; Data Collector; monitored applications; CAMADALL; CAMADAGENT TECHNOTE (FAQ)\n\nQUESTION\n What types of data are"
+                ],
+                "faithfulness_context_excerpts": [
+                  "SUBSCRIBE TO THIS APAR\nBy subscribing, you receive periodic emails alerting you to the status of the APAR, along with a link to the fix after it becomes available.",
+                  "TCR package reports ITCAM TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Are there any TCR r",
+                  "ITCAM for WAS; Tivoli Enterprise Portal; Data Collector; monitored applications; CAMADALL; CAMADAGENT TECHNOTE (FAQ)\n\nQUESTION\n What types of data are"
+                ],
+                "excerpt_caveat": "These are context excerpts for inspection, not evidence explaining the evaluator's score."
+              },
+              "hedging_mismatch": {
+                "overconfident_fraction": 1.0,
+                "underconfident_fraction": 0.0,
+                "total_claims": 1,
+                "claim_breakdown": [
+                  {
+                    "claim": "ITCAM Agent for WebSphere Applications 7.2.0.0.7 is available.",
+                    "confidence_class": "definitive",
+                    "supported": false,
+                    "mismatch_type": "overconfident",
+                    "source_chunk_id": null,
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_2",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      }
+                    ]
+                  }
+                ],
+                "status": "ok",
+                "error": null,
+                "evaluated_chunk_count": 3,
+                "evaluated_claim_count": 1,
+                "unavailable_claim_count": 0
+              },
+              "chunk_attribution": {
+                "unattributed_fraction": 0.0,
+                "mean_attribution_score": 0.6759312169168876,
+                "weak_match_fraction": 1.0,
+                "attribution_map": [
+                  {
+                    "sentence": "Yes, ITCAM Agent for WebSphere Applications 7.2.0.0.7 is available.",
+                    "chunk_id": "document_3",
+                    "similarity_score": 0.6759312169168876,
+                    "attribution_strength": "weak"
+                  }
+                ],
+                "method": "semantic_similarity",
+                "caveat": "Similarity identifies a semantically close source candidate; it does not prove entailment or establish that unsupported text is a hallucination."
+              },
+              "retrieval_distribution": {
+                "score_gap": 0.0,
+                "score_entropy": 1.6094379074341003,
+                "decay_rate": null,
+                "tail_mass": 0.6,
+                "top_score": 1.0,
+                "n_chunks": 5,
+                "normalized_entropy": 0.9999999968933253,
+                "interpretation": "Distribution shape must be interpreted jointly with absolute relevance and score semantics."
+              },
+              "embedding_space": {
+                "centroid_distance": 0.2542287895570252,
+                "chunk_spread": 0.5154703435025375,
+                "query_isolation": 1.0890829852618842,
+                "projection": [
+                  {
+                    "label": "query",
+                    "x": -0.05761788155211953,
+                    "y": 0.35770568275410686,
+                    "is_query": true
+                  },
+                  {
+                    "label": "document_0",
+                    "x": -0.36363468866012355,
+                    "y": -0.5083987644209756,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_1",
+                    "x": 0.4261042068618478,
+                    "y": -0.16943437477277187,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_2",
+                    "x": 0.5711262533612447,
+                    "y": 0.05077281006319615,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_3",
+                    "x": -0.3613453343582251,
+                    "y": 0.43111371818900357,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_4",
+                    "x": -0.21463255565262462,
+                    "y": -0.16175907181255916,
+                    "is_query": false
+                  }
+                ]
+              },
+              "query_corpus_fit": {
+                "triggered": true,
+                "trigger_reason": "context_utilization",
+                "observed_fit": "retrieved_context_near_miss",
+                "suggested_questions": [
+                  {
+                    "question": "What version numbers of ITCAM Agent for WebSphere Applications 7.2 are available, and when were they released?",
+                    "source_chunk_ids": [
+                      "document_4"
+                    ],
+                    "relevance_to_original": 0.9072929620742798
+                  },
+                  {
+                    "question": "Which APAR numbers are fixed in ITCAM Agent for WebSphere Applications 7.2.0.0.6?",
+                    "source_chunk_ids": [
+                      "document_4"
+                    ],
+                    "relevance_to_original": 0.6932162046432495
+                  },
+                  {
+                    "question": "What error occurs when creating server templates with ITCAM v7.2-IF010 and what interim fix addresses it?",
+                    "source_chunk_ids": [
+                      "document_0"
+                    ],
+                    "relevance_to_original": 0.4781089425086975
+                  }
+                ],
+                "rejected_questions": [
+                  {
+                    "question": "What is the difference between ITCAM Agent for WebSphere Applications 7.2.0.0.10 and 7.2.0.0.6 in terms of fixes?",
+                    "source_chunk_ids": [
+                      "document_4"
+                    ],
+                    "reason": "unsupported"
+                  },
+                  {
+                    "question": "What is the release date for ITCAM Agent for WebSphere Applications version 7.2.0.0.7?",
+                    "source_chunk_ids": [
+                      "document_4"
+                    ],
+                    "reason": "semantic_duplicate"
+                  }
+                ],
+                "mean_question_similarity": 0.6928727030754089,
+                "status": "ok",
+                "error": null
+              },
+              "verdict_signals": [
+                {
+                  "name": "overconfidence",
+                  "priority_score": 1.0,
+                  "description": "100% of claims stated definitively but unsupported by retrieved chunks",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                },
+                {
+                  "name": "ambiguous_retrieval",
+                  "priority_score": 0.9999999968933253,
+                  "description": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "low_context_utilization",
+                  "priority_score": 0.80000000002,
+                  "description": "Context utilization score 0.20 — retrieved chunks were not consistently useful for producing the answer",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                },
+                {
+                  "name": "retrieved_context_near_miss",
+                  "priority_score": 0.75,
+                  "description": "Retrieved chunks answer questions near the one asked; test a query rewrite before attributing the failure to phrasing",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "unvalidated"
+                },
+                {
+                  "name": "noisy_context",
+                  "priority_score": 0.65,
+                  "description": "60% of retrieval score mass in low-ranked chunks — noisy context reaching the generator",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "weak_chunk_matches",
+                  "priority_score": 0.6,
+                  "description": "100% of answer sentences have only weak chunk support",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "unvalidated"
+                },
+                {
+                  "name": "query_isolation",
+                  "priority_score": 0.0026124042598793017,
+                  "description": "Query is geometrically distant from retrieved chunks (isolation ratio 1.09)",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "low_faithfulness",
+                  "priority_score": 0.0,
+                  "description": "Faithfulness score 1.00 — answer is not fully grounded in retrieved content",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                }
+              ],
+              "verdict_reasoning": {
+                "observations": [
+                  {
+                    "signal_name": "overconfidence",
+                    "description": "100% of claims stated definitively but unsupported by retrieved chunks",
+                    "reliability": "model_judged"
+                  },
+                  {
+                    "signal_name": "ambiguous_retrieval",
+                    "description": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+                    "reliability": "partially_calibrated"
+                  },
+                  {
+                    "signal_name": "low_context_utilization",
+                    "description": "Context utilization score 0.20 — retrieved chunks were not consistently useful for producing the answer",
+                    "reliability": "model_judged"
+                  }
+                ],
+                "hypotheses": [
+                  {
+                    "hypothesis_id": "H1",
+                    "statement": "Retrieved evidence may be a poor fit for the question."
+                  },
+                  {
+                    "hypothesis_id": "H2",
+                    "statement": "Answer generation may be introducing or overstating content despite the retrieved evidence."
+                  }
+                ],
+                "test": {
+                  "component": "retrieval-to-generation boundary",
+                  "action": "Hold the question and generator configuration constant, replace the retrieved chunks with manually verified relevant chunks, and rerun the answer and forensic checks.",
+                  "interpretations": [
+                    {
+                      "outcome": "Grounding observations improve with verified chunks.",
+                      "supports_hypothesis_ids": [
+                        "H1"
+                      ]
+                    },
+                    {
+                      "outcome": "Grounding observations remain concerning with verified chunks.",
+                      "supports_hypothesis_ids": [
+                        "H2"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "recommendation": "Three signals raise concern about this response. Every definitive claim appears unsupported by the retrieved chunks, suggesting overconfidence, though this is model-judged rather than verified. Retrieval scores are similarly distributed, so absolute relevance should guide interpretation rather than relative ranking; separately, retrieved chunks appear to have contributed little to the answer, though both of these readings carry calibration caveats.\n\nTwo hypotheses could explain the pattern: the retrieved evidence may simply be a poor fit for the question, or the generator may be introducing or overstating content regardless of what was retrieved. To distinguish between them, hold the question and generator configuration constant, replace the retrieved chunks with manually verified relevant chunks, and rerun the answer and forensic checks at the retrieval-to-generation boundary — if grounding observations improve, that supports the retrieval-fit hypothesis; if they remain concerning, the generator is the likelier culprit."
+            },
+            "error": null
+          },
+          "suspected_component": "overconfidence",
+          "supporting_observation": "100% of claims stated definitively but unsupported by retrieved chunks",
+          "evidence_attribution": [],
+          "method": "verdict_generator",
+          "reliability": "model_judged",
+          "causal_strength_language": "RAG Forensics reports a heuristic priority ranking, not a calibrated severity or causal proof.",
+          "proposed_intervention": null,
+          "no_equivalent_fields": []
+        },
+        "ragchecker": {
+          "system": "ragchecker",
+          "native": {
+            "system": "ragchecker",
+            "system_version": "0.1.9",
+            "availability": "healthy",
+            "raw_output": {
+              "faithfulness": 1.0
+            },
+            "error": null
+          },
+          "suspected_component": null,
+          "supporting_observation": "faithfulness=1.0",
+          "evidence_attribution": [],
+          "method": "ragchecker_faithfulness",
+          "reliability": "model_judged",
+          "causal_strength_language": null,
+          "proposed_intervention": null,
+          "no_equivalent_fields": [
+            "RAGChecker's retriever/generator diagnostics beyond faithfulness (['claim_recall', 'context_precision', 'context_utilization', 'f1', 'hallucination', 'noise_sensitivity_in_irrelevant', 'noise_sensitivity_in_relevant', 'precision', 'recall', 'self_knowledge']) require gt_answer, which this population does not provide"
+          ]
+        },
+        "ragvue": {
+          "system": "ragvue",
+          "native": {
+            "system": "ragvue",
+            "system_version": "0.6.1",
+            "availability": "healthy",
+            "raw_output": {
+              "item": {
+                "question": "Is ITCAM Agent for WebSphere Applications 7.2.0.0.7 available? Is ITCAM Agent for WebSphere Applications 7.2.0.0.7 available? ",
+                "answer": "Yes, ITCAM Agent for WebSphere Applications 7.2.0.0.7 is available.",
+                "contexts": [
+                  " SUBSCRIBE TO THIS APAR\nBy subscribing, you receive periodic emails alerting you to the status of the APAR, along with a link to the fix after it becomes available. You can track this item individually or track all items by product.\n\nNotify me when this APAR changes.\n\nNotify me when an APAR for this component changes.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  * Problem Description -\n   (configtemplate.sh fails on DMGR)\n       Creating server templates with ITCAM v7.2-IF010 fails in\n       main routine with following error message:\n   \n       CFG2056E Unexpected exception detected in\n       configtemplatexd.py\n   \n   \".../opt/IBM/ITM/dchome/7.2.0.0.10/bin/configtemplatexd.py\"\n       -----------------------------------------------------\n   \n   * Recreating Senario -\n      Following the installation steps under 7.2.0.0.10:\n   \n     export JAVA_HOME=/sims110/WebSphere/AppServer/java_1.7.1_64\n     wasadm@sims110:/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin\n     # ./configtemplate.sh\n   \n   ----------------------------------------------------------------\n   - ITCAM Data Collector for WebSphere XD Template Creation\n     Utility     -\n   -\n   -  The utility guides you through the steps involved in\n   -  creating a XD template\n   -\n   -  At each prompt, enter 'q' to quit the utility or enter '?'\n      for help.-\n   ----------------------------------------------------------------\n   Environment Variables:\n     ITCAM_CONFIGHOME=/sims110/opt/IBM/ITM/dchome/7.2.0.0.10\n   \n   Log file name:\n    /sims110/opt/IBM/ITM/dchome/7.2.0.0.10/data/configtemplate-trac\n   e.log.\n   \n   List of WebSphere Application Server home directories\n   discovered:\n     1. /sims110/WebSphere/AppServer\n   Enter a number or enter the full path to a home directory\n   [default is:\n   1]:\n   1\n   \n   List of WebSphere profiles discovered:\n     1. JobMgr01\n     2. BDmgr\n     3. FDmgr\n     4. MDmgr\n     5. SDmgr\n     6. DBDmgr\n     7. DFDmgr\n     8. DMDmgr\n     9. DSDmgr\n     10. DBSCCDDmgr\n     11. DFSCCDDmgr\n   Enter a number [default is: 1]:\n   11\n   \n   Specify the Data Collector home directory:\n   /opt/IBM/ITM/dchome/currentVersion\n   List of Operating Systems supported\n     1. linux-ppc\n     2. linux-ppc64\n     3. linux-s390\n     4. linux-s390-64\n     5. hpux10\n     6. hpux-64\n     7. hpux-ia64n\n     8. hpux-ia64\n     9. aix4-r1\n     10. aix-64\n     11. solaris2\n     12. solaris-64\n     13. solaris2-ix86\n     14. solaris2-ix86-64\n     15. linux-ix86\n     16. linux-ix64\n     17. win32-ix86\n     18. win64-x64\n     19. zos\n   Enter a number:\n   10\n   List of JDK versions supported\n     1. 15\n     2. 16\n   Enter a number:\n   2\n   \n   ----------------------------------------------------------------\n   -         [Optional] integration with ITCAM for SOA Agent\n   ----------------------------------------------------------------\n   Do you want to integrate with an ITCAM for SOA Agent? [1 - YES,\n   2 - NO]\n   [default is: 2]:\n   1\n   \n   ----------------------------------------------------------------\n   -  [Optional] integration with ITCAM Agent for WebSphere\n   Applications  -\n   ----------------------------------------------------------------\n   Do you want to integrate with an ITCAM Agent for WebSphere\n   Applications?\n   [1 - YES, 2 - NO] [default is: 2]:\n   1\n   \n   +--------------------------------------------------------------+\n   |  [Optional] For full monitoring capabilities and for\n   |  integration with other monitoring components, configure the\n   |  data collector within the application server.  This\n   |  configuration requires an application server restart.\n   +---------------------------------------------------------------\n   -+\n   Do you want to configure a data collector within the application\n   server?\n   [1 - YES, 2 - NO] [default is: 1]:\n   1\n   \n   Enter the host name or IP address of the ITCAM Agent for\n   WebSphere\n   Applications TEMA:  [default is: 127.0.0.1]:\n   \n   Enter the port number of the ITCAM Agent for WebSphere\n   Applications\n   TEMA:  [default is: 63335]:\n   \n   CFG2056E Unexpected exception detected in configtemplatexd.py\n   \n   Traceback (most recent call last):\n     File\n   \"/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin/configtemplatexd.py\"\n   ,line 181, in <module>\n       configtema.config_tema(pdl)\n     File\n   \"/sims110/opt/IBM/ITM/dchome/7.2.0.0.10/bin/lib/configtema.py\",\n   line 182, in config_tema\n       for fullserveri in xrange(len(fullservers)):\n   TypeError: object of type 'NoneType' has no len()\n   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n   \n   * Approver :\n       L2- JH, IS\n   \n   \n    \n   \n   \n\nLOCAL FIX\n\nPROBLEM SUMMARY\n *  Creating server templates with ITCAM v7.2-IF010 fails in\n   configtemplte.sh.\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  The fix for this APAR is contained in the following maintenance\n   release:\n   \n    | Interim Fix | 7.2.0.0-TIV-ITCAM_DC-IF0012\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   PI35893\n   \n   \n * REPORTED COMPONENT NAME\n   TCAM AD WAS TEM\n   \n   \n * REPORTED COMPONENT ID\n   5724Y92WD\n   \n   \n * REPORTED RELEASE\n   720\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   NoSpecatt\n   \n   \n * SUBMITTED DATE\n   2015-02-26\n   \n   \n * CLOSED DATE\n   2015-11-11\n   \n   \n * LAST MODIFIED DATE\n   2015-11-11\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   TCAM AD WAS TEM\n   \n   \n * FIXED COMPONENT ID\n   5724Y92WD\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R720 PSY\n   UP",
+                  "TCR package reports ITCAM TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Are there any TCR reports for ITCAM for AD v7.1 and what kind of reporting is available? \n\nANSWER\n\nThis package of Tivoli Common Reports (TCR) is based on data collected by the ITCAM Agent for WebSphere Applications, which is packaged with ITCAM for Application Diagnostics and ITCAM for Applications. \n\nThe package depends on IBM Tivoli Monitoring (ITM), which includes Tivoli Common Reporting and the Tivoli Data Warehouse. \n\nThe reports are installed on Tivoli Common Reporting. The user interface for Tivoli Common Reporting is the Tivoli Integrated Portal; the data source is Tivoli Data Warehouse. Historical data collection must be enabled for the ITCAM Agent for WebSphere Applications, so that historical data is stored in Tivoli Data Warehouse. \n\nThe following predefined reports are available in this package: \n\n * Application Request Performance \n * DB Connection Pools \n * EJB Performance \n * GC Usage of Application Server \n * JVM Usage of Application Server \n * Request Performance for an Application \n * Servlet-JSP Performance for an Application \n * Threadpools \n * Web Application Performance \n * Application Request Performance for Clusters \n * JVM and GC Usage for Clusters\n\n\nThe following software prerequisites are required for these reports:  * Tivoli Monitoring 6.2.2 fix pack 3 or higher \n * Tivoli Common Reporting 2.1 or higher \n * ITCAM Agent for WebSphere Applications 7.1 Fix Pack 2, interim fix 3, or higher \n * Tivoli Data Warehouse (including Summarization and Pruning agent [S&P]) \n * TCR wiki page [https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/W22ac5f3ebabf_4ff4_bd55_1a897c9a443e]\n\n \n\nPRODUCT ALIAS/SYNONYM\n ITCAM ITCAM4AD ITCAMfAD ITCAM for App Diagnostics",
+                  "ITCAM for WAS; Tivoli Enterprise Portal; Data Collector; monitored applications; CAMADALL; CAMADAGENT TECHNOTE (FAQ)\n\nQUESTION\n What types of data are collected by ITCAM for WAS TEMA (YN agent) and displayed on TEP and how are they obtained? What monitoring data available on ITCAM for Websphere Web UI are unavailable on TEP? \n\nANSWER\nThere are four types of data collected by YN TEMA:\nResource Data: obtained from Performance Monitoring Infrastructure (PMI) modules provided by WAS. They consist of aggregated data of how different resources in the system are being used.\nThey populate following TEP workspaces: Pool Analysis, Web Applications, EJB Containers, DB Connection Pools, J2C connection Pool, Thread Pools, Cache Analysis, Workload Management, Scheduler, Web Services, Platform Messaging.\n\nRequest Data: obtained from the Byte Code Injection (BCI) of WebSphere and application classes by the ITCAM Data Collector. They mainly track individual user transactions and the elapsed time to perform various operations.\nThey populate following TEP workspaces: Application Health, Request Analysis, Datasources and JMS Summary.\n\nGarbage Collection Data: obtained from parsing verbose GC file (on WAS/DC server). They are displayed in Garbage Collection Analysis workspace.\n\nWebSphere Log Entries: obtained from parsing WAS Logs (on TEMA server). They are displayed in Log Analysis workspace.\n\n\nData is always “pulled” by TEMA from Data Collector and can be obtained either at Fixed Interval or On-demand, depending on TEMA configuration.\nEither Resource Data Monitoring, or Request Data Monitoring, or Garbage Collection Data Monitoring can be enabled or disabled.\n\nThere are monitored data from ITCAM for WAS Managing Server (MS) Web UI that are not available on TEMA (can't be displayed on TEP). Those mainly are Deep-dive diagnostics like:\n\n- Level 3 monitoring data.\n- Application profiling (Method/Component tracing, Memory leaks, Lock analysis).\n- In-flight requests, misbehaving transactions. \n- Thread dumps, Thread cancellation.\n- Memory management .\n- Heap dumps, memory leaks.\n\n \n\n\nCross reference information Segment Product Component Platform Version Edition Systems and Asset Management Tivoli Composite Application Manager for Application Diagnostics",
+                  "hypervisor; agent; websphere TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n For WebSphere Application Server version 8.5.5 on SuSe Enterprise Linux Server 11, installaton of ITCAM Agent for WebSphere Applications in hypervisor mode fails. \n\nCAUSE\nWebSphere Application Server version 8.5.5 on SuSe Enterprise Linux Server 11 in hypervisor mode is not supported by ITCAM Agent for WebSphere Applications.\n\nRESOLVING THE PROBLEM\nUse another application server version, for example, WebSphere Application Server 8.5. Alternatively, use another Linux distribution, for example, RedHat version 6.",
+                  " FIX README\n\nABSTRACT\n IBM Tivoli Composite Application Manager Agent for WebSphere Applications V7.2 fixes\n\n\nCONTENT\n\nInstallation Instructions \n\nRefer to the README file located in Fix Central for additional information \n\n\n\nDownload \nWhat is Fix Central? [http://www.ibm.com/systems/support/fixes/en/fixcentral/help/faq_sw.html] Embedded DC RELEASE DATE APAR numbers 7.2.0.0.8 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0008&includeSupersedes=0&source=fc] 7.2.0.0.15 April 17, 2018 PI84591 7.2.0.0.7 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0007&includeSupersedes=0&source=fc] 7.2.0.0.14 March 9, 2017 IV85603 PI05433 PI67994 PI52132 PI52407 PI71243 PI22174 PI71124 PI22832 PI77911 7.2.0.0.6 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0006&includeSupersedes=0&source=fc] 7.2.0.0.13 May 6, 2016 PM92340 PI33522 PI47001 PI53858 PI00024 PI50832 PI48106 PI53964 PI41634 PI53691 PI52367 PI51119 PI57148 PI59839 PI42952 PI39907 PI42603 PI30133 PI35027 PI35893 PI34945 PI39525 PI43321 PI48106 PI53964 PI41634 PI53691 PI11450 PI16745 PI18682 PI21062 PI24319 PI25035 PI25663 PI27187 PI33891 PI34061 PI35680 PI36215 PI37162 PM70256 PM74078 PM75193 PM75581 PM87883 PM93570 IV47342 IV69645 7.2.0.0.5 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0005&includeSupersedes=0&source=fc] 7.2.0.0.10 Oct 8, 2014 PM98778 PI06311 PI07084 PI22743 PI08200 PM88373 PM99070 PM94101 IV47342 PI06761 PI08473 PI08257 7.2.0.0.4 7.2.0.0.9 This is Limited Availability Interim Fix. Please contact Customer Support to obtain this fix . 7.2.0.0.3 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0003&includeSupersedes=0&source=fc] 7.2.0.0.8 Oct 10, 2013 PM93570 7.2.0.0.2 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0002&includeSupersedes=0&source=fc] 7.2.0.0.7 Aug 23, 2013 7.2.0.0.1 [http://www.ibm.com/support/fixcentral/swg/quickorder?product=ibm/Tivoli/Tivoli+Composite+Application+Manager+for+Applications&release=All&platform=All&function=fixId&fixids=7.2.0.0-TIV-ITCAMAD_WS-IF0001&includeSupersedes=0&source=fc] 7.2.0.0.5 Jul 17, 2013 PM81890; PM77662; PM79101; PM82318; PM80120; PM88932; PM76203"
+                ],
+                "metadata": {}
+              },
+              "metrics": [
+                {
+                  "name": "context_similarity",
+                  "score": 0.6398,
+                  "details": {
+                    "method": "tf_python",
+                    "shared_terms": 11
+                  }
+                },
+                {
+                  "name": "strict_faithfulness",
+                  "score": 1.0,
+                  "details": {
+                    "explanation": "1 of 1 claims supported; 0 partial and 0 full hallucinations.",
+                    "supported_claims": [
+                      {
+                        "claim": "ITCAM Agent for WebSphere Applications 7.2.0.0.7 is available",
+                        "supported_by": "Context [5] FIX README shows '7.2.0.0.7' listed as an Embedded DC release with date 'Aug 23, 2013' and a Fix Central link, confirming this version exists and is available."
+                      }
+                    ],
+                    "hallucinated_claims": [],
+                    "raw": {
+                      "summary": {
+                        "strict_faithfulness": 1.0,
+                        "explanation": "The answer contains one atomic factual claim: that ITCAM Agent for WebSphere Applications version 7.2.0.0.7 is available. This claim is directly and explicitly supported by Context [5], which lists 7.2.0.0.7 as a released version with a specific release date and Fix Central download link. No hallucinations detected."
+                      }
+                    }
+                  }
+                },
+                {
+                  "name": "retrieval_relevance",
+                  "score": 0.2,
+                  "details": {
+                    "explanation": "1 of 5 chunks ≥ 0.70 relevance.",
+                    "per_chunk": [
+                      {
+                        "chunk_id": 1,
+                        "relevance": 0.3,
+                        "reason": "Discusses ITCAM v7.2-IF010 and mentions version 7.2.0.0.10, but does not directly address availability of 7.2.0.0.7"
+                      },
+                      {
+                        "chunk_id": 2,
+                        "relevance": 0.2,
+                        "reason": "Discusses TCR reports and ITCAM Agent for WebSphere Applications generally, but does not address specific version 7.2.0.0.7 availability"
+                      },
+                      {
+                        "chunk_id": 3,
+                        "relevance": 0.2,
+                        "reason": "Describes data collection by ITCAM for WAS TEMA, but does not address specific version 7.2.0.0.7 availability"
+                      },
+                      {
+                        "chunk_id": 4,
+                        "relevance": 0.1,
+                        "reason": "Discusses WebSphere Application Server 8.5.5 compatibility issues, not relevant to version 7.2.0.0.7 availability"
+                      },
+                      {
+                        "chunk_id": 5,
+                        "relevance": 1.0,
+                        "reason": "Directly lists ITCAM Agent for WebSphere Applications version 7.2.0.0.7 as available, released Aug 23, 2013, with download link and associated APAR numbers"
+                      }
+                    ],
+                    "raw": {
+                      "question": "Is ITCAM Agent for WebSphere Applications 7.2.0.0.7 available? Is ITCAM Agent for WebSphere Applications 7.2.0.0.7 available? ",
+                      "threshold": 0.7,
+                      "contexts_count": 5,
+                      "model": "gpt-4o-mini"
+                    }
+                  }
+                }
+              ],
+              "aggregate": 0.6132666666666667
+            },
+            "error": null
+          },
+          "suspected_component": null,
+          "supporting_observation": "context_similarity=0.6398; strict_faithfulness=1.0; retrieval_relevance=0.2",
+          "evidence_attribution": [],
+          "method": "anthropic:claude-haiku-4-5-20251001",
+          "reliability": "model_judged",
+          "causal_strength_language": null,
+          "proposed_intervention": null,
+          "no_equivalent_fields": [
+            "RAGVue's self-reported judge model in native.raw_output may be incorrect; anthropic:claude-haiku-4-5-20251001 is what this run actually configured"
+          ]
+        }
+      },
+      "judgments": {
+        "dataset_label": "fully_supported",
+        "model_judgments": {},
+        "reviewer_judgment": null,
+        "intervention_evidence": null
+      }
+    },
+    {
+      "case_id": "techqa_DEV_Q100",
+      "dataset": "ragbench",
+      "domain": "techqa",
+      "dataset_revision": "galileo-ai/ragbench@97808f3e5fd16ede40bbff6c2949af8139b2eb7b",
+      "stratum": "systems_agree_labels_support",
+      "selection_rationale": "Pilot: first N shuffled techqa test examples, not stratified selection.",
+      "systems": {
+        "rag_forensics": {
+          "system": "rag_forensics",
+          "native": {
+            "system": "rag_forensics",
+            "system_version": "0.1.0",
+            "availability": "healthy",
+            "raw_output": {
+              "question": "ITCAM Agent for WebSphere DataPower 7.1 agent support for TLS Does the ITCAM Agent for WebSphere DataPower 7.1 agent support TLS?\n",
+              "generated_answer": "Based on the provided context, there is no direct mention of TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent. The information provided pertains more to problem determination, logs required for troubleshooting, and fixes for specific issues. It is recommended to refer to the official IBM documentation or contact IBM support for clarification on TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent.",
+              "retrieved_chunks": [
+                "CAMDPALL CAMDPINST Must Gather MustGather Agent DataPower Data Power ITCAM \"Agent for Data Power\" \"Agent for DataPower\" TECHNOTE (FAQ)\n\nQUESTION\n For Problem Determination of ITCAM for Agent Data Power, what logs are required ? \n\nCAUSE\nInformation required for ITCAM Agent for Data Power problem determination.\n\nANSWER\nPlease provide following from each environment that is experiencing the problem :\n\n\n 1. Platform and version number.\n2. MachineType and Appliance Firmware level. \n3. The result of following command from '<ITM_HOME>/bin' directory \nfrom all the machines (Agent, ITM product) related to this issue. \n\"cinfo -i\" from UNIX platform \n\"kincinfo -i\" from Windows platform \n4. Detailed description of problem and STEP BY STEP problem recreation senario.\n(Messages and other information displaced in screen)\n5. If System stops on UNIX system, zip up the core dumps from Agent for DP installed machine \nat <ITM_HOME>/bin directory.\n6. Helpful screenshots if appropriate. \n7. Export of \"SNMP Settings\" on the device. \n\n8. Logs/config files - Please send following information from Agent for DP installed machine, \n\n * Agent Log - Output of <ITM_HOME>/bin/pdcollect \n * Zip up the Agent Configuration files as below Logs Type Location of logs. Agent Config files * Windows :\n   <ITM_HOME>\\TMAITM6\\*.cfg \n   * Unix/Linux :\n   <ITM_HOME>/config/*.cfg",
+                " SUBSCRIBE\nYou can track all active APARs for this component.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  Problem Description :\n   \n    The MIB of v4.0.2.0 indicates that\n    dpStatusSystemUsageTableTable is obsoleted.\n   \n    dpStatusSystemUsageTableTable OBJECT-TYPE\n      SYNTAX      SEQUENCE OF DPStatusSystemUsageTableEntry\n      MAX-ACCESS  not-accessible\n      STATUS      obsolete\n      DESCRIPTION\n          \"Component level system usage.\n          Note: this is obsoleted and is replaced by\n    dpStatusSystemUsage2Table as of release 4.0.1\"\n   \n      ::= { dpStatus 201 }\n   \n    ITCAM Agent for WebSphere DataPower Appliance v6.3 requests\n    component level system usage from OID\n    1.3.6.1.4.1.14685.3.1.201.1.1-6.\n    This is obsoleted starting from firmware v4.0.1 released June\n    30,2011.  From firmware v4.0.1, there is no data returned for\n    these OIDs from the DataPower device.\n   \n    Because of this..\n    the \"Performance Object Status\" workspace showed Error Code \"NO\n    INSTANCE RETURNED\" of the SystemUsageTable attribute group.\n   \n   Approver : ZW\n   \n   \n    \n   \n   \n\nLOCAL FIX\n\nPROBLEM SUMMARY\n *  The problem was fixed on version 7.1 per Hong Liang@BN L3\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  Need to close this Apar, cause the problem resolved in V7.1\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   IV09557\n   \n   \n * REPORTED COMPONENT NAME\n   ITCAM SOA PLAT\n   \n   \n * REPORTED COMPONENT ID\n   5724V0700\n   \n   \n * REPORTED RELEASE\n   620\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   YesSpecatt / New Function\n   \n   \n * SUBMITTED DATE\n   2011-10-24\n   \n   \n * CLOSED DATE\n   2014-06-09\n   \n   \n * LAST MODIFIED DATE\n   2014-06-09\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   ITCAM SOA PLAT\n   \n   \n * FIXED COMPONENT ID\n   5724V0700\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R710 PSY\n   UP",
+                "DataPower agent BN TCR Template RFE# 68440 CAMADALL TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Is there a way to use TCR Reporting for the BN DataPower agent? \n\nANSWER\nCurrently as of 1H2015, there is no TCR Template available for the BN DataPower agent (v7.01 FP1). So, if you are looking to download a TCR template for this agent, you will not find any on Passport Advantage. There is an open RFE out on the RFE website which documents this requirement. \n\nThe RFE link is:\nhttp://www.ibm.com/developerworks/rfe/execute?use_case=viewRfe&CR_ID=68440 [http://www.ibm.com/developerworks/rfe/execute?use_case=viewRfe&CR_ID=68440]\n\nSo, if you want to use TCR for the DataPower agent, you have to Custom reporting inside of TCR itself.\n\n \n\nPRODUCT ALIAS/SYNONYM\n ITCAM ITCAM for DataPower agent",
+                "  FIXES ARE AVAILABLE\n7.1.0.3-TIV-ITCAMAD-IF0005: ITCAM for Application Diagnostics V7.1 FP3 IF5 [http://www-01.ibm.com/support/docview.wss?uid=swg24033938]\n7.1.0.3-TIV-ITCAMAD-IF0004: ITCAM for Application Diagnostics V7.1 FP3 IF6 [http://www-01.ibm.com/support/docview.wss?uid=swg24034668]\n7.1.0.3-TIV-ITCAMAD-IF0008: ITCAM for Application Diagnostics V7.1 FP3 IF8 [http://www-01.ibm.com/support/docview.wss?uid=swg24037994]\n7.1.0-TIV-ITCAMAD-FP0004: ITCAM for Application Diagnostics V7.1 Fix Pack 4 [http://www-01.ibm.com/support/docview.wss?uid=swg24041705]\n\n\nSUBSCRIBE\nYou can track all active APARs for this component.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  Users Affected:\n   User of Agent for WebSphere in ITCAM for WebSphere V6.2 or\n   ITCAM for Application Diagnostics 7.1 who set\n   CTIRA_SUBSYSTEM_ID in ITM agent configuration file (yn.ini)\n   \n   ---------------------------------------------\n   Problem Description:\n   TEP workspaces are blank on agent level (for example\n   Application Server Status workspace). This happens when\n   value of CTIRA_SUBSYSTEM_ID property in yn.ini is different\n   than agent node id set in agent configuration file\n   (<ITM_HOME>/config/<hostname>_yn.cfg or\n   <ITM_HOME>/config/<hostname>_yn.xml).\n   \n   \n    \n   \n   \n\nLOCAL FIX\n *  Local Fix/Workaround:\n   Reconfigure agent to have exactly same node id\n   as value in CTIRA_SUBSYSTEM_ID. Or manually set it\n   in following files:\n   - for 6.2 release: KYN_ALT_NODEID property in\n     <ITM_HOME>/config/<hostname>_yn.cfg file\n   - for 7.1 release: value in <altNodeId> tag in\n     <ITM_HOME>/config/<hostname>_yn.xml file to new value\n   <altNodeId>vrt0085</altNodeId> ).\n   \n   Restart the agent and verify TEP workspaces.\n   \n   \n    \n   \n   \n\nPROBLEM SUMMARY\n *  ***************************************************************\n   * USERS AFFECTED: Agent for WebSphere in ITCAM for WebSphere\n   * V6.2 and ITCAM for Application Diagnostics 7.1 users who\n   * set CTIRA_SUBSYSTEM_ID in agent configuration file.\n   ***************************************************************\n   * PROBLEM DESCRIPTION:\n   * TEP workspaces are blank on agent level (for example\n   * Application Server Status workspace). This happens when value\n   * of CTIRA_SUBSYSTEM_ID property in yn.ini is different than\n   * agent node id set in agent configuration file:\n   * v6.2: <ITM_HOME>/config/<hostname>_yn.cfg,\n   * v7.1: <ITM_HOME>/config/<hostname>_yn.xml.\n   ***************************************************************\n   * RECOMMENDATION: Use ITCAM for WebSphere 6.2 FP6, Interim\n   * Fix 1, TEMA (6.2.0.6-TIV-ITCAM_WAS_TEMA-IF001) or newer\n   * release which contains this fix to resolve this issue.\n   ***************************************************************\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  Setting CTIRA_SUBSYSTEM_ID causes registration on TEMS under\n   Managed System Name like: <CTIRA_SUBSYSTEM_ID>:<hostname>:KYNA.\n   However, TEMA has it's own setting for agent ID called\n   'Alternative Node ID' which is stored in\n   <ITM_HOME>/config/<hostname>_yn.cfg or\n   <ITM_HOME>/config/<hostname>_yn.xml files. This value is\n   used to build internal identification similar to Managed System\n   Name.\n   When CTIRA_SUBSYSTEM_ID is different than 'Alternative Node ID'\n   then TEMA drops request from ITM as those request are for agent\n   with CTIRA_SUBSYSTEM_ID name and TEMA identifies it's name as\n   value of 'Alternative Node ID'.\n   \n   The fix for this APAR introduces the precedence of agent node ID\n   configurations. If CTIRA_SUBSYSTEM_ID value is present in\n   <ITM_HOME>/config/yn.ini file then it overrides value of\n   'Alternative Node ID'.\n   \n   The fix for this APAR is contained in the following maintenance\n   packages:\n   \n     | interim fix | 6.2.0.6-TIV-ITCAM_WAS_TEMA-IF001\n     | interim fix | 7.1.0.3-TIV-ITCAMAD-IF0005\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   PM73305\n   \n   \n * REPORTED COMPONENT NAME\n   ITCAM WAS DIST\n   \n   \n * REPORTED COMPONENT ID\n   5724L6200\n   \n   \n * REPORTED RELEASE\n   610\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   NoSpecatt\n   \n   \n * SUBMITTED DATE\n   2012-09-20\n   \n   \n * CLOSED DATE\n   2012-11-30\n   \n   \n * LAST MODIFIED DATE\n   2012-11-30\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   ITCAM WAS DIST\n   \n   \n * FIXED COMPONENT ID\n   5724L6200\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R610 PSY\n   UP\n   \n   \n * R710 PSY\n   UP",
+                "Program Directory; documentation; installation; FMID TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Program Directory references are incorrect in the ITCAM Agent for WebSphere Applications Installation Guide for z/OS. This issue only exists in the document delivered on the ITCAM for Application Diagnostics Version 7.1 CD. The IBM.com Infocenter version and all subsequent versions of this document contain the correct information. \n\nRESOLVING THE PROBLEM\nFor the installation of the following components:\nData Collector (FMID HAAD710);\nITCAM Common Services (FMID HAAD71C); \nMonitoring Agent (FMID HKYN710);\nthe Program Directory names are incorrectly referenced in the ITCAM Agent for WebSphere Applications Installation Guide for z/OS.\n\nThe installation for all of these components is covered in the following Program Directory:\nProgram Directory for IBM Tivoli Composite Application Manager (ITCAM) for Application Diagnostics on z/OS V7.1"
+              ],
+              "retrieved_chunk_details": [
+                {
+                  "chunk_id": "document_0",
+                  "text": "CAMDPALL CAMDPINST Must Gather MustGather Agent DataPower Data Power ITCAM \"Agent for Data Power\" \"Agent for DataPower\" TECHNOTE (FAQ)\n\nQUESTION\n For Problem Determination of ITCAM for Agent Data Power, what logs are required ? \n\nCAUSE\nInformation required for ITCAM Agent for Data Power problem determination.\n\nANSWER\nPlease provide following from each environment that is experiencing the problem :\n\n\n 1. Platform and version number.\n2. MachineType and Appliance Firmware level. \n3. The result of following command from '<ITM_HOME>/bin' directory \nfrom all the machines (Agent, ITM product) related to this issue. \n\"cinfo -i\" from UNIX platform \n\"kincinfo -i\" from Windows platform \n4. Detailed description of problem and STEP BY STEP problem recreation senario.\n(Messages and other information displaced in screen)\n5. If System stops on UNIX system, zip up the core dumps from Agent for DP installed machine \nat <ITM_HOME>/bin directory.\n6. Helpful screenshots if appropriate. \n7. Export of \"SNMP Settings\" on the device. \n\n8. Logs/config files - Please send following information from Agent for DP installed machine, \n\n * Agent Log - Output of <ITM_HOME>/bin/pdcollect \n * Zip up the Agent Configuration files as below Logs Type Location of logs. Agent Config files * Windows :\n   <ITM_HOME>\\TMAITM6\\*.cfg \n   * Unix/Linux :\n   <ITM_HOME>/config/*.cfg",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_1",
+                  "text": " SUBSCRIBE\nYou can track all active APARs for this component.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  Problem Description :\n   \n    The MIB of v4.0.2.0 indicates that\n    dpStatusSystemUsageTableTable is obsoleted.\n   \n    dpStatusSystemUsageTableTable OBJECT-TYPE\n      SYNTAX      SEQUENCE OF DPStatusSystemUsageTableEntry\n      MAX-ACCESS  not-accessible\n      STATUS      obsolete\n      DESCRIPTION\n          \"Component level system usage.\n          Note: this is obsoleted and is replaced by\n    dpStatusSystemUsage2Table as of release 4.0.1\"\n   \n      ::= { dpStatus 201 }\n   \n    ITCAM Agent for WebSphere DataPower Appliance v6.3 requests\n    component level system usage from OID\n    1.3.6.1.4.1.14685.3.1.201.1.1-6.\n    This is obsoleted starting from firmware v4.0.1 released June\n    30,2011.  From firmware v4.0.1, there is no data returned for\n    these OIDs from the DataPower device.\n   \n    Because of this..\n    the \"Performance Object Status\" workspace showed Error Code \"NO\n    INSTANCE RETURNED\" of the SystemUsageTable attribute group.\n   \n   Approver : ZW\n   \n   \n    \n   \n   \n\nLOCAL FIX\n\nPROBLEM SUMMARY\n *  The problem was fixed on version 7.1 per Hong Liang@BN L3\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  Need to close this Apar, cause the problem resolved in V7.1\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   IV09557\n   \n   \n * REPORTED COMPONENT NAME\n   ITCAM SOA PLAT\n   \n   \n * REPORTED COMPONENT ID\n   5724V0700\n   \n   \n * REPORTED RELEASE\n   620\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   YesSpecatt / New Function\n   \n   \n * SUBMITTED DATE\n   2011-10-24\n   \n   \n * CLOSED DATE\n   2014-06-09\n   \n   \n * LAST MODIFIED DATE\n   2014-06-09\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   ITCAM SOA PLAT\n   \n   \n * FIXED COMPONENT ID\n   5724V0700\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R710 PSY\n   UP",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_2",
+                  "text": "DataPower agent BN TCR Template RFE# 68440 CAMADALL TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Is there a way to use TCR Reporting for the BN DataPower agent? \n\nANSWER\nCurrently as of 1H2015, there is no TCR Template available for the BN DataPower agent (v7.01 FP1). So, if you are looking to download a TCR template for this agent, you will not find any on Passport Advantage. There is an open RFE out on the RFE website which documents this requirement. \n\nThe RFE link is:\nhttp://www.ibm.com/developerworks/rfe/execute?use_case=viewRfe&CR_ID=68440 [http://www.ibm.com/developerworks/rfe/execute?use_case=viewRfe&CR_ID=68440]\n\nSo, if you want to use TCR for the DataPower agent, you have to Custom reporting inside of TCR itself.\n\n \n\nPRODUCT ALIAS/SYNONYM\n ITCAM ITCAM for DataPower agent",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_3",
+                  "text": "  FIXES ARE AVAILABLE\n7.1.0.3-TIV-ITCAMAD-IF0005: ITCAM for Application Diagnostics V7.1 FP3 IF5 [http://www-01.ibm.com/support/docview.wss?uid=swg24033938]\n7.1.0.3-TIV-ITCAMAD-IF0004: ITCAM for Application Diagnostics V7.1 FP3 IF6 [http://www-01.ibm.com/support/docview.wss?uid=swg24034668]\n7.1.0.3-TIV-ITCAMAD-IF0008: ITCAM for Application Diagnostics V7.1 FP3 IF8 [http://www-01.ibm.com/support/docview.wss?uid=swg24037994]\n7.1.0-TIV-ITCAMAD-FP0004: ITCAM for Application Diagnostics V7.1 Fix Pack 4 [http://www-01.ibm.com/support/docview.wss?uid=swg24041705]\n\n\nSUBSCRIBE\nYou can track all active APARs for this component.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  Users Affected:\n   User of Agent for WebSphere in ITCAM for WebSphere V6.2 or\n   ITCAM for Application Diagnostics 7.1 who set\n   CTIRA_SUBSYSTEM_ID in ITM agent configuration file (yn.ini)\n   \n   ---------------------------------------------\n   Problem Description:\n   TEP workspaces are blank on agent level (for example\n   Application Server Status workspace). This happens when\n   value of CTIRA_SUBSYSTEM_ID property in yn.ini is different\n   than agent node id set in agent configuration file\n   (<ITM_HOME>/config/<hostname>_yn.cfg or\n   <ITM_HOME>/config/<hostname>_yn.xml).\n   \n   \n    \n   \n   \n\nLOCAL FIX\n *  Local Fix/Workaround:\n   Reconfigure agent to have exactly same node id\n   as value in CTIRA_SUBSYSTEM_ID. Or manually set it\n   in following files:\n   - for 6.2 release: KYN_ALT_NODEID property in\n     <ITM_HOME>/config/<hostname>_yn.cfg file\n   - for 7.1 release: value in <altNodeId> tag in\n     <ITM_HOME>/config/<hostname>_yn.xml file to new value\n   <altNodeId>vrt0085</altNodeId> ).\n   \n   Restart the agent and verify TEP workspaces.\n   \n   \n    \n   \n   \n\nPROBLEM SUMMARY\n *  ***************************************************************\n   * USERS AFFECTED: Agent for WebSphere in ITCAM for WebSphere\n   * V6.2 and ITCAM for Application Diagnostics 7.1 users who\n   * set CTIRA_SUBSYSTEM_ID in agent configuration file.\n   ***************************************************************\n   * PROBLEM DESCRIPTION:\n   * TEP workspaces are blank on agent level (for example\n   * Application Server Status workspace). This happens when value\n   * of CTIRA_SUBSYSTEM_ID property in yn.ini is different than\n   * agent node id set in agent configuration file:\n   * v6.2: <ITM_HOME>/config/<hostname>_yn.cfg,\n   * v7.1: <ITM_HOME>/config/<hostname>_yn.xml.\n   ***************************************************************\n   * RECOMMENDATION: Use ITCAM for WebSphere 6.2 FP6, Interim\n   * Fix 1, TEMA (6.2.0.6-TIV-ITCAM_WAS_TEMA-IF001) or newer\n   * release which contains this fix to resolve this issue.\n   ***************************************************************\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  Setting CTIRA_SUBSYSTEM_ID causes registration on TEMS under\n   Managed System Name like: <CTIRA_SUBSYSTEM_ID>:<hostname>:KYNA.\n   However, TEMA has it's own setting for agent ID called\n   'Alternative Node ID' which is stored in\n   <ITM_HOME>/config/<hostname>_yn.cfg or\n   <ITM_HOME>/config/<hostname>_yn.xml files. This value is\n   used to build internal identification similar to Managed System\n   Name.\n   When CTIRA_SUBSYSTEM_ID is different than 'Alternative Node ID'\n   then TEMA drops request from ITM as those request are for agent\n   with CTIRA_SUBSYSTEM_ID name and TEMA identifies it's name as\n   value of 'Alternative Node ID'.\n   \n   The fix for this APAR introduces the precedence of agent node ID\n   configurations. If CTIRA_SUBSYSTEM_ID value is present in\n   <ITM_HOME>/config/yn.ini file then it overrides value of\n   'Alternative Node ID'.\n   \n   The fix for this APAR is contained in the following maintenance\n   packages:\n   \n     | interim fix | 6.2.0.6-TIV-ITCAM_WAS_TEMA-IF001\n     | interim fix | 7.1.0.3-TIV-ITCAMAD-IF0005\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   PM73305\n   \n   \n * REPORTED COMPONENT NAME\n   ITCAM WAS DIST\n   \n   \n * REPORTED COMPONENT ID\n   5724L6200\n   \n   \n * REPORTED RELEASE\n   610\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   NoSpecatt\n   \n   \n * SUBMITTED DATE\n   2012-09-20\n   \n   \n * CLOSED DATE\n   2012-11-30\n   \n   \n * LAST MODIFIED DATE\n   2012-11-30\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   ITCAM WAS DIST\n   \n   \n * FIXED COMPONENT ID\n   5724L6200\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R610 PSY\n   UP\n   \n   \n * R710 PSY\n   UP",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_4",
+                  "text": "Program Directory; documentation; installation; FMID TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Program Directory references are incorrect in the ITCAM Agent for WebSphere Applications Installation Guide for z/OS. This issue only exists in the document delivered on the ITCAM for Application Diagnostics Version 7.1 CD. The IBM.com Infocenter version and all subsequent versions of this document contain the correct information. \n\nRESOLVING THE PROBLEM\nFor the installation of the following components:\nData Collector (FMID HAAD710);\nITCAM Common Services (FMID HAAD71C); \nMonitoring Agent (FMID HKYN710);\nthe Program Directory names are incorrectly referenced in the ITCAM Agent for WebSphere Applications Installation Guide for z/OS.\n\nThe installation for all of these components is covered in the following Program Directory:\nProgram Directory for IBM Tivoli Composite Application Manager (ITCAM) for Application Diagnostics on z/OS V7.1",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                }
+              ],
+              "ragas": {
+                "context_utilization": {
+                  "score": 0.0,
+                  "status": "ok",
+                  "error": null
+                },
+                "faithfulness": {
+                  "score": 0.6666666666666666,
+                  "status": "ok",
+                  "error": null
+                },
+                "utilization_context_excerpts": [
+                  "CAMDPALL CAMDPINST Must Gather MustGather Agent DataPower Data Power ITCAM \"Agent for Data Power\" \"Agent for DataPower\" TECHNOTE (FAQ)\n\nQUESTION\n For ",
+                  "SUBSCRIBE\nYou can track all active APARs for this component.",
+                  "DataPower agent BN TCR Template RFE# 68440 CAMADALL TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUE"
+                ],
+                "faithfulness_context_excerpts": [
+                  "CAMDPALL CAMDPINST Must Gather MustGather Agent DataPower Data Power ITCAM \"Agent for Data Power\" \"Agent for DataPower\" TECHNOTE (FAQ)\n\nQUESTION\n For ",
+                  "SUBSCRIBE\nYou can track all active APARs for this component.",
+                  "DataPower agent BN TCR Template RFE# 68440 CAMADALL TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUE"
+                ],
+                "excerpt_caveat": "These are context excerpts for inspection, not evidence explaining the evaluator's score."
+              },
+              "hedging_mismatch": {
+                "overconfident_fraction": 0.0,
+                "underconfident_fraction": 0.0,
+                "total_claims": 2,
+                "claim_breakdown": [
+                  {
+                    "claim": "There is no direct mention of TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent in the provided context.",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_0",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "The information provided pertains to problem determination, logs required for troubleshooting, and fixes for specific issues.",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_0",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  }
+                ],
+                "status": "ok",
+                "error": null,
+                "evaluated_chunk_count": 2,
+                "evaluated_claim_count": 2,
+                "unavailable_claim_count": 0
+              },
+              "chunk_attribution": {
+                "unattributed_fraction": 0.3333333333333333,
+                "mean_attribution_score": 0.46113030820524026,
+                "weak_match_fraction": 0.6666666666666666,
+                "attribution_map": [
+                  {
+                    "sentence": "Based on the provided context, there is no direct mention of TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent.",
+                    "chunk_id": "document_4",
+                    "similarity_score": 0.4522564354642479,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "The information provided pertains more to problem determination, logs required for troubleshooting, and fixes for specific issues.",
+                    "chunk_id": null,
+                    "similarity_score": 0.3924728252806645,
+                    "attribution_strength": "unattributed"
+                  },
+                  {
+                    "sentence": "It is recommended to refer to the official IBM documentation or contact IBM support for clarification on TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent.",
+                    "chunk_id": "document_3",
+                    "similarity_score": 0.5386616638708085,
+                    "attribution_strength": "weak"
+                  }
+                ],
+                "method": "semantic_similarity",
+                "caveat": "Similarity identifies a semantically close source candidate; it does not prove entailment or establish that unsupported text is a hallucination."
+              },
+              "retrieval_distribution": {
+                "score_gap": 0.0,
+                "score_entropy": 1.6094379074341003,
+                "decay_rate": null,
+                "tail_mass": 0.6,
+                "top_score": 1.0,
+                "n_chunks": 5,
+                "normalized_entropy": 0.9999999968933253,
+                "interpretation": "Distribution shape must be interpreted jointly with absolute relevance and score semantics."
+              },
+              "embedding_space": {
+                "centroid_distance": 0.3853799815084591,
+                "chunk_spread": 0.5182984948896359,
+                "query_isolation": 1.6405362437815436,
+                "projection": [
+                  {
+                    "label": "query",
+                    "x": 0.2386891588849068,
+                    "y": 0.13908599860844528,
+                    "is_query": true
+                  },
+                  {
+                    "label": "document_0",
+                    "x": -0.1482387696564018,
+                    "y": -0.012043509809690685,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_1",
+                    "x": -0.02679026375716651,
+                    "y": -0.695495879623462,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_2",
+                    "x": 0.6462125762791228,
+                    "y": 0.14739364068305774,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_3",
+                    "x": -0.3218745073778606,
+                    "y": 0.21938651654359229,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_4",
+                    "x": -0.3879981943726002,
+                    "y": 0.20167323359805708,
+                    "is_query": false
+                  }
+                ]
+              },
+              "query_corpus_fit": {
+                "triggered": true,
+                "trigger_reason": "query_isolation",
+                "observed_fit": "ambiguous",
+                "suggested_questions": [
+                  {
+                    "question": "What logs and configuration files should I collect for troubleshooting ITCAM Agent for DataPower problems?",
+                    "source_chunk_ids": [
+                      "document_0"
+                    ],
+                    "relevance_to_original": 0.4727809727191925
+                  },
+                  {
+                    "question": "What was the issue with ITCAM Agent for WebSphere DataPower v6.3 requesting obsolete OIDs and when was it fixed?",
+                    "source_chunk_ids": [
+                      "document_1"
+                    ],
+                    "relevance_to_original": 0.6465686559677124
+                  },
+                  {
+                    "question": "Is there a TCR reporting template available for the DataPower agent?",
+                    "source_chunk_ids": [
+                      "document_2"
+                    ],
+                    "relevance_to_original": 0.36892321705818176
+                  },
+                  {
+                    "question": "What ITCAM for Application Diagnostics versions contain fixes for agent configuration and TEP workspace issues?",
+                    "source_chunk_ids": [
+                      "document_3"
+                    ],
+                    "relevance_to_original": 0.5318734645843506
+                  },
+                  {
+                    "question": "What are the correct Program Directory names for installing ITCAM components on z/OS V7.1?",
+                    "source_chunk_ids": [
+                      "document_4"
+                    ],
+                    "relevance_to_original": 0.4123397767543793
+                  }
+                ],
+                "rejected_questions": [],
+                "mean_question_similarity": 0.48649721741676333,
+                "status": "ok",
+                "error": null
+              },
+              "verdict_signals": [
+                {
+                  "name": "low_context_utilization",
+                  "priority_score": 1.0,
+                  "description": "Context utilization score 0.00 — retrieved chunks were not consistently useful for producing the answer",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                },
+                {
+                  "name": "ambiguous_retrieval",
+                  "priority_score": 0.9999999968933253,
+                  "description": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "noisy_context",
+                  "priority_score": 0.65,
+                  "description": "60% of retrieval score mass in low-ranked chunks — noisy context reaching the generator",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "weak_chunk_matches",
+                  "priority_score": 0.39999999999999997,
+                  "description": "67% of answer sentences have only weak chunk support",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "unvalidated"
+                },
+                {
+                  "name": "low_faithfulness",
+                  "priority_score": 0.33333333333333337,
+                  "description": "Faithfulness score 0.67 — answer is not fully grounded in retrieved content",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                },
+                {
+                  "name": "unattributed_content",
+                  "priority_score": 0.3333333333333333,
+                  "description": "33% of answer sentences have no semantically close source candidate in retrieved chunks",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "unvalidated"
+                },
+                {
+                  "name": "query_isolation",
+                  "priority_score": 0.01878405406983999,
+                  "description": "Query is geometrically distant from retrieved chunks (isolation ratio 1.64)",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                }
+              ],
+              "verdict_reasoning": {
+                "observations": [
+                  {
+                    "signal_name": "low_context_utilization",
+                    "description": "Context utilization score 0.00 — retrieved chunks were not consistently useful for producing the answer",
+                    "reliability": "model_judged"
+                  },
+                  {
+                    "signal_name": "ambiguous_retrieval",
+                    "description": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+                    "reliability": "partially_calibrated"
+                  },
+                  {
+                    "signal_name": "noisy_context",
+                    "description": "60% of retrieval score mass in low-ranked chunks — noisy context reaching the generator",
+                    "reliability": "partially_calibrated"
+                  }
+                ],
+                "hypotheses": [
+                  {
+                    "hypothesis_id": "H1",
+                    "statement": "Retrieval may be returning evidence that is a poor fit for the question."
+                  },
+                  {
+                    "hypothesis_id": "H2",
+                    "statement": "The retrieval signal may reflect its heuristic or partially calibrated measurement rather than poor evidence."
+                  }
+                ],
+                "test": {
+                  "component": "retriever",
+                  "action": "Compare the retrieved chunks with manually verified relevant chunks for the same question.",
+                  "interpretations": [
+                    {
+                      "outcome": "Verified chunks are materially more relevant than the retrieved chunks.",
+                      "supports_hypothesis_ids": [
+                        "H1"
+                      ]
+                    },
+                    {
+                      "outcome": "Retrieved and verified chunks are similarly relevant.",
+                      "supports_hypothesis_ids": [
+                        "H2"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "recommendation": "The model judged that retrieved chunks were not consistently useful for producing the answer, and partially calibrated signals tentatively suggest that retrieval score mass is concentrated in lower-ranked chunks and that scores are similarly distributed across results — though these latter signals should be interpreted alongside absolute relevance rather than treated as firm findings. This pattern may indicate that the retriever is returning evidence that is a poor fit for the question (H1), though it is also possible the signals reflect their heuristic measurement limitations rather than genuinely poor evidence (H2). To distinguish between these, compare the retrieved chunks against manually verified relevant chunks for the same question: if the verified chunks are materially more relevant, that supports H1, whereas similar relevance across both sets would suggest H2."
+            },
+            "error": null
+          },
+          "suspected_component": "low_context_utilization",
+          "supporting_observation": "Context utilization score 0.00 — retrieved chunks were not consistently useful for producing the answer",
+          "evidence_attribution": [],
+          "method": "verdict_generator",
+          "reliability": "model_judged",
+          "causal_strength_language": "RAG Forensics reports a heuristic priority ranking, not a calibrated severity or causal proof.",
+          "proposed_intervention": null,
+          "no_equivalent_fields": []
+        },
+        "ragchecker": {
+          "system": "ragchecker",
+          "native": {
+            "system": "ragchecker",
+            "system_version": "0.1.9",
+            "availability": "healthy",
+            "raw_output": {
+              "faithfulness": 0.5
+            },
+            "error": null
+          },
+          "suspected_component": null,
+          "supporting_observation": "faithfulness=0.5",
+          "evidence_attribution": [],
+          "method": "ragchecker_faithfulness",
+          "reliability": "model_judged",
+          "causal_strength_language": null,
+          "proposed_intervention": null,
+          "no_equivalent_fields": [
+            "RAGChecker's retriever/generator diagnostics beyond faithfulness (['claim_recall', 'context_precision', 'context_utilization', 'f1', 'hallucination', 'noise_sensitivity_in_irrelevant', 'noise_sensitivity_in_relevant', 'precision', 'recall', 'self_knowledge']) require gt_answer, which this population does not provide"
+          ]
+        },
+        "ragvue": {
+          "system": "ragvue",
+          "native": {
+            "system": "ragvue",
+            "system_version": "0.6.1",
+            "availability": "healthy",
+            "raw_output": {
+              "item": {
+                "question": "ITCAM Agent for WebSphere DataPower 7.1 agent support for TLS Does the ITCAM Agent for WebSphere DataPower 7.1 agent support TLS?\n",
+                "answer": "Based on the provided context, there is no direct mention of TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent. The information provided pertains more to problem determination, logs required for troubleshooting, and fixes for specific issues. It is recommended to refer to the official IBM documentation or contact IBM support for clarification on TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent.",
+                "contexts": [
+                  "CAMDPALL CAMDPINST Must Gather MustGather Agent DataPower Data Power ITCAM \"Agent for Data Power\" \"Agent for DataPower\" TECHNOTE (FAQ)\n\nQUESTION\n For Problem Determination of ITCAM for Agent Data Power, what logs are required ? \n\nCAUSE\nInformation required for ITCAM Agent for Data Power problem determination.\n\nANSWER\nPlease provide following from each environment that is experiencing the problem :\n\n\n 1. Platform and version number.\n2. MachineType and Appliance Firmware level. \n3. The result of following command from '<ITM_HOME>/bin' directory \nfrom all the machines (Agent, ITM product) related to this issue. \n\"cinfo -i\" from UNIX platform \n\"kincinfo -i\" from Windows platform \n4. Detailed description of problem and STEP BY STEP problem recreation senario.\n(Messages and other information displaced in screen)\n5. If System stops on UNIX system, zip up the core dumps from Agent for DP installed machine \nat <ITM_HOME>/bin directory.\n6. Helpful screenshots if appropriate. \n7. Export of \"SNMP Settings\" on the device. \n\n8. Logs/config files - Please send following information from Agent for DP installed machine, \n\n * Agent Log - Output of <ITM_HOME>/bin/pdcollect \n * Zip up the Agent Configuration files as below Logs Type Location of logs. Agent Config files * Windows :\n   <ITM_HOME>\\TMAITM6\\*.cfg \n   * Unix/Linux :\n   <ITM_HOME>/config/*.cfg",
+                  " SUBSCRIBE\nYou can track all active APARs for this component.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  Problem Description :\n   \n    The MIB of v4.0.2.0 indicates that\n    dpStatusSystemUsageTableTable is obsoleted.\n   \n    dpStatusSystemUsageTableTable OBJECT-TYPE\n      SYNTAX      SEQUENCE OF DPStatusSystemUsageTableEntry\n      MAX-ACCESS  not-accessible\n      STATUS      obsolete\n      DESCRIPTION\n          \"Component level system usage.\n          Note: this is obsoleted and is replaced by\n    dpStatusSystemUsage2Table as of release 4.0.1\"\n   \n      ::= { dpStatus 201 }\n   \n    ITCAM Agent for WebSphere DataPower Appliance v6.3 requests\n    component level system usage from OID\n    1.3.6.1.4.1.14685.3.1.201.1.1-6.\n    This is obsoleted starting from firmware v4.0.1 released June\n    30,2011.  From firmware v4.0.1, there is no data returned for\n    these OIDs from the DataPower device.\n   \n    Because of this..\n    the \"Performance Object Status\" workspace showed Error Code \"NO\n    INSTANCE RETURNED\" of the SystemUsageTable attribute group.\n   \n   Approver : ZW\n   \n   \n    \n   \n   \n\nLOCAL FIX\n\nPROBLEM SUMMARY\n *  The problem was fixed on version 7.1 per Hong Liang@BN L3\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  Need to close this Apar, cause the problem resolved in V7.1\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   IV09557\n   \n   \n * REPORTED COMPONENT NAME\n   ITCAM SOA PLAT\n   \n   \n * REPORTED COMPONENT ID\n   5724V0700\n   \n   \n * REPORTED RELEASE\n   620\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   YesSpecatt / New Function\n   \n   \n * SUBMITTED DATE\n   2011-10-24\n   \n   \n * CLOSED DATE\n   2014-06-09\n   \n   \n * LAST MODIFIED DATE\n   2014-06-09\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   ITCAM SOA PLAT\n   \n   \n * FIXED COMPONENT ID\n   5724V0700\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R710 PSY\n   UP",
+                  "DataPower agent BN TCR Template RFE# 68440 CAMADALL TECHNOTE (FAQ)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n US English \n\nQUESTION\n Is there a way to use TCR Reporting for the BN DataPower agent? \n\nANSWER\nCurrently as of 1H2015, there is no TCR Template available for the BN DataPower agent (v7.01 FP1). So, if you are looking to download a TCR template for this agent, you will not find any on Passport Advantage. There is an open RFE out on the RFE website which documents this requirement. \n\nThe RFE link is:\nhttp://www.ibm.com/developerworks/rfe/execute?use_case=viewRfe&CR_ID=68440 [http://www.ibm.com/developerworks/rfe/execute?use_case=viewRfe&CR_ID=68440]\n\nSo, if you want to use TCR for the DataPower agent, you have to Custom reporting inside of TCR itself.\n\n \n\nPRODUCT ALIAS/SYNONYM\n ITCAM ITCAM for DataPower agent",
+                  "  FIXES ARE AVAILABLE\n7.1.0.3-TIV-ITCAMAD-IF0005: ITCAM for Application Diagnostics V7.1 FP3 IF5 [http://www-01.ibm.com/support/docview.wss?uid=swg24033938]\n7.1.0.3-TIV-ITCAMAD-IF0004: ITCAM for Application Diagnostics V7.1 FP3 IF6 [http://www-01.ibm.com/support/docview.wss?uid=swg24034668]\n7.1.0.3-TIV-ITCAMAD-IF0008: ITCAM for Application Diagnostics V7.1 FP3 IF8 [http://www-01.ibm.com/support/docview.wss?uid=swg24037994]\n7.1.0-TIV-ITCAMAD-FP0004: ITCAM for Application Diagnostics V7.1 Fix Pack 4 [http://www-01.ibm.com/support/docview.wss?uid=swg24041705]\n\n\nSUBSCRIBE\nYou can track all active APARs for this component.\n\n\n\nAPAR STATUS\n * CLOSED AS PROGRAM ERROR.\n    \n   \n   \n\nERROR DESCRIPTION\n *  Users Affected:\n   User of Agent for WebSphere in ITCAM for WebSphere V6.2 or\n   ITCAM for Application Diagnostics 7.1 who set\n   CTIRA_SUBSYSTEM_ID in ITM agent configuration file (yn.ini)\n   \n   ---------------------------------------------\n   Problem Description:\n   TEP workspaces are blank on agent level (for example\n   Application Server Status workspace). This happens when\n   value of CTIRA_SUBSYSTEM_ID property in yn.ini is different\n   than agent node id set in agent configuration file\n   (<ITM_HOME>/config/<hostname>_yn.cfg or\n   <ITM_HOME>/config/<hostname>_yn.xml).\n   \n   \n    \n   \n   \n\nLOCAL FIX\n *  Local Fix/Workaround:\n   Reconfigure agent to have exactly same node id\n   as value in CTIRA_SUBSYSTEM_ID. Or manually set it\n   in following files:\n   - for 6.2 release: KYN_ALT_NODEID property in\n     <ITM_HOME>/config/<hostname>_yn.cfg file\n   - for 7.1 release: value in <altNodeId> tag in\n     <ITM_HOME>/config/<hostname>_yn.xml file to new value\n   <altNodeId>vrt0085</altNodeId> ).\n   \n   Restart the agent and verify TEP workspaces.\n   \n   \n    \n   \n   \n\nPROBLEM SUMMARY\n *  ***************************************************************\n   * USERS AFFECTED: Agent for WebSphere in ITCAM for WebSphere\n   * V6.2 and ITCAM for Application Diagnostics 7.1 users who\n   * set CTIRA_SUBSYSTEM_ID in agent configuration file.\n   ***************************************************************\n   * PROBLEM DESCRIPTION:\n   * TEP workspaces are blank on agent level (for example\n   * Application Server Status workspace). This happens when value\n   * of CTIRA_SUBSYSTEM_ID property in yn.ini is different than\n   * agent node id set in agent configuration file:\n   * v6.2: <ITM_HOME>/config/<hostname>_yn.cfg,\n   * v7.1: <ITM_HOME>/config/<hostname>_yn.xml.\n   ***************************************************************\n   * RECOMMENDATION: Use ITCAM for WebSphere 6.2 FP6, Interim\n   * Fix 1, TEMA (6.2.0.6-TIV-ITCAM_WAS_TEMA-IF001) or newer\n   * release which contains this fix to resolve this issue.\n   ***************************************************************\n   \n   \n    \n   \n   \n\nPROBLEM CONCLUSION\n *  Setting CTIRA_SUBSYSTEM_ID causes registration on TEMS under\n   Managed System Name like: <CTIRA_SUBSYSTEM_ID>:<hostname>:KYNA.\n   However, TEMA has it's own setting for agent ID called\n   'Alternative Node ID' which is stored in\n   <ITM_HOME>/config/<hostname>_yn.cfg or\n   <ITM_HOME>/config/<hostname>_yn.xml files. This value is\n   used to build internal identification similar to Managed System\n   Name.\n   When CTIRA_SUBSYSTEM_ID is different than 'Alternative Node ID'\n   then TEMA drops request from ITM as those request are for agent\n   with CTIRA_SUBSYSTEM_ID name and TEMA identifies it's name as\n   value of 'Alternative Node ID'.\n   \n   The fix for this APAR introduces the precedence of agent node ID\n   configurations. If CTIRA_SUBSYSTEM_ID value is present in\n   <ITM_HOME>/config/yn.ini file then it overrides value of\n   'Alternative Node ID'.\n   \n   The fix for this APAR is contained in the following maintenance\n   packages:\n   \n     | interim fix | 6.2.0.6-TIV-ITCAM_WAS_TEMA-IF001\n     | interim fix | 7.1.0.3-TIV-ITCAMAD-IF0005\n   \n   \n    \n   \n   \n\nTEMPORARY FIX\n\nCOMMENTS\n\nAPAR INFORMATION\n * APAR NUMBER\n   PM73305\n   \n   \n * REPORTED COMPONENT NAME\n   ITCAM WAS DIST\n   \n   \n * REPORTED COMPONENT ID\n   5724L6200\n   \n   \n * REPORTED RELEASE\n   610\n   \n   \n * STATUS\n   CLOSED PER\n   \n   \n * PE\n   NoPE\n   \n   \n * HIPER\n   NoHIPER\n   \n   \n * SPECIAL ATTENTION\n   NoSpecatt\n   \n   \n * SUBMITTED DATE\n   2012-09-20\n   \n   \n * CLOSED DATE\n   2012-11-30\n   \n   \n * LAST MODIFIED DATE\n   2012-11-30\n   \n   \n\n * APAR IS SYSROUTED FROM ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n * APAR IS SYSROUTED TO ONE OR MORE OF THE FOLLOWING:\n   \n   \n   \n\nFIX INFORMATION\n * FIXED COMPONENT NAME\n   ITCAM WAS DIST\n   \n   \n * FIXED COMPONENT ID\n   5724L6200\n   \n   \n\nAPPLICABLE COMPONENT LEVELS\n * R610 PSY\n   UP\n   \n   \n * R710 PSY\n   UP",
+                  "Program Directory; documentation; installation; FMID TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Program Directory references are incorrect in the ITCAM Agent for WebSphere Applications Installation Guide for z/OS. This issue only exists in the document delivered on the ITCAM for Application Diagnostics Version 7.1 CD. The IBM.com Infocenter version and all subsequent versions of this document contain the correct information. \n\nRESOLVING THE PROBLEM\nFor the installation of the following components:\nData Collector (FMID HAAD710);\nITCAM Common Services (FMID HAAD71C); \nMonitoring Agent (FMID HKYN710);\nthe Program Directory names are incorrectly referenced in the ITCAM Agent for WebSphere Applications Installation Guide for z/OS.\n\nThe installation for all of these components is covered in the following Program Directory:\nProgram Directory for IBM Tivoli Composite Application Manager (ITCAM) for Application Diagnostics on z/OS V7.1"
+                ],
+                "metadata": {}
+              },
+              "metrics": [
+                {
+                  "name": "context_similarity",
+                  "score": 0.6601,
+                  "details": {
+                    "method": "tf_python",
+                    "shared_terms": 28
+                  }
+                },
+                {
+                  "name": "retrieval_relevance",
+                  "score": 0.0,
+                  "details": {
+                    "explanation": "0 of 5 chunks ≥ 0.70 relevance.",
+                    "per_chunk": [
+                      {
+                        "chunk_id": 1,
+                        "relevance": 0.1,
+                        "reason": "Discusses logs and troubleshooting for ITCAM Agent for DataPower, but does not address TLS support."
+                      },
+                      {
+                        "chunk_id": 2,
+                        "relevance": 0.3,
+                        "reason": "Mentions ITCAM Agent for WebSphere DataPower v6.3 and v7.1, but discusses MIB obsolescence issues, not TLS support."
+                      },
+                      {
+                        "chunk_id": 3,
+                        "relevance": 0.0,
+                        "reason": "Discusses TCR reporting templates for DataPower agent; unrelated to TLS support."
+                      },
+                      {
+                        "chunk_id": 4,
+                        "relevance": 0.0,
+                        "reason": "Discusses ITCAM for Application Diagnostics and WebSphere agent configuration issues; unrelated to DataPower TLS support."
+                      },
+                      {
+                        "chunk_id": 5,
+                        "relevance": 0.0,
+                        "reason": "Addresses installation guide documentation errors for z/OS; unrelated to DataPower TLS support."
+                      }
+                    ],
+                    "raw": {
+                      "question": "ITCAM Agent for WebSphere DataPower 7.1 agent support for TLS Does the ITCAM Agent for WebSphere DataPower 7.1 agent support TLS?\n",
+                      "threshold": 0.7,
+                      "contexts_count": 5,
+                      "model": "gpt-4o-mini"
+                    }
+                  }
+                },
+                {
+                  "name": "strict_faithfulness",
+                  "score": 0.0,
+                  "details": {
+                    "explanation": "0 of 3 claims supported; 1 partial and 2 full hallucinations.",
+                    "supported_claims": [],
+                    "hallucinated_claims": [
+                      {
+                        "claim": "there is no direct mention of TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent",
+                        "type": "full_hallucination",
+                        "reason": "The ANSWER makes a claim about what is NOT mentioned in the context (absence of TLS support information). However, this is a meta-claim about the context itself, not a factual claim extractable from the ANSWER's substantive content. The ANSWER does not explicitly state any positive factual claim about TLS support that can be verified against the contexts. The contexts provided contain no information about TLS support for any DataPower agent version, so the claim cannot be verified as supported or contradicted by the provided contexts.",
+                        "evidence": "Contexts [1-5] contain no mention of TLS, TLS support, or security protocols for DataPower agents."
+                      },
+                      {
+                        "claim": "The information provided pertains more to problem determination, logs required for troubleshooting, and fixes for specific issues",
+                        "type": "partial_hallucination",
+                        "reason": "While the contexts do contain information about problem determination and logs (Context [1]), and fixes (Contexts [2] and [4]), the ANSWER's characterization that information 'pertains more to' these topics is a subjective summary rather than a verifiable factual claim. Additionally, the contexts also contain information about TCR reporting (Context [3]) and installation documentation issues (Context [5]), which are not captured in this characterization. The claim oversimplifies the scope of the contexts.",
+                        "evidence": "Contexts [1-5] contain diverse topics including problem determination, logs, fixes, TCR reporting, and installation documentation."
+                      },
+                      {
+                        "claim": "It is recommended to refer to the official IBM documentation or contact IBM support for clarification on TLS support for the ITCAM Agent for WebSphere DataPower 7.1 agent",
+                        "type": "full_hallucination",
+                        "reason": "This recommendation is not stated anywhere in the provided contexts. The ANSWER generates this recommendation as a conclusion, but it is not supported by any explicit statement in the contexts. This is an inference or suggestion added by the ANSWER that goes beyond what the contexts provide.",
+                        "evidence": "No context contains any recommendation to refer to IBM documentation or contact IBM support regarding TLS support for DataPower agents."
+                      }
+                    ],
+                    "raw": {
+                      "summary": {
+                        "strict_faithfulness": 0.0,
+                        "explanation": "The ANSWER contains no claims that are directly supported by the provided contexts. The ANSWER makes meta-claims about what is not mentioned in the contexts and provides recommendations that are not grounded in the source material. All three identifiable claims are either unsupported or hallucinated."
+                      }
+                    }
+                  }
+                }
+              ],
+              "aggregate": 0.22003333333333333
+            },
+            "error": null
+          },
+          "suspected_component": null,
+          "supporting_observation": "context_similarity=0.6601; retrieval_relevance=0.0; strict_faithfulness=0.0",
+          "evidence_attribution": [],
+          "method": "anthropic:claude-haiku-4-5-20251001",
+          "reliability": "model_judged",
+          "causal_strength_language": null,
+          "proposed_intervention": null,
+          "no_equivalent_fields": [
+            "RAGVue's self-reported judge model in native.raw_output may be incorrect; anthropic:claude-haiku-4-5-20251001 is what this run actually configured"
+          ]
+        }
+      },
+      "judgments": {
+        "dataset_label": "fully_supported",
+        "model_judgments": {},
+        "reviewer_judgment": null,
+        "intervention_evidence": null
+      }
+    },
+    {
+      "case_id": "techqa_DEV_Q012",
+      "dataset": "ragbench",
+      "domain": "techqa",
+      "dataset_revision": "galileo-ai/ragbench@97808f3e5fd16ede40bbff6c2949af8139b2eb7b",
+      "stratum": "systems_agree_labels_support",
+      "selection_rationale": "Pilot: first N shuffled techqa test examples, not stratified selection.",
+      "systems": {
+        "rag_forensics": {
+          "system": "rag_forensics",
+          "native": {
+            "system": "rag_forensics",
+            "system_version": "0.1.0",
+            "availability": "healthy",
+            "raw_output": {
+              "question": "I receive the following during UDX compilation Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long ",
+              "generated_answer": "Based on the provided context, the issue you are facing during UDX compilation is due to the ARG_MAX configuration parameter, which limits the number of arguments in a command line.\n\nThe key points from the context are:\n\n1. The error message \"Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long\" indicates that the argument list passed to the nzudxcompile command is too long.\n\n2. The ARG_MAX parameter on the system is set to 131072, which is the default value on older Red Hat 5.11 systems that the Twinfin platform supports.\n\n3. Newer kernel versions (from 2.6.23 onwards) have increased the ARG_MAX value to 2621440, but the Twinfin platform is limited to the older Red Hat 5.11 version, which has the lower ARG_MAX value.\n\nTo resolve this issue, the recommended solution is:\n\n1. There is no easy way to increase the ARG_MAX value on the Twinfin platform, as it is limited to the older Red Hat 5.11 version.\n\n2. The workaround is to break down the UDX compilation process into smaller batches, so that the number of arguments passed to the nzudxcompile command does not exceed the ARG_MAX limit.\n\nFor example, you could split the compilation of multiple *.c files into smaller groups, and run the nzudxcompile command for each group separately. This should allow the command to execute successfully without hitting the ARG_MAX limit.\n\nIn summary, the issue is caused by the ARG_MAX configuration parameter, which is set to a lower value on the Twinfin platform. The resolution is to work around this limitation by breaking down the UDX compilation process into smaller, manageable steps.",
+              "retrieved_chunks": [
+                " TECHNOTE (FAQ)\n\nQUESTION\n Clear instructions to change Host Key. \n\nCAUSE\nInstructions on the info center were a but unclear\n\nANSWER\nA) Use the following command to create a new host key: \n\n[root@nzhost1 nz]# /nz/kit/bin/adm/nzkey generate -hostkey -file /export/home/nz/hostkey.txt\nHost key written to file\n\nThe command creates saves the key in the specified file in plaintext.\nYou can then specify the host or key file as part of an nzkey change operation.\n\nImportant: The key files are in plain text and unencrypted. After you use the files to change the key for the hosts or SPUs, make sure that you delete the generated key files to protect the keys from being read\nby users who log in to the NPS system.\n\n\nB) Backup keystore\n\nTo create a key store backup file:\n\n[root@nzhost-h1 ~]# /nz/kit/bin/adm/nzkeybackup /nz/var/keybackup.tar.gz\n\nKeystore archive /nz/var/keybackup.tar.gz written\n\nCopy this file somewhere safe in case a restore is needed. You may also delete this once copy is completed.\n\n\nC) To change the host AEK, the NPS system must be in the Stopped state. The new AEK takes effect on both hosts when the nzkey command finishes running successfully. The command creates a backup copy of the current keystore before it changes the key. After the change is finished, you should create a backup of the new keystore using the nzkeybackup command.\n\n1. Log in to the active host of the NPS system as the nz user.\n\n2. Transition the system to the Stopped state, for example:\n[nz@nzhost1 ~]$ nzsystem stop\n\n3. Run the nzstate command to confirm that the system is in the Stopped state.\n\n4. Log in as the root user:\n\n[nz@nzhost1 ~]$ su - root\n\n5. Use the nzkey change command to change the host key:\n\n[root@nzhost-h1 ~] /nz/kit/bin/adm/nzkey change -hostkey -file\n/export/home/nz/hostkey.txt -backupdir /nz/var/backups/\n\n# Keystore archive /nz/var/backups/keydb_20140711054140.tar.gz written\n==========================================================\nAEK Summary\n==========================================================\nResult: Key operation completed successfully.\n\n6. Create a backup of the updated keystore:\n[root@nzhost-h1 ~] /nz/kit/bin/adm/nzkeybackup /nz/var/keybackup.tar.gz Keystore archive /nz/var/keybackup.tar.gz written\n\n7. Log out of the root account and return to the nz account.\n\n8. Run the nzstart command to return the system to the Online state.\n\n\nAfter they key is successfully applied, move the /nz/var/keybackup.tar.gz to a secure location away from the appliance so that you have a backup available for disaster recovery of the keystore. You should lso delete the host key file (/export/home/nz/hostkey.txt in this example) as a security precaution for someone finding your authentication key outside the protected keystore.",
+                " TECHNOTE (TROUBLESHOOTING)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n English \n\nPROBLEM(ABSTRACT)\n Following error can be met during UDX compilation.\nCan't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long \n\nSYMPTOM\nnzudxcompile command returns an \"Argument list too long\" error and aborts.\n\n\nCAUSE\nARG_MAX configuration parameter limits the number of argument list in command line. In this case the client used more than 131072 argument with many program *.c files.\n\nDIAGNOSING THE PROBLEM\nCheck ARG_MAX value in the command line: \n\n$ getconf ARG_MAX\n131072\n\n\nRESOLVING THE PROBLEM\nThis ARG_MAX kernel parameter adjusted to much larger from kernel release version 2.6.23, that is 2621440 (http://www.in-ulm.de/~mascheck/various/argmax [http://www.in-ulm.de/~mascheck/various/argmax]). \n\nBut we support upto Redhat 5.11 in Twinfin which is less than kernel release 2.6.23. So we have no way to allow ARG_MAX larger than 131072 at this time.",
+                " TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Similar to the script /nz/kit/bin/adm/tools/cbts_needing_groom, how to find non-CBT tables that need grooming? \n\nSYMPTOM\nGrooming takes time and resources hence to work more efficiently you chose to groom tables differently depending if they are CBT or non-CBT. For CBT (clustered base tables) you use the /nz/kit/bin/adm/tools/cbts_needing_groom script. But for non-CBT?\n\n\nENVIRONMENT\nIBM PureData System for Analytics\n\nRESOLVING THE PROBLEM\nCBT tables are listed in the _V_TABLE_ORGANIZE_COLUMN view. You can join the _V_TABLE with _V_TABLE_ORGANIZE_COLUMN to get the list of CBT vs NON-CBT, for example:\n\nselect a.objid, tablename, schema, nvl2(b.objid, 'CBT', 'NON-CBT') CBT_TABLE\nfrom _V_TABLE a LEFT JOIN (select distinct objid from _V_TABLE_ORGANIZE_COLUMN) b\non a.objid = b.objid \n\nYou can use the below SQL to identify Non-CBTs and pass it as an input to the nz_groom command using the \"-in\" option:\n\n\nselect tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column);\n\nWith nz_groom -scan command:\n\n[nz@xyz2 ~]$ export TEST_DB_NAME=TESTDB;\n[nz@xyz2 ~]$ nz_groom $TEST_DB_NAME -scan -in `nzsql -d $TEST_DB_NAME -A -t -c \"select tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column) and objtype = 'TABLE';\"`\n\nWith the -scan/-records arguments, you can use -rows, -percent and -size to define thresholds. For instance to show Non-CBT tables with >= 1M reclaimable rows, you can use the below:\n\n[nz@xyz2 ~]$ nz_groom $TEST_DB_NAME -scan -rows 1000000 -in `nzsql -d $TEST_DB_NAME -A -t -c \"select tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column) and objtype = 'TABLE';\"`\n\nPlease lookup \"nz_groom --help\" for syntax and other usage options.\n\nFor CBTs, use the cbts_needing_groom script, or just use objid IN in the above SQL to generate the list of CBTs.\n\n\n\nPRODUCT ALIAS/SYNONYM\n pda netezza",
+                "0403-027 The parameter list is too long; SecureMain; KCI1343E; 0403-027 TROUBLESHOOTING\n\nPROBLEM\nAgent install fails during secureMain step and generates an error - /usr/bin/chmod: 0403-027 The parameter list is too long\n\nSYMPTOM\nThe itmsecure_<timestamp>.log shows the below error\n\n/Tivoli/itm/bin/secureLock[134]: /usr/bin/chmod: 0403-027 The parameter list is too long.\nKCI1343E secureMain completed with errors. For more information, check the log file /Tivoli/itm/logs/itmsecure_062012135428.log.\n\nCAUSE\nThe real cause for this error is:\n\nThe system has exceeded the AIX ARG_MAX value: 0403-027 The parameter list is too long. This AIX value can be increased with smitty.\n\nThe maximum size, in 4KB blocks, that the ARG/ENV list is allowed when running exec subroutines. This prevents exec subroutines from failing if the argument list is too long. You can specify a value in the range of 6 through 1024. The default value is 6. Specifying a higher value may constrain system memory resources. This change takes affect immediately and is preserved over boot.\"\n\nENVIRONMENT\nAny AIX system\n\nRESOLVING THE PROBLEM\nTo resolve the issue increase the ARG_MAX value\nTo check the value use the below command :\n\nlsattr -E -l sys0 -a ncargs\n\nTo change the value use the below command. You can change the value to 32, or increase to few more than the original value.\n\nchdev -l sys0 -a ncargs='32' (default is 6)",
+                " TECHNOTE (FAQ)\n\nQUESTION\n Through \"Query->Execute with SPU utilization monitor\" menu from Aginity, clients can run SQL statement while checking SPU utilization. At this time Aginity requires host credential to run /nz/kit/bin/adm/nzsqa command on Netezza host.\nClient users should logon one designated host user other than \"nz\" user at this time to protect \"nz\" user credential from many clients.\nHow can we make other user than \"nz\" run /nz/kit/bin/adm/nzsqa? \n\nCAUSE\nnzsqa command has a permission 700, so only \"nz\" user can run this command successfully. To run nzsqa successfully from other user than \"nz\" and other group than \"nz\", nzsqa file's permission needs to be changed to 4705 to set effective user id for nzsqa file.\n\nANSWER\nWe can create a host user with any group name other than \"nz\" group and then change nzsqa binary's file permission as below: \n\n[nz] $ chmod 4705 /nz/kit/bin/adm/nzsqa \n\nThe steps for this are below: \n\n[root] # useradd -G nobody monuser \n\n[root] # passwd monuser\nChanging password for user dummyuser.\nNew password:\nRetype new password:\npasswd: all authentication tokens updated successfully. \n\n[monuser] $ /nz/kit/bin/adm/nzsqa"
+              ],
+              "retrieved_chunk_details": [
+                {
+                  "chunk_id": "document_0",
+                  "text": " TECHNOTE (FAQ)\n\nQUESTION\n Clear instructions to change Host Key. \n\nCAUSE\nInstructions on the info center were a but unclear\n\nANSWER\nA) Use the following command to create a new host key: \n\n[root@nzhost1 nz]# /nz/kit/bin/adm/nzkey generate -hostkey -file /export/home/nz/hostkey.txt\nHost key written to file\n\nThe command creates saves the key in the specified file in plaintext.\nYou can then specify the host or key file as part of an nzkey change operation.\n\nImportant: The key files are in plain text and unencrypted. After you use the files to change the key for the hosts or SPUs, make sure that you delete the generated key files to protect the keys from being read\nby users who log in to the NPS system.\n\n\nB) Backup keystore\n\nTo create a key store backup file:\n\n[root@nzhost-h1 ~]# /nz/kit/bin/adm/nzkeybackup /nz/var/keybackup.tar.gz\n\nKeystore archive /nz/var/keybackup.tar.gz written\n\nCopy this file somewhere safe in case a restore is needed. You may also delete this once copy is completed.\n\n\nC) To change the host AEK, the NPS system must be in the Stopped state. The new AEK takes effect on both hosts when the nzkey command finishes running successfully. The command creates a backup copy of the current keystore before it changes the key. After the change is finished, you should create a backup of the new keystore using the nzkeybackup command.\n\n1. Log in to the active host of the NPS system as the nz user.\n\n2. Transition the system to the Stopped state, for example:\n[nz@nzhost1 ~]$ nzsystem stop\n\n3. Run the nzstate command to confirm that the system is in the Stopped state.\n\n4. Log in as the root user:\n\n[nz@nzhost1 ~]$ su - root\n\n5. Use the nzkey change command to change the host key:\n\n[root@nzhost-h1 ~] /nz/kit/bin/adm/nzkey change -hostkey -file\n/export/home/nz/hostkey.txt -backupdir /nz/var/backups/\n\n# Keystore archive /nz/var/backups/keydb_20140711054140.tar.gz written\n==========================================================\nAEK Summary\n==========================================================\nResult: Key operation completed successfully.\n\n6. Create a backup of the updated keystore:\n[root@nzhost-h1 ~] /nz/kit/bin/adm/nzkeybackup /nz/var/keybackup.tar.gz Keystore archive /nz/var/keybackup.tar.gz written\n\n7. Log out of the root account and return to the nz account.\n\n8. Run the nzstart command to return the system to the Online state.\n\n\nAfter they key is successfully applied, move the /nz/var/keybackup.tar.gz to a secure location away from the appliance so that you have a backup available for disaster recovery of the keystore. You should lso delete the host key file (/export/home/nz/hostkey.txt in this example) as a security precaution for someone finding your authentication key outside the protected keystore.",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_1",
+                  "text": " TECHNOTE (TROUBLESHOOTING)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n English \n\nPROBLEM(ABSTRACT)\n Following error can be met during UDX compilation.\nCan't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long \n\nSYMPTOM\nnzudxcompile command returns an \"Argument list too long\" error and aborts.\n\n\nCAUSE\nARG_MAX configuration parameter limits the number of argument list in command line. In this case the client used more than 131072 argument with many program *.c files.\n\nDIAGNOSING THE PROBLEM\nCheck ARG_MAX value in the command line: \n\n$ getconf ARG_MAX\n131072\n\n\nRESOLVING THE PROBLEM\nThis ARG_MAX kernel parameter adjusted to much larger from kernel release version 2.6.23, that is 2621440 (http://www.in-ulm.de/~mascheck/various/argmax [http://www.in-ulm.de/~mascheck/various/argmax]). \n\nBut we support upto Redhat 5.11 in Twinfin which is less than kernel release 2.6.23. So we have no way to allow ARG_MAX larger than 131072 at this time.",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_2",
+                  "text": " TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Similar to the script /nz/kit/bin/adm/tools/cbts_needing_groom, how to find non-CBT tables that need grooming? \n\nSYMPTOM\nGrooming takes time and resources hence to work more efficiently you chose to groom tables differently depending if they are CBT or non-CBT. For CBT (clustered base tables) you use the /nz/kit/bin/adm/tools/cbts_needing_groom script. But for non-CBT?\n\n\nENVIRONMENT\nIBM PureData System for Analytics\n\nRESOLVING THE PROBLEM\nCBT tables are listed in the _V_TABLE_ORGANIZE_COLUMN view. You can join the _V_TABLE with _V_TABLE_ORGANIZE_COLUMN to get the list of CBT vs NON-CBT, for example:\n\nselect a.objid, tablename, schema, nvl2(b.objid, 'CBT', 'NON-CBT') CBT_TABLE\nfrom _V_TABLE a LEFT JOIN (select distinct objid from _V_TABLE_ORGANIZE_COLUMN) b\non a.objid = b.objid \n\nYou can use the below SQL to identify Non-CBTs and pass it as an input to the nz_groom command using the \"-in\" option:\n\n\nselect tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column);\n\nWith nz_groom -scan command:\n\n[nz@xyz2 ~]$ export TEST_DB_NAME=TESTDB;\n[nz@xyz2 ~]$ nz_groom $TEST_DB_NAME -scan -in `nzsql -d $TEST_DB_NAME -A -t -c \"select tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column) and objtype = 'TABLE';\"`\n\nWith the -scan/-records arguments, you can use -rows, -percent and -size to define thresholds. For instance to show Non-CBT tables with >= 1M reclaimable rows, you can use the below:\n\n[nz@xyz2 ~]$ nz_groom $TEST_DB_NAME -scan -rows 1000000 -in `nzsql -d $TEST_DB_NAME -A -t -c \"select tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column) and objtype = 'TABLE';\"`\n\nPlease lookup \"nz_groom --help\" for syntax and other usage options.\n\nFor CBTs, use the cbts_needing_groom script, or just use objid IN in the above SQL to generate the list of CBTs.\n\n\n\nPRODUCT ALIAS/SYNONYM\n pda netezza",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_3",
+                  "text": "0403-027 The parameter list is too long; SecureMain; KCI1343E; 0403-027 TROUBLESHOOTING\n\nPROBLEM\nAgent install fails during secureMain step and generates an error - /usr/bin/chmod: 0403-027 The parameter list is too long\n\nSYMPTOM\nThe itmsecure_<timestamp>.log shows the below error\n\n/Tivoli/itm/bin/secureLock[134]: /usr/bin/chmod: 0403-027 The parameter list is too long.\nKCI1343E secureMain completed with errors. For more information, check the log file /Tivoli/itm/logs/itmsecure_062012135428.log.\n\nCAUSE\nThe real cause for this error is:\n\nThe system has exceeded the AIX ARG_MAX value: 0403-027 The parameter list is too long. This AIX value can be increased with smitty.\n\nThe maximum size, in 4KB blocks, that the ARG/ENV list is allowed when running exec subroutines. This prevents exec subroutines from failing if the argument list is too long. You can specify a value in the range of 6 through 1024. The default value is 6. Specifying a higher value may constrain system memory resources. This change takes affect immediately and is preserved over boot.\"\n\nENVIRONMENT\nAny AIX system\n\nRESOLVING THE PROBLEM\nTo resolve the issue increase the ARG_MAX value\nTo check the value use the below command :\n\nlsattr -E -l sys0 -a ncargs\n\nTo change the value use the below command. You can change the value to 32, or increase to few more than the original value.\n\nchdev -l sys0 -a ncargs='32' (default is 6)",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                },
+                {
+                  "chunk_id": "document_4",
+                  "text": " TECHNOTE (FAQ)\n\nQUESTION\n Through \"Query->Execute with SPU utilization monitor\" menu from Aginity, clients can run SQL statement while checking SPU utilization. At this time Aginity requires host credential to run /nz/kit/bin/adm/nzsqa command on Netezza host.\nClient users should logon one designated host user other than \"nz\" user at this time to protect \"nz\" user credential from many clients.\nHow can we make other user than \"nz\" run /nz/kit/bin/adm/nzsqa? \n\nCAUSE\nnzsqa command has a permission 700, so only \"nz\" user can run this command successfully. To run nzsqa successfully from other user than \"nz\" and other group than \"nz\", nzsqa file's permission needs to be changed to 4705 to set effective user id for nzsqa file.\n\nANSWER\nWe can create a host user with any group name other than \"nz\" group and then change nzsqa binary's file permission as below: \n\n[nz] $ chmod 4705 /nz/kit/bin/adm/nzsqa \n\nThe steps for this are below: \n\n[root] # useradd -G nobody monuser \n\n[root] # passwd monuser\nChanging password for user dummyuser.\nNew password:\nRetype new password:\npasswd: all authentication tokens updated successfully. \n\n[monuser] $ /nz/kit/bin/adm/nzsqa",
+                  "score": 1.0,
+                  "completeness": "unknown",
+                  "completeness_source": "unavailable"
+                }
+              ],
+              "ragas": {
+                "context_utilization": {
+                  "score": 0.49999999995,
+                  "status": "ok",
+                  "error": null
+                },
+                "faithfulness": {
+                  "score": 0.6111111111111112,
+                  "status": "ok",
+                  "error": null
+                },
+                "utilization_context_excerpts": [
+                  "TECHNOTE (FAQ)\n\nQUESTION\n Clear instructions to change Host Key.",
+                  "TECHNOTE (TROUBLESHOOTING)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n English \n\nPROBLEM(ABSTRACT)\n Following error can be met during UDX compilation.",
+                  "TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Similar to the script /nz/kit/bin/adm/tools/cbts_needing_groom, how to find non-CBT tables that need grooming?"
+                ],
+                "faithfulness_context_excerpts": [
+                  "TECHNOTE (FAQ)\n\nQUESTION\n Clear instructions to change Host Key.",
+                  "TECHNOTE (TROUBLESHOOTING)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n English \n\nPROBLEM(ABSTRACT)\n Following error can be met during UDX compilation.",
+                  "TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Similar to the script /nz/kit/bin/adm/tools/cbts_needing_groom, how to find non-CBT tables that need grooming?"
+                ],
+                "excerpt_caveat": "These are context excerpts for inspection, not evidence explaining the evaluator's score."
+              },
+              "hedging_mismatch": {
+                "overconfident_fraction": 0.0,
+                "underconfident_fraction": 0.0,
+                "total_claims": 8,
+                "claim_breakdown": [
+                  {
+                    "claim": "The error message is \"Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long\"",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "The ARG_MAX parameter on the system is set to 131072",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "131072 is the default value on older Red Hat 5.11 systems",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "The Twinfin platform supports Red Hat 5.11",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "Newer kernel versions from 2.6.23 onwards have increased the ARG_MAX value to 2621440",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "The Twinfin platform is limited to the older Red Hat 5.11 version",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "There is no easy way to increase the ARG_MAX value on the Twinfin platform",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  },
+                  {
+                    "claim": "The Twinfin platform is limited to the older Red Hat 5.11 version",
+                    "confidence_class": "definitive",
+                    "supported": true,
+                    "mismatch_type": "matched",
+                    "source_chunk_id": "document_1",
+                    "entailment_checks": [
+                      {
+                        "chunk_id": "document_0",
+                        "status": "evaluated",
+                        "verdict": "not_supported",
+                        "raw_output": "not_supported"
+                      },
+                      {
+                        "chunk_id": "document_1",
+                        "status": "evaluated",
+                        "verdict": "supported",
+                        "raw_output": "supported"
+                      }
+                    ]
+                  }
+                ],
+                "status": "ok",
+                "error": null,
+                "evaluated_chunk_count": 16,
+                "evaluated_claim_count": 8,
+                "unavailable_claim_count": 0
+              },
+              "chunk_attribution": {
+                "unattributed_fraction": 0.3333333333333333,
+                "mean_attribution_score": 0.40802620138221446,
+                "weak_match_fraction": 0.6666666666666666,
+                "attribution_map": [
+                  {
+                    "sentence": "Based on the provided context, the issue you are facing during UDX compilation is due to the ARG_MAX configuration parameter, which limits the number of arguments in a command line.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.6588715216155571,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "The key points from the context are:\n\n1.",
+                    "chunk_id": null,
+                    "similarity_score": 0.08148240384304797,
+                    "attribution_strength": "unattributed"
+                  },
+                  {
+                    "sentence": "The error message \"Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long\" indicates that the argument list passed to the nzudxcompile command is too long.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.6949880682588159,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "2.",
+                    "chunk_id": null,
+                    "similarity_score": 0.09623089921526656,
+                    "attribution_strength": "unattributed"
+                  },
+                  {
+                    "sentence": "The ARG_MAX parameter on the system is set to 131072, which is the default value on older Red Hat 5.11 systems that the Twinfin platform supports.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.47466313959148815,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "3.",
+                    "chunk_id": null,
+                    "similarity_score": 0.11403946259929228,
+                    "attribution_strength": "unattributed"
+                  },
+                  {
+                    "sentence": "Newer kernel versions (from 2.6.23 onwards) have increased the ARG_MAX value to 2621440, but the Twinfin platform is limited to the older Red Hat 5.11 version, which has the lower ARG_MAX value.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.5543948886130168,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "To resolve this issue, the recommended solution is:\n\n1.",
+                    "chunk_id": null,
+                    "similarity_score": 0.23396267481678862,
+                    "attribution_strength": "unattributed"
+                  },
+                  {
+                    "sentence": "There is no easy way to increase the ARG_MAX value on the Twinfin platform, as it is limited to the older Red Hat 5.11 version.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.4776853620639845,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "2.",
+                    "chunk_id": null,
+                    "similarity_score": 0.09623089921526656,
+                    "attribution_strength": "unattributed"
+                  },
+                  {
+                    "sentence": "The workaround is to break down the UDX compilation process into smaller batches, so that the number of arguments passed to the nzudxcompile command does not exceed the ARG_MAX limit.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.7389457991102905,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "For example, you could split the compilation of multiple *.c files into smaller groups, and run the nzudxcompile command for each group separately.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.43917163678738536,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "This should allow the command to execute successfully without hitting the ARG_MAX limit.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.5113023806465753,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "In summary, the issue is caused by the ARG_MAX configuration parameter, which is set to a lower value on the Twinfin platform.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.41289770873589926,
+                    "attribution_strength": "weak"
+                  },
+                  {
+                    "sentence": "The resolution is to work around this limitation by breaking down the UDX compilation process into smaller, manageable steps.",
+                    "chunk_id": "document_1",
+                    "similarity_score": 0.5355261756205423,
+                    "attribution_strength": "weak"
+                  }
+                ],
+                "method": "semantic_similarity",
+                "caveat": "Similarity identifies a semantically close source candidate; it does not prove entailment or establish that unsupported text is a hallucination."
+              },
+              "retrieval_distribution": {
+                "score_gap": 0.0,
+                "score_entropy": 1.6094379074341003,
+                "decay_rate": null,
+                "tail_mass": 0.6,
+                "top_score": 1.0,
+                "n_chunks": 5,
+                "normalized_entropy": 0.9999999968933253,
+                "interpretation": "Distribution shape must be interpreted jointly with absolute relevance and score semantics."
+              },
+              "embedding_space": {
+                "centroid_distance": 0.4540068184304963,
+                "chunk_spread": 0.7965655784330581,
+                "query_isolation": 1.1415388354028775,
+                "projection": [
+                  {
+                    "label": "query",
+                    "x": -0.4517849392909273,
+                    "y": -0.19897148803788653,
+                    "is_query": true
+                  },
+                  {
+                    "label": "document_0",
+                    "x": 0.6749421230324123,
+                    "y": -0.3603202502094442,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_1",
+                    "x": -0.5065914104402696,
+                    "y": -0.1494289702744905,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_2",
+                    "x": 0.12044927765664817,
+                    "y": 0.9298592497789094,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_3",
+                    "x": -0.26931150888436456,
+                    "y": -0.08722833295145231,
+                    "is_query": false
+                  },
+                  {
+                    "label": "document_4",
+                    "x": 0.43229645792650084,
+                    "y": -0.13391020830563596,
+                    "is_query": false
+                  }
+                ]
+              },
+              "query_corpus_fit": {
+                "triggered": true,
+                "trigger_reason": "context_utilization",
+                "observed_fit": "ambiguous",
+                "suggested_questions": [
+                  {
+                    "question": "What does the 'Argument list too long' error mean when running nzudxcompile?",
+                    "source_chunk_ids": [
+                      "document_1"
+                    ],
+                    "relevance_to_original": 0.8092540502548218
+                  },
+                  {
+                    "question": "What is the ARG_MAX parameter and how does it cause the nzudxcompile error?",
+                    "source_chunk_ids": [
+                      "document_1"
+                    ],
+                    "relevance_to_original": 0.6327191591262817
+                  },
+                  {
+                    "question": "Why can't I increase ARG_MAX beyond 131072 to fix the nzudxcompile error on my system?",
+                    "source_chunk_ids": [
+                      "document_1"
+                    ],
+                    "relevance_to_original": 0.6301668882369995
+                  },
+                  {
+                    "question": "What kernel version would allow ARG_MAX to be set higher than 131072?",
+                    "source_chunk_ids": [
+                      "document_1"
+                    ],
+                    "relevance_to_original": 0.2536250650882721
+                  },
+                  {
+                    "question": "How do I check my current ARG_MAX value on Linux?",
+                    "source_chunk_ids": [
+                      "document_1"
+                    ],
+                    "relevance_to_original": 0.1866052746772766
+                  }
+                ],
+                "rejected_questions": [],
+                "mean_question_similarity": 0.5024740874767304,
+                "status": "ok",
+                "error": null
+              },
+              "verdict_signals": [
+                {
+                  "name": "ambiguous_retrieval",
+                  "priority_score": 0.9999999968933253,
+                  "description": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "noisy_context",
+                  "priority_score": 0.65,
+                  "description": "60% of retrieval score mass in low-ranked chunks — noisy context reaching the generator",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                },
+                {
+                  "name": "low_context_utilization",
+                  "priority_score": 0.50000000005,
+                  "description": "Context utilization score 0.50 — retrieved chunks were not consistently useful for producing the answer",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                },
+                {
+                  "name": "weak_chunk_matches",
+                  "priority_score": 0.39999999999999997,
+                  "description": "67% of answer sentences have only weak chunk support",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "unvalidated"
+                },
+                {
+                  "name": "low_faithfulness",
+                  "priority_score": 0.38888888888888884,
+                  "description": "Faithfulness score 0.61 — answer is not fully grounded in retrieved content",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "model_judged"
+                },
+                {
+                  "name": "unattributed_content",
+                  "priority_score": 0.3333333333333333,
+                  "description": "33% of answer sentences have no semantically close source candidate in retrieved chunks",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "unvalidated"
+                },
+                {
+                  "name": "query_isolation",
+                  "priority_score": 0.004150698985421627,
+                  "description": "Query is geometrically distant from retrieved chunks (isolation ratio 1.14)",
+                  "score_kind": "heuristic_priority",
+                  "reliability": "partially_calibrated"
+                }
+              ],
+              "verdict_reasoning": {
+                "observations": [
+                  {
+                    "signal_name": "ambiguous_retrieval",
+                    "description": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+                    "reliability": "partially_calibrated"
+                  },
+                  {
+                    "signal_name": "noisy_context",
+                    "description": "60% of retrieval score mass in low-ranked chunks — noisy context reaching the generator",
+                    "reliability": "partially_calibrated"
+                  },
+                  {
+                    "signal_name": "low_context_utilization",
+                    "description": "Context utilization score 0.50 — retrieved chunks were not consistently useful for producing the answer",
+                    "reliability": "model_judged"
+                  }
+                ],
+                "hypotheses": [
+                  {
+                    "hypothesis_id": "H1",
+                    "statement": "Retrieval may be returning evidence that is a poor fit for the question."
+                  },
+                  {
+                    "hypothesis_id": "H2",
+                    "statement": "The retrieval signal may reflect its heuristic or partially calibrated measurement rather than poor evidence."
+                  }
+                ],
+                "test": {
+                  "component": "retriever",
+                  "action": "Compare the retrieved chunks with manually verified relevant chunks for the same question.",
+                  "interpretations": [
+                    {
+                      "outcome": "Verified chunks are materially more relevant than the retrieved chunks.",
+                      "supports_hypothesis_ids": [
+                        "H1"
+                      ]
+                    },
+                    {
+                      "outcome": "Retrieved and verified chunks are similarly relevant.",
+                      "supports_hypothesis_ids": [
+                        "H2"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "recommendation": "Retrieval scores are uniformly distributed and score mass is concentrated in low-ranked chunks, suggesting noisy context may be reaching the generator, though both signals are partially calibrated and should not be treated as conclusive. A model-judged utilization score indicates retrieved chunks were not consistently useful, which could reflect either genuinely poor retrieval fit (H1) or the limitations of heuristic measurement rather than a true evidence gap (H2). To distinguish between these, compare the retrieved chunks against manually verified relevant chunks for the same question: if verified chunks are materially more relevant, that supports H1, whereas similar relevance between the two sets would support H2."
+            },
+            "error": null
+          },
+          "suspected_component": "ambiguous_retrieval",
+          "supporting_observation": "Normalized score entropy 1.00 — retrieval scores are similarly distributed; interpret with absolute relevance",
+          "evidence_attribution": [],
+          "method": "verdict_generator",
+          "reliability": "partially_calibrated",
+          "causal_strength_language": "RAG Forensics reports a heuristic priority ranking, not a calibrated severity or causal proof.",
+          "proposed_intervention": null,
+          "no_equivalent_fields": []
+        },
+        "ragchecker": {
+          "system": "ragchecker",
+          "native": {
+            "system": "ragchecker",
+            "system_version": "0.1.9",
+            "availability": "healthy",
+            "raw_output": {
+              "faithfulness": 0.6666666666666666
+            },
+            "error": null
+          },
+          "suspected_component": null,
+          "supporting_observation": "faithfulness=0.6666666666666666",
+          "evidence_attribution": [],
+          "method": "ragchecker_faithfulness",
+          "reliability": "model_judged",
+          "causal_strength_language": null,
+          "proposed_intervention": null,
+          "no_equivalent_fields": [
+            "RAGChecker's retriever/generator diagnostics beyond faithfulness (['claim_recall', 'context_precision', 'context_utilization', 'f1', 'hallucination', 'noise_sensitivity_in_irrelevant', 'noise_sensitivity_in_relevant', 'precision', 'recall', 'self_knowledge']) require gt_answer, which this population does not provide"
+          ]
+        },
+        "ragvue": {
+          "system": "ragvue",
+          "native": {
+            "system": "ragvue",
+            "system_version": "0.6.1",
+            "availability": "healthy",
+            "raw_output": {
+              "item": {
+                "question": "I receive the following during UDX compilation Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long ",
+                "answer": "Based on the provided context, the issue you are facing during UDX compilation is due to the ARG_MAX configuration parameter, which limits the number of arguments in a command line.\n\nThe key points from the context are:\n\n1. The error message \"Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long\" indicates that the argument list passed to the nzudxcompile command is too long.\n\n2. The ARG_MAX parameter on the system is set to 131072, which is the default value on older Red Hat 5.11 systems that the Twinfin platform supports.\n\n3. Newer kernel versions (from 2.6.23 onwards) have increased the ARG_MAX value to 2621440, but the Twinfin platform is limited to the older Red Hat 5.11 version, which has the lower ARG_MAX value.\n\nTo resolve this issue, the recommended solution is:\n\n1. There is no easy way to increase the ARG_MAX value on the Twinfin platform, as it is limited to the older Red Hat 5.11 version.\n\n2. The workaround is to break down the UDX compilation process into smaller batches, so that the number of arguments passed to the nzudxcompile command does not exceed the ARG_MAX limit.\n\nFor example, you could split the compilation of multiple *.c files into smaller groups, and run the nzudxcompile command for each group separately. This should allow the command to execute successfully without hitting the ARG_MAX limit.\n\nIn summary, the issue is caused by the ARG_MAX configuration parameter, which is set to a lower value on the Twinfin platform. The resolution is to work around this limitation by breaking down the UDX compilation process into smaller, manageable steps.",
+                "contexts": [
+                  " TECHNOTE (FAQ)\n\nQUESTION\n Clear instructions to change Host Key. \n\nCAUSE\nInstructions on the info center were a but unclear\n\nANSWER\nA) Use the following command to create a new host key: \n\n[root@nzhost1 nz]# /nz/kit/bin/adm/nzkey generate -hostkey -file /export/home/nz/hostkey.txt\nHost key written to file\n\nThe command creates saves the key in the specified file in plaintext.\nYou can then specify the host or key file as part of an nzkey change operation.\n\nImportant: The key files are in plain text and unencrypted. After you use the files to change the key for the hosts or SPUs, make sure that you delete the generated key files to protect the keys from being read\nby users who log in to the NPS system.\n\n\nB) Backup keystore\n\nTo create a key store backup file:\n\n[root@nzhost-h1 ~]# /nz/kit/bin/adm/nzkeybackup /nz/var/keybackup.tar.gz\n\nKeystore archive /nz/var/keybackup.tar.gz written\n\nCopy this file somewhere safe in case a restore is needed. You may also delete this once copy is completed.\n\n\nC) To change the host AEK, the NPS system must be in the Stopped state. The new AEK takes effect on both hosts when the nzkey command finishes running successfully. The command creates a backup copy of the current keystore before it changes the key. After the change is finished, you should create a backup of the new keystore using the nzkeybackup command.\n\n1. Log in to the active host of the NPS system as the nz user.\n\n2. Transition the system to the Stopped state, for example:\n[nz@nzhost1 ~]$ nzsystem stop\n\n3. Run the nzstate command to confirm that the system is in the Stopped state.\n\n4. Log in as the root user:\n\n[nz@nzhost1 ~]$ su - root\n\n5. Use the nzkey change command to change the host key:\n\n[root@nzhost-h1 ~] /nz/kit/bin/adm/nzkey change -hostkey -file\n/export/home/nz/hostkey.txt -backupdir /nz/var/backups/\n\n# Keystore archive /nz/var/backups/keydb_20140711054140.tar.gz written\n==========================================================\nAEK Summary\n==========================================================\nResult: Key operation completed successfully.\n\n6. Create a backup of the updated keystore:\n[root@nzhost-h1 ~] /nz/kit/bin/adm/nzkeybackup /nz/var/keybackup.tar.gz Keystore archive /nz/var/keybackup.tar.gz written\n\n7. Log out of the root account and return to the nz account.\n\n8. Run the nzstart command to return the system to the Online state.\n\n\nAfter they key is successfully applied, move the /nz/var/keybackup.tar.gz to a secure location away from the appliance so that you have a backup available for disaster recovery of the keystore. You should lso delete the host key file (/export/home/nz/hostkey.txt in this example) as a security precaution for someone finding your authentication key outside the protected keystore.",
+                  " TECHNOTE (TROUBLESHOOTING)\n\nTHIS DOCUMENT APPLIES ONLY TO THE FOLLOWING LANGUAGE VERSION(S):\n English \n\nPROBLEM(ABSTRACT)\n Following error can be met during UDX compilation.\nCan't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long \n\nSYMPTOM\nnzudxcompile command returns an \"Argument list too long\" error and aborts.\n\n\nCAUSE\nARG_MAX configuration parameter limits the number of argument list in command line. In this case the client used more than 131072 argument with many program *.c files.\n\nDIAGNOSING THE PROBLEM\nCheck ARG_MAX value in the command line: \n\n$ getconf ARG_MAX\n131072\n\n\nRESOLVING THE PROBLEM\nThis ARG_MAX kernel parameter adjusted to much larger from kernel release version 2.6.23, that is 2621440 (http://www.in-ulm.de/~mascheck/various/argmax [http://www.in-ulm.de/~mascheck/various/argmax]). \n\nBut we support upto Redhat 5.11 in Twinfin which is less than kernel release 2.6.23. So we have no way to allow ARG_MAX larger than 131072 at this time.",
+                  " TECHNOTE (TROUBLESHOOTING)\n\nPROBLEM(ABSTRACT)\n Similar to the script /nz/kit/bin/adm/tools/cbts_needing_groom, how to find non-CBT tables that need grooming? \n\nSYMPTOM\nGrooming takes time and resources hence to work more efficiently you chose to groom tables differently depending if they are CBT or non-CBT. For CBT (clustered base tables) you use the /nz/kit/bin/adm/tools/cbts_needing_groom script. But for non-CBT?\n\n\nENVIRONMENT\nIBM PureData System for Analytics\n\nRESOLVING THE PROBLEM\nCBT tables are listed in the _V_TABLE_ORGANIZE_COLUMN view. You can join the _V_TABLE with _V_TABLE_ORGANIZE_COLUMN to get the list of CBT vs NON-CBT, for example:\n\nselect a.objid, tablename, schema, nvl2(b.objid, 'CBT', 'NON-CBT') CBT_TABLE\nfrom _V_TABLE a LEFT JOIN (select distinct objid from _V_TABLE_ORGANIZE_COLUMN) b\non a.objid = b.objid \n\nYou can use the below SQL to identify Non-CBTs and pass it as an input to the nz_groom command using the \"-in\" option:\n\n\nselect tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column);\n\nWith nz_groom -scan command:\n\n[nz@xyz2 ~]$ export TEST_DB_NAME=TESTDB;\n[nz@xyz2 ~]$ nz_groom $TEST_DB_NAME -scan -in `nzsql -d $TEST_DB_NAME -A -t -c \"select tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column) and objtype = 'TABLE';\"`\n\nWith the -scan/-records arguments, you can use -rows, -percent and -size to define thresholds. For instance to show Non-CBT tables with >= 1M reclaimable rows, you can use the below:\n\n[nz@xyz2 ~]$ nz_groom $TEST_DB_NAME -scan -rows 1000000 -in `nzsql -d $TEST_DB_NAME -A -t -c \"select tablename from _v_table where objid NOT IN (select objid from _v_table_organize_column) and objtype = 'TABLE';\"`\n\nPlease lookup \"nz_groom --help\" for syntax and other usage options.\n\nFor CBTs, use the cbts_needing_groom script, or just use objid IN in the above SQL to generate the list of CBTs.\n\n\n\nPRODUCT ALIAS/SYNONYM\n pda netezza",
+                  "0403-027 The parameter list is too long; SecureMain; KCI1343E; 0403-027 TROUBLESHOOTING\n\nPROBLEM\nAgent install fails during secureMain step and generates an error - /usr/bin/chmod: 0403-027 The parameter list is too long\n\nSYMPTOM\nThe itmsecure_<timestamp>.log shows the below error\n\n/Tivoli/itm/bin/secureLock[134]: /usr/bin/chmod: 0403-027 The parameter list is too long.\nKCI1343E secureMain completed with errors. For more information, check the log file /Tivoli/itm/logs/itmsecure_062012135428.log.\n\nCAUSE\nThe real cause for this error is:\n\nThe system has exceeded the AIX ARG_MAX value: 0403-027 The parameter list is too long. This AIX value can be increased with smitty.\n\nThe maximum size, in 4KB blocks, that the ARG/ENV list is allowed when running exec subroutines. This prevents exec subroutines from failing if the argument list is too long. You can specify a value in the range of 6 through 1024. The default value is 6. Specifying a higher value may constrain system memory resources. This change takes affect immediately and is preserved over boot.\"\n\nENVIRONMENT\nAny AIX system\n\nRESOLVING THE PROBLEM\nTo resolve the issue increase the ARG_MAX value\nTo check the value use the below command :\n\nlsattr -E -l sys0 -a ncargs\n\nTo change the value use the below command. You can change the value to 32, or increase to few more than the original value.\n\nchdev -l sys0 -a ncargs='32' (default is 6)",
+                  " TECHNOTE (FAQ)\n\nQUESTION\n Through \"Query->Execute with SPU utilization monitor\" menu from Aginity, clients can run SQL statement while checking SPU utilization. At this time Aginity requires host credential to run /nz/kit/bin/adm/nzsqa command on Netezza host.\nClient users should logon one designated host user other than \"nz\" user at this time to protect \"nz\" user credential from many clients.\nHow can we make other user than \"nz\" run /nz/kit/bin/adm/nzsqa? \n\nCAUSE\nnzsqa command has a permission 700, so only \"nz\" user can run this command successfully. To run nzsqa successfully from other user than \"nz\" and other group than \"nz\", nzsqa file's permission needs to be changed to 4705 to set effective user id for nzsqa file.\n\nANSWER\nWe can create a host user with any group name other than \"nz\" group and then change nzsqa binary's file permission as below: \n\n[nz] $ chmod 4705 /nz/kit/bin/adm/nzsqa \n\nThe steps for this are below: \n\n[root] # useradd -G nobody monuser \n\n[root] # passwd monuser\nChanging password for user dummyuser.\nNew password:\nRetype new password:\npasswd: all authentication tokens updated successfully. \n\n[monuser] $ /nz/kit/bin/adm/nzsqa"
+                ],
+                "metadata": {}
+              },
+              "metrics": [
+                {
+                  "name": "context_similarity",
+                  "score": 0.7589,
+                  "details": {
+                    "method": "tf_python",
+                    "shared_terms": 82
+                  }
+                },
+                {
+                  "name": "retrieval_relevance",
+                  "score": 0.4,
+                  "details": {
+                    "explanation": "2 of 5 chunks ≥ 0.70 relevance.",
+                    "per_chunk": [
+                      {
+                        "chunk_id": 1,
+                        "relevance": 0.0,
+                        "reason": "About changing host keys, completely unrelated to UDX compilation or ARG_MAX errors"
+                      },
+                      {
+                        "chunk_id": 2,
+                        "relevance": 1.0,
+                        "reason": "Directly addresses the exact error message and provides diagnosis and resolution for the 'Argument list too long' error during nzudxcompile"
+                      },
+                      {
+                        "chunk_id": 3,
+                        "relevance": 0.0,
+                        "reason": "About finding non-CBT tables needing grooming, unrelated to UDX compilation errors"
+                      },
+                      {
+                        "chunk_id": 4,
+                        "relevance": 0.7,
+                        "reason": "Discusses ARG_MAX parameter and 'parameter list too long' error on AIX systems; relevant concept but different product/platform context"
+                      },
+                      {
+                        "chunk_id": 5,
+                        "relevance": 0.0,
+                        "reason": "About nzsqa command permissions, unrelated to UDX compilation or ARG_MAX issues"
+                      }
+                    ],
+                    "raw": {
+                      "question": "I receive the following during UDX compilation Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long ",
+                      "threshold": 0.7,
+                      "contexts_count": 5,
+                      "model": "gpt-4o-mini"
+                    }
+                  }
+                },
+                {
+                  "name": "strict_faithfulness",
+                  "score": 0.0,
+                  "details": {
+                    "explanation": "0 of 8 claims supported; 2 partial and 2 full hallucinations.",
+                    "supported_claims": [],
+                    "hallucinated_claims": [
+                      {
+                        "claim": "The issue you are facing during UDX compilation is due to the ARG_MAX configuration parameter, which limits the number of arguments in a command line.",
+                        "type": "partial_hallucination",
+                        "reason": "While ARG_MAX is mentioned in context [2], the claim overstates the causal relationship. Context [2] states ARG_MAX 'limits the number of argument list in command line' but does not explicitly state it is 'the' cause of 'the issue you are facing' in a direct causal manner as presented here.",
+                        "evidence": "Context [2]: 'ARG_MAX configuration parameter limits the number of argument list in command line.'"
+                      },
+                      {
+                        "claim": "The error message \"Can't exec \"/nz/kit/bin/adm/nzudxcompile\": Argument list too long\" indicates that the argument list passed to the nzudxcompile command is too long.",
+                        "type": "supported",
+                        "reason": "",
+                        "evidence": ""
+                      },
+                      {
+                        "claim": "The ARG_MAX parameter on the system is set to 131072, which is the default value on older Red Hat 5.11 systems that the Twinfin platform supports.",
+                        "type": "partial_hallucination",
+                        "reason": "Context [2] states the ARG_MAX value is 131072 and mentions Red Hat 5.11 support, but does not explicitly state that 131072 is 'the default value on older Red Hat 5.11 systems.' The context shows 131072 as the actual value found, not necessarily as a stated default for that OS version.",
+                        "evidence": "Context [2]: 'Check ARG_MAX value in the command line: $ getconf ARG_MAX 131072' and 'But we support upto Redhat 5.11 in Twinfin'"
+                      },
+                      {
+                        "claim": "Newer kernel versions (from 2.6.23 onwards) have increased the ARG_MAX value to 2621440.",
+                        "type": "supported",
+                        "reason": "",
+                        "evidence": ""
+                      },
+                      {
+                        "claim": "The Twinfin platform is limited to the older Red Hat 5.11 version, which has the lower ARG_MAX value.",
+                        "type": "supported",
+                        "reason": "",
+                        "evidence": ""
+                      },
+                      {
+                        "claim": "There is no easy way to increase the ARG_MAX value on the Twinfin platform, as it is limited to the older Red Hat 5.11 version.",
+                        "type": "supported",
+                        "reason": "",
+                        "evidence": ""
+                      },
+                      {
+                        "claim": "The workaround is to break down the UDX compilation process into smaller batches, so that the number of arguments passed to the nzudxcompile command does not exceed the ARG_MAX limit.",
+                        "type": "full_hallucination",
+                        "reason": "Context [2] does not provide any workaround or solution. It only describes the problem and states there is no way to increase ARG_MAX. No recommendation to break down compilation into smaller batches is mentioned in the provided contexts.",
+                        "evidence": "Context [2] ends with 'So we have no way to allow ARG_MAX larger than 131072 at this time.' with no resolution provided."
+                      },
+                      {
+                        "claim": "You could split the compilation of multiple *.c files into smaller groups, and run the nzudxcompile command for each group separately.",
+                        "type": "full_hallucination",
+                        "reason": "This specific workaround is not mentioned in any of the provided contexts. Context [2] provides no solution or workaround strategy.",
+                        "evidence": "Context [2] contains no mention of splitting files or running commands in groups."
+                      }
+                    ],
+                    "raw": {
+                      "summary": {
+                        "strict_faithfulness": 0.0,
+                        "explanation": "The answer contains multiple claims about UDX compilation and ARG_MAX, but most are not supported by the provided contexts. While context [2] confirms the error message, ARG_MAX value of 131072, kernel version 2.6.23 threshold, and ARG_MAX value of 2621440, it provides NO workaround or solution. The answer's proposed solutions (breaking down compilation into smaller batches, splitting *.c files into groups) are entirely fabricated and not present in any context. Only 2 of 8 claims are fully supported."
+                      }
+                    }
+                  }
+                }
+              ],
+              "aggregate": 0.38630000000000003
+            },
+            "error": null
+          },
+          "suspected_component": null,
+          "supporting_observation": "context_similarity=0.7589; retrieval_relevance=0.4; strict_faithfulness=0.0",
+          "evidence_attribution": [],
+          "method": "anthropic:claude-haiku-4-5-20251001",
+          "reliability": "model_judged",
+          "causal_strength_language": null,
+          "proposed_intervention": null,
+          "no_equivalent_fields": [
+            "RAGVue's self-reported judge model in native.raw_output may be incorrect; anthropic:claude-haiku-4-5-20251001 is what this run actually configured"
+          ]
+        }
+      },
+      "judgments": {
+        "dataset_label": "fully_supported",
+        "model_judgments": {},
+        "reviewer_judgment": null,
+        "intervention_evidence": null
+      }
+    }
+  ]
+}

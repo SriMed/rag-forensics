@@ -29,6 +29,12 @@ backend/data/
 # Benchmark reports are reproducible generated artifacts
 backend/output/
 
+# Isolated environments for third-party comparative diagnostic tools (issue #30) — these
+# intentionally pin dependencies (notably an old `anthropic` SDK) incompatible with
+# backend/pyproject.toml and must never be merged into it; see ADR-044. Only setup.sh is checked in.
+backend/evals/comparative_diagnostics/*/envs/.venv-*
+backend/evals/comparative_diagnostics/*/envs/_*.json
+
 # IDE
 .vscode/
 .idea/

@@ -6,9 +6,18 @@ from benchmark.comparative_diagnostics import (
     ComparativeCase,
     ComparativeCaseSet,
     NativeSystemOutput,
+    RAGCHECKER_METRICS_REQUIRING_GT_ANSWER,
     SystemDiagnosticRecord,
+    assert_ragchecker_metrics_computable,
+    dataset_label_for_record,
     make_population_sha256,
+    map_rag_forensics_native,
+    map_ragchecker_native,
+    map_ragvue_native,
+    ragchecker_result_input,
+    ragvue_item_from_record,
 )
+from models import RAGBenchEvaluationRecord, RetrievedChunk, VerdictSignal
 
 
 def _native(status="healthy", raw=None):
@@ -217,3 +226,170 @@ def test_make_population_sha256_is_deterministic_and_order_sensitive():
     c = make_population_sha256(["case-2", "case-1"])
     assert a == b
     assert a != c
+
+
+def _ragbench_record(unsupported_keys=frozenset()):
+    return RAGBenchEvaluationRecord(
+        example_id="techqa_DEV_Q243",
+        domain="techqa",
+        question="What is the capital of France?",
+        response="Paris is the capital of France.",
+        chunks=[RetrievedChunk(chunk_id="doc_0", text="Paris is the capital of France.", score=0.9)],
+        response_sentences=[],
+        document_sentences=[],
+        document_sentence_keys=set(),
+        unsupported_response_sentence_keys=set(unsupported_keys),
+        sentence_support={},
+    )
+
+
+class TestDatasetLabelForRecord:
+    def test_fully_supported_when_no_unsupported_sentences(self):
+        assert dataset_label_for_record(_ragbench_record()) == "fully_supported"
+
+    def test_contains_unsupported_when_any_sentence_flagged(self):
+        record = _ragbench_record(unsupported_keys={"a"})
+        assert dataset_label_for_record(record) == "contains_unsupported"
+
+
+class TestRagcheckerResultInput:
+    def test_maps_record_without_inventing_a_reference_answer(self):
+        record = _ragbench_record()
+        payload = ragchecker_result_input(record)
+        assert payload["query_id"] == record.example_id
+        assert payload["query"] == record.question
+        assert payload["response"] == record.response
+        assert payload["gt_answer"] == ""  # RAGBench has no reference answer distinct from response
+        assert payload["retrieved_context"] == [{"doc_id": "doc_0", "text": "Paris is the capital of France."}]
+
+    def test_metrics_requiring_gt_answer_are_named_explicitly(self):
+        # faithfulness is the only RAGChecker metric that does not derive from gt_answer.
+        assert "faithfulness" not in RAGCHECKER_METRICS_REQUIRING_GT_ANSWER
+        assert "claim_recall" in RAGCHECKER_METRICS_REQUIRING_GT_ANSWER
+        assert "context_precision" in RAGCHECKER_METRICS_REQUIRING_GT_ANSWER
+
+
+class TestAssertRagcheckerMetricsComputable:
+    def test_faithfulness_is_computable_without_a_reference_answer(self):
+        assert_ragchecker_metrics_computable(["faithfulness"], has_gt_answer=False)
+
+    def test_gt_answer_dependent_metric_without_a_reference_answer_raises(self):
+        with pytest.raises(ValueError, match="gt_answer"):
+            assert_ragchecker_metrics_computable(["claim_recall"], has_gt_answer=False)
+
+    def test_all_metrics_permitted_once_a_reference_answer_exists(self):
+        assert_ragchecker_metrics_computable(["claim_recall", "faithfulness"], has_gt_answer=True)
+
+
+class TestRagvueItemFromRecord:
+    def test_maps_to_reference_free_question_answer_contexts_shape(self):
+        record = _ragbench_record()
+        item = ragvue_item_from_record(record)
+        assert item == {
+            "question": record.question,
+            "answer": record.response,
+            "contexts": ["Paris is the capital of France."],
+        }
+
+
+class TestMapRagForensicsNative:
+    def test_top_ranked_signal_becomes_the_suspected_component(self):
+        signals = [
+            VerdictSignal(
+                name="evidence_selection_weak",
+                priority_score=0.8,
+                description="Low chunk-attribution score.",
+                reliability="unvalidated",
+            ),
+            VerdictSignal(
+                name="hedging_mismatch",
+                priority_score=0.3,
+                description="Definitive language with weak evidence.",
+                reliability="model_judged",
+            ),
+        ]
+        record = map_rag_forensics_native(
+            case_id="techqa_DEV_Q243",
+            verdict_signals=signals,
+            raw_output={"verdict_signals": [s.model_dump() for s in signals]},
+        )
+        assert record.system == "rag_forensics"
+        assert record.native.availability == "healthy"
+        assert record.suspected_component == "evidence_selection_weak"
+        assert record.reliability == "unvalidated"
+        assert "not a calibrated severity" in record.causal_strength_language.lower() \
+            or "heuristic priority" in record.causal_strength_language.lower()
+
+    def test_no_signals_maps_to_unavailable_not_a_fabricated_component(self):
+        record = map_rag_forensics_native(case_id="x", verdict_signals=[], raw_output={"verdict_signals": []})
+        assert record.native.availability == "unavailable"
+        assert record.suspected_component is None
+
+
+class TestMapRagcheckerNative:
+    def test_faithfulness_only_metrics_map_with_gt_answer_gap_named(self):
+        record = map_ragchecker_native(
+            case_id="techqa_DEV_Q243",
+            metrics_for_item={"faithfulness": 0.62},
+            requested_metrics=["faithfulness"],
+        )
+        assert record.system == "ragchecker"
+        assert record.native.availability == "healthy"
+        assert record.method == "ragchecker_faithfulness"
+        assert record.suspected_component is None
+        assert any("gt_answer" in note for note in record.no_equivalent_fields)
+
+    def test_failed_run_is_marked_failed_not_healthy_zero(self):
+        record = map_ragchecker_native(
+            case_id="techqa_DEV_Q243",
+            metrics_for_item=None,
+            requested_metrics=["faithfulness"],
+            error="litellm timeout",
+        )
+        assert record.native.availability == "failed"
+        assert record.native.error == "litellm timeout"
+
+
+class TestMapRagvueNative:
+    def test_all_metrics_erroring_is_unavailable_not_a_healthy_zero(self):
+        # A real RAGVue/anthropic-SDK version break returns score 0.0 with an embedded "error" per
+        # metric instead of raising. Presenting that as a healthy 0.0 is exactly the anti-pattern
+        # this project's own README argues against ("explicit evaluator failures instead of
+        # healthy-looking zeroes").
+        raw = {
+            "metrics": [
+                {"name": "strict_faithfulness", "score": 0.0, "details": {"error": "LLM error: boom"}},
+                {"name": "retrieval_relevance", "score": 0.0, "details": {"error": "LLM error: boom"}},
+            ]
+        }
+        record = map_ragvue_native(case_id="c1", raw_result=raw, configured_model="anthropic:claude-haiku-4-5-20251001")
+        assert record.native.availability == "unavailable"
+        assert record.supporting_observation is None
+        assert any("strict_faithfulness" in note and "boom" in note for note in record.no_equivalent_fields)
+
+    def test_partial_metric_errors_report_only_the_healthy_ones(self):
+        raw = {
+            "metrics": [
+                {"name": "context_similarity", "score": 0.64, "details": {"method": "tf_python"}},
+                {"name": "retrieval_relevance", "score": 0.0, "details": {"error": "LLM error: boom"}},
+            ]
+        }
+        record = map_ragvue_native(case_id="c1", raw_result=raw, configured_model="anthropic:claude-haiku-4-5-20251001")
+        assert record.native.availability == "unavailable"
+        assert record.supporting_observation == "context_similarity=0.64"
+        assert any("retrieval_relevance" in note for note in record.no_equivalent_fields)
+
+    def test_maps_metric_and_records_configured_model_not_self_reported_one(self):
+        raw = {
+            "metrics": [
+                {"name": "retrieval_relevance", "score": 0.2, "details": {"raw": {"model": "gpt-4o-mini"}}}
+            ]
+        }
+        record = map_ragvue_native(
+            case_id="techqa_DEV_Q243",
+            raw_result=raw,
+            configured_model="anthropic:claude-haiku-4-5-20251001",
+        )
+        assert record.native.raw_output == raw  # RAGVue's self-reported "gpt-4o-mini" is preserved untouched
+        assert record.method == "anthropic:claude-haiku-4-5-20251001"
+        assert "self-reported" in " ".join(record.no_equivalent_fields).lower()
