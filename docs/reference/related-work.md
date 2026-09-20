@@ -84,18 +84,12 @@ failures and measure:
 The comparison above consequently describes differences in documented design and published
 evidence, not performance rankings.
 
-A feasibility check (issue #30) confirmed both frameworks are runnable on the same public inputs
-without changing their intended semantics, but not inside this project's own environment: RAGChecker's
-dependency chain pins an `anthropic` SDK version incompatible with the one this backend requires,
-so both tools must run from isolated environments rather than as `backend/pyproject.toml`
-dependencies. It also surfaced a provenance caveat for any such comparison — RAGVue's own output
-can mislabel which model actually produced a judgment — which the frozen comparison schema
-accounts for by treating a system's self-reported provenance as untrusted and preserving its raw
-output rather than assuming a required cross-system score. See
+A feasibility check (issue #30) confirmed both frameworks run on the same public inputs, but only
+from isolated environments, not as dependencies of this backend. It also found that RAGVue's
+self-reported provenance can be wrong, so the frozen comparison schema treats it as untrusted. The
+findings, schema, and the case-selection protocol (frozen before any case is chosen) are in
 [`backend/evals/comparative_diagnostics/v1/README.md`](../../backend/evals/comparative_diagnostics/v1/README.md)
-for the full findings and the frozen schema, and
-[`CASE-SELECTION-PROTOCOL.md`](../../backend/evals/comparative_diagnostics/v1/CASE-SELECTION-PROTOCOL.md)
-for the bounded selection protocol, which is frozen before any case is chosen.
+and [`CASE-SELECTION-PROTOCOL.md`](../../backend/evals/comparative_diagnostics/v1/CASE-SELECTION-PROTOCOL.md).
 
 ## Scope and exclusions
 

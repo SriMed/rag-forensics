@@ -87,7 +87,7 @@ candidate after inspecting its output.
 
 ### Purpose and call site
 
-`backend/services/ragas_scorer.py:28–60` invokes dependency-owned faithfulness and context-precision
+`_run_ragas()` in `backend/services/ragas_scorer.py` invokes dependency-owned faithfulness and context-precision
 metrics using `ChatAnthropic(model="claude-haiku-4-5-20251001")`. The complete installed-version
 prompt and aggregation audit is in [Installed RAGAS prompt contract audit](ragas-prompt-audit.md).
 
@@ -176,9 +176,9 @@ evidence boundary above.
 
 ### Purpose and call site
 
-`build_question_generation_prompt()` in `backend/prompts/query_fit_prompts.py:4–20` requests three
+`build_question_generation_prompt()` in `backend/prompts/query_fit_prompts.py` requests three
 to five specific questions answerable from retrieved chunks. The conditional call and parsing live
-at `backend/services/forensics/query_corpus_fit.py:44–104`.
+by `_generate_candidates()` in `backend/services/forensics/query_corpus_fit.py`.
 
 ### Output contract and current handling
 
@@ -210,9 +210,9 @@ question.
 
 ### Purpose and call site
 
-`CLAIM_EXTRACTION_PROMPT` in `backend/prompts/hedging_prompts.py:1–8` asks for factual claims as a
-JSON array while preserving hedging. It is called at
-`backend/services/forensics/hedging_mismatch.py:148–179` before deterministic confidence
+`CLAIM_EXTRACTION_PROMPT` in `backend/prompts/hedging_prompts.py` asks for factual claims as a
+JSON array while preserving hedging. It is called by
+`_extract_claims()` in `backend/services/forensics/hedging_mismatch.py` before deterministic confidence
 classification.
 
 ### Output contract and current handling
@@ -250,9 +250,9 @@ empirical question, but invalid values cannot reach confidence classification or
 
 ### Purpose and call site
 
-`ENTAILMENT_PROMPT` in `backend/prompts/hedging_prompts.py:10–15` asks whether one retrieved chunk
-directly supports one claim. Production checks up to the top three chunks separately at
-`backend/services/forensics/hedging_mismatch.py:181–227` and stops at the first supported judgment.
+`ENTAILMENT_PROMPT` in `backend/prompts/hedging_prompts.py` asks whether one retrieved chunk
+directly supports one claim. Production checks up to the top three chunks separately in
+`_judge_claim()` (via `_check_entailment()`) in `backend/services/forensics/hedging_mismatch.py` and stops at the first supported judgment.
 
 ### Output contract and current handling
 
@@ -285,10 +285,10 @@ normalization.
 
 ### Purpose and call site
 
-`GENERATION_SYSTEM_PROMPT` and `build_generation_prompt()` at
-`backend/prompts/generation_prompts.py:3–18` tell Claude Haiku to answer only from supplied chunks.
-`generate_answer()` calls the model with `max_tokens=1024` at
-`backend/services/generator.py:10–22`. Output is intentionally free-form prose, and API exceptions
+`GENERATION_SYSTEM_PROMPT` and `build_generation_prompt()` in
+`backend/prompts/generation_prompts.py` tell Claude Haiku to answer only from supplied chunks.
+`generate_answer()` calls the model with `max_tokens=1024` in
+`backend/services/generator.py`. Output is intentionally free-form prose, and API exceptions
 propagate.
 
 ### Representative observations

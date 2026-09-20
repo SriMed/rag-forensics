@@ -58,6 +58,10 @@ accept contradictions, changed numbers, or removed qualifiers.
 
 ### Retrieved-context fit
 
+In code and in the API this result is named `query_corpus_fit` (module `query_corpus_fit.py`,
+model `QueryCorpusFitMetrics`). The identifier predates the current name; the method describes
+only the retrieved passages, so the documentation says "retrieved-context fit."
+
 If the retrieved passages appear to answer questions adjacent to the user’s question, query
 reformulation is a reasonable intervention to test. If they answer distant questions, retrieval
 or corpus coverage deserves investigation. Neither observation proves that query wording caused

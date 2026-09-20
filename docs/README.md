@@ -45,7 +45,7 @@ protocols, and reproducible commands.
 
 - [Contributor guide](../CONTRIBUTING.md) records the shared development, testing, and research-artifact rules.
 - [Architectural decisions](../ADR.md) preserves the project's append-only decision history.
-- [Domain language](../CONTEXT.md) defines the canonical names used for grounding evaluators and
-  oracle-evidence conditions.
+- [Domain language](../CONTEXT.md) defines the canonical names used for grounding evaluators,
+  oracle-evidence conditions, and retrieved-context fit.
 
 The repository's main [README](../README.md) gives the shortest overview and quick-start path.

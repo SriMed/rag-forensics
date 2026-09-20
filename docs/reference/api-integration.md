@@ -69,6 +69,13 @@ Same `AnalyzeResponse` shape as the demo endpoint. Its RAGAS portion uses explic
 }
 ```
 
+The retrieved-context fit result appears under the response key `query_corpus_fit`. That key is
+the stable API name; the method is documented as [retrieved-context fit](methods.md#retrieved-context-fit)
+because it describes only the retrieved passages and does not establish full-corpus coverage.
+When its trigger conditions are not met it returns `status: "not_run"`; when triggered but unable
+to produce three valid questions it returns `status: "error"`. Both leave `observed_fit` null, and
+neither is a healthy result.
+
 The response retains the legacy `retrieved_chunks` text array and also returns
 `retrieved_chunk_details`, whose entries include `chunk_id`, `text`, `score`, `completeness`, and
 `completeness_source`. Consumers can audit whether generation received known truncated evidence

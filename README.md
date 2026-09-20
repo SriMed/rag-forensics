@@ -11,31 +11,56 @@ RAG Forensics keeps them visible. Given a question, answer, and retrieved contex
 observable signals, evidence candidates, method assumptions, reliability labels, ranked
 hypotheses, and follow-up tests. It is a hypothesis-generation layer—not a root-cause oracle.
 
-The project is intended to run locally beside an existing RAG system. It is distributed as
-inspectable research software rather than operated as a hosted service; callers can submit their
-own question, answer, and retrieved chunks through the local API.
+The project follows one chain: **ambiguous failure → inspectable observations → competing
+explanations → an intervention that could discriminate between them → controlled evaluation of the
+individual measurement components.** It runs locally beside an existing RAG system and is
+distributed as inspectable research software, not a hosted service. It was motivated by recurring
+diagnostic ambiguity in a production RAG system; no proprietary incidents, outputs, or user
+research are included, and every empirical claim here comes from public datasets and committed
+evaluation artifacts.
 
-The project was motivated by recurring diagnostic ambiguity observed while working with a
-production RAG system. No proprietary incidents, outputs, organizational data, or private user
-research are included. The repository's empirical claims come only from the public datasets and
-committed evaluation artifacts described below.
+## Quick start
 
-In practical terms, it helps a reviewer answer three questions:
+Use Python 3.13 and Poetry 2.2.1 for the backend. From the repository root:
 
-1. **What evidence appears related to each part of the answer?** These passages are candidates for
-   inspection, not proof of support.
-2. **What could explain the concern?** Retrieval, generation, evidence selection, claim splitting,
-   or evaluator failure may produce similar symptoms.
-3. **What should we change next to distinguish those explanations?** For example, rerun generation
-   with the same context, rewrite the query, or supply known supporting evidence to the evaluator.
+```bash
+cd backend
+poetry env use python3.13
+poetry install
+cp .env.example .env
+# Replace your_key_here in .env with your Anthropic API key.
+poetry run uvicorn main:app --host 127.0.0.1 --port 8000
+```
 
-See [How RAG Forensics investigates an answer](docs/explainers/how-rag-forensics-works.md) for a
-worked example.
+Custom analysis needs no corpus bootstrap. In another terminal, from `backend/`:
+
+```bash
+poetry run python -m scripts.smoke_local
+# Optional live check: sends the bundled public example to Anthropic and incurs API usage.
+poetry run python -m scripts.smoke_local --analyze
+# Offline tests: external model calls are mocked; no API key is required.
+poetry run pytest
+```
+
+See [Local setup and verification](docs/reference/local-setup.md) for frontend startup, optional
+demo bootstrap, storage and caches, failure recovery, and the limits of these checks. For a worked
+example of the output, read
+[How RAG Forensics investigates an answer](docs/explainers/how-rag-forensics-works.md).
+
+## Where to look in the code
+
+| If you want to see… | Start at |
+|---|---|
+| The request path and how analyses are combined | [`backend/routers/analyze.py`](backend/routers/analyze.py) |
+| The five forensics modules | [`backend/services/forensics/`](backend/services/forensics/) |
+| How signals become ranked hypotheses and a follow-up test | [`backend/services/verdict_generator.py`](backend/services/verdict_generator.py) |
+| Response shapes and availability semantics | [`backend/models.py`](backend/models.py) |
+| The offline grounding evaluators and their held-out comparison | [`backend/benchmark/grounding.py`](backend/benchmark/grounding.py) |
+| The oracle-evidence diagnostic | [`backend/benchmark/oracle_evidence.py`](backend/benchmark/oracle_evidence.py) |
 
 ## The argument
 
-Useful reasoning transparency requires more than displaying intermediate numbers. A diagnostic
-system should distinguish:
+A diagnostic system should distinguish:
 
 1. **what it observed**;
 2. **how that observation was produced**;
@@ -80,25 +105,17 @@ See [Methods and architecture](docs/reference/methods.md) and
 
 ## What the evidence currently says
 
-The project now evaluates its grounding methods without regenerating RAGBench answers or changing
-their source documents. Thresholds are selected on validation data and evaluated on untouched
-test data with clustered confidence intervals.
+Grounding methods are evaluated on RAGBench without regenerating answers or changing their source
+documents. Thresholds are selected on validation data and evaluated on untouched test data with
+clustered confidence intervals. The principal comparison covers prevalence checks, a
+**whole-sentence similarity evaluator**, a **claim-similarity evaluator** using deterministic
+decomposition, and a **claim-entailment evaluator** that adds a pinned third-party NLI
+cross-encoder to the same claims and evidence candidates. The evaluators are offline experimental
+methods, not the product; RAG Forensics tests the NLI verifier because the evaluator relies on
+its output, not because it created it.
 
-The principal comparison evaluates:
-
-- always-supported and always-unsupported prevalence checks;
-- a **whole-sentence similarity evaluator**;
-- a **claim-similarity evaluator** using deterministic decomposition; and
-- a **claim-entailment evaluator** using the same claims and evidence candidates with a pinned NLI
-  cross-encoder.
-
-The claim-entailment evaluator is an offline experimental method, not the entire product. It
-splits an answer into claims, selects evidence for each claim, asks a third-party pretrained NLI
-model whether the evidence supports the claim, and aggregates the claim judgments. RAG Forensics
-did not create the verifier; it tests the verifier because the evaluator relies on that
-component's output.
-
-On a seeded sample of up to 100 validation and 100 test examples from each RAGBench domain:
+**Null result.** On a seeded sample of up to 100 validation and 100 test examples from each
+RAGBench domain:
 
 | Held-out macro metric | Whole-sentence similarity | Claim-entailment |
 |---|---:|---:|
@@ -108,98 +125,60 @@ On a seeded sample of up to 100 validation and 100 test examples from each RAGBe
 The paired claim-entailment minus whole-sentence-similarity macro-F1 difference was `-0.022` with
 a 95% interval of `[-0.066, 0.025]`. Macro AUPRC increased, but its interval also included no
 improvement, and the direction varied by domain. A small RAGTruth external-validation run was
-similarly mixed.
+similarly mixed. The evidence does **not** support either evaluator as a reliable standalone
+grounding detector. Similarity remains useful for navigating to candidate evidence.
 
-Therefore the current evidence does **not** support either whole-sentence similarity or the
-present claim-entailment evaluator as a reliable standalone grounding detector. Similarity remains
-useful for navigating to candidate evidence. The best-supported contribution within this repository
-is the transparent, label-preserving framework that makes this null result—and its remaining
-uncertainty—inspectable.
+**Oracle-evidence diagnostic.** Replacing the claim-entailment evaluator's selected evidence with
+RAGBench's human-annotated supporting evidence tests the verification step separately. On 188
+eligible supported sentences, the false-unsupported rate fell from `0.452` to `0.287`; the paired
+difference was `-0.165` with a 95% example-clustered interval of `[-0.230, -0.101]`. Evidence
+selection is therefore a meaningful—but not exclusive—bottleneck: substantial errors persist even
+with annotated evidence. This is label-derived analysis, not a deployable classifier, and it does
+not explain failures on unsupported sentences.
 
-A follow-up **oracle-evidence diagnostic** replaced the claim-entailment evaluator's selected
-evidence with RAGBench's human-annotated supporting evidence, allowing the verification step to be tested separately. On
-188 eligible supported sentences, it reduced the false-unsupported rate from `0.452` with
-similarity-selected evidence to `0.287` with annotated evidence. The paired difference was `-0.165`
-with a 95% example-clustered interval of
-`[-0.230, -0.101]`. This supports evidence selection as a meaningful—but not exclusive—bottleneck;
-substantial errors persist even when annotated evidence is supplied.
-
-Detailed protocols, commands, revisions, results, and limitations are in
-[Benchmarking and current evidence](docs/reference/benchmarks.md).
-
-## Open research questions
-
-Further evaluation should separate:
-
-- claim-decomposition errors;
-- evidence-selection errors;
-- multi-sentence or numerical reasoning failures;
-- verifier errors; and
-- annotation-granularity mismatches.
-
-The completed oracle-evidence diagnostic uses RAGBench’s annotated supporting sentences to
-localize evidence-selection versus downstream verification failures on eligible, fully supported
-sentences. It is label-derived analysis—not a deployable classifier—and does not explain failures
-for unsupported sentences. The available evidence supports interpreting the system as narrowing an
-investigation, not as identifying the cause of a bad answer.
-
-A completed TechQA pilot crossed deterministic versus human-reviewed claims with selected versus
-annotated evidence on 39 eligible sentences. All paired-effect 95% intervals included zero.
+**TechQA pilot.** Crossing deterministic versus human-reviewed claims with selected versus
+annotated evidence on 39 eligible sentences, all paired-effect 95% intervals included zero.
 Residual review raised a hypothesis that some rejections require evidence sentences to be supplied
-jointly; it did not establish a decomposition-quality effect or a general verifier limitation.
-See the [pilot results](docs/reference/benchmarks.md#techqa-pilot-result) and
+jointly; it did not establish a decomposition-quality effect or a general verifier limitation. See
+the [pilot results](docs/reference/benchmarks.md#techqa-pilot-result) and
 [interpretation](docs/explainers/decomposition-by-evidence.md#a-preliminary-finding-from-the-techqa-pilot).
-A public comparative case collection could make these investigations and their limits inspectable
-without treating selected benchmark examples as production incidents. A feasibility check for that
-collection confirmed RAGChecker and RAGVue are both real, runnable tools compatible with an
-Anthropic-only setup, but only from isolated environments — installing either alongside this
-project's own dependencies conflicts with the Anthropic SDK version the backend requires — and
-surfaced a provenance gap worth designing around: RAGVue's own output can mislabel which model
-produced a judgment. The frozen shared schema, feasibility findings, and case-selection protocol
-are in
-[`backend/evals/comparative_diagnostics/v1/`](backend/evals/comparative_diagnostics/v1/README.md);
-no cases have been selected yet.
 
-The project has not established that this diagnostic record improves decisions for real users.
-There are no external-consumer or production-incident data supporting that claim. Evaluation of
-developer outcomes requires an authentic user population; the present evaluation therefore targets
-diagnostic validity, provenance, failure semantics, and controlled interventions on public data.
+The best-supported contribution is the transparent, label-preserving framework that makes these
+results—and their remaining uncertainty—inspectable. Protocols, commands, revisions, and
+limitations are in [Benchmarking and current evidence](docs/reference/benchmarks.md).
 
-## Quick start
+### Other evaluations
 
-Use Python 3.13 and Poetry 2.2.1 for the backend. From the repository root:
+These studies are small and purposive; each states its own evidence boundary.
 
-```bash
-cd backend
-poetry env use python3.13
-poetry install
-cp .env.example .env
-# Replace your_key_here in .env with your Anthropic API key.
-poetry run uvicorn main:app --host 127.0.0.1 --port 8000
-```
+- [Truncated-evidence generation](docs/reference/truncated-evidence.md): how generation behaves
+  when supplied evidence is visibly cut off.
+- [Prompt and model-boundary audit](docs/reference/prompt-audit.md) and the
+  [installed RAGAS prompt audit](docs/reference/ragas-prompt-audit.md): what each LLM boundary
+  asks, how it fails, and what the audit did not test.
+- [Prompt development evaluation](docs/reference/prompt-evaluation.md): versioned cases,
+  deterministic scorers, and a held-out split.
 
-Custom analysis needs no corpus bootstrap. In another terminal, from `backend/`:
+## Limits and next steps
 
-```bash
-poetry run python -m scripts.smoke_local
-# Optional live check: sends the bundled public example to Anthropic and incurs API usage.
-poetry run python -m scripts.smoke_local --analyze
-# Offline tests: external model calls are mocked; no API key is required.
-poetry run pytest
-```
+The project has not established that this diagnostic record improves decisions for real users, and
+the ranking and follow-up-test layer has not been evaluated for whether it discriminates between
+hypotheses. There are no external-consumer or production-incident data; the present evaluation
+targets diagnostic validity, provenance, failure semantics, and controlled interventions on public
+data. The evidence supports reading the system as narrowing an investigation, not identifying the
+cause of a bad answer.
 
-See [Local setup and verification](docs/reference/local-setup.md) for frontend startup, optional
-demo bootstrap, storage and caches, failure recovery, and the limits of these checks.
+Next, evaluation should separate claim-decomposition errors, evidence-selection errors,
+multi-sentence or numerical reasoning failures, verifier errors, and annotation-granularity
+mismatches. A planned comparison with RAGChecker and RAGVue on public cases has a frozen schema and
+protocol but no selected cases; see
+[`backend/evals/comparative_diagnostics/v1/`](backend/evals/comparative_diagnostics/v1/README.md).
 
 ## Documentation
 
-- [Documentation guide](docs/README.md)
-- [Contributing and verification](CONTRIBUTING.md)
+- [Documentation guide](docs/README.md) — the full map, organized by reader intent
 - [Local setup and verification](docs/reference/local-setup.md)
 - [Worked example of the investigation workflow](docs/explainers/how-rag-forensics-works.md)
 - [Methods, outputs, architecture, and limitations](docs/reference/methods.md)
-- [Related work in RAG evaluation and debugging](docs/reference/related-work.md)
 - [Benchmark protocol, results, and reproducible commands](docs/reference/benchmarks.md)
-- [Plain-language guide to the oracle-evidence experiment](docs/explainers/oracle-evidence.md)
-- [Custom API integration](docs/reference/api-integration.md)
-- [Architectural decisions](ADR.md)
+- [Architectural decisions](ADR.md) and [contributing](CONTRIBUTING.md)

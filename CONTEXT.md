@@ -51,3 +51,9 @@ _Avoid_: B1, B1 method
 A label-derived experimental condition that supplies annotated supporting evidence to an evaluator;
 it is not a deployable grounding method.
 _Avoid_: B4, oracle method
+
+**Retrieved-context fit**:
+A conditional observation of what questions the retrieved passages appear able to answer, labeled a
+near miss, topic gap, or ambiguous. It describes only the retrieved passages and never establishes
+whether the full corpus can answer the query. The code and API name is `query_corpus_fit`.
+_Avoid_: "corpus fit" or "corpus coverage" as a description of what the result establishes
