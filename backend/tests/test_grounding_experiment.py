@@ -659,11 +659,14 @@ def _assert_close(actual, expected, path="$"):
         assert actual == expected, path
 
 
-def test_run_grounding_methods_characterization():
-    actual = _characterization_run()
+def _check_golden(golden: Path, actual) -> None:
     if os.environ.get("UPDATE_GOLDEN") == "1":
-        _GOLDEN.write_text(json.dumps(actual, indent=2, sort_keys=True) + "\n")
-    _assert_close(actual, json.loads(_GOLDEN.read_text()))
+        golden.write_text(json.dumps(actual, indent=2, sort_keys=True) + "\n")
+    _assert_close(actual, json.loads(golden.read_text()))
+
+
+def test_run_grounding_methods_characterization():
+    _check_golden(_GOLDEN, _characterization_run())
 
 
 def test_characterization_fixture_exercises_every_branch():
@@ -677,3 +680,98 @@ def test_characterization_fixture_exercises_every_branch():
     assert any(p["predicted_unsupported"] is None for p in entailment)
     assert any(len(p["claims"]) > 1 for p in entailment)
     assert shared["b2_claim_similarity"] != override["b2_claim_similarity"]
+
+
+# ---------------------------------------------------------------------------
+# Characterization: run_oracle_evidence_diagnostic (same conventions as above).
+# ---------------------------------------------------------------------------
+
+_ORACLE_GOLDEN = Path(__file__).parent / "golden" / "oracle_evidence.json"
+
+
+def _support(key, supported, keys):
+    return {
+        "response_sentence_key": key,
+        "fully_supported": supported,
+        "supporting_sentence_keys": keys,
+        "explanation": "",
+    }
+
+
+def _oracle_records():
+    single = adapt_ragbench_row(
+        _row(
+            id="oe-1",
+            response="Revenue rose to $20 million.",
+            response_sentences=[["a", "Revenue rose to $20 million."]],
+            sentence_support_information=[_support("a", True, ["0a"])],
+            unsupported_response_sentence_keys=[],
+        ),
+        domain="finqa",
+    )
+    multi = adapt_ragbench_row(
+        _row(
+            id="oe-2",
+            documents=["Sales grew. Margins shrank. Debt fell."],
+            documents_sentences=[[["0a", "Sales grew."], ["0b", "Margins shrank."], ["0c", "Debt fell."]]],
+            response="Sales grew and margins shrank. Debt fell boom. Nothing else.",
+            response_sentences=[
+                ["a", "Sales grew and margins shrank."],
+                ["b", "Debt fell boom."],
+                ["c", "Nothing else."],
+            ],
+            sentence_support_information=[
+                _support("a", True, ["0a", "0b"]),
+                _support("b", True, ["0c"]),
+                _support("c", False, []),
+            ],
+            unsupported_response_sentence_keys=["c"],
+        ),
+        domain="techqa",
+    )
+    ineligible = adapt_ragbench_row(
+        _row(
+            id="oe-3",
+            response="First claim. Second claim.",
+            response_sentences=[["a", "First claim."], ["b", "Second claim."]],
+            sentence_support_information=[_support("a", True, []), _support("b", True, ["general"])],
+            unsupported_response_sentence_keys=[],
+        ),
+        domain="finqa",
+    )
+    return single, multi, ineligible
+
+
+def _oracle_characterization_run():
+    single, multi, ineligible = _oracle_records()
+    runs = {}
+    for name, records in (("mixed", [single, multi, ineligible]), ("none_eligible", [ineligible])):
+        report = run_oracle_evidence_diagnostic(
+            records,
+            embedding_model=_HashEmbedder(),
+            decomposer=DeterministicClaimDecomposer(),
+            entailment_verifier=_HashVerifier(),
+            entailment_threshold=0.5,
+            bootstrap_iterations=50,
+            seed=11,
+        )
+        runs[name] = report.model_dump(mode="json")
+    return runs
+
+
+def test_run_oracle_evidence_diagnostic_characterization():
+    _check_golden(_ORACLE_GOLDEN, _oracle_characterization_run())
+
+
+def test_oracle_characterization_fixture_exercises_every_branch():
+    """Guards the golden file: exclusions, multi-source, a verifier failure, and the empty report."""
+    runs = _oracle_characterization_run()
+    mixed, none = runs["mixed"], runs["none_eligible"]
+    assert mixed["eligibility"]["excluded"] == {"missing_annotation": 1, "non_document_support": 1}
+    assert {(i["example_id"], i["sentence_key"]) for i in mixed["predictions"]} == {
+        ("oe-1", "a"), ("oe-2", "a"), ("oe-2", "b"),
+    }
+    assert mixed["by_source_count"].keys() == {"single_source", "multi_source"}
+    assert any(item["oracle"]["predicted_unsupported"] is None for item in mixed["predictions"])
+    assert mixed["paired_false_unsupported_difference"] is not None
+    assert none["predictions"] == [] and none["paired_false_unsupported_difference"] is None

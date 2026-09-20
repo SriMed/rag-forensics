@@ -1,0 +1,534 @@
+{
+  "mixed": {
+    "by_source_count": {
+      "multi_source": {
+        "oracle_evaluated": 1,
+        "oracle_false_unsupported_rate": 1.0,
+        "paired_difference": 0.0,
+        "paired_evaluated": 1,
+        "selected_evaluated": 1,
+        "selected_false_unsupported_rate": 1.0,
+        "sentences": 1
+      },
+      "single_source": {
+        "oracle_evaluated": 1,
+        "oracle_false_unsupported_rate": 1.0,
+        "paired_difference": 0.0,
+        "paired_evaluated": 1,
+        "selected_evaluated": 1,
+        "selected_false_unsupported_rate": 1.0,
+        "sentences": 2
+      }
+    },
+    "eligibility": {
+      "eligible": 3,
+      "excluded": {
+        "missing_annotation": 1,
+        "non_document_support": 1
+      },
+      "total_fully_supported": 5
+    },
+    "metadata": null,
+    "oracle_evaluated": 2,
+    "oracle_false_unsupported_rate": 1.0,
+    "paired_evaluated": 2,
+    "paired_false_unsupported_difference": {
+      "confidence": 0.95,
+      "iterations": 50,
+      "lower": 0.0,
+      "point_estimate": 0.0,
+      "seed": 11,
+      "upper": 0.0
+    },
+    "per_domain": {
+      "finqa": {
+        "oracle_evaluated": 1,
+        "oracle_false_unsupported_rate": 1.0,
+        "paired_difference": 0.0,
+        "paired_evaluated": 1,
+        "selected_evaluated": 1,
+        "selected_false_unsupported_rate": 1.0,
+        "sentences": 1
+      },
+      "techqa": {
+        "oracle_evaluated": 1,
+        "oracle_false_unsupported_rate": 1.0,
+        "paired_difference": 0.0,
+        "paired_evaluated": 1,
+        "selected_evaluated": 1,
+        "selected_false_unsupported_rate": 1.0,
+        "sentences": 2
+      }
+    },
+    "predictions": [
+      {
+        "annotated_evidence_keys": [
+          "0a"
+        ],
+        "domain": "finqa",
+        "example_id": "oe-1",
+        "oracle": {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 1.0,
+                "sentence_key": "0a",
+                "text": "Revenue rose to $20 million."
+              },
+              "nli_scores": {
+                "contradiction": 0.3666666666666667,
+                "entailment": 0.26666666666666666,
+                "label": "neutral",
+                "neutral": 0.3666666666666667
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.26666666666666666,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "oe-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million.",
+          "sentence_key": "a",
+          "unsupported_score": 0.7333333333333334
+        },
+        "oracle_pairs": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": {
+              "contradiction": 0.3666666666666667,
+              "entailment": 0.26666666666666666,
+              "label": "neutral",
+              "neutral": 0.3666666666666667
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.26666666666666666,
+            "verifier_label": "neutral"
+          }
+        ],
+        "selected": {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 1.0,
+                "sentence_key": "0a",
+                "text": "Revenue rose to $20 million."
+              },
+              "nli_scores": {
+                "contradiction": 0.3666666666666667,
+                "entailment": 0.26666666666666666,
+                "label": "neutral",
+                "neutral": 0.3666666666666667
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.26666666666666666,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "oe-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million.",
+          "sentence_key": "a",
+          "unsupported_score": 0.7333333333333334
+        },
+        "selected_evidence_hit_at_1": true,
+        "sentence": "Revenue rose to $20 million.",
+        "sentence_key": "a"
+      },
+      {
+        "annotated_evidence_keys": [
+          "0a",
+          "0b"
+        ],
+        "domain": "techqa",
+        "example_id": "oe-2",
+        "oracle": {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Sales grew"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 1.0,
+                "sentence_key": "0a",
+                "text": "Sales grew."
+              },
+              "nli_scores": {
+                "contradiction": 0.019607843137254888,
+                "entailment": 0.9607843137254902,
+                "label": "entailment",
+                "neutral": 0.019607843137254888
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.9607843137254902,
+              "verifier_label": "entailment"
+            },
+            {
+              "claim": {
+                "claim_id": "a.claim-1",
+                "parent_sentence_key": "a",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 1.0,
+                "sentence_key": "0a",
+                "text": "Sales grew."
+              },
+              "nli_scores": {
+                "contradiction": 0.4019607843137255,
+                "entailment": 0.196078431372549,
+                "label": "neutral",
+                "neutral": 0.4019607843137255
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.196078431372549,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "oe-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Sales grew and margins shrank.",
+          "sentence_key": "a",
+          "unsupported_score": 0.803921568627451
+        },
+        "oracle_pairs": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Sales grew"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": {
+              "contradiction": 0.019607843137254888,
+              "entailment": 0.9607843137254902,
+              "label": "entailment",
+              "neutral": 0.019607843137254888
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.9607843137254902,
+            "verifier_label": "entailment"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Sales grew"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0b",
+              "text": "Margins shrank."
+            },
+            "nli_scores": {
+              "contradiction": 0.03921568627450983,
+              "entailment": 0.9215686274509803,
+              "label": "entailment",
+              "neutral": 0.03921568627450983
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.9215686274509803,
+            "verifier_label": "entailment"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-1",
+              "parent_sentence_key": "a",
+              "text": "margins shrank."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": {
+              "contradiction": 0.4019607843137255,
+              "entailment": 0.196078431372549,
+              "label": "neutral",
+              "neutral": 0.4019607843137255
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.196078431372549,
+            "verifier_label": "neutral"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-1",
+              "parent_sentence_key": "a",
+              "text": "margins shrank."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0b",
+              "text": "Margins shrank."
+            },
+            "nli_scores": {
+              "contradiction": 0.45098039215686275,
+              "entailment": 0.0980392156862745,
+              "label": "neutral",
+              "neutral": 0.45098039215686275
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.0980392156862745,
+            "verifier_label": "neutral"
+          }
+        ],
+        "selected": {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Sales grew"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6607374702893212,
+                "sentence_key": "0c",
+                "text": "Debt fell."
+              },
+              "nli_scores": {
+                "contradiction": 0.10588235294117648,
+                "entailment": 0.788235294117647,
+                "label": "entailment",
+                "neutral": 0.10588235294117648
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.788235294117647,
+              "verifier_label": "entailment"
+            },
+            {
+              "claim": {
+                "claim_id": "a.claim-1",
+                "parent_sentence_key": "a",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.03435716136721634,
+                "sentence_key": "0b",
+                "text": "Margins shrank."
+              },
+              "nli_scores": {
+                "contradiction": 0.45098039215686275,
+                "entailment": 0.0980392156862745,
+                "label": "neutral",
+                "neutral": 0.45098039215686275
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.0980392156862745,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "oe-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Sales grew and margins shrank.",
+          "sentence_key": "a",
+          "unsupported_score": 0.9019607843137255
+        },
+        "selected_evidence_hit_at_1": true,
+        "sentence": "Sales grew and margins shrank.",
+        "sentence_key": "a"
+      },
+      {
+        "annotated_evidence_keys": [
+          "0c"
+        ],
+        "domain": "techqa",
+        "example_id": "oe-2",
+        "oracle": {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Debt fell boom."
+              },
+              "error": "synthetic verifier failure",
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 1.0,
+                "sentence_key": "0c",
+                "text": "Debt fell."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": null,
+              "status": "verifier_error",
+              "support_score": null,
+              "verifier_label": null
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "oe-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": null,
+          "sentence": "Debt fell boom.",
+          "sentence_key": "b",
+          "unsupported_score": null
+        },
+        "oracle_pairs": [
+          {
+            "claim": {
+              "claim_id": "b.claim-0",
+              "parent_sentence_key": "b",
+              "text": "Debt fell boom."
+            },
+            "error": "synthetic verifier failure",
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0c",
+              "text": "Debt fell."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": null,
+            "status": "verifier_error",
+            "support_score": null,
+            "verifier_label": null
+          }
+        ],
+        "selected": {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Debt fell boom."
+              },
+              "error": "synthetic verifier failure",
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.2608177815237482,
+                "sentence_key": "0b",
+                "text": "Margins shrank."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": null,
+              "status": "verifier_error",
+              "support_score": null,
+              "verifier_label": null
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "oe-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": null,
+          "sentence": "Debt fell boom.",
+          "sentence_key": "b",
+          "unsupported_score": null
+        },
+        "selected_evidence_hit_at_1": false,
+        "sentence": "Debt fell boom.",
+        "sentence_key": "b"
+      }
+    ],
+    "selected_evaluated": 2,
+    "selected_evidence_hit_at_1": 0.6666666666666666,
+    "selected_false_unsupported_rate": 1.0
+  },
+  "none_eligible": {
+    "by_source_count": {},
+    "eligibility": {
+      "eligible": 0,
+      "excluded": {
+        "missing_annotation": 1,
+        "non_document_support": 1
+      },
+      "total_fully_supported": 2
+    },
+    "metadata": null,
+    "oracle_evaluated": 0,
+    "oracle_false_unsupported_rate": null,
+    "paired_evaluated": 0,
+    "paired_false_unsupported_difference": null,
+    "per_domain": {},
+    "predictions": [],
+    "selected_evaluated": 0,
+    "selected_evidence_hit_at_1": null,
+    "selected_false_unsupported_rate": null
+  }
+}

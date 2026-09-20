@@ -206,6 +206,81 @@ def _stratum_metrics(
     )
 
 
+def _empty_report(total: int, excluded: Counter[str]) -> OracleEvidenceDiagnosticReport:
+    return OracleEvidenceDiagnosticReport(
+        eligibility=OracleEvidenceEligibility(
+            total_fully_supported=total, eligible=0, excluded=dict(excluded)
+        ),
+        selected_false_unsupported_rate=None,
+        oracle_false_unsupported_rate=None,
+        selected_evidence_hit_at_1=None,
+        paired_false_unsupported_difference=None,
+        predictions=[],
+    )
+
+
+def _sentence_result(
+    record: RAGBenchEvaluationRecord,
+    selected: GroundingSentencePrediction,
+    verifier: EntailmentVerifier,
+    threshold: float,
+) -> OracleEvidenceSentenceResult:
+    """Pair the similarity-selected prediction with the annotated-evidence (oracle) prediction."""
+    oracle, pairs = _oracle_prediction(record, selected, verifier, threshold)
+    annotated = record.sentence_support[selected.sentence_key].supporting_sentence_keys
+    selected_keys = {
+        claim.evidence.sentence_key for claim in selected.claims if claim.evidence is not None
+    }
+    return OracleEvidenceSentenceResult(
+        example_id=selected.example_id,
+        domain=selected.domain,
+        sentence_key=selected.sentence_key,
+        sentence=selected.sentence,
+        annotated_evidence_keys=annotated,
+        selected=selected,
+        oracle=oracle,
+        oracle_pairs=pairs,
+        selected_evidence_hit_at_1=bool(selected_keys & set(annotated)),
+    )
+
+
+def _build_report(
+    results: list[OracleEvidenceSentenceResult],
+    total: int,
+    excluded: Counter[str],
+    bootstrap_iterations: int,
+    seed: int,
+) -> OracleEvidenceDiagnosticReport:
+    overall = _stratum_metrics(results)
+    domains = sorted({item.domain for item in results})
+    source_strata = {
+        "single_source": [item for item in results if len(item.annotated_evidence_keys) == 1],
+        "multi_source": [item for item in results if len(item.annotated_evidence_keys) > 1],
+    }
+    return OracleEvidenceDiagnosticReport(
+        eligibility=OracleEvidenceEligibility(
+            total_fully_supported=total,
+            eligible=len(results),
+            excluded=dict(excluded),
+        ),
+        selected_false_unsupported_rate=_rate([item.selected.predicted_unsupported for item in results]),
+        oracle_false_unsupported_rate=_rate([item.oracle.predicted_unsupported for item in results]),
+        selected_evidence_hit_at_1=float(np.mean([item.selected_evidence_hit_at_1 for item in results])),
+        paired_false_unsupported_difference=_paired_interval(results, bootstrap_iterations, seed),
+        selected_evaluated=overall.selected_evaluated,
+        oracle_evaluated=overall.oracle_evaluated,
+        paired_evaluated=overall.paired_evaluated,
+        per_domain={
+            domain: _stratum_metrics([item for item in results if item.domain == domain])
+            for domain in domains
+        },
+        by_source_count={
+            name: _stratum_metrics(items) for name, items in source_strata.items() if items
+        },
+        predictions=results,
+    )
+
+
 def run_oracle_evidence_diagnostic(
     records: Sequence[RAGBenchEvaluationRecord],
     embedding_model,
@@ -220,16 +295,7 @@ def run_oracle_evidence_diagnostic(
         raise ValueError("bootstrap_iterations must be at least 1")
     eligible_records, total, excluded = _eligible_records(records)
     if not eligible_records:
-        return OracleEvidenceDiagnosticReport(
-            eligibility=OracleEvidenceEligibility(
-                total_fully_supported=total, eligible=0, excluded=dict(excluded)
-            ),
-            selected_false_unsupported_rate=None,
-            oracle_false_unsupported_rate=None,
-            selected_evidence_hit_at_1=None,
-            paired_false_unsupported_difference=None,
-            predictions=[],
-        )
+        return _empty_report(total, excluded)
     selected_by_record = run_grounding_methods(
         eligible_records,
         embedding_model=embedding_model,
@@ -240,72 +306,13 @@ def run_oracle_evidence_diagnostic(
         entailment_threshold=entailment_threshold,
     )["b3_claim_entailment"]
     record_index = {(item.domain, item.example_id): item for item in eligible_records}
-    results = []
-    for selected in selected_by_record:
-        record = record_index[(selected.domain, selected.example_id)]
-        oracle, pairs = _oracle_prediction(
-            record, selected, entailment_verifier, entailment_threshold
+    results = [
+        _sentence_result(
+            record_index[(selected.domain, selected.example_id)],
+            selected,
+            entailment_verifier,
+            entailment_threshold,
         )
-        annotated = record.sentence_support[selected.sentence_key].supporting_sentence_keys
-        selected_keys = {
-            claim.evidence.sentence_key
-            for claim in selected.claims
-            if claim.evidence is not None
-        }
-        results.append(
-            OracleEvidenceSentenceResult(
-                example_id=selected.example_id,
-                domain=selected.domain,
-                sentence_key=selected.sentence_key,
-                sentence=selected.sentence,
-                annotated_evidence_keys=annotated,
-                selected=selected,
-                oracle=oracle,
-                oracle_pairs=pairs,
-                selected_evidence_hit_at_1=bool(selected_keys & set(annotated)),
-            )
-        )
-    overall = _stratum_metrics(results)
-    domains = sorted({item.domain for item in results})
-    source_strata = {
-        "single_source": [
-            item for item in results if len(item.annotated_evidence_keys) == 1
-        ],
-        "multi_source": [
-            item for item in results if len(item.annotated_evidence_keys) > 1
-        ],
-    }
-    return OracleEvidenceDiagnosticReport(
-        eligibility=OracleEvidenceEligibility(
-            total_fully_supported=total,
-            eligible=len(results),
-            excluded=dict(excluded),
-        ),
-        selected_false_unsupported_rate=_rate(
-            [item.selected.predicted_unsupported for item in results]
-        ),
-        oracle_false_unsupported_rate=_rate(
-            [item.oracle.predicted_unsupported for item in results]
-        ),
-        selected_evidence_hit_at_1=float(
-            np.mean([item.selected_evidence_hit_at_1 for item in results])
-        ),
-        paired_false_unsupported_difference=_paired_interval(
-            results, bootstrap_iterations, seed
-        ),
-        selected_evaluated=overall.selected_evaluated,
-        oracle_evaluated=overall.oracle_evaluated,
-        paired_evaluated=overall.paired_evaluated,
-        per_domain={
-            domain: _stratum_metrics(
-                [item for item in results if item.domain == domain]
-            )
-            for domain in domains
-        },
-        by_source_count={
-            name: _stratum_metrics(items)
-            for name, items in source_strata.items()
-            if items
-        },
-        predictions=results,
-    )
+        for selected in selected_by_record
+    ]
+    return _build_report(results, total, excluded, bootstrap_iterations, seed)
