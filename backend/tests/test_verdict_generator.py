@@ -1,11 +1,13 @@
 """Tests for verdict_generator.py — ranked signals approach.
 
 rank_signals() is pure Python — no mocks needed.
-render_recommendation() mocks services.verdict_generator.anthropic.Anthropic.
+render_recommendation() mocks services.llm.anthropic.Anthropic.
 """
 import random
 from unittest.mock import MagicMock, patch
 
+import anthropic
+import httpx
 import pytest
 
 from models import (
@@ -23,6 +25,8 @@ from services.verdict_generator import (
     render_recommendation,
 )
 from signal_weights import SignalWeights
+
+_API_ERROR = anthropic.APIConnectionError(request=httpx.Request("POST", "https://api.anthropic.com"))
 
 # ---------------------------------------------------------------------------
 # Helpers — build minimal metric objects with sane defaults
@@ -329,7 +333,7 @@ def test_render_recommendation_returns_string():
     fake_client = MagicMock()
     fake_client.messages.create.return_value = fake_message
 
-    with patch("services.verdict_generator.anthropic.Anthropic", return_value=fake_client):
+    with patch("services.llm.anthropic.Anthropic", return_value=fake_client):
         result = render_recommendation(reasoning)
 
     assert isinstance(result, str)
@@ -340,7 +344,9 @@ def test_render_recommendation_claude_failure_falls_back_to_full_structure():
     signals = [RankedSignal(name="overconfidence", priority_score=0.7, description="Claims are overconfident.", reliability="model_judged")]
     reasoning = build_verdict_reasoning(signals)
 
-    with patch("services.verdict_generator.anthropic.Anthropic", side_effect=Exception("API down")):
+    fake_client = MagicMock()
+    fake_client.messages.create.side_effect = _API_ERROR
+    with patch("services.llm.anthropic.Anthropic", return_value=fake_client):
         result = render_recommendation(reasoning)
 
     assert result == format_verdict_reasoning(reasoning)
@@ -453,7 +459,16 @@ def test_render_recommendation_under_word_limit():
     fake_client = MagicMock()
     fake_client.messages.create.return_value = fake_message
 
-    with patch("services.verdict_generator.anthropic.Anthropic", return_value=fake_client):
+    with patch("services.llm.anthropic.Anthropic", return_value=fake_client):
         result = render_recommendation(build_verdict_reasoning(signals))
 
     assert len(result.split()) <= 100
+
+
+def test_render_recommendation_does_not_swallow_unexpected_errors():
+    signals = [RankedSignal(name="overconfidence", priority_score=0.7, description="Claims are overconfident.", reliability="model_judged")]
+    reasoning = build_verdict_reasoning(signals)
+    fake_client = MagicMock()
+    fake_client.messages.create.side_effect = RuntimeError("bug")
+    with patch("services.llm.anthropic.Anthropic", return_value=fake_client), pytest.raises(RuntimeError):
+        render_recommendation(reasoning)

@@ -2,6 +2,8 @@
 import json
 from unittest.mock import MagicMock, patch
 
+import anthropic
+import httpx
 import numpy as np
 
 from models import RetrievedChunk
@@ -47,6 +49,9 @@ def _mock_response(text: str) -> MagicMock:
     return msg
 
 
+_API_ERROR = anthropic.APIConnectionError(request=httpx.Request("POST", "https://api.anthropic.com"))
+
+
 def _make_claude_mock(mocker, response) -> MagicMock:
     """Patch anthropic.Anthropic in query_corpus_fit. response is str or Exception instance."""
     mock_client = MagicMock()
@@ -73,7 +78,7 @@ def _make_claude_mock(mocker, response) -> MagicMock:
         else:
             mock_client.messages.create.return_value = _mock_response(response)
     mock_cls = MagicMock(return_value=mock_client)
-    mocker.patch("services.forensics.query_corpus_fit.anthropic.Anthropic", mock_cls)
+    mocker.patch("services.llm.anthropic.Anthropic", mock_cls)
     return mock_client
 
 
@@ -91,7 +96,7 @@ def _make_structured_claude_mock(mocker, generated: list[dict], judgments: list[
         _mock_response(json.dumps(judgments)),
     ]
     mocker.patch(
-        "services.forensics.query_corpus_fit.anthropic.Anthropic",
+        "services.llm.anthropic.Anthropic",
         MagicMock(return_value=mock_client),
     )
     return mock_client
@@ -477,7 +482,7 @@ def test_mid_similarity_ambiguous(mocker):
 def test_claude_exception_fallback(mocker):
     from services.forensics.query_corpus_fit import analyze_query_corpus_fit
 
-    _make_claude_mock(mocker, Exception("API error"))
+    _make_claude_mock(mocker, _API_ERROR)
     query_emb = _unit(seed=1)
     chunks = _chunks(2)
     chunk_embs = [_unit(seed=10 + i) for i in range(2)]
@@ -732,3 +737,22 @@ def analyze_query_corpus_fit_for_test():
         normalized_entropy=0.5,
         faithfulness_score=0.8,
     )
+
+
+def test_unexpected_error_in_generation_is_not_swallowed(mocker):
+    import pytest
+
+    from services.forensics.query_corpus_fit import analyze_query_corpus_fit
+
+    _make_claude_mock(mocker, RuntimeError("bug"))
+    with pytest.raises(RuntimeError):
+        analyze_query_corpus_fit(
+            question="What is X?",
+            query_embedding=_unit(seed=1),
+            chunks=_chunks(2),
+            chunk_embeddings=[_unit(seed=10 + i) for i in range(2)],
+            query_isolation=1.5,
+            context_utilization_score=0.8,
+            normalized_entropy=0.5,
+            faithfulness_score=0.8,
+        )

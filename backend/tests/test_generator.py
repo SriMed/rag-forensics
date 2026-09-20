@@ -1,9 +1,14 @@
 """Tests for services/generator.py — mocks Anthropic SDK entirely."""
 from unittest.mock import MagicMock
 
+import anthropic
+import httpx
 import pytest
 
 from models import RetrievedChunk
+from services.llm import LLMError
+
+_API_ERROR = anthropic.APIConnectionError(request=httpx.Request("POST", "https://api.anthropic.com"))
 
 CHUNKS = [
     RetrievedChunk(chunk_id="c1", text="The sky is blue due to Rayleigh scattering.", score=0.9),
@@ -16,7 +21,7 @@ def _make_anthropic_mock(mocker, text: str = "Generated answer."):
     mock_message.content = [MagicMock(text=text)]
     mock_client = MagicMock()
     mock_client.messages.create.return_value = mock_message
-    mocker.patch("services.generator.anthropic.Anthropic", return_value=mock_client)
+    mocker.patch("services.llm.anthropic.Anthropic", return_value=mock_client)
     return mock_client
 
 
@@ -86,10 +91,10 @@ def test_generation_contract_forbids_completing_known_truncation():
     assert "unknown has unavailable completeness metadata" in GENERATION_SYSTEM_PROMPT
 
 
-def test_generate_answer_propagates_api_exception(mocker):
+def test_generate_answer_raises_llm_error_on_api_failure(mocker):
     mock_client = MagicMock()
-    mock_client.messages.create.side_effect = Exception("API error")
-    mocker.patch("services.generator.anthropic.Anthropic", return_value=mock_client)
+    mock_client.messages.create.side_effect = _API_ERROR
+    mocker.patch("services.llm.anthropic.Anthropic", return_value=mock_client)
     from services.generator import generate_answer
-    with pytest.raises(Exception, match="API error"):
+    with pytest.raises(LLMError):
         generate_answer("Why is the sky blue?", CHUNKS)

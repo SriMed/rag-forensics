@@ -10,7 +10,6 @@ import logging
 import re
 from typing import Literal
 
-import anthropic
 from pydantic import TypeAdapter, ValidationError
 
 from config import CLAUDE_HAIKU
@@ -23,6 +22,7 @@ from models import (
     RetrievedChunk,
 )
 from prompts.hedging_prompts import CLAIM_EXTRACTION_PROMPT, ENTAILMENT_PROMPT
+from services.llm import LLMError, complete
 
 logger = logging.getLogger(__name__)
 
@@ -185,22 +185,14 @@ def analyze_hedging_mismatch(
     Returns an explicit error status on top-level failure (e.g. claim extraction fails).
     Invalid or failed per-chunk judgments remain unavailable rather than becoming negative verdicts.
     """
-    client = anthropic.Anthropic()
-
     # Step 1 — extract claims via LLM
     try:
-        extraction_response = client.messages.create(
+        raw = complete(
+            CLAIM_EXTRACTION_PROMPT.format(answer=answer),
             model=CLAUDE_HAIKU,
             max_tokens=1024,
             output_config=_CLAIMS_OUTPUT_CONFIG,
-            messages=[
-                {
-                    "role": "user",
-                    "content": CLAIM_EXTRACTION_PROMPT.format(answer=answer),
-                }
-            ],
-        )
-        raw = extraction_response.content[0].text.strip()
+        ).strip()
         claims_list = _parse_claims(raw)
     except json.JSONDecodeError:
         logger.warning("Claim extraction returned invalid JSON")
@@ -208,7 +200,7 @@ def analyze_hedging_mismatch(
     except ValidationError:
         logger.warning("Claim extraction returned JSON that violates the claim schema")
         return _extraction_error("claim_extraction_schema_failed")
-    except Exception:
+    except LLMError:
         logger.warning("Claim extraction request failed; returning explicit error status")
         return _extraction_error("claim_extraction_failed")
 
@@ -229,19 +221,11 @@ def analyze_hedging_mismatch(
 
         for chunk in top_chunks:
             try:
-                entailment_response = client.messages.create(
+                raw_verdict = complete(
+                    ENTAILMENT_PROMPT.format(chunk_text=chunk.text, claim=claim_str),
                     model=CLAUDE_HAIKU,
                     max_tokens=32,
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": ENTAILMENT_PROMPT.format(
-                                chunk_text=chunk.text, claim=claim_str
-                            ),
-                        }
-                    ],
                 )
-                raw_verdict = entailment_response.content[0].text
                 normalized = raw_verdict.strip()
                 try:
                     verdict = EntailmentVerdict(normalized)
@@ -269,7 +253,7 @@ def analyze_hedging_mismatch(
                     source_chunk_id = chunk.chunk_id
                     break  # short-circuit on first supporting chunk
                 supported = False
-            except Exception:
+            except LLMError:
                 checks.append(EntailmentCheck(chunk_id=chunk.chunk_id, status="error"))
                 logger.warning(
                     "Entailment check failed for claim '%s' on chunk '%s'",

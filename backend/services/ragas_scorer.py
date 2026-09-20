@@ -6,10 +6,10 @@ from ragas import EvaluationDataset, SingleTurnSample, evaluate
 from ragas.metrics._context_precision import context_utilization
 from ragas.metrics._faithfulness import faithfulness
 
+from config import CLAUDE_HAIKU
 from models import RAGASMetricResult, RetrievedChunk
 
 logger = logging.getLogger(__name__)
-_LLM_MODEL = "claude-haiku-4-5-20251001"
 
 
 def _extract_context_excerpts(chunks: list[RetrievedChunk], n: int = 3) -> list[str]:
@@ -37,7 +37,7 @@ def _run_ragas(
     logger.debug("running ragas metric=%s", metric_name)
     excerpts = _extract_context_excerpts(chunks)
     try:
-        llm = ChatAnthropic(model=_LLM_MODEL)
+        llm = ChatAnthropic(model=CLAUDE_HAIKU)
         dataset = EvaluationDataset(samples=[sample])
         result = evaluate(dataset, metrics=[metric], llm=llm, show_progress=False)
         score = float(result[metric_name][0])

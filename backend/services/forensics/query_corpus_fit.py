@@ -6,12 +6,12 @@ signals indicate a query-corpus mismatch. Makes no LLM calls when untriggered.
 import json
 import logging
 
-import anthropic
 import numpy as np
 
 from config import CLAUDE_HAIKU
 from models import QueryCorpusFitMetrics, RejectedSuggestedQuestion, RetrievedChunk, SuggestedQuestion
 from prompts.query_fit_prompts import build_question_generation_prompt, build_question_validation_prompt
+from services.llm import LLMError, complete, strip_code_fence
 from services.retriever import get_embedding_model
 
 logger = logging.getLogger(__name__)
@@ -65,21 +65,13 @@ def analyze_query_corpus_fit(
 
     chunk_texts = "\n\n".join(f"[{c.chunk_id}] {c.text}" for c in chunks)
 
-    client = anthropic.Anthropic()
     try:
-        response = client.messages.create(
+        raw = complete(
+            build_question_generation_prompt(chunk_texts, question),
             model=CLAUDE_HAIKU,
             max_tokens=512,
-            messages=[{
-                "role": "user",
-                "content": build_question_generation_prompt(chunk_texts, question),
-            }],
         )
-        raw = response.content[0].text.strip()
-        if raw.startswith("```"):
-            raw = raw.split("\n", 1)[1]
-            raw = raw.rsplit("```", 1)[0].strip()
-        parsed = json.loads(raw)
+        parsed = json.loads(strip_code_fence(raw))
         if not isinstance(parsed, list) or not all(
             isinstance(item, dict)
             and isinstance(item.get("question"), str)
@@ -93,7 +85,7 @@ def analyze_query_corpus_fit(
             {"question": item["question"].strip(), "source_chunk_ids": item["source_chunk_ids"]}
             for item in parsed
         ]
-    except Exception:
+    except (LLMError, ValueError):
         logger.warning("Question generation failed; returning triggered with empty questions")
         return QueryCorpusFitMetrics(
             triggered=True,
@@ -129,21 +121,14 @@ def analyze_query_corpus_fit(
             source_valid_candidates.append({**candidate, "source_chunk_ids": source_ids})
 
     try:
-        validation_response = client.messages.create(
+        validation_raw = complete(
+            build_question_validation_prompt(
+                chunk_texts, json.dumps(source_valid_candidates, ensure_ascii=False)
+            ),
             model=CLAUDE_HAIKU,
             max_tokens=512,
-            messages=[{
-                "role": "user",
-                "content": build_question_validation_prompt(
-                    chunk_texts, json.dumps(source_valid_candidates, ensure_ascii=False)
-                ),
-            }],
         )
-        validation_raw = validation_response.content[0].text.strip()
-        if validation_raw.startswith("```"):
-            validation_raw = validation_raw.split("\n", 1)[1]
-            validation_raw = validation_raw.rsplit("```", 1)[0].strip()
-        judgments = json.loads(validation_raw)
+        judgments = json.loads(strip_code_fence(validation_raw))
         if not isinstance(judgments, list) or len(judgments) != len(source_valid_candidates):
             raise ValueError("Validator returned wrong result count")
         answerable: list[dict] = []
@@ -236,7 +221,8 @@ def analyze_query_corpus_fit(
             observed_fit = "retrieved_context_topic_gap"
         else:
             observed_fit = "ambiguous"
-    except Exception:
+    # RuntimeError/OSError: the local embedding model failed to load or run.
+    except (LLMError, ValueError, RuntimeError, OSError):
         logger.warning("Retrieved-context fit computation failed", exc_info=True)
         return QueryCorpusFitMetrics(
             triggered=True,

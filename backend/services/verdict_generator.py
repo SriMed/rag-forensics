@@ -9,8 +9,6 @@ import json
 import logging
 from dataclasses import dataclass
 
-import anthropic
-
 from config import CLAUDE_SONNET
 from models import (
     ChunkAttributionMetrics,
@@ -20,6 +18,7 @@ from models import (
     RetrievalDistributionMetrics,
 )
 from prompts.verdict_prompts import RANKED_SIGNALS_PROMPT
+from services.llm import LLMError, complete
 from signal_weights import DEFAULT_WEIGHTS, SignalWeights
 
 logger = logging.getLogger(__name__)
@@ -356,13 +355,7 @@ def render_recommendation(
         reasoning_json=json.dumps(reasoning_payload(reasoning), indent=2),
     )
     try:
-        client = anthropic.Anthropic()
-        message = client.messages.create(
-            model=CLAUDE_SONNET,
-            max_tokens=200,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return message.content[0].text.strip()
-    except Exception:
+        return complete(prompt, model=CLAUDE_SONNET, max_tokens=200).strip()
+    except LLMError:
         logger.warning("render_recommendation: Claude call failed, falling back to structured reasoning")
         return format_verdict_reasoning(reasoning)

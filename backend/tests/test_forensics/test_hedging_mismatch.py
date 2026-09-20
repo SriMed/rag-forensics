@@ -5,6 +5,8 @@ All Claude API calls are mocked. classify_confidence tests need no mocking.
 import inspect
 from unittest.mock import MagicMock
 
+import anthropic
+import httpx
 import pytest
 
 from models import RetrievedChunk
@@ -13,6 +15,8 @@ from services.forensics.hedging_mismatch import analyze_hedging_mismatch, classi
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+_API_ERROR = anthropic.APIConnectionError(request=httpx.Request("POST", "https://api.anthropic.com"))
 
 def _chunks(n: int = 3) -> list[RetrievedChunk]:
     return [
@@ -38,7 +42,7 @@ def _make_mock(mocker, responses: list) -> MagicMock:
             side_effects.append(_mock_response(r))
     mock_client.messages.create.side_effect = side_effects
     mock_cls = MagicMock(return_value=mock_client)
-    mocker.patch("services.forensics.hedging_mismatch.anthropic.Anthropic", mock_cls)
+    mocker.patch("services.llm.anthropic.Anthropic", mock_cls)
     return mock_client
 
 
@@ -222,9 +226,9 @@ def test_mismatch_type_uncertain_supported(mocker):
 
 def test_extraction_failure_is_explicit_not_healthy(mocker):
     mock_client = MagicMock()
-    mock_client.messages.create.side_effect = Exception("API error")
+    mock_client.messages.create.side_effect = _API_ERROR
     mock_cls = MagicMock(return_value=mock_client)
-    mocker.patch("services.forensics.hedging_mismatch.anthropic.Anthropic", mock_cls)
+    mocker.patch("services.llm.anthropic.Anthropic", mock_cls)
 
     result = analyze_hedging_mismatch("answer", _chunks(2))
     assert result.total_claims == 0
@@ -313,11 +317,11 @@ def test_per_claim_entailment_failure_is_isolated(mocker):
     mock_client = MagicMock()
     mock_client.messages.create.side_effect = [
         _mock_response('["The deadline is March 15.", "It may apply after March."]'),  # extraction
-        Exception("timeout"),   # claim 0 (definitive) entailment raises → unavailable
+        _API_ERROR,   # claim 0 (definitive) entailment raises → unavailable
         _mock_response("supported"),  # claim 1 (hedged) entailment succeeds → supported
     ]
     mock_cls = MagicMock(return_value=mock_client)
-    mocker.patch("services.forensics.hedging_mismatch.anthropic.Anthropic", mock_cls)
+    mocker.patch("services.llm.anthropic.Anthropic", mock_cls)
 
     result = analyze_hedging_mismatch("answer", chunks)
     # Must NOT be zeroed — extraction succeeded
@@ -469,7 +473,7 @@ def test_valid_negative_and_errors_preserve_per_chunk_coverage(mocker):
     _make_mock(mocker, [
         '["The deadline is March 15."]',
         "not_supported",
-        Exception("timeout"),
+        _API_ERROR,
         "not_supported",
     ])
     result = analyze_hedging_mismatch("answer", _chunks(3))
@@ -480,3 +484,22 @@ def test_valid_negative_and_errors_preserve_per_chunk_coverage(mocker):
         "evaluated", "error", "evaluated"
     ]
     assert result.evaluated_chunk_count == 2
+
+
+def test_unexpected_error_during_extraction_is_not_swallowed(mocker):
+    mock_client = MagicMock()
+    mock_client.messages.create.side_effect = RuntimeError("bug")
+    mocker.patch("services.llm.anthropic.Anthropic", MagicMock(return_value=mock_client))
+    with pytest.raises(RuntimeError):
+        analyze_hedging_mismatch("answer", _chunks(2))
+
+
+def test_unexpected_error_during_entailment_is_not_swallowed(mocker):
+    mock_client = MagicMock()
+    mock_client.messages.create.side_effect = [
+        _mock_response('["The deadline is March 15."]'),
+        RuntimeError("bug"),
+    ]
+    mocker.patch("services.llm.anthropic.Anthropic", MagicMock(return_value=mock_client))
+    with pytest.raises(RuntimeError):
+        analyze_hedging_mismatch("answer", _chunks(1))

@@ -50,10 +50,6 @@ ignore = ["E501", "B905"]
 "benchmark/*" = ["BLE001"]
 "evals/*" = ["BLE001"]
 "scripts/*" = ["BLE001"]
-# Temporary: narrowed in the exception-handling cleanup.
-"services/forensics/hedging_mismatch.py" = ["BLE001"]
-"services/forensics/query_corpus_fit.py" = ["BLE001"]
-"services/verdict_generator.py" = ["BLE001"]
 
 [tool.mypy]
 python_version = "3.11"
