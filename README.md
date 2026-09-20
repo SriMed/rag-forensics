@@ -167,26 +167,34 @@ diagnostic validity, provenance, failure semantics, and controlled interventions
 
 ## Quick start
 
+Use Python 3.11 and Poetry 2.2.1 for the backend. From the repository root:
+
 ```bash
 cd backend
+poetry env use python3.11
 poetry install
 cp .env.example .env
-poetry run python scripts/bootstrap_data.py
-poetry run uvicorn main:app --reload
+# Replace your_key_here in .env with your Anthropic API key.
+poetry run uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
-Run the offline test suite:
+Custom analysis needs no corpus bootstrap. In another terminal, from `backend/`:
 
 ```bash
-cd backend
+poetry run python -m scripts.smoke_local
+# Optional live check: sends the bundled public example to Anthropic and incurs API usage.
+poetry run python -m scripts.smoke_local --analyze
+# Offline tests: external model calls are mocked; no API key is required.
 poetry run pytest
 ```
 
-External API calls are mocked in tests; no API key is required.
+See [Local setup and verification](docs/reference/local-setup.md) for frontend startup, optional
+demo bootstrap, storage and caches, failure recovery, and the limits of these checks.
 
 ## Documentation
 
 - [Documentation guide](docs/README.md)
+- [Local setup and verification](docs/reference/local-setup.md)
 - [Worked example of the investigation workflow](docs/explainers/how-rag-forensics-works.md)
 - [Methods, outputs, architecture, and limitations](docs/reference/methods.md)
 - [Related work in RAG evaluation and debugging](docs/reference/related-work.md)

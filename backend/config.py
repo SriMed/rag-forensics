@@ -1,2 +1,4 @@
 CLAUDE_SONNET = "claude-sonnet-4-6"
 CLAUDE_HAIKU = "claude-haiku-4-5-20251001"
+LLM_TIMEOUT_SECONDS = 60.0
+LLM_MAX_RETRIES = 2

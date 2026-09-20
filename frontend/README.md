@@ -11,15 +11,15 @@ itself; all retrieval, generation, and scoring happen in the FastAPI backend doc
 ## Backend dependency
 
 This interface requires the backend running and reachable at `NEXT_PUBLIC_API_URL` (defaults to
-`http://localhost:8000`). Start the backend first — see the root
-[README's Quick start](../README.md#quick-start) — then point this app at it.
+`http://localhost:8000`) and the optional RAGBench corpus bootstrap. Follow the
+[local setup guide](../docs/reference/local-setup.md) first.
 
 ## Setup
 
 ```bash
-npm install
+npm ci
 cp .env.local.example .env.local   # edit NEXT_PUBLIC_API_URL if the backend isn't on localhost:8000
-npm run dev
+npm run dev -- --hostname 127.0.0.1
 ```
 
 Open [http://localhost:3000](http://localhost:3000). Pick a RAGBench domain, load a seeded
@@ -32,6 +32,7 @@ npm run dev     # start the dev server
 npm run build   # production build
 npm run start   # serve a production build
 npm run lint    # eslint
+npm run typecheck # TypeScript compilation checks
 npm test        # jest + testing-library
 ```
 
@@ -40,7 +41,7 @@ npm test        # jest + testing-library
 ```
 app/page.tsx
   → app/components/ExampleBrowser.tsx   (domain selection, example loading, triggers analysis)
-    → lib/api.ts                        (typed fetch client: GET /example, POST /analyze)
+    → lib/api.ts                        (typed fetch client: POST /example, POST /analyze)
     → app/components/DiagnosticCard.tsx (renders one forensics result)
 ```
 
@@ -57,9 +58,9 @@ cause. In particular:
 - Priority scores from `verdict_signals` are not probabilities or calibrated severities.
 - `ChunkAttributionMetrics` reports semantic similarity between an answer sentence and a chunk —
   it does not establish entailment.
-- RAGAS scores (`retrieval_relevance_score`, `faithfulness_score`) are raw continuous values with
-  no verdict attached; interpretation is left to the verdict generator's output, which this app
-  also displays.
+- RAGAS `context_utilization` and `faithfulness` each carry `score`, `status`, and `error`.
+  An unavailable result has a null score, not a healthy-looking zero. Context utilization is
+  conditioned on the supplied answer; it does not measure question–context relevance directly.
 
 See [`docs/reference/methods.md`](../docs/reference/methods.md) for the full definition of each
 metric and its evidentiary weight.

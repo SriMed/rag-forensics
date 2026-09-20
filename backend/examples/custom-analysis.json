@@ -1,0 +1,21 @@
+{
+  "question": "What is the refund policy?",
+  "answer": "Refunds take 5 to 7 business days. Request a refund within 30 days of purchase.",
+  "score_semantics": "normalized_similarity",
+  "chunks": [
+    {
+      "chunk_id": "refund-timing",
+      "text": "Refunds are processed within 5 to 7 business days.",
+      "score": 0.87,
+      "completeness": "complete",
+      "completeness_source": "caller"
+    },
+    {
+      "chunk_id": "refund-window",
+      "text": "Customers must request a refund within 30 days of purchase.",
+      "score": 0.75,
+      "completeness": "complete",
+      "completeness_source": "caller"
+    }
+  ]
+}

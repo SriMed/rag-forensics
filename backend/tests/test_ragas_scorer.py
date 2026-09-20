@@ -52,6 +52,20 @@ def test_context_utilization_supplies_answer_without_reference(mocker):
     assert excerpts
 
 
+def test_ragas_requests_have_explicit_timeout_without_stacked_retries(mocker):
+    evaluate = _mock_evaluate(mocker, "context_utilization", 0.8)
+    from services.ragas_scorer import score_context_utilization
+
+    result, _ = score_context_utilization("Q?", "A.", CHUNKS)
+
+    assert result.status == "ok"
+    options = evaluate.call_args.kwargs
+    assert options["llm"].default_request_timeout == 60.0
+    assert options["llm"].max_retries == 2
+    assert options["run_config"].timeout == 60
+    assert options["run_config"].max_retries == 1
+
+
 def test_faithfulness_supplies_its_installed_contract(mocker):
     evaluate = _mock_evaluate(mocker, "faithfulness", 0.9)
     from services.ragas_scorer import score_answer_faithfulness

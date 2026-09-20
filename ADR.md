@@ -591,3 +591,34 @@ configured in `backend/pyproject.toml`, and CI runs ruff, pytest, eslint, and je
 informationally until the remaining type errors are cleared. Evaluation and benchmark scripts keep
 their own pinned model IDs and broad handlers that record evaluator failures; they are excluded
 from the blind-except rule because reproducibility of versioned results takes precedence there.
+
+## ADR-046: Application setup, separate RAGAS boundary, and staged corpus replacement
+
+**Status:** Accepted
+**Issue:** #12
+
+The backend is a local application managed with Poetry's non-package mode. Installation uses the
+lock file without attempting to build a root package. The supported native setup uses Python 3.11,
+Poetry 2.2.1, and Node.js 22; custom analysis is available without bootstrapping the demo corpus.
+The canonical setup and verification commands live in
+[Local setup and verification](docs/reference/local-setup.md).
+
+This corrects ADR-045's scope statement: the shared `services/llm.py` helper covers direct project
+calls, while RAGAS retains its `ChatAnthropic` adapter and dependency-owned prompts and parsing.
+Both paths take a 60-second request timeout and two SDK retries from `config.py`. RAGAS evaluation
+uses a 60-second task timeout and one outer attempt, avoiding multiplication by its default retry
+policy. Its broad exception boundary still records an unavailable metric. Frozen experiments keep
+their own configuration. None of these settings establishes a total analysis deadline.
+
+Corpus replacement builds a staging collection before renaming the existing collection to a
+backup and promoting the replacement. Promotion failure attempts rollback; the backup is deleted
+only after promotion succeeds. Empty inputs are rejected. Fallback IDs use domain-prefixed SHA-256
+question digests instead of Python's process-randomized hash. Bootstrap runs with the backend
+stopped and is not a concurrent or crash-atomic operation; interrupted renames may require manual
+recovery from the retained backup. This preserves the embedded Chroma architecture without
+claiming transactional guarantees across collection renames or domains.
+
+The maintained smoke client checks liveness/readiness by default and requires `--analyze` to send
+the bundled public request to the model-backed analysis path. Historical notebooks are explicitly
+marked unsupported. CI checks frontend TypeScript compilation alongside lint and Jest. Full live
+clean-environment verification and model/dataset revision pinning remain work under issue #12.

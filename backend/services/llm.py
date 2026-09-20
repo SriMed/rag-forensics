@@ -2,8 +2,7 @@
 
 import anthropic
 
-_TIMEOUT_SECONDS = 60.0
-_MAX_RETRIES = 2
+from config import LLM_MAX_RETRIES, LLM_TIMEOUT_SECONDS
 
 
 class LLMError(Exception):
@@ -19,7 +18,7 @@ def complete(
     **request_options,
 ) -> str:
     """Send one user prompt and return the first text block of the reply."""
-    client = anthropic.Anthropic(timeout=_TIMEOUT_SECONDS, max_retries=_MAX_RETRIES)
+    client = anthropic.Anthropic(timeout=LLM_TIMEOUT_SECONDS, max_retries=LLM_MAX_RETRIES)
     request = {
         "model": model,
         "max_tokens": max_tokens,

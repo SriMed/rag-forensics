@@ -3,27 +3,34 @@
 The forensics layer accepts your own retrieved chunks and generated answer directly
 via the `/analyze/custom` endpoint — no RAGBench or ChromaDB required.
 
+Start the backend using [Local setup](local-setup.md). A complete public request is available in
+[`backend/examples/custom-analysis.json`](../../backend/examples/custom-analysis.json); from
+`backend/`, `poetry run python -m scripts.smoke_local --analyze` submits it and validates the
+response. Analysis sends the question, answer, and retrieved passages to Anthropic and incurs API
+usage; there is no offline-only full-analysis mode.
+
 ## Minimal example
 
 ```python
-import requests
+import httpx
 
 # Your existing retrieval results (e.g. from OpenSearch KNN)
 chunks = [
     {
-        "chunk_id": "doc_42_chunk_3", "text": "...", "score": 0.87,
-        "completeness": "truncated", "completeness_source": "caller"
+        "chunk_id": "doc_42_chunk_3", "text": "Refunds take 5-7 business days.", "score": 0.87,
+        "completeness": "complete", "completeness_source": "caller"
     },
-    {"chunk_id": "doc_17_chunk_1", "text": "...", "score": 0.74},
+    {"chunk_id": "doc_17_chunk_1", "text": "Request refunds within 30 days of purchase.", "score": 0.74},
 ]
 
-response = requests.post("http://localhost:8000/analyze/custom", json={
+response = httpx.post("http://127.0.0.1:8000/analyze/custom", timeout=600, json={
     "question": "What is the refund policy?",
     "answer": "Refunds are processed within 5-7 business days.",
     "score_semantics": "normalized_similarity",
     "chunks": chunks
 })
 
+response.raise_for_status()
 print(response.json())
 ```
 

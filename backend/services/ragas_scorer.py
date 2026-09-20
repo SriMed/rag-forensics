@@ -5,8 +5,9 @@ from langchain_anthropic import ChatAnthropic
 from ragas import EvaluationDataset, SingleTurnSample, evaluate
 from ragas.metrics._context_precision import context_utilization
 from ragas.metrics._faithfulness import faithfulness
+from ragas.run_config import RunConfig
 
-from config import CLAUDE_HAIKU
+from config import CLAUDE_HAIKU, LLM_MAX_RETRIES, LLM_TIMEOUT_SECONDS
 from models import RAGASMetricResult, RetrievedChunk
 
 logger = logging.getLogger(__name__)
@@ -37,9 +38,15 @@ def _run_ragas(
     logger.debug("running ragas metric=%s", metric_name)
     excerpts = _extract_context_excerpts(chunks)
     try:
-        llm = ChatAnthropic(model=CLAUDE_HAIKU)
+        llm = ChatAnthropic(
+            model=CLAUDE_HAIKU, timeout=LLM_TIMEOUT_SECONDS, max_retries=LLM_MAX_RETRIES
+        )
         dataset = EvaluationDataset(samples=[sample])
-        result = evaluate(dataset, metrics=[metric], llm=llm, show_progress=False)
+        result = evaluate(
+            dataset, metrics=[metric], llm=llm, show_progress=False,
+            # RAGAS counts attempts here; SDK retries must not be multiplied by its defaults.
+            run_config=RunConfig(timeout=int(LLM_TIMEOUT_SECONDS), max_retries=1),
+        )
         score = float(result[metric_name][0])
     except Exception:
         logger.warning("ragas metric=%s evaluation failed", metric_name, exc_info=True)

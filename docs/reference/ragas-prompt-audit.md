@@ -19,6 +19,13 @@ The observations below come from direct inspection of the installed Python objec
 2026-08-03. They are installed-version evidence, not a guarantee about every version allowed by
 the project's dependency range.
 
+The current application configures `ChatAnthropic` with a 60-second request timeout and two SDK
+retries. `evaluate()` receives `RunConfig(timeout=60, max_retries=1)`: one attempt at RAGAS's outer
+retry layer, with SDK retries inside that attempt. RAGAS remains a separate model boundary from
+`services/llm.py`; its dependency-owned prompt parsing can request additional generations. These
+settings do not impose a total analysis deadline. See
+[local setup](local-setup.md) and [ADR-046](../../ADR.md#adr-046-application-setup-separate-ragas-boundary-and-staged-corpus-replacement).
+
 ## Faithfulness
 
 ### Required inputs and processing

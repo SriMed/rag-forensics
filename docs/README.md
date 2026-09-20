@@ -20,6 +20,8 @@ protocols, and reproducible commands.
 
 ## Reference
 
+- [Local setup and verification](reference/local-setup.md) documents the supported native startup
+  path, optional corpus bootstrap, persistence, smoke checks, and recovery limitations.
 - [Methods and architecture](reference/methods.md) documents the diagnostic methods, output
   semantics, architecture, and limitations.
 - [Related work in RAG evaluation and debugging](reference/related-work.md) compares the project's
