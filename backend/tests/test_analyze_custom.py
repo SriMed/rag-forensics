@@ -1,10 +1,14 @@
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
+import routers.analyze as analyze_module
 from main import app
 from models import (
+    AnalyzeResponse,
     AttributionEntry,
     ChunkAttributionMetrics,
+    CustomChunk,
     HedgingMismatchMetrics,
     QueryCorpusFitMetrics,
     RAGASMetricResult,
@@ -65,7 +69,7 @@ def _patch_services(mocker):
         [[1.0, 0.0]],
         [[1.0, 0.0], [0.8, 0.2]],
     ]
-    mocker.patch("services.retriever.get_embedding_model", return_value=embedding_model)
+    mocker.patch("routers.analyze.get_embedding_model", return_value=embedding_model)
     mocker.patch("routers.analyze.score_context_utilization", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.score_answer_faithfulness", return_value=_STUB_SCORE_TUPLE)
     mocker.patch("routers.analyze.analyze_hedging_mismatch", return_value=_STUB_HEDGING)
@@ -222,3 +226,38 @@ def test_custom_legacy_chunks_default_to_unknown(mocker):
     _patch_services(mocker)
     response = client.post("/analyze/custom", json=_VALID_REQUEST)
     assert response.status_code == 200
+
+
+def test_custom_embeds_question_then_chunks_once_each(mocker):
+    _patch_services(mocker)
+    model = analyze_module.get_embedding_model()
+    assert client.post("/analyze/custom", json=_VALID_REQUEST).status_code == 200
+    assert model.encode.call_count == 2
+    assert model.encode.call_args_list[0].args[0] == [_VALID_REQUEST["question"]]
+    assert model.encode.call_args_list[1].args[0] == [c["text"] for c in _VALID_REQUEST["chunks"]]
+
+
+def test_custom_delegates_to_shared_build_analysis(mocker):
+    _patch_services(mocker)
+    spy = mocker.spy(analyze_module, "build_analysis")
+    assert client.post("/analyze/custom", json=_VALID_REQUEST).status_code == 200
+    assert spy.call_count == 1
+    assert spy.call_args.kwargs["question"] == _VALID_REQUEST["question"]
+    assert spy.call_args.kwargs["answer"] == _VALID_REQUEST["answer"]
+
+
+def test_build_analysis_returns_full_analyze_response(mocker):
+    _patch_services(mocker)
+    chunks = [CustomChunk(**c) for c in _VALID_REQUEST["chunks"]]
+    response = analyze_module.build_analysis(
+        question=_VALID_REQUEST["question"],
+        answer=_VALID_REQUEST["answer"],
+        chunks=chunks,
+        query_embedding=np.array([1.0, 0.0]),
+        chunk_embeddings=[np.array([1.0, 0.0]), np.array([0.8, 0.2])],
+    )
+    assert isinstance(response, AnalyzeResponse)
+    assert response.generated_answer == _VALID_REQUEST["answer"]
+    assert [c.chunk_id for c in response.retrieved_chunk_details] == ["doc_1_chunk_0", "doc_1_chunk_1"]
+    assert response.recommendation == "No changes indicated."
+    assert response.verdict_signals, "verdict signals must be populated"

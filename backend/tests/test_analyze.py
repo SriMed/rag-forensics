@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+import routers.analyze as analyze_module
 from main import app
 from models import (
     ChunkAttributionMetrics,
@@ -237,3 +238,10 @@ def test_analyze_response_exposes_structured_verdict_reasoning(mocker):
     assert reasoning["test"]["component"]
     assert len(reasoning["test"]["interpretations"]) == 2
     assert "rule_id" not in body
+
+
+def test_analyze_delegates_to_shared_build_analysis(mocker):
+    _patch_services(mocker)
+    spy = mocker.spy(analyze_module, "build_analysis")
+    assert client.post("/analyze", json={"example_id": "techqa-001"}).status_code == 200
+    assert spy.call_count == 1
