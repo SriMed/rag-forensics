@@ -1,7 +1,8 @@
 """Tests for chunk attribution forensics module — written before implementation (TDD)."""
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pytest
-from unittest.mock import MagicMock, patch
 
 from models import RetrievedChunk
 
@@ -197,8 +198,9 @@ def test_explicit_sentence_list_preserves_dataset_segmentation():
 # ---------------------------------------------------------------------------
 
 def test_attribution_map_length_equals_sentence_count():
-    from services.forensics.chunk_attribution import analyze_chunk_attribution
     import nltk
+
+    from services.forensics.chunk_attribution import analyze_chunk_attribution
 
     answer = "The sky is blue. Water is wet. Fire is hot."
     chunks = make_chunks(2)
@@ -311,8 +313,9 @@ def test_embedding_model_called_only_for_sentences():
 # ---------------------------------------------------------------------------
 
 def test_fractions_sum_to_one():
-    from services.forensics.chunk_attribution import analyze_chunk_attribution
     import nltk
+
+    from services.forensics.chunk_attribution import analyze_chunk_attribution
 
     answer = "The sky is blue. Water is wet. Fire is hot."
     nltk.download("punkt_tab", quiet=True)

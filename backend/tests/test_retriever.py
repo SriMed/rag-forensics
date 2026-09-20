@@ -1,7 +1,5 @@
 """Tests for services/retriever.py — all ChromaDB calls are mocked."""
-import pytest
 from unittest.mock import MagicMock, patch
-
 
 # ---------------------------------------------------------------------------
 # Helpers

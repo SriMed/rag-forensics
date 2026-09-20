@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
 
+from benchmark.experiment import categorize_error, run_experiment
+from benchmark.experiment_cli import build_parser as build_experiment_parser
 from benchmark.grounding import (
     DeterministicClaimDecomposer,
     FixtureClaimDecomposer,
@@ -10,14 +12,12 @@ from benchmark.grounding import (
     calculate_binary_metrics,
     calibrate_threshold,
     normalize_nli_scores,
-    summarize_method,
     run_grounding_methods,
+    summarize_method,
 )
-from benchmark.ragbench import adapt_ragbench_row
-from benchmark.experiment import categorize_error, run_experiment
-from benchmark.experiment_cli import build_parser as build_experiment_parser
 from benchmark.oracle_evidence import run_oracle_evidence_diagnostic
 from benchmark.oracle_evidence_cli import build_parser as build_oracle_parser
+from benchmark.ragbench import adapt_ragbench_row
 from models import GroundingRunMetadata, GroundingSentencePrediction
 
 

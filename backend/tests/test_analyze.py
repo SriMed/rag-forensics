@@ -1,8 +1,14 @@
-import pytest
-from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
+
 from main import app
-from models import RetrievedChunk, HedgingMismatchMetrics, ChunkAttributionMetrics, QueryCorpusFitMetrics, RAGASMetricResult, RetrievalResult
+from models import (
+    ChunkAttributionMetrics,
+    HedgingMismatchMetrics,
+    QueryCorpusFitMetrics,
+    RAGASMetricResult,
+    RetrievalResult,
+    RetrievedChunk,
+)
 
 client = TestClient(app)
 

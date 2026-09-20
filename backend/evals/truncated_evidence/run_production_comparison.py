@@ -12,7 +12,6 @@ from evals.truncated_evidence.run_comparison import assess
 from models import RetrievedChunk
 from prompts.generation_prompts import GENERATION_SYSTEM_PROMPT, build_generation_prompt
 
-
 MODEL = "claude-haiku-4-5-20251001"
 CASES = Path(__file__).parent / "v1" / "cases.json"
 BASELINE_SYSTEM_PROMPT = (

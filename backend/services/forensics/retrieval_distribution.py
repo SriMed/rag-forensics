@@ -2,7 +2,8 @@ import warnings
 
 import numpy as np
 from scipy.optimize import OptimizeWarning, curve_fit
-from models import RetrievedChunk, RetrievalDistributionMetrics
+
+from models import RetrievalDistributionMetrics, RetrievedChunk
 
 
 def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDistributionMetrics:

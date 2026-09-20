@@ -1,17 +1,19 @@
 import logging
 from dataclasses import asdict
+
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from models import AnalyzeRequest, AnalyzeResponse, RAGASMetrics, CustomAnalyzeRequest, VerdictSignal, VerdictReasoning
+
+from models import AnalyzeRequest, AnalyzeResponse, CustomAnalyzeRequest, RAGASMetrics, VerdictReasoning, VerdictSignal
 from services.forensics.chunk_attribution import analyze_chunk_attribution
+from services.forensics.embedding_analysis import analyze_embedding_space
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
 from services.forensics.query_corpus_fit import analyze_query_corpus_fit
-from services.verdict_generator import build_verdict_reasoning, rank_signals, render_recommendation
-from services.retriever import retrieve_for_example
-from services.generator import generate_answer
-from services.ragas_scorer import score_context_utilization, score_answer_faithfulness
 from services.forensics.retrieval_distribution import analyze_retrieval_distribution
-from services.forensics.embedding_analysis import analyze_embedding_space
+from services.generator import generate_answer
+from services.ragas_scorer import score_answer_faithfulness, score_context_utilization
+from services.retriever import retrieve_for_example
+from services.verdict_generator import build_verdict_reasoning, rank_signals, render_recommendation
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

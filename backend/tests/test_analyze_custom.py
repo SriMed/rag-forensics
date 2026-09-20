@@ -1,12 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
+
 from main import app
 from models import (
-    HedgingMismatchMetrics,
+    AttributionEntry,
     ChunkAttributionMetrics,
+    HedgingMismatchMetrics,
     QueryCorpusFitMetrics,
     RAGASMetricResult,
-    AttributionEntry,
 )
 
 client = TestClient(app)

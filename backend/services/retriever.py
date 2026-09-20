@@ -1,9 +1,11 @@
 """Retriever: wraps ChromaDB collections for the RAG Forensics demo."""
 import logging
 import random
+
 import chromadb
 from sentence_transformers import SentenceTransformer
-from models import StoredExample, RetrievedChunk, RetrievalResult
+
+from models import RetrievalResult, RetrievedChunk, StoredExample
 
 _EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 _embedding_model: SentenceTransformer | None = None

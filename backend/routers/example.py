@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from models import ExampleRequest, ExampleResponse
 from services.retriever import get_random_example
 

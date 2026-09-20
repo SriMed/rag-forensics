@@ -6,12 +6,21 @@ import argparse
 from pathlib import Path
 
 from benchmark.decomposition_evidence import (
-    ClaimReviewArtifact, file_sha256, make_claim_review_template,
-    ExperimentMetadata, make_residual_review_template, run_decomposition_evidence_experiment,
+    ClaimReviewArtifact,
+    ExperimentMetadata,
+    file_sha256,
+    make_claim_review_template,
+    make_residual_review_template,
+    run_decomposition_evidence_experiment,
 )
 from benchmark.experiment_cli import (
-    DATASET_REVISION, DOMAINS, EMBEDDING_MODEL, EMBEDDING_REVISION,
-    ENTAILMENT_MODEL, ENTAILMENT_REVISION, _load_records,
+    DATASET_REVISION,
+    DOMAINS,
+    EMBEDDING_MODEL,
+    EMBEDDING_REVISION,
+    ENTAILMENT_MODEL,
+    ENTAILMENT_REVISION,
+    _load_records,
 )
 from benchmark.grounding import CrossEncoderNLIVerifier, DeterministicClaimDecomposer
 

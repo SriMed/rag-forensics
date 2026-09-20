@@ -8,8 +8,8 @@ from benchmark.decomposition_evidence import (
     make_residual_review_template,
     run_decomposition_evidence_experiment,
 )
-from benchmark.grounding import DeterministicClaimDecomposer, FixtureEntailmentVerifier
 from benchmark.decomposition_evidence_cli import build_parser
+from benchmark.grounding import DeterministicClaimDecomposer, FixtureEntailmentVerifier
 from benchmark.ragbench import adapt_ragbench_row
 
 

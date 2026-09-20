@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections.abc import Iterable, Mapping
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from benchmark.ragbench import (
@@ -85,7 +85,7 @@ def main(argv: list[str] | None = None) -> int:
         split=args.split,
         seed=args.seed,
         requested_limit=args.limit,
-        timestamp=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        timestamp=datetime.now(UTC).isoformat().replace("+00:00", "Z"),
     )
     payload = report.model_dump_json(indent=2)
     if args.output:

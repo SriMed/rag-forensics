@@ -3,13 +3,13 @@ import json
 import numpy as np
 import pytest
 
+from benchmark.cli import build_parser, run_rows
 from benchmark.ragbench import (
     RAGBenchRowError,
     adapt_ragbench_row,
     calculate_unsupported_metrics,
     evaluate_records,
 )
-from benchmark.cli import build_parser, run_rows
 
 
 def ragbench_row(**overrides):

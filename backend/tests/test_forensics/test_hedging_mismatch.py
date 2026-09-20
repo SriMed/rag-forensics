@@ -3,13 +3,12 @@
 All Claude API calls are mocked. classify_confidence tests need no mocking.
 """
 import inspect
-import json
-import pytest
 from unittest.mock import MagicMock
 
-from models import ClaimEntry, HedgingMismatchMetrics, RetrievedChunk
-from services.forensics.hedging_mismatch import analyze_hedging_mismatch, classify_confidence
+import pytest
 
+from models import RetrievedChunk
+from services.forensics.hedging_mismatch import analyze_hedging_mismatch, classify_confidence
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -77,7 +76,7 @@ def test_classify_confidence_uncertain_unclear():
 
 def test_all_definitive_not_supported(mocker):
     chunks = _chunks(2)
-    mock_client = _make_mock(mocker, [
+    _make_mock(mocker, [
         '["The deadline is March 15."]',  # extraction: 1 definitive claim
         "not_supported",  # chunk c0
         "not_supported",  # chunk c1

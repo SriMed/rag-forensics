@@ -3,19 +3,18 @@
 Runs the three pure forensic modules (no LLM) across RAGBench examples and
 computes empirical 95th percentiles for the metrics used in rank_signals().
 """
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import numpy as np
 import chromadb
-from sentence_transformers import SentenceTransformer
+import numpy as np
 
-from services.forensics.retrieval_distribution import analyze_retrieval_distribution
-from services.forensics.embedding_analysis import analyze_embedding_space
 from services.forensics.chunk_attribution import analyze_chunk_attribution
-from services.retriever import retrieve_for_example, get_embedding_model, _CHROMA_PATH
+from services.forensics.embedding_analysis import analyze_embedding_space
+from services.forensics.retrieval_distribution import analyze_retrieval_distribution
+from services.retriever import _CHROMA_PATH, retrieve_for_example
 
 _DOMAINS = ["techqa", "finqa", "covidqa"]
 _MAX_PER_DOMAIN = 100  # cap to keep runtime reasonable
@@ -40,8 +39,6 @@ def main():
     query_isolations = []
     tail_masses = []
     weak_match_fractions = []
-
-    model = get_embedding_model()
 
     for domain in _DOMAINS:
         example_ids = get_example_ids(domain, _MAX_PER_DOMAIN)
@@ -77,19 +74,19 @@ def main():
 
     print("\n=== Calibration Results ===")
     print(f"n={len(entropies)} examples")
-    print(f"\nscore_entropy")
+    print("\nscore_entropy")
     print(f"  mean={entropies.mean():.3f}  p50={np.percentile(entropies, 50):.3f}  "
           f"p75={np.percentile(entropies, 75):.3f}  p95={np.percentile(entropies, 95):.3f}  "
           f"max={entropies.max():.3f}")
-    print(f"\nquery_isolation")
+    print("\nquery_isolation")
     print(f"  mean={isolations.mean():.3f}  p50={np.percentile(isolations, 50):.3f}  "
           f"p75={np.percentile(isolations, 75):.3f}  p95={np.percentile(isolations, 95):.3f}  "
           f"max={isolations.max():.3f}")
-    print(f"\ntail_mass")
+    print("\ntail_mass")
     print(f"  mean={tails.mean():.3f}  p50={np.percentile(tails, 50):.3f}  "
           f"p75={np.percentile(tails, 75):.3f}  p95={np.percentile(tails, 95):.3f}  "
           f"max={tails.max():.3f}")
-    print(f"\nweak_match_fraction")
+    print("\nweak_match_fraction")
     print(f"  mean={weak_fracs.mean():.3f}  p50={np.percentile(weak_fracs, 50):.3f}  "
           f"p75={np.percentile(weak_fracs, 75):.3f}  p95={np.percentile(weak_fracs, 95):.3f}  "
           f"max={weak_fracs.max():.3f}")

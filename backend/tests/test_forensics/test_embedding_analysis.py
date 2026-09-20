@@ -2,11 +2,11 @@
 
 All embeddings are synthetic numpy arrays — no real model calls.
 """
+
 import numpy as np
 import pytest
-from unittest.mock import MagicMock
 
-from models import EmbeddingSpaceMetrics, EmbeddingPoint
+from models import EmbeddingPoint, EmbeddingSpaceMetrics
 from services.forensics.embedding_analysis import analyze_embedding_space
 
 DIM = 64
@@ -172,8 +172,9 @@ def test_query_isolation_nonnegative(n_chunks):
 
 def test_no_embedding_model_called():
     """Function accepts pre-computed embeddings — no embedding library should be imported."""
-    import services.forensics.embedding_analysis as mod
     import sys
+
+    import services.forensics.embedding_analysis as mod
 
     # Known embedding-model libraries that must NOT be imported by this module
     forbidden_modules = {

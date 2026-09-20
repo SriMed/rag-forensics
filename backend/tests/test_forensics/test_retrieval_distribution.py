@@ -1,9 +1,9 @@
 import warnings
 
-import numpy as np
 import pytest
 from scipy.optimize import OptimizeWarning
-from models import RetrievedChunk, RetrievalDistributionMetrics
+
+from models import RetrievalDistributionMetrics, RetrievedChunk
 from services.forensics.retrieval_distribution import analyze_retrieval_distribution
 
 

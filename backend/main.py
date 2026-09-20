@@ -1,5 +1,7 @@
 import logging
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 logging.basicConfig(
@@ -12,7 +14,8 @@ for _noisy in ("httpx", "httpcore", "langchain", "chromadb", "ragas", "sentence_
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import example, analyze
+
+from routers import analyze, example
 
 app = FastAPI(title="RAG Forensics API")
 

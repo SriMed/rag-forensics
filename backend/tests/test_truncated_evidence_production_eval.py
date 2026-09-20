@@ -2,7 +2,6 @@ import subprocess
 
 from evals.truncated_evidence.run_production_comparison import render, run
 
-
 CASE = {
     "question": "What is the result?",
     "complete": "The result may be a risk factor.",

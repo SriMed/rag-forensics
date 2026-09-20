@@ -8,9 +8,9 @@ from pathlib import Path
 
 from benchmark.experiment import run_experiment
 from benchmark.grounding import (
+    METHODS,
     CrossEncoderNLIVerifier,
     DeterministicClaimDecomposer,
-    METHODS,
 )
 from benchmark.ragbench import DATASET_NAME, RAGBenchRowError, adapt_ragbench_row
 from models import GroundingRunMetadata

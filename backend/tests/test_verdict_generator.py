@@ -4,8 +4,9 @@ rank_signals() is pure Python — no mocks needed.
 render_recommendation() mocks services.verdict_generator.anthropic.Anthropic.
 """
 import random
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from models import (
     ChunkAttributionMetrics,
@@ -22,7 +23,6 @@ from services.verdict_generator import (
     render_recommendation,
 )
 from signal_weights import SignalWeights
-
 
 # ---------------------------------------------------------------------------
 # Helpers — build minimal metric objects with sane defaults

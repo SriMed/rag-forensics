@@ -1,5 +1,7 @@
 import logging
+
 import anthropic
+
 from models import RetrievedChunk
 from prompts.generation_prompts import GENERATION_SYSTEM_PROMPT, build_generation_prompt
 

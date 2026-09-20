@@ -1,6 +1,6 @@
 """Chunk attribution forensics — sentence-level grounding analysis."""
-import numpy as np
 import nltk
+import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 from models import AttributionEntry, ChunkAttributionMetrics, RetrievedChunk

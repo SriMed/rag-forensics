@@ -1,5 +1,6 @@
 from enum import StrEnum
 from typing import Literal
+
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 ClaimExtractionError = Literal[

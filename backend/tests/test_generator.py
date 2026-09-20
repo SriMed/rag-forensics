@@ -1,6 +1,8 @@
 """Tests for services/generator.py — mocks Anthropic SDK entirely."""
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
+
 from models import RetrievedChunk
 
 CHUNKS = [

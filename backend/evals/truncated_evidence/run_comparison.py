@@ -18,7 +18,6 @@ from pathlib import Path
 from models import RetrievedChunk
 from prompts.generation_prompts import GENERATION_SYSTEM_PROMPT, build_generation_prompt
 
-
 CASES = Path(__file__).parent / "v1" / "cases.json"
 CLAUDE_MODEL = "haiku"
 CONDITIONS = ("baseline", "metadata", "qualification", "hybrid")

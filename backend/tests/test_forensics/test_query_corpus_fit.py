@@ -1,11 +1,10 @@
 """Tests for query-corpus fit forensics module — written before implementation (TDD)."""
 import json
-import numpy as np
-import pytest
 from unittest.mock import MagicMock, patch
 
-from models import RetrievedChunk
+import numpy as np
 
+from models import RetrievedChunk
 
 # ---------------------------------------------------------------------------
 # Helpers

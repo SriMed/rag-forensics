@@ -1,12 +1,12 @@
 """Contract and failure-semantics tests for the installed RAGAS metrics."""
-import math
 import json
+import math
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
-from models import RAGASMetricResult, RetrievedChunk
 
+from models import RAGASMetricResult, RetrievedChunk
 
 CHUNKS = [
     RetrievedChunk(chunk_id="c1", text="The mitochondria produces ATP.", score=0.9),

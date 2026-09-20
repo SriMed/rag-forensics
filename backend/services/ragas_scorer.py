@@ -1,9 +1,11 @@
 import logging
 import math
-from ragas import evaluate, EvaluationDataset, SingleTurnSample
-from ragas.metrics._faithfulness import faithfulness
-from ragas.metrics._context_precision import context_utilization
+
 from langchain_anthropic import ChatAnthropic
+from ragas import EvaluationDataset, SingleTurnSample, evaluate
+from ragas.metrics._context_precision import context_utilization
+from ragas.metrics._faithfulness import faithfulness
+
 from models import RAGASMetricResult, RetrievedChunk
 
 logger = logging.getLogger(__name__)

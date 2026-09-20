@@ -9,7 +9,6 @@ from pathlib import Path
 
 from ragas.metrics._context_precision import QAC, context_utilization
 
-
 MODEL = "haiku"
 CASES = Path(__file__).parent / "v1/cases.json"
 

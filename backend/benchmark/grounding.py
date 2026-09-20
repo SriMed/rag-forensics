@@ -17,8 +17,8 @@ from models import (
     ClaimVerification,
     ConfidenceInterval,
     EvidenceCandidate,
-    GroundingSentencePrediction,
     GroundingMethodReport,
+    GroundingSentencePrediction,
     NLIVerifierScores,
     RAGBenchEvaluationRecord,
 )

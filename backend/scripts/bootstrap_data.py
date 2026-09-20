@@ -6,8 +6,8 @@ Run from backend/:
 Loads techqa, finqa, covidqa splits from rungalileo/ragbench, embeds with
 sentence-transformers/all-MiniLM-L6-v2, and stores in ./data/chroma.
 """
-import sys
 import os
+import sys
 
 # Allow imports from backend root
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))

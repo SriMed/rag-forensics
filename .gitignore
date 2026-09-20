@@ -44,5 +44,3 @@ backend/evals/comparative_diagnostics/*/envs/_*.json
 
 # Misc
 *.log
-
-.github
