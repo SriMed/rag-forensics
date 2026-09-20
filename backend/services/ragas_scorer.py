@@ -9,6 +9,7 @@ from ragas.run_config import RunConfig
 
 from config import CLAUDE_HAIKU, LLM_MAX_RETRIES, LLM_TIMEOUT_SECONDS
 from models import RAGASMetricResult, RetrievedChunk
+from services.failure_detail import failure_detail
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +49,8 @@ def _run_ragas(
             run_config=RunConfig(timeout=int(LLM_TIMEOUT_SECONDS), max_retries=1),
         )
         score = float(result[metric_name][0])
-    except Exception:
-        logger.warning("ragas metric=%s evaluation failed", metric_name, exc_info=True)
+    except Exception as exc:  # noqa: BLE001 — any evaluator failure becomes an explicit unavailable result
+        logger.warning("ragas metric=%s evaluation failed: %s", metric_name, failure_detail(exc))
         return RAGASMetricResult(score=None, status="unavailable", error="evaluation_failed"), excerpts
     if not math.isfinite(score):
         logger.warning("ragas metric=%s returned a non-finite score", metric_name)

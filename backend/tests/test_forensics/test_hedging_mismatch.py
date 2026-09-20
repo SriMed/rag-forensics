@@ -503,3 +503,16 @@ def test_unexpected_error_during_entailment_is_not_swallowed(mocker):
     mocker.patch("services.llm.anthropic.Anthropic", MagicMock(return_value=mock_client))
     with pytest.raises(RuntimeError):
         analyze_hedging_mismatch("answer", _chunks(1))
+
+
+def test_entailment_logs_do_not_contain_claim_or_model_output(mocker, caplog):
+    _make_mock(mocker, [
+        '["synthetic-claim-text."]',
+        "synthetic-model-echo",  # not a valid verdict -> invalid_format warning
+        _API_ERROR,              # request failure warning
+    ])
+    with caplog.at_level("DEBUG"):
+        analyze_hedging_mismatch("answer", _chunks(2))
+    assert "synthetic-claim-text" not in caplog.text
+    assert "synthetic-model-echo" not in caplog.text
+    assert "c0" in caplog.text and "c1" in caplog.text  # identifiers are still logged

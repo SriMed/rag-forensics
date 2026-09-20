@@ -98,3 +98,13 @@ def test_generate_answer_raises_llm_error_on_api_failure(mocker):
     from services.generator import generate_answer
     with pytest.raises(LLMError):
         generate_answer("Why is the sky blue?", CHUNKS)
+
+
+def test_generate_answer_does_not_log_question_text(mocker, caplog):
+    _make_anthropic_mock(mocker, text="An answer.")
+    from services.generator import generate_answer
+
+    with caplog.at_level("DEBUG"):
+        generate_answer("synthetic-caller-question", CHUNKS)
+    assert "synthetic-caller-question" not in caplog.text
+    assert "An answer." not in caplog.text

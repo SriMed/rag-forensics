@@ -12,6 +12,7 @@ import numpy as np
 from config import CLAUDE_HAIKU
 from models import QueryCorpusFitMetrics, RejectedSuggestedQuestion, RetrievedChunk, SuggestedQuestion
 from prompts.query_fit_prompts import build_question_generation_prompt, build_question_validation_prompt
+from services.failure_detail import failure_detail
 from services.llm import LLMError, complete, strip_code_fence
 from services.retriever import get_embedding_model
 
@@ -238,8 +239,8 @@ def analyze_query_corpus_fit(
                 trigger_reason, "insufficient_valid_questions", suggested=suggested, rejected=rejected
             )
         mean_sim = float(np.mean([sq.relevance_to_original for sq in suggested]))
-    except (LLMError, ValueError, RuntimeError, OSError):
-        logger.warning("Retrieved-context fit computation failed", exc_info=True)
+    except (LLMError, ValueError, RuntimeError, OSError) as exc:
+        logger.warning("Retrieved-context fit computation failed: %s", failure_detail(exc))
         return _error_metrics(trigger_reason, "fit_computation_failed", rejected=rejected)
 
     return QueryCorpusFitMetrics(

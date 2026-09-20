@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_answer(question: str, chunks: list[RetrievedChunk]) -> str:
-    logger.debug("generating answer for question=%r using %d chunks", question[:80], len(chunks))
+    logger.debug("generating answer from %d chunks", len(chunks))
     answer = complete(
         build_generation_prompt(question, chunks),
         model=CLAUDE_HAIKU,

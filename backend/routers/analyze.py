@@ -14,6 +14,7 @@ from models import (
     VerdictReasoning,
     VerdictSignal,
 )
+from services.failure_detail import failure_detail
 from services.forensics.chunk_attribution import analyze_chunk_attribution
 from services.forensics.embedding_analysis import analyze_embedding_space
 from services.forensics.hedging_mismatch import analyze_hedging_mismatch
@@ -117,8 +118,8 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             query_embedding=np.array(retrieval_result.query_embedding),
             chunk_embeddings=[np.array(e) for e in retrieval_result.chunk_embeddings],
         )
-    except Exception as exc:
-        logger.exception("analyze failed for example_id=%s", request.example_id)
+    except Exception as exc:  # noqa: BLE001 — boundary: any failure becomes a sanitized 500
+        logger.error("analyze failed for example_id=%s: %s", request.example_id, failure_detail(exc))
         raise HTTPException(status_code=500, detail=_ANALYSIS_FAILED_DETAIL) from exc
 
     logger.info("analyze complete: example_id=%s", request.example_id)
@@ -140,8 +141,8 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
             query_embedding=query_embedding,
             chunk_embeddings=chunk_embeddings,
         )
-    except Exception as exc:
-        logger.exception("analyze/custom failed")
+    except Exception as exc:  # noqa: BLE001 — boundary: any failure becomes a sanitized 500
+        logger.error("analyze/custom failed: %s", failure_detail(exc))
         raise HTTPException(status_code=500, detail=_ANALYSIS_FAILED_DETAIL) from exc
 
     logger.info("analyze/custom complete")

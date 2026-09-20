@@ -756,3 +756,24 @@ def test_unexpected_error_in_generation_is_not_swallowed(mocker):
             normalized_entropy=0.5,
             faithfulness_score=0.8,
         )
+
+
+def test_fit_failure_logs_do_not_contain_exception_message(mocker, caplog):
+    from services.forensics.query_corpus_fit import analyze_query_corpus_fit
+
+    _make_claude_mock(mocker, '["Q1?", "Q2?", "Q3?"]')
+    with patch("services.forensics.query_corpus_fit.get_embedding_model") as mock_get:
+        mock_get.side_effect = RuntimeError("synthetic-caller-content in error")
+        with caplog.at_level("DEBUG"):
+            analyze_query_corpus_fit(
+                question="What is X?",
+                query_embedding=_unit(seed=1),
+                chunks=_chunks(2),
+                chunk_embeddings=[_unit(seed=10), _unit(seed=11)],
+                query_isolation=1.5,
+                context_utilization_score=0.8,
+                normalized_entropy=0.5,
+                faithfulness_score=0.8,
+            )
+    assert "synthetic-caller-content" not in caplog.text
+    assert "RuntimeError" in caplog.text

@@ -5,11 +5,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s — %(message)s",
 )
-# Keep noisy third-party loggers at WARNING
-for _noisy in ("httpx", "httpcore", "langchain", "chromadb", "ragas", "sentence_transformers"):
+# Suppress SDK request payloads even when the host configures root logging at DEBUG.
+for _noisy in ("anthropic", "httpx", "httpcore", "langchain", "chromadb", "ragas", "sentence_transformers"):
     logging.getLogger(_noisy).setLevel(logging.WARNING)
 
 from fastapi import FastAPI

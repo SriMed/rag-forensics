@@ -184,3 +184,16 @@ def test_reviewed_context_utilization_results_match_all_human_labels():
 def test_metric_result_rejects_inconsistent_states(kwargs):
     with pytest.raises(ValidationError):
         RAGASMetricResult(**kwargs)
+
+
+def test_ragas_failure_logs_do_not_contain_exception_message(mocker, caplog):
+    mocker.patch(
+        "services.ragas_scorer.evaluate",
+        side_effect=RuntimeError("synthetic-caller-content in provider error"),
+    )
+    from services.ragas_scorer import score_context_utilization
+
+    with caplog.at_level("DEBUG"):
+        score_context_utilization("Q?", "A.", CHUNKS)
+    assert "synthetic-caller-content" not in caplog.text
+    assert "RuntimeError" in caplog.text

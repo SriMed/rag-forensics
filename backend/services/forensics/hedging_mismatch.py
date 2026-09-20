@@ -196,14 +196,12 @@ def _check_entailment(claim: str, chunk: RetrievedChunk) -> EntailmentCheck:
             max_tokens=32,
         )
     except LLMError:
-        logger.warning("Entailment check failed for claim '%s' on chunk '%s'", claim, chunk.chunk_id)
+        logger.warning("Entailment check failed on chunk '%s'", chunk.chunk_id)
         return EntailmentCheck(chunk_id=chunk.chunk_id, status="error")
     try:
         verdict = EntailmentVerdict(raw_verdict.strip())
     except ValueError:
-        logger.warning(
-            "Invalid entailment response for claim '%s' on chunk '%s': %r", claim, chunk.chunk_id, raw_verdict
-        )
+        logger.warning("Invalid entailment response on chunk '%s' (%d chars)", chunk.chunk_id, len(raw_verdict))
         return EntailmentCheck(chunk_id=chunk.chunk_id, status="invalid_format", raw_output=raw_verdict)
     return EntailmentCheck(chunk_id=chunk.chunk_id, status="evaluated", verdict=verdict, raw_output=raw_verdict)
 

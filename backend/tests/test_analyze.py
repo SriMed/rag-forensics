@@ -254,3 +254,14 @@ def test_analyze_500_does_not_leak_exception_text(mocker):
     assert "sk-ant-123" not in response.text
     assert "/Users/x" not in response.text
     assert response.json()["detail"]
+
+
+def test_analyze_failure_logs_do_not_contain_exception_message(mocker, caplog):
+    mocker.patch(
+        "routers.analyze.retrieve_for_example",
+        side_effect=RuntimeError("synthetic-caller-content in error"),
+    )
+    with caplog.at_level("DEBUG"):
+        assert client.post("/analyze", json={"example_id": "techqa-001"}).status_code == 500
+    assert "synthetic-caller-content" not in caplog.text
+    assert "RuntimeError" in caplog.text

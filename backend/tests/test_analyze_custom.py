@@ -271,3 +271,15 @@ def test_custom_500_does_not_leak_exception_text(mocker):
     assert "sk-ant-123" not in response.text
     assert "/Users/x" not in response.text
     assert response.json()["detail"]
+
+
+def test_custom_failure_logs_do_not_contain_exception_message(mocker, caplog):
+    _patch_services(mocker)
+    mocker.patch(
+        "routers.analyze.score_answer_faithfulness",
+        side_effect=RuntimeError("synthetic-caller-content in error"),
+    )
+    with caplog.at_level("DEBUG"):
+        assert client.post("/analyze/custom", json=_VALID_REQUEST).status_code == 500
+    assert "synthetic-caller-content" not in caplog.text
+    assert "RuntimeError" in caplog.text
