@@ -194,7 +194,7 @@ def rank_signals(
             reliability="partially_calibrated",
         ))
 
-    # Query-corpus fit — high-severity signals when triggered
+    # Retrieved-context fit (`query_corpus_fit`) — high-priority signals when triggered
     if query_fit.triggered and query_fit.observed_fit == "retrieved_context_topic_gap":
         signals.append(RankedSignal(
             name="retrieved_context_topic_gap",

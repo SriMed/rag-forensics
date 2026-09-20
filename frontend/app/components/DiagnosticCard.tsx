@@ -281,7 +281,7 @@ export default function DiagnosticCard({ response }: Props) {
           </div>
         </div>
 
-        {/* Query-Corpus Fit — only shown when triggered */}
+        {/* Retrieved-Context Fit (`query_corpus_fit`) — only shown when triggered */}
         {query_corpus_fit.triggered && (
           <div className="space-y-2">
             <div className="flex items-center gap-3">

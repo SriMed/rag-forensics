@@ -1,7 +1,7 @@
-"""Query-corpus fit analysis — conditional forensics module (Issue #8).
+"""Retrieved-context fit analysis — conditional forensics module (API name: `query_corpus_fit`).
 
 Generates questions the retrieved chunks would answer well. Only runs when forensics
-signals indicate a query-corpus mismatch. Makes no LLM calls when untriggered.
+signals suggest the retrieved passages may not match the query. Makes no LLM calls when untriggered.
 """
 import json
 import logging
@@ -209,7 +209,7 @@ def analyze_query_corpus_fit(
     """Generate questions the retrieved chunks answer well; classify observed retrieved-context fit.
 
     Returns triggered=False immediately (no LLM calls) when signals don't indicate
-    a query-corpus mismatch. On LLM failure returns triggered=True with empty questions.
+    a retrieved-context mismatch. On LLM failure returns triggered=True with empty questions.
     """
     trigger_reason = _should_trigger(query_isolation, context_utilization_score, normalized_entropy, faithfulness_score)
     if trigger_reason is None:

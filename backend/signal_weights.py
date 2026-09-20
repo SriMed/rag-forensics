@@ -63,8 +63,8 @@ class SignalWeights:
     isolation_threshold: float = 1.0  # [threshold]
 
     # Tail mass below this fraction is not flagged.  Set to the corpus mean (0.38)
-    # so only above-average-noise retrievals trigger the signal.  The old threshold
-    # was 0.2, which fired on ~80% of corpus examples.
+    # so only above-average-noise retrievals trigger the signal.  A 0.2 threshold
+    # fired on ~80% of corpus examples, which made the signal uninformative.
     tail_mass_threshold: float = 0.38  # [threshold, calibrated as corpus mean]
 
 

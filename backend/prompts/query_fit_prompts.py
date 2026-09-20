@@ -1,4 +1,4 @@
-"""Prompts for query-corpus fit analysis (Issue #8)."""
+"""Prompts for retrieved-context fit analysis (API name: `query_corpus_fit`)."""
 
 
 def build_question_generation_prompt(chunk_texts: str, original_question: str) -> str:

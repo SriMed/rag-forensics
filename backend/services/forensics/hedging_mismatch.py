@@ -1,4 +1,4 @@
-"""Hedging-verification mismatch detector (Issue #6).
+"""Hedging-verification mismatch detector.
 
 Cross-references linguistic confidence of each claim in the generated answer
 against whether that claim is verifiable from retrieved chunks. Produces
