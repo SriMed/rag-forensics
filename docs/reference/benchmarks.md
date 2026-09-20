@@ -37,6 +37,9 @@ hallucination boundary.
 
 ## Grounding-evaluator comparison
 
+For the motivation, a contradiction example, and how support judgments guide debugging, see
+[where the grounding evaluators fit](../explainers/how-rag-forensics-works.md#where-the-grounding-evaluators-fit).
+
 The scientific runner evaluates constant baselines and three grounding evaluators through the
 same label-preserving interface. The internal keys remain unchanged for report compatibility:
 

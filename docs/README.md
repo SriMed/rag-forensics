@@ -8,11 +8,10 @@ protocols, and reproducible commands.
 
 - [How RAG Forensics investigates an answer](explainers/how-rag-forensics-works.md) follows one
   example from retrieved passages through evidence candidates, competing hypotheses, follow-up
-  tests, the offline grounding evaluators, and an oracle condition that substitutes annotated
-  evidence to isolate one step of the method.
+  tests, and why support checking needs evaluation beyond text similarity.
 - [Understanding the oracle-evidence experiment](explainers/oracle-evidence.md) explains how the
-  completed experiment separates evidence-selection errors from downstream verification errors,
-  with its interpretation and explicit limits.
+  experiment tests evidence selection, why it checks source sentences separately, and what
+  persistent rejections do and do not establish.
 - [Understanding the decomposition-by-evidence experiment](explainers/decomposition-by-evidence.md)
   explains what makes a claim well-formed enough to verify, why the blinded review can't reason
   from evidence, why claim count affects the measured outcome on its own, and how the four-condition

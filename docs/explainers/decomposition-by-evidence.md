@@ -1,7 +1,8 @@
 # Understanding the decomposition-by-evidence experiment
 
 The oracle-evidence diagnostic showed that supplying annotated evidence reduces false rejections
-of supported sentences, but errors persist even with perfect evidence. This experiment asks the
+of supported sentences, but some supported sentences are still rejected even with human-annotated
+supporting evidence. This experiment asks the
 next question:
 
 > When the claim-entailment evaluator still rejects a genuinely-supported sentence, is that
@@ -9,13 +10,18 @@ next question:
 
 ## What a grounding check is checking
 
-A **grounding check** is any automated method that tries to answer, per sentence or per claim, "is
-this actually backed up by the retrieved evidence, or did the model just make it up?" This project
-has tried three, of increasing precision — whole-sentence similarity, claim-decomposition with
+A **grounding check** is an automated method that asks whether a sentence or claim is supported by
+the supplied source text. An unsupported claim need not be invented: it could be true but absent
+from those sources. This project has tested three approaches — whole-sentence similarity, claim-decomposition with
 similarity, and claim-decomposition with entailment — described in full in [How RAG Forensics
 investigates an answer](how-rag-forensics-works.md#where-the-grounding-evaluators-fit). This
-experiment is about the first stage of the most precise of the three: the claim-decomposition step
+experiment is about the first stage of the claim-entailment evaluator: the claim-decomposition step
 that happens before any evidence is ever selected.
+
+A more elaborate method is not necessarily more accurate; the held-out comparison did not
+establish a reliable standalone grounding detector. The
+[worked introduction](how-rag-forensics-works.md#where-the-grounding-evaluators-fit) explains why
+support judgments matter for debugging and why similarity alone may miss a contradiction.
 
 Two terms carry a lot of weight in what follows, defined precisely in [CONTEXT.md](../../CONTEXT.md):
 a **claim** is a piece of the model's own answer, decomposed to be independently checkable; **evidence**
@@ -158,8 +164,19 @@ categorized as `multi_sentence_support`. A discriminating follow-up would compar
 evidence scored separately versus supplied jointly, holding claims and verifier settings fixed.
 Merely increasing the number of separately scored candidates would not test evidence combination.
 Jointly supplying similarity-selected top-k evidence could then test whether any benefit survives
-ordinary evidence selection. Neither follow-up has been run, and generalization beyond TechQA
-remains untested.
+ordinary evidence selection. It must also test unsupported answers: fewer false rejections could
+reflect better use of evidence or simply a greater tendency to accept claims. A control that adds
+non-supporting text, where it can be identified, helps distinguish useful combined evidence from
+the effect of supplying more text in general. The planned experiment is tracked in
+[issue #32](https://github.com/SriMed/rag-forensics/issues/32).
+
+The question is not whether support can span sentences, but whether joint presentation improves
+this evaluator under controlled conditions. Neither follow-up has been run, and generalization
+beyond TechQA remains untested. See
+[why the oracle experiment checks sentences separately](oracle-evidence.md#why-the-experiment-checks-source-sentences-separately)
+for the design rationale and a concrete example. Improving this measurement would help avoid
+directing an investigation toward a chatbot error that actually arose in the evaluator; it would
+not, by itself, establish the usefulness of the complete diagnostic record.
 
 ## What this experiment does not establish
 

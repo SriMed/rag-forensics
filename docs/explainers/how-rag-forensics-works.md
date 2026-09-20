@@ -72,6 +72,28 @@ are investigation orderings—not probabilities, calibrated severities, or causa
 
 ## Where the grounding evaluators fit
 
+Support checking matters because it helps a developer decide what to investigate. If the retrieved
+text contains the needed information but the answer contradicts it, answer generation deserves
+attention. If the needed information was not retrieved, retrieval deserves attention. If the answer
+accurately reflects a source that is itself wrong, source quality deserves attention. A support
+judgment is one piece of evidence for these decisions; it cannot establish a cause by itself.
+
+The evaluator can also be wrong. An incorrect rejection can send someone investigating an answer
+that was already supported, while an incorrect acceptance can hide a real problem. The offline
+grounding experiments test whether a proposed support signal is dependable enough for this role.
+
+Why compare similarity with entailment? Consider this illustrative pair:
+
+> Source: “The treatment did not improve survival.”
+>
+> Answer: “The treatment improved survival.”
+
+The texts are very similar, but the answer reverses the source's meaning. Similarity can help find
+the relevant passage without establishing that it supports the answer. **Entailment** asks whether
+the claim follows from the supplied text. A pretrained natural language inference (**NLI**) model
+attempts that judgment. Its training objective makes it a plausible tool to test, not a guarantee
+that it will judge support reliably on this project's data.
+
 One offline benchmark compares:
 
 - two prevalence checks that always predict supported or always predict unsupported;
@@ -82,6 +104,10 @@ One offline benchmark compares:
 This sequence isolates what changes: the second evaluator adds claim splitting, while the third
 changes the scoring method from similarity to entailment-aware verification. These are evaluation
 conditions, not successive product versions.
+
+The two claim-based methods receive the same claim and the same selected source sentence, so their
+comparison tests the added support judgment without also changing the supplied evidence. This is a
+bounded experimental setup, not an assumption that every claim can be supported by one sentence.
 
 The claim-entailment evaluator is an offline benchmark method used to test one possible grounding
 signal. It is not the whole RAG Forensics product. It:
@@ -107,8 +133,8 @@ decision does not reveal which step failed.
 
 An **oracle condition** is an experimental diagnostic in which the benchmark supplies the trusted
 answer to one intermediate step so the next step can be tested separately. In this oracle
-condition, RAGBench's human-annotated supporting sentence temporarily replaces the evidence chosen
-by the claim-entailment evaluator. This is like guiding a delivery driver to the correct address
+condition, RAGBench's human-annotated supporting sentences temporarily replace the evidence chosen
+by the claim-entailment evaluator; each is still checked separately. This is like guiding a delivery driver to the correct address
 so you can test whether the driver can complete the delivery. If the verifier succeeds only after
 receiving annotated evidence, evidence selection contributed to the original failure. If it still
 fails, downstream explanations remain.

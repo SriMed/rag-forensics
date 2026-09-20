@@ -3,12 +3,18 @@
 The oracle-evidence diagnostic is designed to answer a narrow but important question:
 
 > When the grounding pipeline rejects a supported answer, did it choose the wrong evidence, or
-> did the verifier misunderstand the right evidence?
+> do errors persist when it receives the annotated supporting evidence?
 
 An **oracle condition** temporarily supplies the trusted answer to one intermediate step so that a
 later step can be tested separately. A useful analogy is guiding a delivery driver to the correct
 address: if the package is delivered only with guidance, navigation was part of the problem; if
 delivery still fails, navigation was not the whole problem.
+
+This is an offline experiment on the evaluator, not a diagnosis of the chatbot that produced the
+answer. A faulty support judgment could direct a developer toward changing retrieval or generation
+when the answer was already supported. For why the project compares text similarity with a model
+that judges whether a claim follows from a source, see
+[where the grounding evaluators fit](how-rag-forensics-works.md#where-the-grounding-evaluators-fit).
 
 ## The two jobs inside the pipeline
 
@@ -65,7 +71,38 @@ In a different case:
 
 Here, improved evidence selection does not resolve the error. The remaining explanations include
 a verifier failure, an error in splitting the answer into smaller claims, or a mismatch between
-the benchmark's annotation granularity and the verifier's task.
+the benchmark's annotation granularity and the verifier's task. Evidence may also need to be
+presented together rather than one sentence at a time.
+
+## Why the experiment checks source sentences separately
+
+The grounding comparison starts with one source sentence selected for each claim. Both the
+claim-similarity and claim-entailment methods receive that same pair, allowing the experiment to
+compare their support judgments without changing evidence selection at the same time.
+
+The oracle experiment then substitutes the human-annotated supporting sentences for automatically
+selected evidence. It preserves the individual-sentence checks: each annotated sentence is scored
+against each claim, and the highest support score is retained for that claim. This tests a change
+in the evidence supplied while keeping the verifier's input format fixed. It does not test whether
+the verifier can use several sentences together. See the
+[exact oracle protocol](../reference/benchmarks.md#oracle-evidence-failure-localization).
+
+For example, consider these invented source sentences:
+
+> The policy covers temporary employees. They become eligible after six months.
+
+Together they support “Temporary employees become eligible after six months.” Neither sentence
+alone supplies both the group and the waiting period. Trying every annotated sentence separately
+does not restore that connection. The single-sentence setup is therefore an experimental
+simplification with a concrete limitation, not a claim that source sentences are self-contained.
+
+The subsequent [decomposition-by-evidence pilot](decomposition-by-evidence.md#a-preliminary-finding-from-the-techqa-pilot)
+raised this possibility when supported answers were still rejected after claim review and annotated
+evidence were supplied. That review motivates a test; it does not show that combining evidence will
+fix those errors. The proposed follow-up compares separate and joint presentation of the same
+evidence, then checks whether any benefit survives automatic evidence selection and whether more
+unsupported answers are incorrectly accepted. The question is whether this particular evaluator
+becomes more reliable, not whether multi-sentence support exists.
 
 ## What the experiment can establish
 
