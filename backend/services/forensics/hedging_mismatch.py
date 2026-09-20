@@ -176,6 +176,76 @@ def _parse_claims(raw: str) -> list[str]:
     return _CLAIMS_ADAPTER.validate_python(decoded, strict=True)
 
 
+def _extract_claims(answer: str) -> list[str]:
+    """Ask the model for the answer's factual claims. Raises LLMError, JSONDecodeError or ValidationError."""
+    raw = complete(
+        CLAIM_EXTRACTION_PROMPT.format(answer=answer),
+        model=CLAUDE_HAIKU,
+        max_tokens=1024,
+        output_config=_CLAIMS_OUTPUT_CONFIG,
+    ).strip()
+    return _parse_claims(raw)
+
+
+def _check_entailment(claim: str, chunk: RetrievedChunk) -> EntailmentCheck:
+    """One entailment judgment. Request failures and malformed replies are recorded, not raised."""
+    try:
+        raw_verdict = complete(
+            ENTAILMENT_PROMPT.format(chunk_text=chunk.text, claim=claim),
+            model=CLAUDE_HAIKU,
+            max_tokens=32,
+        )
+    except LLMError:
+        logger.warning("Entailment check failed for claim '%s' on chunk '%s'", claim, chunk.chunk_id)
+        return EntailmentCheck(chunk_id=chunk.chunk_id, status="error")
+    try:
+        verdict = EntailmentVerdict(raw_verdict.strip())
+    except ValueError:
+        logger.warning(
+            "Invalid entailment response for claim '%s' on chunk '%s': %r", claim, chunk.chunk_id, raw_verdict
+        )
+        return EntailmentCheck(chunk_id=chunk.chunk_id, status="invalid_format", raw_output=raw_verdict)
+    return EntailmentCheck(chunk_id=chunk.chunk_id, status="evaluated", verdict=verdict, raw_output=raw_verdict)
+
+
+def _mismatch_type(
+    confidence: str, supported: bool | None
+) -> Literal["overconfident", "underconfident", "matched"] | None:
+    if supported is None:
+        return None
+    if confidence == "definitive" and not supported:
+        return "overconfident"
+    # Binary entailment cannot determine whether hedging is unnecessarily weak.
+    # That requires comparing the source's epistemic strength with the claim's.
+    return "matched"
+
+
+def _judge_claim(claim: str, chunks: list[RetrievedChunk]) -> ClaimEntry:
+    """Check one claim against each chunk in order, stopping at the first that supports it."""
+    supported: bool | None = None
+    source_chunk_id: str | None = None
+    checks: list[EntailmentCheck] = []
+    for chunk in chunks:
+        check = _check_entailment(claim, chunk)
+        checks.append(check)
+        if check.status != "evaluated":
+            continue  # an isolated failure leaves the claim's verdict to the remaining chunks
+        if check.verdict == EntailmentVerdict.SUPPORTED:
+            supported = True
+            source_chunk_id = chunk.chunk_id
+            break
+        supported = False
+    confidence = classify_confidence(claim)
+    return ClaimEntry(
+        claim=claim,
+        confidence_class=confidence,
+        supported=supported,
+        mismatch_type=_mismatch_type(confidence, supported),
+        source_chunk_id=source_chunk_id,
+        entailment_checks=checks,
+    )
+
+
 def analyze_hedging_mismatch(
     answer: str,
     chunks: list[RetrievedChunk],
@@ -185,15 +255,8 @@ def analyze_hedging_mismatch(
     Returns an explicit error status on top-level failure (e.g. claim extraction fails).
     Invalid or failed per-chunk judgments remain unavailable rather than becoming negative verdicts.
     """
-    # Step 1 — extract claims via LLM
     try:
-        raw = complete(
-            CLAIM_EXTRACTION_PROMPT.format(answer=answer),
-            model=CLAUDE_HAIKU,
-            max_tokens=1024,
-            output_config=_CLAIMS_OUTPUT_CONFIG,
-        ).strip()
-        claims_list = _parse_claims(raw)
+        claims = _extract_claims(answer)
     except json.JSONDecodeError:
         logger.warning("Claim extraction returned invalid JSON")
         return _extraction_error("claim_extraction_parse_failed")
@@ -204,82 +267,9 @@ def analyze_hedging_mismatch(
         logger.warning("Claim extraction request failed; returning explicit error status")
         return _extraction_error("claim_extraction_failed")
 
-    if not claims_list:
+    if not claims:
         return _ZEROED
 
     # Chunks are already sorted by retrieval score (descending); take top-k as pre-filter.
     top_chunks = chunks[:_ENTAILMENT_TOP_K]
-
-    # Steps 2 & 3 — classify confidence (lexicon) + check entailment (LLM)
-    entries: list[ClaimEntry] = []
-    for claim_str in claims_list:
-        confidence = classify_confidence(claim_str)
-
-        supported: bool | None = None
-        source_chunk_id: str | None = None
-        checks: list[EntailmentCheck] = []
-
-        for chunk in top_chunks:
-            try:
-                raw_verdict = complete(
-                    ENTAILMENT_PROMPT.format(chunk_text=chunk.text, claim=claim_str),
-                    model=CLAUDE_HAIKU,
-                    max_tokens=32,
-                )
-                normalized = raw_verdict.strip()
-                try:
-                    verdict = EntailmentVerdict(normalized)
-                except ValueError:
-                    checks.append(EntailmentCheck(
-                        chunk_id=chunk.chunk_id,
-                        status="invalid_format",
-                        raw_output=raw_verdict,
-                    ))
-                    logger.warning(
-                        "Invalid entailment response for claim '%s' on chunk '%s': %r",
-                        claim_str,
-                        chunk.chunk_id,
-                        raw_verdict,
-                    )
-                    continue
-                checks.append(EntailmentCheck(
-                    chunk_id=chunk.chunk_id,
-                    status="evaluated",
-                    verdict=verdict,
-                    raw_output=raw_verdict,
-                ))
-                if verdict == EntailmentVerdict.SUPPORTED:
-                    supported = True
-                    source_chunk_id = chunk.chunk_id
-                    break  # short-circuit on first supporting chunk
-                supported = False
-            except LLMError:
-                checks.append(EntailmentCheck(chunk_id=chunk.chunk_id, status="error"))
-                logger.warning(
-                    "Entailment check failed for claim '%s' on chunk '%s'",
-                    claim_str,
-                    chunk.chunk_id,
-                )
-                # Continue to next chunk — per-claim failure is isolated
-
-        if supported is None:
-            mismatch_type = None
-        elif confidence == "definitive" and not supported:
-            mismatch_type: Literal["overconfident", "underconfident", "matched"] = "overconfident"
-        else:
-            # Binary entailment cannot determine whether hedging is unnecessarily weak.
-            # That requires comparing the source's epistemic strength with the claim's.
-            mismatch_type = "matched"
-
-        entries.append(
-            ClaimEntry(
-                claim=claim_str,
-                confidence_class=confidence,
-                supported=supported,
-                mismatch_type=mismatch_type,
-                source_chunk_id=source_chunk_id,
-                entailment_checks=checks,
-            )
-        )
-
-    return _compute_metrics(entries)
+    return _compute_metrics([_judge_claim(claim, top_chunks) for claim in claims])
