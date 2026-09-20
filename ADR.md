@@ -671,3 +671,27 @@ the log in either root-logging mode, and per-module tests assert that marker str
 questions, claims, model output, and exception messages never appear in captured logs, even at
 DEBUG. New log calls that include caller-derived values should be treated as violations of this
 decision.
+
+## ADR-049: Opt-in log diagnostics, and mypy as a blocking check
+
+**Status:** Accepted
+**Issue:** #12
+
+ADR-048 removed exception messages from logs entirely, which leaves a developer able to see where a
+failure happened but not why. Two independent settings now cover that, kept separate because
+verbosity and privacy are different questions. `LOG_LEVEL` sets application log verbosity and
+defaults to INFO; an unrecognized value falls back to INFO rather than failing startup. Third-party
+loggers, including the Anthropic SDK, stay at WARNING at every level, so raising verbosity never
+exposes request payloads. `RAG_FORENSICS_LOG_ERROR_DETAILS=1` additionally includes each failure's
+own exception message. It is off by default, accepts only `1`, `true`, or `yes`, and is documented
+as able to expose caller content, so it is intended for local debugging and not for logs that are
+shared. Chained causes stay excluded even when it is on.
+
+This refines ADR-048 without reversing it: the default remains that logs never contain caller
+content, and the opt-in is an explicit, documented exception chosen by the operator of the local
+process.
+
+All type errors in the backend, including `benchmark/` and `evals/`, are now resolved, so `mypy` is
+a blocking CI step, superseding the informational status described in ADR-045. The changes in
+evaluation and benchmark code were annotations, casts, imports, and one variable rename, reviewed
+line by line to confirm no logic changed; the existing tests for that code pass unchanged.

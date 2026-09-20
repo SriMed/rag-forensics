@@ -115,6 +115,8 @@ analysis. The frontend uses `POST /example` followed by `POST /analyze`.
 | Setting or location | Purpose |
 |---|---|
 | `backend/.env`: `ANTHROPIC_API_KEY` | Required for analysis; not needed for bootstrap, liveness, or mocked tests |
+| `backend/.env`: `LOG_LEVEL` | Optional log verbosity (`DEBUG`, `INFO`, `WARNING`, ...); defaults to `INFO`, unknown values fall back to `INFO` |
+| `backend/.env`: `RAG_FORENSICS_LOG_ERROR_DETAILS` | Optional; `1` adds exception messages to failure logs for local debugging. Messages can contain your question, answer, or chunk text, so leave it off when logs are shared |
 | `frontend/.env.local`: `NEXT_PUBLIC_API_URL` | Public backend URL; never put a provider key here |
 | `backend/data/chroma/` | Embedded Chroma index; ignored by Git and reused across restarts |
 | Hugging Face cache (normally `~/.cache/huggingface/`) | Downloaded dataset/model files; `HF_HOME` can relocate the cache |
@@ -152,7 +154,9 @@ npm run build
 - Model/tokenizer download failure: check network access and cache permissions. `/ready` does
   not test those dependencies.
 - Empty corpus domain list: custom analysis can still run; explicitly bootstrap for the demo.
-- Generic HTTP 500: inspect backend logs for the cause; API responses intentionally omit details.
+- Generic HTTP 500: inspect backend logs for the failure type and stack location; API responses
+  intentionally omit details, and logs omit exception messages by default. To see the message while
+  debugging locally, set `RAG_FORENSICS_LOG_ERROR_DETAILS=1` and restart (see the caution above).
 
 The legacy notebooks in `smoke_tests/` are historical records with obsolete response fields, not
 the supported smoke path. The maintained command above and its mocked tests replace that role.
