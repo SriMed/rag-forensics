@@ -1,5 +1,6 @@
 """Retriever: wraps ChromaDB collections for the RAG Forensics demo."""
 import logging
+import os
 import random
 
 import chromadb
@@ -47,6 +48,15 @@ def _get_client() -> chromadb.PersistentClient:
 
 def _get_collection(domain: str) -> chromadb.Collection:
     return _get_client().get_collection(name=domain)
+
+
+def available_domains() -> list[str]:
+    """Bootstrapped domain collections; empty (and side-effect free) if the store does not exist."""
+    if not os.path.isdir(_CHROMA_PATH):
+        return []
+    collections = _get_client().list_collections()
+    names = {c if isinstance(c, str) else c.name for c in collections}
+    return sorted(names & set(_DOMAINS))
 
 
 def _find_metadata(metadatas: list, example_id: str) -> dict | None:

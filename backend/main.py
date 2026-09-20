@@ -15,7 +15,7 @@ for _noisy in ("httpx", "httpcore", "langchain", "chromadb", "ragas", "sentence_
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import analyze, example
+from routers import analyze, example, health
 
 app = FastAPI(title="RAG Forensics API")
 
@@ -26,5 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(health.router)
 app.include_router(example.router)
 app.include_router(analyze.router)

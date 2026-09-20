@@ -261,3 +261,13 @@ def test_build_analysis_returns_full_analyze_response(mocker):
     assert [c.chunk_id for c in response.retrieved_chunk_details] == ["doc_1_chunk_0", "doc_1_chunk_1"]
     assert response.recommendation == "No changes indicated."
     assert response.verdict_signals, "verdict signals must be populated"
+
+
+def test_custom_500_does_not_leak_exception_text(mocker):
+    _patch_services(mocker)
+    mocker.patch("routers.analyze.score_answer_faithfulness", side_effect=RuntimeError("secret sk-ant-123 at /Users/x"))
+    response = client.post("/analyze/custom", json=_VALID_REQUEST)
+    assert response.status_code == 500
+    assert "sk-ant-123" not in response.text
+    assert "/Users/x" not in response.text
+    assert response.json()["detail"]

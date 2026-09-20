@@ -245,3 +245,12 @@ def test_analyze_delegates_to_shared_build_analysis(mocker):
     spy = mocker.spy(analyze_module, "build_analysis")
     assert client.post("/analyze", json={"example_id": "techqa-001"}).status_code == 200
     assert spy.call_count == 1
+
+
+def test_analyze_500_does_not_leak_exception_text(mocker):
+    mocker.patch("routers.analyze.retrieve_for_example", side_effect=RuntimeError("secret sk-ant-123 at /Users/x/db"))
+    response = client.post("/analyze", json={"example_id": "techqa-001"})
+    assert response.status_code == 500
+    assert "sk-ant-123" not in response.text
+    assert "/Users/x" not in response.text
+    assert response.json()["detail"]

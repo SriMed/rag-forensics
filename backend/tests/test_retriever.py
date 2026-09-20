@@ -224,3 +224,26 @@ class TestGetReferenceAnswer:
             answer = get_reference_answer("techqa-001", domain="techqa")
 
         assert isinstance(answer, str) and answer
+
+
+def test_available_domains_is_empty_without_creating_the_store(mocker, tmp_path):
+    from services import retriever
+
+    missing = tmp_path / "chroma"
+    mocker.patch.object(retriever, "_CHROMA_PATH", str(missing))
+    get_client = mocker.patch.object(retriever, "_get_client")
+    assert retriever.available_domains() == []
+    assert not missing.exists()
+    get_client.assert_not_called()
+
+
+def test_available_domains_lists_known_domain_collections_sorted(mocker, tmp_path):
+    from services import retriever
+
+    mocker.patch.object(retriever, "_CHROMA_PATH", str(tmp_path))
+    named = mocker.MagicMock()
+    named.name = "techqa"
+    client = mocker.MagicMock()
+    client.list_collections.return_value = [named, "covidqa", "unrelated"]
+    mocker.patch.object(retriever, "_get_client", return_value=client)
+    assert retriever.available_domains() == ["covidqa", "techqa"]

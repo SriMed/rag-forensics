@@ -27,6 +27,8 @@ from services.verdict_generator import build_verdict_reasoning, rank_signals, re
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+_ANALYSIS_FAILED_DETAIL = "Analysis failed. See the server logs for details."
+
 
 def build_analysis(
     question: str,
@@ -117,7 +119,7 @@ def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         )
     except Exception as exc:
         logger.exception("analyze failed for example_id=%s", request.example_id)
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+        raise HTTPException(status_code=500, detail=_ANALYSIS_FAILED_DETAIL) from exc
 
     logger.info("analyze complete: example_id=%s", request.example_id)
     return response
@@ -140,7 +142,7 @@ def analyze_custom(request: CustomAnalyzeRequest) -> AnalyzeResponse:
         )
     except Exception as exc:
         logger.exception("analyze/custom failed")
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+        raise HTTPException(status_code=500, detail=_ANALYSIS_FAILED_DETAIL) from exc
 
     logger.info("analyze/custom complete")
     return response
