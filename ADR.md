@@ -622,3 +622,26 @@ The maintained smoke client checks liveness/readiness by default and requires `-
 the bundled public request to the model-backed analysis path. Historical notebooks are explicitly
 marked unsupported. CI checks frontend TypeScript compilation alongside lint and Jest. Full live
 clean-environment verification and model/dataset revision pinning remain work under issue #12.
+
+## ADR-047: Python 3.13 as the primary runtime with minimum-version CI
+
+**Status:** Accepted
+**Issue:** #12
+
+Python 3.13 replaces Python 3.11 as the primary local setup version specified in ADR-046. Python
+3.11 remains the declared minimum and a separate CI matrix job; dependency constraints and lint
+and type-check targets retain that minimum. The primary version was verified by installing the
+committed lock into a fresh Python 3.13.11 virtual environment on macOS and running the offline
+suite. This is interpreter/dependency verification, not a live clean-machine acceptance run.
+
+The locked LangChain/Pydantic stack emits a Pydantic V1 compatibility warning on Python 3.14.
+Python 3.14 also deferred evaluation of an invalid Chroma client annotation that failed during
+imports on both Python 3.11 CI and the fresh Python 3.13 environment. The annotation now names
+Chroma's `ClientAPI` rather than its `PersistentClient` factory. Keeping both primary and minimum
+versions in CI makes such runtime differences visible. Python 3.14 remains allowed by the package
+metadata but is not the recommended local setup.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) is the tracked source of shared contributor instructions,
+superseding ADR-012's reliance on the local-only `CLAUDE.md`. Model and download boundaries remain
+mocked in automated tests; database tests may use isolated temporary storage, as the bootstrap
+tests do, without modifying a developer's corpus.

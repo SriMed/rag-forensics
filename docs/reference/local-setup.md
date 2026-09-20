@@ -7,15 +7,16 @@ software runs and returns its contract, not that its diagnostic hypotheses are c
 
 ## Install and start the backend
 
-Prerequisites: Python 3.11, Poetry 2.2.1, and an Anthropic API key. The frontend uses Node.js 22
-and npm. CI uses these Python, Poetry, and Node versions. Install these tools before running the
+Prerequisites: Python 3.13, Poetry 2.2.1, and an Anthropic API key. The frontend uses Node.js 22
+and npm. Python 3.13 is the primary version; CI also tests the declared Python 3.11 minimum.
+Install these tools before running the
 commands below; no global Python application dependencies are needed.
 
 From the repository root:
 
 ```bash
 cd backend
-poetry env use python3.11
+poetry env use python3.13
 poetry install
 cp .env.example .env
 ```
@@ -29,6 +30,10 @@ poetry run uvicorn main:app --host 127.0.0.1 --port 8000
 Run backend commands from `backend/`: the embedded corpus path is relative to that directory.
 Poetry installs the locked dependencies in application mode; there is no installable root Python
 package or wheel. Do not regenerate the lock to follow this setup.
+
+The declared Python range remains `>=3.11,<3.15`. Python 3.14 is not the recommended setup:
+the locked LangChain/Pydantic stack warns about its Pydantic V1 compatibility layer there.
+See [ADR-047](../../ADR.md#adr-047-python-313-as-the-primary-runtime-with-minimum-version-ci).
 
 The first analysis may download the sentence-transformer model and NLTK `punkt_tab` data. Allow
 network access to obtain those assets and enough disk space for caches. A populated RAGBench
@@ -153,5 +158,7 @@ The legacy notebooks in `smoke_tests/` are historical records with obsolete resp
 the supported smoke path. The maintained command above and its mocked tests replace that role.
 
 Application dependencies are locked, but the bundled dataset and sentence-transformer downloads
-still use unpinned upstream revisions. A clean-machine live run and complete restart/recovery
+still use unpinned upstream revisions. The locked dependencies and offline test suite have been
+verified in a fresh Python 3.13.11 virtual environment on macOS. This did not establish clean-machine
+model downloads or live-provider behavior. A clean-machine live run and complete restart/recovery
 verification remain release checks under issue #12; passing mocked tests does not establish them.

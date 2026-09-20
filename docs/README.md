@@ -43,6 +43,7 @@ protocols, and reproducible commands.
 
 ## Project records
 
+- [Contributor guide](../CONTRIBUTING.md) records the shared development, testing, and research-artifact rules.
 - [Architectural decisions](../ADR.md) preserves the project's append-only decision history.
 - [Domain language](../CONTEXT.md) defines the canonical names used for grounding evaluators and
   oracle-evidence conditions.

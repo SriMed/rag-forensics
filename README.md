@@ -167,11 +167,11 @@ diagnostic validity, provenance, failure semantics, and controlled interventions
 
 ## Quick start
 
-Use Python 3.11 and Poetry 2.2.1 for the backend. From the repository root:
+Use Python 3.13 and Poetry 2.2.1 for the backend. From the repository root:
 
 ```bash
 cd backend
-poetry env use python3.11
+poetry env use python3.13
 poetry install
 cp .env.example .env
 # Replace your_key_here in .env with your Anthropic API key.
@@ -194,6 +194,7 @@ demo bootstrap, storage and caches, failure recovery, and the limits of these ch
 ## Documentation
 
 - [Documentation guide](docs/README.md)
+- [Contributing and verification](CONTRIBUTING.md)
 - [Local setup and verification](docs/reference/local-setup.md)
 - [Worked example of the investigation workflow](docs/explainers/how-rag-forensics-works.md)
 - [Methods, outputs, architecture, and limitations](docs/reference/methods.md)

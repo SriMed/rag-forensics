@@ -4,6 +4,7 @@ import os
 import random
 
 import chromadb
+from chromadb.api import ClientAPI
 from sentence_transformers import SentenceTransformer
 
 from models import RetrievalResult, RetrievedChunk, StoredExample
@@ -22,7 +23,7 @@ def get_embedding_model() -> SentenceTransformer:
 logger = logging.getLogger(__name__)
 
 _CHROMA_PATH = "./data/chroma"
-_client: chromadb.PersistentClient | None = None
+_client: ClientAPI | None = None
 
 
 def _chunk_completeness(metadata: dict | None) -> dict[str, str]:
@@ -39,7 +40,7 @@ def _chunk_completeness(metadata: dict | None) -> dict[str, str]:
     return {"completeness": value, "completeness_source": source}
 
 
-def _get_client() -> chromadb.PersistentClient:
+def _get_client() -> ClientAPI:
     global _client
     if _client is None:
         _client = chromadb.PersistentClient(path=_CHROMA_PATH)
