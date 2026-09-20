@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, cast
@@ -224,6 +225,106 @@ def _sentence_count(response: str) -> int:
     return count
 
 
+_Outcome = tuple[bool, str]
+
+
+def _all_present(spec: dict[str, Any], haystack: str) -> _Outcome:
+    missing = [value for value in spec["values"] if value.lower() not in haystack]
+    passed = not missing
+    return passed, "all required strings found" if passed else f"missing: {missing}"
+
+
+def _any_present(spec: dict[str, Any], haystack: str) -> _Outcome:
+    found = [value for value in spec["values"] if value.lower() in haystack]
+    passed = bool(found)
+    return passed, f"matched: {found}" if passed else "none of the accepted strings found"
+
+
+def _none_present(spec: dict[str, Any], haystack: str) -> _Outcome:
+    found = [value for value in spec["values"] if value.lower() in haystack]
+    passed = not found
+    return passed, "no forbidden strings found" if passed else f"forbidden: {found}"
+
+
+def _non_empty(spec: dict[str, Any], response: str, scorer_version: str) -> _Outcome:
+    passed = bool(response.strip())
+    return passed, "response is non-empty" if passed else "response is empty"
+
+
+def _exact_normalized(spec: dict[str, Any], response: str, scorer_version: str) -> _Outcome:
+    actual = _strip_fence(response).strip().lower().rstrip(".!")
+    expected = spec["value"].strip().lower()
+    return actual == expected, f"expected {expected!r}; got {actual!r}"
+
+
+def _max_words(spec: dict[str, Any], response: str, scorer_version: str) -> _Outcome:
+    count = len(response.split())
+    return count <= spec["value"], f"{count} words; maximum {spec['value']}"
+
+
+def _sentence_count_in_range(spec: dict[str, Any], response: str, scorer_version: str) -> _Outcome:
+    if scorer_version == LEGACY_SCORER_VERSION:
+        count = _legacy_sentence_count(response)
+    else:
+        count = _sentence_count(response)
+    return spec["min"] <= count <= spec["max"], f"{count} sentences; expected {spec['min']}–{spec['max']}"
+
+
+def _json_array_strings(spec: dict[str, Any], items: list[str]) -> _Outcome:
+    minimum, maximum = spec["min_items"], spec["max_items"]
+    return minimum <= len(items) <= maximum, f"{len(items)} string items; expected {minimum}–{maximum}"
+
+
+def _unique_json_items(spec: dict[str, Any], items: list[str]) -> _Outcome:
+    normalized = [item.strip().lower() for item in items]
+    passed = len(normalized) == len(set(normalized))
+    return passed, "items are unique" if passed else "duplicate items found"
+
+
+# Scorers over the raw response text: (spec, response, scorer_version) -> (passed, detail).
+_TEXT_SCORERS: dict[str, Callable[[dict[str, Any], str, str], _Outcome]] = {
+    "non_empty": _non_empty,
+    "contains_all_ci": lambda spec, response, _version: _all_present(spec, response.lower()),
+    "contains_any_ci": lambda spec, response, _version: _any_present(spec, response.lower()),
+    "excludes_all_ci": lambda spec, response, _version: _none_present(spec, response.lower()),
+    "exact_normalized": _exact_normalized,
+    "max_words": _max_words,
+    "sentence_count": _sentence_count_in_range,
+}
+
+# Scorers over the parsed JSON string array: (spec, items) -> (passed, detail).
+_JSON_SCORERS: dict[str, Callable[[dict[str, Any], list[str]], _Outcome]] = {
+    "json_array_strings": _json_array_strings,
+    "unique_json_items": _unique_json_items,
+    "json_items_contain_all_ci": lambda spec, items: _all_present(spec, "\n".join(items).lower()),
+    "json_items_contain_any_ci": lambda spec, items: _any_present(spec, "\n".join(items).lower()),
+    "json_items_exclude_all_ci": lambda spec, items: _none_present(spec, "\n".join(items).lower()),
+}
+
+
+def _run_scorer(
+    spec: dict[str, Any],
+    response: str,
+    scorer_version: str,
+    parsed_json: tuple[list[str] | None, str | None] | None,
+) -> tuple[_Outcome, tuple[list[str] | None, str | None] | None]:
+    """Run one scorer; the JSON parse is done lazily once and threaded back to the caller."""
+    scorer = spec["type"]
+    if scorer in _TEXT_SCORERS:
+        return _TEXT_SCORERS[scorer](spec, response, scorer_version), parsed_json
+    if scorer.startswith("json_") or scorer == "unique_json_items":
+        if parsed_json is None:
+            parsed_json = _json_strings(response)
+        items, error = parsed_json
+        if error:
+            return (False, error), parsed_json
+        assert items is not None
+        if scorer not in _JSON_SCORERS:
+            raise ValueError(f"unsupported scorer: {scorer}")
+        return _JSON_SCORERS[scorer](spec, items), parsed_json
+    raise ValueError(f"unsupported scorer: {scorer}")
+
+
 def score_response(
     case: dict[str, Any],
     response: str,
@@ -234,80 +335,10 @@ def score_response(
     if scorer_version not in {LEGACY_SCORER_VERSION, SCORER_VERSION}:
         raise ValueError(f"unsupported scorer version: {scorer_version}")
     results: list[dict[str, Any]] = []
-    lower = response.lower()
-    cached_items: list[str] | None = None
-    cached_error: str | None = None
-
+    parsed_json: tuple[list[str] | None, str | None] | None = None
     for spec in case["expectations"]["scorers"]:
-        scorer = spec["type"]
-        passed = False
-        detail = ""
-        if scorer == "non_empty":
-            passed = bool(response.strip())
-            detail = "response is non-empty" if passed else "response is empty"
-        elif scorer == "contains_all_ci":
-            missing = [value for value in spec["values"] if value.lower() not in lower]
-            passed = not missing
-            detail = "all required strings found" if passed else f"missing: {missing}"
-        elif scorer == "contains_any_ci":
-            found = [value for value in spec["values"] if value.lower() in lower]
-            passed = bool(found)
-            detail = f"matched: {found}" if passed else "none of the accepted strings found"
-        elif scorer == "excludes_all_ci":
-            found = [value for value in spec["values"] if value.lower() in lower]
-            passed = not found
-            detail = "no forbidden strings found" if passed else f"forbidden: {found}"
-        elif scorer == "exact_normalized":
-            actual = _strip_fence(response).strip().lower().rstrip(".!")
-            expected = spec["value"].strip().lower()
-            passed = actual == expected
-            detail = f"expected {expected!r}; got {actual!r}"
-        elif scorer == "max_words":
-            count = len(response.split())
-            passed = count <= spec["value"]
-            detail = f"{count} words; maximum {spec['value']}"
-        elif scorer == "sentence_count":
-            if scorer_version == LEGACY_SCORER_VERSION:
-                count = _legacy_sentence_count(response)
-            else:
-                count = _sentence_count(response)
-            passed = spec["min"] <= count <= spec["max"]
-            detail = f"{count} sentences; expected {spec['min']}–{spec['max']}"
-        elif scorer.startswith("json_") or scorer == "unique_json_items":
-            if cached_items is None and cached_error is None:
-                cached_items, cached_error = _json_strings(response)
-            if cached_error:
-                passed = False
-                detail = cached_error
-            else:
-                assert cached_items is not None
-                joined = "\n".join(cached_items).lower()
-                if scorer == "json_array_strings":
-                    minimum = spec["min_items"]
-                    maximum = spec["max_items"]
-                    passed = minimum <= len(cached_items) <= maximum
-                    detail = f"{len(cached_items)} string items; expected {minimum}–{maximum}"
-                elif scorer == "unique_json_items":
-                    normalized = [item.strip().lower() for item in cached_items]
-                    passed = len(normalized) == len(set(normalized))
-                    detail = "items are unique" if passed else "duplicate items found"
-                elif scorer == "json_items_contain_all_ci":
-                    missing = [value for value in spec["values"] if value.lower() not in joined]
-                    passed = not missing
-                    detail = "all required strings found" if passed else f"missing: {missing}"
-                elif scorer == "json_items_contain_any_ci":
-                    found = [value for value in spec["values"] if value.lower() in joined]
-                    passed = bool(found)
-                    detail = f"matched: {found}" if passed else "none of the accepted strings found"
-                elif scorer == "json_items_exclude_all_ci":
-                    found = [value for value in spec["values"] if value.lower() in joined]
-                    passed = not found
-                    detail = "no forbidden strings found" if passed else f"forbidden: {found}"
-                else:
-                    raise ValueError(f"unsupported scorer: {scorer}")
-        else:
-            raise ValueError(f"unsupported scorer: {scorer}")
-        results.append({"scorer": scorer, "passed": passed, "detail": detail})
+        (passed, detail), parsed_json = _run_scorer(spec, response, scorer_version, parsed_json)
+        results.append({"scorer": spec["type"], "passed": passed, "detail": detail})
 
     return {
         "case_id": case["id"],

@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import os
+from pathlib import Path
 
 import pytest
 
@@ -250,3 +252,109 @@ def test_frozen_manifest_matches_versioned_artifacts():
     for filename, expected_hash in manifest["sha256"].items():
         actual_hash = hashlib.sha256((version_dir / filename).read_bytes()).hexdigest()
         assert actual_hash == expected_hash, filename
+
+
+# ---------------------------------------------------------------------------
+# Characterization: pins score_response's exact output (results, detail strings, and raised errors)
+# across every scorer type and both scorer versions so its dispatch can be refactored safely.
+# Regenerate only for an intentional behavior change:
+#   UPDATE_GOLDEN=1 poetry run pytest tests/test_prompt_audit_eval.py -k characterization
+# ---------------------------------------------------------------------------
+
+_SCORER_GOLDEN = Path(__file__).parent / "golden" / "prompt_audit_scoring.json"
+
+_CHARACTERIZATION_RESPONSES = [
+    "",
+    "   ",
+    "Yes.",
+    "Yes!",
+    "  YES  ",
+    "Revenue rose. Costs fell! Really?",
+    "- first point\n- second point\n\nDone.",
+    '["alpha", "Beta", "alpha"]',
+    '```json\n["Alpha", "beta"]\n```',
+    "not json",
+    '{"a": 1}',
+    "[1, 2]",
+    "Dr. Smith went to St. Paul. He left.",
+    "word " * 30,
+]
+
+_CHARACTERIZATION_SPECS = [
+    {"type": "non_empty"},
+    {"type": "contains_all_ci", "values": ["revenue", "costs"]},
+    {"type": "contains_all_ci", "values": ["revenue"]},
+    {"type": "contains_any_ci", "values": ["yes", "nope"]},
+    {"type": "excludes_all_ci", "values": ["costs"]},
+    {"type": "exact_normalized", "value": "Yes"},
+    {"type": "max_words", "value": 5},
+    {"type": "sentence_count", "min": 1, "max": 2},
+    {"type": "sentence_count", "min": 3, "max": 4},
+    {"type": "json_array_strings", "min_items": 2, "max_items": 3},
+    {"type": "unique_json_items"},
+    {"type": "json_items_contain_all_ci", "values": ["alpha", "beta"]},
+    {"type": "json_items_contain_any_ci", "values": ["gamma", "beta"]},
+    {"type": "json_items_exclude_all_ci", "values": ["alpha"]},
+    {"type": "json_bogus"},
+    {"type": "bogus"},
+]
+
+_MULTI_SCORER_CASES = {
+    "json_bundle": [
+        {"type": "non_empty"},
+        {"type": "json_array_strings", "min_items": 1, "max_items": 5},
+        {"type": "unique_json_items"},
+        {"type": "json_items_contain_all_ci", "values": ["alpha"]},
+    ],
+    "text_bundle": [
+        {"type": "non_empty"},
+        {"type": "max_words", "value": 40},
+        {"type": "sentence_count", "min": 1, "max": 3},
+    ],
+}
+
+
+def _score_case(specs, response, version):
+    case = {"id": "case-1", "expectations": {"scorers": specs, "human_review": ["note"]}}
+    try:
+        return score_response(case, response, scorer_version=version)
+    except ValueError as exc:
+        return {"error": str(exc)}
+
+
+def _scoring_characterization_run():
+    out = {}
+    for version in (LEGACY_SCORER_VERSION, SCORER_VERSION):
+        for r_index, response in enumerate(_CHARACTERIZATION_RESPONSES):
+            for s_index, spec in enumerate(_CHARACTERIZATION_SPECS):
+                out[f"{version}|r{r_index}|s{s_index}"] = _score_case([spec], response, version)
+            for name, specs in _MULTI_SCORER_CASES.items():
+                out[f"{version}|r{r_index}|{name}"] = _score_case(specs, response, version)
+    out["unsupported_version"] = _score_case([{"type": "non_empty"}], "x", "prompt-eval-scorer.v0")
+    return out
+
+
+def test_score_response_characterization():
+    actual = _scoring_characterization_run()
+    if os.environ.get("UPDATE_GOLDEN") == "1":
+        _SCORER_GOLDEN.write_text(json.dumps(actual, indent=2, sort_keys=True) + "\n")
+    assert actual == json.loads(_SCORER_GOLDEN.read_text())
+
+
+def test_scoring_characterization_fixture_exercises_every_branch():
+    """Guards the golden file: passes, failures, both error kinds, and version differences."""
+    runs = _scoring_characterization_run()
+    scored = [v for v in runs.values() if "scorer_results" in v]
+    assert any(v["passed"] for v in scored) and any(not v["passed"] for v in scored)
+    assert any(0 < v["score"] < 1 for v in scored)
+    details = [r["detail"] for v in scored for r in v["scorer_results"]]
+    assert any(d.startswith("invalid JSON") for d in details)
+    assert any(d.startswith("expected a JSON array") for d in details)
+    errors = {v["error"] for v in runs.values() if "error" in v}
+    assert "unsupported scorer: bogus" in errors and "unsupported scorer: json_bogus" in errors
+    assert any(e.startswith("unsupported scorer version") for e in errors)
+    assert any(
+        runs[key]["scorer_results"] != runs[key.replace(LEGACY_SCORER_VERSION, SCORER_VERSION)]["scorer_results"]
+        for key in runs
+        if key.startswith(LEGACY_SCORER_VERSION) and "scorer_results" in runs[key]
+    ), "legacy and current scorers should disagree somewhere"

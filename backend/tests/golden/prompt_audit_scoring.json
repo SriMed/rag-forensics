@@ -1,0 +1,8353 @@
+{
+  "prompt-eval-scorer.v1|r0|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r0|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got ''",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "0 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r0|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.3333333333333333,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "0 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "0 sentences; expected 1\u20133",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r10|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '{\"a\": 1}'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r10|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r11|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '[1, 2]'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r11|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r12|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'dr. smith went to st. paul. he left'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "8 words; maximum 5",
+        "passed": false,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "4 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "4 sentences; expected 3\u20134",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r12|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.6666666666666666,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "8 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "4 sentences; expected 1\u20133",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r13|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "30 words; maximum 5",
+        "passed": false,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r13|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "30 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r1|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got ''",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "0 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r1|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.3333333333333333,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "0 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "0 sentences; expected 1\u20133",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r2|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['yes']",
+        "passed": true,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'yes'",
+        "passed": true,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r2|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "1 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r3|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['yes']",
+        "passed": true,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'yes'",
+        "passed": true,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r3|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "1 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r4|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['yes']",
+        "passed": true,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'yes'",
+        "passed": true,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r4|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "1 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r5|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "forbidden: ['costs']",
+        "passed": false,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'revenue rose. costs fell! really?'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "5 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "3 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 sentences; expected 3\u20134",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r5|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "5 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "3 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r6|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '- first point\\n- second point\\n\\ndone'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "7 words; maximum 5",
+        "passed": false,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r6|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "7 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.75,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "3 string items; expected 1\u20135",
+        "passed": true,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "duplicate items found",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "duplicate items found",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['beta']",
+        "passed": true,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "forbidden: ['alpha']",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s14": {
+    "error": "unsupported scorer: json_bogus"
+  },
+  "prompt-eval-scorer.v1|r7|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r7|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '[\"alpha\", \"beta\", \"alpha\"]'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 string items; expected 2\u20133",
+        "passed": true,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r7|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "3 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 string items; expected 1\u20135",
+        "passed": true,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "items are unique",
+        "passed": true,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "items are unique",
+        "passed": true,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['beta']",
+        "passed": true,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "forbidden: ['alpha']",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s14": {
+    "error": "unsupported scorer: json_bogus"
+  },
+  "prompt-eval-scorer.v1|r8|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r8|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '[\"alpha\", \"beta\"]'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "4 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 string items; expected 2\u20133",
+        "passed": true,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r8|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "4 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v1|r9|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'not json'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v1|r9|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v1"
+  },
+  "prompt-eval-scorer.v2|r0|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r0|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got ''",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "0 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r0|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.3333333333333333,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "0 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "0 sentences; expected 1\u20133",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r10|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '{\"a\": 1}'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r10|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r11|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '[1, 2]'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected a JSON array containing only strings",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r11|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r12|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'dr. smith went to st. paul. he left'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "8 words; maximum 5",
+        "passed": false,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "2 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r12|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "8 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "2 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r13|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "30 words; maximum 5",
+        "passed": false,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r13|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "30 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r1|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got ''",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "0 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "0 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r1|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.3333333333333333,
+    "scorer_results": [
+      {
+        "detail": "response is empty",
+        "passed": false,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "0 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "0 sentences; expected 1\u20133",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r2|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['yes']",
+        "passed": true,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'yes'",
+        "passed": true,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r2|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "1 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r3|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['yes']",
+        "passed": true,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'yes'",
+        "passed": true,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r3|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "1 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r4|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['yes']",
+        "passed": true,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'yes'",
+        "passed": true,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r4|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "1 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r5|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "forbidden: ['costs']",
+        "passed": false,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'revenue rose. costs fell! really?'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "5 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "3 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 sentences; expected 3\u20134",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r5|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "5 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "3 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r6|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '- first point\\n- second point\\n\\ndone'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "7 words; maximum 5",
+        "passed": false,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "3 sentences; expected 1\u20132",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 sentences; expected 3\u20134",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r6|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "7 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "3 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.75,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "3 string items; expected 1\u20135",
+        "passed": true,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "duplicate items found",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "duplicate items found",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['beta']",
+        "passed": true,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "forbidden: ['alpha']",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s14": {
+    "error": "unsupported scorer: json_bogus"
+  },
+  "prompt-eval-scorer.v2|r7|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r7|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '[\"alpha\", \"beta\", \"alpha\"]'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "3 string items; expected 2\u20133",
+        "passed": true,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r7|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "3 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 string items; expected 1\u20135",
+        "passed": true,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "items are unique",
+        "passed": true,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "items are unique",
+        "passed": true,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "all required strings found",
+        "passed": true,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "matched: ['beta']",
+        "passed": true,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "forbidden: ['alpha']",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s14": {
+    "error": "unsupported scorer: json_bogus"
+  },
+  "prompt-eval-scorer.v2|r8|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r8|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got '[\"alpha\", \"beta\"]'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "4 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 string items; expected 2\u20133",
+        "passed": true,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r8|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "4 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|json_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.25,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      },
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s0": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s1": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue', 'costs']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s10": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "unique_json_items"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s11": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s12": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_contain_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s13": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_items_exclude_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s14": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_bogus"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s15": {
+    "error": "unsupported scorer: bogus"
+  },
+  "prompt-eval-scorer.v2|r9|s2": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "missing: ['revenue']",
+        "passed": false,
+        "scorer": "contains_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s3": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "none of the accepted strings found",
+        "passed": false,
+        "scorer": "contains_any_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s4": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "no forbidden strings found",
+        "passed": true,
+        "scorer": "excludes_all_ci"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s5": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "expected 'yes'; got 'not json'",
+        "passed": false,
+        "scorer": "exact_normalized"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s6": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "2 words; maximum 5",
+        "passed": true,
+        "scorer": "max_words"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s7": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 1\u20132",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s8": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "1 sentences; expected 3\u20134",
+        "passed": false,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|s9": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": false,
+    "score": 0.0,
+    "scorer_results": [
+      {
+        "detail": "invalid JSON: Expecting value: line 1 column 1 (char 0)",
+        "passed": false,
+        "scorer": "json_array_strings"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "prompt-eval-scorer.v2|r9|text_bundle": {
+    "case_id": "case-1",
+    "human_review": [
+      "note"
+    ],
+    "passed": true,
+    "score": 1.0,
+    "scorer_results": [
+      {
+        "detail": "response is non-empty",
+        "passed": true,
+        "scorer": "non_empty"
+      },
+      {
+        "detail": "2 words; maximum 40",
+        "passed": true,
+        "scorer": "max_words"
+      },
+      {
+        "detail": "1 sentences; expected 1\u20133",
+        "passed": true,
+        "scorer": "sentence_count"
+      }
+    ],
+    "scorer_version": "prompt-eval-scorer.v2"
+  },
+  "unsupported_version": {
+    "error": "unsupported scorer version: prompt-eval-scorer.v0"
+  }
+}
