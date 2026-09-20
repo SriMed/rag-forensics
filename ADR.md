@@ -558,3 +558,36 @@ provenance field; the run configuration we actually set is the source of truth f
 the raw self-reported output is preserved unmodified for inspection.
 
 ---
+
+---
+
+## ADR-045: One LLM boundary, explicit failure classes, and readiness that matches the local workflow
+
+**Status:** Accepted
+**Issue:** #12
+
+Four services each constructed their own Anthropic client, indexed `response.content[0].text`
+without checking block type, and caught `Exception` to degrade gracefully. That made request
+timeouts impossible to set in one place and let programming errors masquerade as "the model
+failed", which is the opposite of the visible-failure requirement in ADR-043.
+
+All backend LLM calls now go through `services/llm.py`. It builds the client with a bounded timeout
+and retry count, returns the first text block, and converts SDK failures into `LLMError`. Modules
+degrade only on `LLMError` and on malformed model output (`ValueError`, including JSON decode
+errors); the query-fit module also degrades when the local embedding model cannot load or run
+(`RuntimeError`, `OSError`), because its explicit `fit_computation_failed` status predates this
+change. Any other exception propagates to the endpoint, which logs it and returns a generic 500.
+Missing `ANTHROPIC_API_KEY` raises at client construction and is deliberately not caught, so a
+missing key fails visibly rather than as a degraded diagnostic.
+
+HTTP 500 responses no longer echo exception text, which can contain paths or upstream messages;
+detail stays in server logs. `GET /health` is liveness only. `GET /ready` is 503 when
+`ANTHROPIC_API_KEY` is unset and otherwise 200, and it reports bundled-corpus availability without
+gating on it: `/analyze/custom` is the primary supported path and must work without bootstrapping
+the RAGBench corpus (ADR-043). Readiness performs no model calls.
+
+`ruff` (lint only, no repo-wide reformat, so frozen evaluation code is untouched) and `mypy` are
+configured in `backend/pyproject.toml`, and CI runs ruff, pytest, eslint, and jest. mypy runs
+informationally until the remaining type errors are cleared. Evaluation and benchmark scripts keep
+their own pinned model IDs and broad handlers that record evaluator failures; they are excluded
+from the blind-except rule because reproducibility of versioned results takes precedence there.
