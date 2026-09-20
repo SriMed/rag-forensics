@@ -17,6 +17,7 @@ from benchmark.grounding import (
     summarize_method,
 )
 from models import (
+    CalibrationResult,
     ConfidenceInterval,
     GroundingExperimentReport,
     GroundingRunMetadata,
@@ -200,6 +201,73 @@ def _paired_intervals(
     return intervals
 
 
+_CALIBRATED_METHODS = ("b1_sentence_similarity", "b2_claim_similarity", "b3_claim_entailment")
+
+
+def _validate_partitions(
+    calibration_records: Sequence[RAGBenchEvaluationRecord],
+    evaluation_records: Sequence[RAGBenchEvaluationRecord],
+) -> None:
+    if not calibration_records or not evaluation_records:
+        raise ValueError("calibration and evaluation records must both be non-empty")
+    calibration_ids = {(record.domain, record.example_id) for record in calibration_records}
+    evaluation_ids = {(record.domain, record.example_id) for record in evaluation_records}
+    overlap = calibration_ids & evaluation_ids
+    if overlap:
+        raise ValueError(f"calibration and evaluation partitions overlap at {sorted(overlap)[0]}")
+
+
+def _calibrate(
+    records: Sequence[RAGBenchEvaluationRecord],
+    embedding_model,
+    decomposer: ClaimDecomposer,
+    entailment_verifier: EntailmentVerifier,
+    threshold_candidates: Sequence[float] | None,
+) -> dict[str, CalibrationResult]:
+    """Choose each method's threshold using only the calibration partition."""
+    raw = run_grounding_methods(
+        records,
+        embedding_model=embedding_model,
+        decomposer=decomposer,
+        entailment_verifier=entailment_verifier,
+        similarity_threshold=0.5,
+        claim_similarity_threshold=0.5,
+        entailment_threshold=0.5,
+    )
+    calibration = {}
+    for method in _CALIBRATED_METHODS:
+        support_scores, labels = _calibration_inputs(raw[method])
+        calibration[method] = calibrate_threshold(
+            support_scores,
+            labels,
+            candidates=threshold_candidates,
+        )
+    return calibration
+
+
+def _evaluate(
+    records: Sequence[RAGBenchEvaluationRecord],
+    embedding_model,
+    decomposer: ClaimDecomposer,
+    entailment_verifier: EntailmentVerifier,
+    calibration: dict[str, CalibrationResult],
+) -> dict[str, list[GroundingSentencePrediction]]:
+    """Run every method once on the evaluation partition at its calibrated threshold."""
+    evaluated = run_grounding_methods(
+        records,
+        embedding_model=embedding_model,
+        decomposer=decomposer,
+        entailment_verifier=entailment_verifier,
+        similarity_threshold=calibration["b1_sentence_similarity"].threshold,
+        claim_similarity_threshold=calibration["b2_claim_similarity"].threshold,
+        entailment_threshold=calibration["b3_claim_entailment"].threshold,
+    )
+    return {
+        method: _annotate_errors(predictions, records)
+        for method, predictions in evaluated.items()
+    }
+
+
 def run_experiment(
     calibration_records: Sequence[RAGBenchEvaluationRecord],
     evaluation_records: Sequence[RAGBenchEvaluationRecord],
@@ -211,75 +279,27 @@ def run_experiment(
     threshold_candidates: Sequence[float] | None = None,
 ) -> GroundingExperimentReport:
     """Calibrate on one partition and evaluate once on a distinct partition."""
-    if not calibration_records or not evaluation_records:
-        raise ValueError("calibration and evaluation records must both be non-empty")
-    calibration_ids = {
-        (record.domain, record.example_id) for record in calibration_records
-    }
-    evaluation_ids = {
-        (record.domain, record.example_id) for record in evaluation_records
-    }
-    overlap = calibration_ids & evaluation_ids
-    if overlap:
-        raise ValueError(
-            f"calibration and evaluation partitions overlap at {sorted(overlap)[0]}"
-        )
-
-    raw_calibration = run_grounding_methods(
-        calibration_records,
-        embedding_model=embedding_model,
-        decomposer=decomposer,
-        entailment_verifier=entailment_verifier,
-        similarity_threshold=0.5,
-        claim_similarity_threshold=0.5,
-        entailment_threshold=0.5,
+    _validate_partitions(calibration_records, evaluation_records)
+    calibration = _calibrate(
+        calibration_records, embedding_model, decomposer, entailment_verifier, threshold_candidates
     )
-    calibration = {}
-    for method in (
-        "b1_sentence_similarity",
-        "b2_claim_similarity",
-        "b3_claim_entailment",
-    ):
-        support_scores, labels = _calibration_inputs(raw_calibration[method])
-        calibration[method] = calibrate_threshold(
-            support_scores,
-            labels,
-            candidates=threshold_candidates,
-        )
-
-    evaluated = run_grounding_methods(
-        evaluation_records,
-        embedding_model=embedding_model,
-        decomposer=decomposer,
-        entailment_verifier=entailment_verifier,
-        similarity_threshold=calibration["b1_sentence_similarity"].threshold,
-        claim_similarity_threshold=calibration["b2_claim_similarity"].threshold,
-        entailment_threshold=calibration["b3_claim_entailment"].threshold,
+    evaluated = _evaluate(
+        evaluation_records, embedding_model, decomposer, entailment_verifier, calibration
     )
-    evaluated = {
-        method: _annotate_errors(predictions, evaluation_records)
-        for method, predictions in evaluated.items()
-    }
-    reports = {}
-    for method, predictions in evaluated.items():
-        threshold = (
-            calibration[method].threshold if method in calibration else None
-        )
-        reports[method] = summarize_method(
+    reports = {
+        method: summarize_method(
             method,
             predictions,
-            threshold=threshold,
+            threshold=calibration[method].threshold if method in calibration else None,
             bootstrap_iterations=bootstrap_iterations,
             seed=metadata.seed,
         )
+        for method, predictions in evaluated.items()
+    }
     metadata = metadata.model_copy(
         update={
-            "similarity_threshold": calibration[
-                "b1_sentence_similarity"
-            ].threshold,
-            "entailment_threshold": calibration[
-                "b3_claim_entailment"
-            ].threshold,
+            "similarity_threshold": calibration["b1_sentence_similarity"].threshold,
+            "entailment_threshold": calibration["b3_claim_entailment"].threshold,
         }
     )
     paired = _paired_intervals(

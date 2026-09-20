@@ -775,3 +775,80 @@ def test_oracle_characterization_fixture_exercises_every_branch():
     assert any(item["oracle"]["predicted_unsupported"] is None for item in mixed["predictions"])
     assert mixed["paired_false_unsupported_difference"] is not None
     assert none["predictions"] == [] and none["paired_false_unsupported_difference"] is None
+
+
+# ---------------------------------------------------------------------------
+# Characterization: run_experiment (same conventions as above).
+# ---------------------------------------------------------------------------
+
+_EXPERIMENT_GOLDEN = Path(__file__).parent / "golden" / "experiment.json"
+
+_RESPONSE_TEMPLATES = [
+    "Revenue rose to $20 million in {n}.",
+    "Costs were not reduced in {n}.",
+    "Debt may fall in {n}, but margins shrank.",
+]
+
+
+def _experiment_records(prefix: str, count: int, poison: str | None = None):
+    records = []
+    for i in range(count):
+        texts = [template.format(n=f"{prefix}{i}") for template in _RESPONSE_TEMPLATES]
+        if poison is not None and i == 0:
+            texts[2] = f"{poison} debt fell."
+        unsupported = [key for key, flag in zip("abc", (i % 2 == 0, i % 3 == 0, i % 2 == 1)) if flag]
+        keys = list("abc")
+        records.append(
+            adapt_ragbench_row(
+                _row(
+                    id=f"{prefix}-{i}",
+                    documents=[" ".join(f"Fact {k} about {prefix}{i}." for k in keys)],
+                    documents_sentences=[[[f"0{k}", f"Fact {k} about {prefix}{i}."] for k in keys]],
+                    response=" ".join(texts),
+                    response_sentences=[[key, text] for key, text in zip(keys, texts)],
+                    sentence_support_information=[
+                        _support(key, key not in unsupported, [] if key in unsupported else [f"0{key}"])
+                        for key in keys
+                    ],
+                    unsupported_response_sentence_keys=unsupported,
+                ),
+                domain="finqa" if i % 2 == 0 else "techqa",
+            )
+        )
+    return records
+
+
+def _experiment_characterization_run():
+    report = run_experiment(
+        _experiment_records("cal", 6),
+        _experiment_records("eval", 6, poison="boom"),
+        embedding_model=_HashEmbedder(),
+        decomposer=DeterministicClaimDecomposer(),
+        entailment_verifier=_HashVerifier(),
+        metadata=_metadata(),
+        bootstrap_iterations=30,
+    )
+    return report.model_dump(mode="json")
+
+
+def test_run_experiment_characterization():
+    _check_golden(_EXPERIMENT_GOLDEN, _experiment_characterization_run())
+
+
+def test_experiment_characterization_fixture_exercises_every_branch():
+    """Guards the golden file: both classes, error categories, a verifier failure, all methods."""
+    report = _experiment_characterization_run()
+    assert set(report["methods"]) == {
+        "b0_always_supported", "b0_always_unsupported", "b1_sentence_similarity",
+        "b2_claim_similarity", "b3_claim_entailment",
+    }
+    assert set(report["calibration"]) == {
+        "b1_sentence_similarity", "b2_claim_similarity", "b3_claim_entailment",
+    }
+    b3 = report["methods"]["b3_claim_entailment"]
+    assert set(b3["per_domain"]) == {"finqa", "techqa"}
+    predictions = [p for m in report["methods"].values() for p in m["predictions"]]
+    assert any(p["error_categories"] for p in predictions)
+    assert any(p["gold_unsupported"] for p in predictions) and any(not p["gold_unsupported"] for p in predictions)
+    assert any(c["status"] == "verifier_error" for p in predictions for c in p["claims"])
+    assert report["paired_b3_vs_b1"]

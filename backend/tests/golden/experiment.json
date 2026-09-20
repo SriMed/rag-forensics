@@ -1,0 +1,3799 @@
+{
+  "calibration": {
+    "b1_sentence_similarity": {
+      "objective": "f1",
+      "objective_value": 0.6399999999999999,
+      "partition": "calibration",
+      "threshold": 0.7508654921120258
+    },
+    "b2_claim_similarity": {
+      "objective": "f1",
+      "objective_value": 0.7999999999999999,
+      "partition": "calibration",
+      "threshold": 0.2753659787825788
+    },
+    "b3_claim_entailment": {
+      "objective": "f1",
+      "objective_value": 0.6666666666666666,
+      "partition": "calibration",
+      "threshold": 0.6450980392156862
+    }
+  },
+  "metadata": {
+    "calibration_sample_count": 0,
+    "calibration_split": "validation",
+    "claim_decomposer": "deterministic_clause",
+    "claim_decomposer_version": "1",
+    "code_commit": "abc123",
+    "dataset": "galileo-ai/ragbench",
+    "dataset_revision": "revision-1",
+    "embedding_model": "mini",
+    "embedding_model_revision": "revision-1",
+    "entailment_model": "fixture",
+    "entailment_model_revision": "revision-1",
+    "entailment_threshold": 0.6450980392156862,
+    "evaluation_sample_count": 0,
+    "evaluation_split": "test",
+    "seed": 42,
+    "similarity_threshold": 0.7508654921120258,
+    "skipped_rows": [],
+    "split_strategy": "official"
+  },
+  "methods": {
+    "b0_always_supported": {
+      "confidence_intervals": {
+        "finqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "finqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "finqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "finqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "pooled_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "pooled_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "pooled_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "pooled_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "techqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "techqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "techqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        },
+        "techqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.0,
+          "seed": 42,
+          "upper": 0.0
+        }
+      },
+      "macro_auprc": 0.4444444444444444,
+      "macro_f1": 0.0,
+      "method": "b0_always_supported",
+      "per_domain": {
+        "finqa": {
+          "auprc": 0.4444444444444444,
+          "auroc": 0.5,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.0,
+          "false_negative": 4,
+          "false_positive": 0,
+          "precision": 0.0,
+          "prevalence": 0.4444444444444444,
+          "recall": 0.0,
+          "total": 9,
+          "true_negative": 5,
+          "true_positive": 0
+        },
+        "techqa": {
+          "auprc": 0.4444444444444444,
+          "auroc": 0.5,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.0,
+          "false_negative": 4,
+          "false_positive": 0,
+          "precision": 0.0,
+          "prevalence": 0.4444444444444444,
+          "recall": 0.0,
+          "total": 9,
+          "true_negative": 5,
+          "true_positive": 0
+        }
+      },
+      "pooled": {
+        "auprc": 0.4444444444444444,
+        "auroc": 0.5,
+        "coverage": 1.0,
+        "evaluated": 18,
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 0,
+        "precision": 0.0,
+        "prevalence": 0.4444444444444444,
+        "recall": 0.0,
+        "total": 18,
+        "true_negative": 10,
+        "true_positive": 0
+      },
+      "predictions": [
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "partial_support"
+          ],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval0.",
+          "sentence_key": "a",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "negation",
+            "partial_support"
+          ],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval0.",
+          "sentence_key": "b",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "boom debt fell.",
+          "sentence_key": "c",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval1.",
+          "sentence_key": "a",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval1.",
+          "sentence_key": "b",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "qualifier",
+            "partial_support"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Debt may fall in eval1, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "partial_support"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval2.",
+          "sentence_key": "a",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval2.",
+          "sentence_key": "b",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Debt may fall in eval2, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval3.",
+          "sentence_key": "a",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "negation",
+            "partial_support"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval3.",
+          "sentence_key": "b",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "qualifier",
+            "partial_support"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Debt may fall in eval3, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "partial_support"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval4.",
+          "sentence_key": "a",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval4.",
+          "sentence_key": "b",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Debt may fall in eval4, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval5.",
+          "sentence_key": "a",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval5.",
+          "sentence_key": "b",
+          "unsupported_score": 0.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "qualifier",
+            "partial_support"
+          ],
+          "example_id": "eval-5",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Debt may fall in eval5, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.0
+        }
+      ],
+      "threshold": null
+    },
+    "b0_always_unsupported": {
+      "confidence_intervals": {
+        "finqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "finqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.6153846153846153,
+          "seed": 42,
+          "upper": 0.7142857142857143
+        },
+        "finqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "pooled_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.6153846153846153,
+          "seed": 42,
+          "upper": 0.7586206896551725
+        },
+        "pooled_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "techqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.6153846153846153,
+          "seed": 42,
+          "upper": 0.7142857142857143
+        },
+        "techqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        }
+      },
+      "macro_auprc": 0.4444444444444444,
+      "macro_f1": 0.6153846153846153,
+      "method": "b0_always_unsupported",
+      "per_domain": {
+        "finqa": {
+          "auprc": 0.4444444444444444,
+          "auroc": 0.5,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.6153846153846153,
+          "false_negative": 0,
+          "false_positive": 5,
+          "precision": 0.4444444444444444,
+          "prevalence": 0.4444444444444444,
+          "recall": 1.0,
+          "total": 9,
+          "true_negative": 0,
+          "true_positive": 4
+        },
+        "techqa": {
+          "auprc": 0.4444444444444444,
+          "auroc": 0.5,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.6153846153846153,
+          "false_negative": 0,
+          "false_positive": 5,
+          "precision": 0.4444444444444444,
+          "prevalence": 0.4444444444444444,
+          "recall": 1.0,
+          "total": 9,
+          "true_negative": 0,
+          "true_positive": 4
+        }
+      },
+      "pooled": {
+        "auprc": 0.4444444444444444,
+        "auroc": 0.5,
+        "coverage": 1.0,
+        "evaluated": 18,
+        "f1": 0.6153846153846153,
+        "false_negative": 0,
+        "false_positive": 10,
+        "precision": 0.4444444444444444,
+        "prevalence": 0.4444444444444444,
+        "recall": 1.0,
+        "total": 18,
+        "true_negative": 0,
+        "true_positive": 8
+      },
+      "predictions": [
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval0.",
+          "sentence_key": "a",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval0.",
+          "sentence_key": "b",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "other"
+          ],
+          "example_id": "eval-0",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "boom debt fell.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval1.",
+          "sentence_key": "a",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval1.",
+          "sentence_key": "b",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval1, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval2.",
+          "sentence_key": "a",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval2.",
+          "sentence_key": "b",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval2, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval3.",
+          "sentence_key": "a",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval3.",
+          "sentence_key": "b",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval3, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval4.",
+          "sentence_key": "a",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval4.",
+          "sentence_key": "b",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval4, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval5.",
+          "sentence_key": "a",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval5.",
+          "sentence_key": "b",
+          "unsupported_score": 1.0
+        },
+        {
+          "claims": [],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval5, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0
+        }
+      ],
+      "threshold": null
+    },
+    "b1_sentence_similarity": {
+      "confidence_intervals": {
+        "finqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.8041666666666667,
+          "point_estimate": 0.8041666666666667,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.8,
+          "point_estimate": 0.8500000000000001,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.6153846153846153,
+          "seed": 42,
+          "upper": 0.7142857142857143
+        },
+        "finqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.633935508935509,
+          "point_estimate": 0.7472537878787879,
+          "seed": 42,
+          "upper": 0.8618551587301587
+        },
+        "pooled_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.2597402597402597,
+          "point_estimate": 0.75,
+          "seed": 42,
+          "upper": 0.8965277777777778
+        },
+        "pooled_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5389328063241107,
+          "point_estimate": 0.6399999999999999,
+          "seed": 42,
+          "upper": 0.7586206896551725
+        },
+        "pooled_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3689338235294118,
+          "point_estimate": 0.47058823529411764,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5566666666666666,
+          "point_estimate": 0.65,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.30000000000000004,
+          "point_estimate": 0.6,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.585,
+          "point_estimate": 0.6666666666666666,
+          "seed": 42,
+          "upper": 0.7692307692307693
+        },
+        "techqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.4138392857142857,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.625
+        },
+        "techqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        }
+      },
+      "macro_auprc": 0.7270833333333333,
+      "macro_f1": 0.641025641025641,
+      "method": "b1_sentence_similarity",
+      "per_domain": {
+        "finqa": {
+          "auprc": 0.8041666666666667,
+          "auroc": 0.8500000000000001,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.6153846153846153,
+          "false_negative": 0,
+          "false_positive": 5,
+          "precision": 0.4444444444444444,
+          "prevalence": 0.4444444444444444,
+          "recall": 1.0,
+          "total": 9,
+          "true_negative": 0,
+          "true_positive": 4
+        },
+        "techqa": {
+          "auprc": 0.65,
+          "auroc": 0.6,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.6666666666666666,
+          "false_negative": 0,
+          "false_positive": 4,
+          "precision": 0.5,
+          "prevalence": 0.4444444444444444,
+          "recall": 1.0,
+          "total": 9,
+          "true_negative": 1,
+          "true_positive": 4
+        }
+      },
+      "pooled": {
+        "auprc": 0.7472537878787879,
+        "auroc": 0.75,
+        "coverage": 1.0,
+        "evaluated": 18,
+        "f1": 0.6399999999999999,
+        "false_negative": 0,
+        "false_positive": 9,
+        "precision": 0.47058823529411764,
+        "prevalence": 0.4444444444444444,
+        "recall": 1.0,
+        "total": 18,
+        "true_negative": 1,
+        "true_positive": 8
+      },
+      "predictions": [
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.sentence",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval0."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.10486701940133628,
+                "sentence_key": "0a",
+                "text": "Fact a about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.10486701940133628,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval0.",
+          "sentence_key": "a",
+          "unsupported_score": 0.8951329805986638
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.sentence",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval0."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.349357650972225,
+                "sentence_key": "0a",
+                "text": "Fact a about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.349357650972225,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval0.",
+          "sentence_key": "b",
+          "unsupported_score": 0.6506423490277751
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.sentence",
+                "parent_sentence_key": "c",
+                "text": "boom debt fell."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4567672913243038,
+                "sentence_key": "0b",
+                "text": "Fact b about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.4567672913243038,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "other"
+          ],
+          "example_id": "eval-0",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "boom debt fell.",
+          "sentence_key": "c",
+          "unsupported_score": 0.5432327086756962
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.sentence",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval1."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6040349088540001,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.6040349088540001,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval1.",
+          "sentence_key": "a",
+          "unsupported_score": 0.39596509114599987
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.sentence",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval1."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.27103224635298623,
+                "sentence_key": "0c",
+                "text": "Fact c about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.27103224635298623,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval1.",
+          "sentence_key": "b",
+          "unsupported_score": 0.7289677536470138
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.sentence",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval1, but margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.18489584365869488,
+                "sentence_key": "0a",
+                "text": "Fact a about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": -0.18489584365869488,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval1, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.184895843658695
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.sentence",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval2."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.06396098109862065,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.06396098109862065,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval2.",
+          "sentence_key": "a",
+          "unsupported_score": 0.9360390189013793
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.sentence",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval2."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.5618135053876628,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.5618135053876628,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval2.",
+          "sentence_key": "b",
+          "unsupported_score": 0.43818649461233716
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.sentence",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval2, but margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.06793698088974809,
+                "sentence_key": "0c",
+                "text": "Fact c about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.06793698088974809,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval2, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.9320630191102519
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.sentence",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval3."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.2454982415830427,
+                "sentence_key": "0c",
+                "text": "Fact c about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.2454982415830427,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval3.",
+          "sentence_key": "a",
+          "unsupported_score": 0.7545017584169573
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.sentence",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval3."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4615202369182623,
+                "sentence_key": "0b",
+                "text": "Fact b about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.4615202369182623,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval3.",
+          "sentence_key": "b",
+          "unsupported_score": 0.5384797630817377
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.sentence",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval3, but margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6746674912436776,
+                "sentence_key": "0c",
+                "text": "Fact c about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.6746674912436776,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval3, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.32533250875632236
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.sentence",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval4."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.16417046066845586,
+                "sentence_key": "0b",
+                "text": "Fact b about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.16417046066845586,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval4.",
+          "sentence_key": "a",
+          "unsupported_score": 0.8358295393315441
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.sentence",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval4."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6108554359159453,
+                "sentence_key": "0c",
+                "text": "Fact c about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.6108554359159453,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval4.",
+          "sentence_key": "b",
+          "unsupported_score": 0.38914456408405473
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.sentence",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval4, but margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.7293464031419581,
+                "sentence_key": "0c",
+                "text": "Fact c about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.7293464031419581,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval4, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.2706535968580419
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.sentence",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval5."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.7747671909136952,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.7747671909136952,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval5.",
+          "sentence_key": "a",
+          "unsupported_score": 0.22523280908630483
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.sentence",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval5."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.581646223121163,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.581646223121163,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval5.",
+          "sentence_key": "b",
+          "unsupported_score": 0.418353776878837
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.sentence",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval5, but margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.31394748795797456,
+                "sentence_key": "0b",
+                "text": "Fact b about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.31394748795797456,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval5, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.6860525120420254
+        }
+      ],
+      "threshold": 0.7508654921120258
+    },
+    "b2_claim_similarity": {
+      "confidence_intervals": {
+        "finqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.4166666666666667,
+          "point_estimate": 0.525,
+          "seed": 42,
+          "upper": 0.7379166666666666
+        },
+        "finqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.6,
+          "seed": 42,
+          "upper": 0.75
+        },
+        "finqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.6666666666666665,
+          "point_estimate": 0.6666666666666665,
+          "seed": 42,
+          "upper": 0.6666666666666666
+        },
+        "finqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.6,
+          "seed": 42,
+          "upper": 0.75
+        },
+        "finqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "finqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.6,
+          "point_estimate": 0.75,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.4762067669433741,
+          "point_estimate": 0.729087579087579,
+          "seed": 42,
+          "upper": 0.845449481074481
+        },
+        "pooled_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.36363636363636365,
+          "point_estimate": 0.7625,
+          "seed": 42,
+          "upper": 0.875
+        },
+        "pooled_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.2222222222222222,
+          "point_estimate": 0.5882352941176471,
+          "seed": 42,
+          "upper": 0.7499999999999999
+        },
+        "pooled_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.2857142857142857,
+          "point_estimate": 0.5555555555555556,
+          "seed": 42,
+          "upper": 0.6797619047619047
+        },
+        "pooled_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.6111111111111112
+        },
+        "pooled_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.18181818181818182,
+          "point_estimate": 0.625,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.6499999999999999,
+          "point_estimate": 0.8166666666666667,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.4,
+          "point_estimate": 0.8,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.22222222222222224,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.25,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.2,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 1.0
+        }
+      },
+      "macro_auprc": 0.6708333333333334,
+      "macro_f1": 0.5833333333333333,
+      "method": "b2_claim_similarity",
+      "per_domain": {
+        "finqa": {
+          "auprc": 0.525,
+          "auroc": 0.6,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.6666666666666665,
+          "false_negative": 1,
+          "false_positive": 2,
+          "precision": 0.6,
+          "prevalence": 0.4444444444444444,
+          "recall": 0.75,
+          "total": 9,
+          "true_negative": 3,
+          "true_positive": 3
+        },
+        "techqa": {
+          "auprc": 0.8166666666666667,
+          "auroc": 0.8,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.5,
+          "false_negative": 2,
+          "false_positive": 2,
+          "precision": 0.5,
+          "prevalence": 0.4444444444444444,
+          "recall": 0.5,
+          "total": 9,
+          "true_negative": 3,
+          "true_positive": 2
+        }
+      },
+      "pooled": {
+        "auprc": 0.729087579087579,
+        "auroc": 0.7625,
+        "coverage": 1.0,
+        "evaluated": 18,
+        "f1": 0.5882352941176471,
+        "false_negative": 3,
+        "false_positive": 4,
+        "precision": 0.5555555555555556,
+        "prevalence": 0.4444444444444444,
+        "recall": 0.625,
+        "total": 18,
+        "true_negative": 6,
+        "true_positive": 5
+      },
+      "predictions": [
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval0."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.10486701940133628,
+                "sentence_key": "0a",
+                "text": "Fact a about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.10486701940133628,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval0.",
+          "sentence_key": "a",
+          "unsupported_score": 0.8951329805986638
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval0."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.349357650972225,
+                "sentence_key": "0a",
+                "text": "Fact a about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.349357650972225,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "negation",
+            "partial_support"
+          ],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval0.",
+          "sentence_key": "b",
+          "unsupported_score": 0.6506423490277751
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "boom debt fell."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4567672913243038,
+                "sentence_key": "0b",
+                "text": "Fact b about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.4567672913243038,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "boom debt fell.",
+          "sentence_key": "c",
+          "unsupported_score": 0.5432327086756962
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval1."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6040349088540001,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.6040349088540001,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval1.",
+          "sentence_key": "a",
+          "unsupported_score": 0.39596509114599987
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval1."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.27103224635298623,
+                "sentence_key": "0c",
+                "text": "Fact c about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.27103224635298623,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval1.",
+          "sentence_key": "b",
+          "unsupported_score": 0.7289677536470138
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval1"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.41775909770264885,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.41775909770264885,
+              "verifier_label": "similar"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.08588604322730697,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": -0.08588604322730697,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval1, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.085886043227307
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval2."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.06396098109862065,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.06396098109862065,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval2.",
+          "sentence_key": "a",
+          "unsupported_score": 0.9360390189013793
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval2."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.5618135053876628,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.5618135053876628,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval2.",
+          "sentence_key": "b",
+          "unsupported_score": 0.43818649461233716
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval2"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.013327761487955475,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.013327761487955475,
+              "verifier_label": "dissimilar"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.011064678475026304,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": -0.011064678475026304,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval2, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0110646784750263
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval3."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.2454982415830427,
+                "sentence_key": "0c",
+                "text": "Fact c about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.2454982415830427,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval3.",
+          "sentence_key": "a",
+          "unsupported_score": 0.7545017584169573
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval3."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4615202369182623,
+                "sentence_key": "0b",
+                "text": "Fact b about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.4615202369182623,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "negation",
+            "partial_support"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval3.",
+          "sentence_key": "b",
+          "unsupported_score": 0.5384797630817377
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval3"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6437041449797509,
+                "sentence_key": "0a",
+                "text": "Fact a about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.6437041449797509,
+              "verifier_label": "similar"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.2783254070759532,
+                "sentence_key": "0b",
+                "text": "Fact b about eval3."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.2783254070759532,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "qualifier",
+            "partial_support"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Debt may fall in eval3, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.7216745929240468
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval4."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.16417046066845586,
+                "sentence_key": "0b",
+                "text": "Fact b about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.16417046066845586,
+              "verifier_label": "dissimilar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval4.",
+          "sentence_key": "a",
+          "unsupported_score": 0.8358295393315441
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval4."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6108554359159453,
+                "sentence_key": "0c",
+                "text": "Fact c about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.6108554359159453,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval4.",
+          "sentence_key": "b",
+          "unsupported_score": 0.38914456408405473
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval4"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.021298462758728598,
+                "sentence_key": "0a",
+                "text": "Fact a about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": -0.021298462758728598,
+              "verifier_label": "dissimilar"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4799483046246414,
+                "sentence_key": "0a",
+                "text": "Fact a about eval4."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.4799483046246414,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval4, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0212984627587285
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval5."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.7747671909136952,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.7747671909136952,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval5.",
+          "sentence_key": "a",
+          "unsupported_score": 0.22523280908630483
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval5."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.581646223121163,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.581646223121163,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval5.",
+          "sentence_key": "b",
+          "unsupported_score": 0.418353776878837
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval5"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.040558128424655726,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": -0.040558128424655726,
+              "verifier_label": "dissimilar"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.48570611195241553,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.48570611195241553,
+              "verifier_label": "similar"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval5, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 1.0405581284246557
+        }
+      ],
+      "threshold": 0.2753659787825788
+    },
+    "b3_claim_entailment": {
+      "confidence_intervals": {
+        "finqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.31547619047619047,
+          "point_estimate": 0.4303571428571429,
+          "seed": 42,
+          "upper": 0.6463095238095236
+        },
+        "finqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.25,
+          "seed": 42,
+          "upper": 0.5
+        },
+        "finqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.7777777777777778,
+          "point_estimate": 0.8888888888888888,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "finqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.6,
+          "seed": 42,
+          "upper": 0.8333333333333333
+        },
+        "finqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.7378571428571428
+        },
+        "finqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.5,
+          "seed": 42,
+          "upper": 0.7142857142857143
+        },
+        "finqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.0,
+          "point_estimate": 0.75,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.32363904613904615,
+          "point_estimate": 0.5111381673881674,
+          "seed": 42,
+          "upper": 0.9924242424242424
+        },
+        "pooled_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.38940972222222225,
+          "point_estimate": 0.5763888888888888,
+          "seed": 42,
+          "upper": 0.9848484848484849
+        },
+        "pooled_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.8333333333333334,
+          "point_estimate": 0.9444444444444444,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "pooled_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.40232198142414866,
+          "point_estimate": 0.6666666666666667,
+          "seed": 42,
+          "upper": 0.8223484848484848
+        },
+        "pooled_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.31666666666666665,
+          "point_estimate": 0.5384615384615384,
+          "seed": 42,
+          "upper": 0.7134615384615384
+        },
+        "pooled_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.47058823529411764,
+          "seed": 42,
+          "upper": 0.6707843137254901
+        },
+        "pooled_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5517857142857143,
+          "point_estimate": 0.875,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auprc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.7,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_auroc": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.8,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_coverage": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        },
+        "techqa_f1": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.6666666666666666,
+          "point_estimate": 0.7272727272727273,
+          "seed": 42,
+          "upper": 0.7692307692307693
+        },
+        "techqa_precision": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.5,
+          "point_estimate": 0.5714285714285714,
+          "seed": 42,
+          "upper": 0.625
+        },
+        "techqa_prevalence": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 0.3333333333333333,
+          "point_estimate": 0.4444444444444444,
+          "seed": 42,
+          "upper": 0.5555555555555556
+        },
+        "techqa_recall": {
+          "confidence": 0.95,
+          "iterations": 30,
+          "lower": 1.0,
+          "point_estimate": 1.0,
+          "seed": 42,
+          "upper": 1.0
+        }
+      },
+      "macro_auprc": 0.5651785714285714,
+      "macro_f1": 0.6636363636363636,
+      "method": "b3_claim_entailment",
+      "per_domain": {
+        "finqa": {
+          "auprc": 0.4303571428571429,
+          "auroc": 0.25,
+          "coverage": 0.8888888888888888,
+          "evaluated": 8,
+          "f1": 0.6,
+          "false_negative": 1,
+          "false_positive": 3,
+          "precision": 0.5,
+          "prevalence": 0.5,
+          "recall": 0.75,
+          "total": 9,
+          "true_negative": 1,
+          "true_positive": 3
+        },
+        "techqa": {
+          "auprc": 0.7,
+          "auroc": 0.8,
+          "coverage": 1.0,
+          "evaluated": 9,
+          "f1": 0.7272727272727273,
+          "false_negative": 0,
+          "false_positive": 3,
+          "precision": 0.5714285714285714,
+          "prevalence": 0.4444444444444444,
+          "recall": 1.0,
+          "total": 9,
+          "true_negative": 2,
+          "true_positive": 4
+        }
+      },
+      "pooled": {
+        "auprc": 0.5111381673881674,
+        "auroc": 0.5763888888888888,
+        "coverage": 0.9444444444444444,
+        "evaluated": 17,
+        "f1": 0.6666666666666667,
+        "false_negative": 1,
+        "false_positive": 6,
+        "precision": 0.5384615384615384,
+        "prevalence": 0.47058823529411764,
+        "recall": 0.875,
+        "total": 18,
+        "true_negative": 3,
+        "true_positive": 7
+      },
+      "predictions": [
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval0."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.10486701940133628,
+                "sentence_key": "0a",
+                "text": "Fact a about eval0."
+              },
+              "nli_scores": {
+                "contradiction": 0.3568627450980392,
+                "entailment": 0.28627450980392155,
+                "label": "neutral",
+                "neutral": 0.3568627450980392
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.28627450980392155,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval0.",
+          "sentence_key": "a",
+          "unsupported_score": 0.7137254901960784
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval0."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.349357650972225,
+                "sentence_key": "0a",
+                "text": "Fact a about eval0."
+              },
+              "nli_scores": {
+                "contradiction": 0.2274509803921569,
+                "entailment": 0.5450980392156862,
+                "label": "entailment",
+                "neutral": 0.2274509803921569
+              },
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.5450980392156862,
+              "verifier_label": "entailment"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval0.",
+          "sentence_key": "b",
+          "unsupported_score": 0.4549019607843138
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "boom debt fell."
+              },
+              "error": "synthetic verifier failure",
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4567672913243038,
+                "sentence_key": "0b",
+                "text": "Fact b about eval0."
+              },
+              "nli_scores": null,
+              "parent_sentence_key": "c",
+              "predicted_supported": null,
+              "status": "verifier_error",
+              "support_score": null,
+              "verifier_label": null
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-0",
+          "gold_unsupported": false,
+          "predicted_unsupported": null,
+          "sentence": "boom debt fell.",
+          "sentence_key": "c",
+          "unsupported_score": null
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval1."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6040349088540001,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": {
+                "contradiction": 0.34901960784313724,
+                "entailment": 0.30196078431372547,
+                "label": "neutral",
+                "neutral": 0.34901960784313724
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.30196078431372547,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval1.",
+          "sentence_key": "a",
+          "unsupported_score": 0.6980392156862745
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval1."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.27103224635298623,
+                "sentence_key": "0c",
+                "text": "Fact c about eval1."
+              },
+              "nli_scores": {
+                "contradiction": 0.07058823529411767,
+                "entailment": 0.8588235294117647,
+                "label": "entailment",
+                "neutral": 0.07058823529411767
+              },
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.8588235294117647,
+              "verifier_label": "entailment"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval1.",
+          "sentence_key": "b",
+          "unsupported_score": 0.14117647058823535
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval1"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.41775909770264885,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": {
+                "contradiction": 0.1843137254901961,
+                "entailment": 0.6313725490196078,
+                "label": "entailment",
+                "neutral": 0.1843137254901961
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.6313725490196078,
+              "verifier_label": "entailment"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.08588604322730697,
+                "sentence_key": "0b",
+                "text": "Fact b about eval1."
+              },
+              "nli_scores": {
+                "contradiction": 0.45098039215686275,
+                "entailment": 0.0980392156862745,
+                "label": "neutral",
+                "neutral": 0.45098039215686275
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.0980392156862745,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-1",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval1, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.9019607843137255
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval2."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.06396098109862065,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": {
+                "contradiction": 0.26078431372549016,
+                "entailment": 0.47843137254901963,
+                "label": "neutral",
+                "neutral": 0.26078431372549016
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.47843137254901963,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-2",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval2.",
+          "sentence_key": "a",
+          "unsupported_score": 0.5215686274509803
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval2."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.5618135053876628,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": {
+                "contradiction": 0.48627450980392156,
+                "entailment": 0.027450980392156876,
+                "label": "neutral",
+                "neutral": 0.48627450980392156
+              },
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.027450980392156876,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval2.",
+          "sentence_key": "b",
+          "unsupported_score": 0.9725490196078431
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval2"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.013327761487955475,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": {
+                "contradiction": 0.42745098039215684,
+                "entailment": 0.14509803921568631,
+                "label": "neutral",
+                "neutral": 0.42745098039215684
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.14509803921568631,
+              "verifier_label": "neutral"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.011064678475026304,
+                "sentence_key": "0b",
+                "text": "Fact b about eval2."
+              },
+              "nli_scores": {
+                "contradiction": 0.45098039215686275,
+                "entailment": 0.0980392156862745,
+                "label": "neutral",
+                "neutral": 0.45098039215686275
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.0980392156862745,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-2",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval2, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.9019607843137255
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval3."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.2454982415830427,
+                "sentence_key": "0c",
+                "text": "Fact c about eval3."
+              },
+              "nli_scores": {
+                "contradiction": 0.21568627450980393,
+                "entailment": 0.5686274509803921,
+                "label": "entailment",
+                "neutral": 0.21568627450980393
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.5686274509803921,
+              "verifier_label": "entailment"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric"
+          ],
+          "example_id": "eval-3",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Revenue rose to $20 million in eval3.",
+          "sentence_key": "a",
+          "unsupported_score": 0.43137254901960786
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval3."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4615202369182623,
+                "sentence_key": "0b",
+                "text": "Fact b about eval3."
+              },
+              "nli_scores": {
+                "contradiction": 0.46862745098039216,
+                "entailment": 0.06274509803921569,
+                "label": "neutral",
+                "neutral": 0.46862745098039216
+              },
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.06274509803921569,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval3.",
+          "sentence_key": "b",
+          "unsupported_score": 0.9372549019607843
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval3"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6437041449797509,
+                "sentence_key": "0a",
+                "text": "Fact a about eval3."
+              },
+              "nli_scores": {
+                "contradiction": 0.42549019607843136,
+                "entailment": 0.14901960784313728,
+                "label": "neutral",
+                "neutral": 0.42549019607843136
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.14901960784313728,
+              "verifier_label": "neutral"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.2783254070759532,
+                "sentence_key": "0b",
+                "text": "Fact b about eval3."
+              },
+              "nli_scores": {
+                "contradiction": 0.45098039215686275,
+                "entailment": 0.0980392156862745,
+                "label": "neutral",
+                "neutral": 0.45098039215686275
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.0980392156862745,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-3",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval3, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.9019607843137255
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval4."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.16417046066845586,
+                "sentence_key": "0b",
+                "text": "Fact b about eval4."
+              },
+              "nli_scores": {
+                "contradiction": 0.1215686274509804,
+                "entailment": 0.7568627450980392,
+                "label": "entailment",
+                "neutral": 0.1215686274509804
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.7568627450980392,
+              "verifier_label": "entailment"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_negative",
+            "numeric",
+            "partial_support"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": true,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval4.",
+          "sentence_key": "a",
+          "unsupported_score": 0.2431372549019608
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval4."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.6108554359159453,
+                "sentence_key": "0c",
+                "text": "Fact c about eval4."
+              },
+              "nli_scores": {
+                "contradiction": 0.09215686274509804,
+                "entailment": 0.8156862745098039,
+                "label": "entailment",
+                "neutral": 0.09215686274509804
+              },
+              "parent_sentence_key": "b",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.8156862745098039,
+              "verifier_label": "entailment"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Costs were not reduced in eval4.",
+          "sentence_key": "b",
+          "unsupported_score": 0.1843137254901961
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval4"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.021298462758728598,
+                "sentence_key": "0a",
+                "text": "Fact a about eval4."
+              },
+              "nli_scores": {
+                "contradiction": 0.0784313725490196,
+                "entailment": 0.8431372549019608,
+                "label": "entailment",
+                "neutral": 0.0784313725490196
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.8431372549019608,
+              "verifier_label": "entailment"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.4799483046246414,
+                "sentence_key": "0a",
+                "text": "Fact a about eval4."
+              },
+              "nli_scores": {
+                "contradiction": 0.4019607843137255,
+                "entailment": 0.196078431372549,
+                "label": "neutral",
+                "neutral": 0.4019607843137255
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.196078431372549,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "finqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "qualifier"
+          ],
+          "example_id": "eval-4",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval4, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.803921568627451
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "a.claim-0",
+                "parent_sentence_key": "a",
+                "text": "Revenue rose to $20 million in eval5."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.7747671909136952,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": {
+                "contradiction": 0.03529411764705881,
+                "entailment": 0.9294117647058824,
+                "label": "entailment",
+                "neutral": 0.03529411764705881
+              },
+              "parent_sentence_key": "a",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.9294117647058824,
+              "verifier_label": "entailment"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": false,
+          "sentence": "Revenue rose to $20 million in eval5.",
+          "sentence_key": "a",
+          "unsupported_score": 0.07058823529411762
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "b.claim-0",
+                "parent_sentence_key": "b",
+                "text": "Costs were not reduced in eval5."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.581646223121163,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": {
+                "contradiction": 0.4784313725490196,
+                "entailment": 0.0431372549019608,
+                "label": "neutral",
+                "neutral": 0.4784313725490196
+              },
+              "parent_sentence_key": "b",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.0431372549019608,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [
+            "false_positive",
+            "numeric",
+            "negation"
+          ],
+          "example_id": "eval-5",
+          "gold_unsupported": false,
+          "predicted_unsupported": true,
+          "sentence": "Costs were not reduced in eval5.",
+          "sentence_key": "b",
+          "unsupported_score": 0.9568627450980391
+        },
+        {
+          "claims": [
+            {
+              "claim": {
+                "claim_id": "c.claim-0",
+                "parent_sentence_key": "c",
+                "text": "Debt may fall in eval5"
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": -0.040558128424655726,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": {
+                "contradiction": 0.14313725490196078,
+                "entailment": 0.7137254901960784,
+                "label": "entailment",
+                "neutral": 0.14313725490196078
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": true,
+              "status": "ok",
+              "support_score": 0.7137254901960784,
+              "verifier_label": "entailment"
+            },
+            {
+              "claim": {
+                "claim_id": "c.claim-1",
+                "parent_sentence_key": "c",
+                "text": "margins shrank."
+              },
+              "error": null,
+              "evidence": {
+                "document_id": "document_0",
+                "selection_score": 0.48570611195241553,
+                "sentence_key": "0a",
+                "text": "Fact a about eval5."
+              },
+              "nli_scores": {
+                "contradiction": 0.4019607843137255,
+                "entailment": 0.196078431372549,
+                "label": "neutral",
+                "neutral": 0.4019607843137255
+              },
+              "parent_sentence_key": "c",
+              "predicted_supported": false,
+              "status": "ok",
+              "support_score": 0.196078431372549,
+              "verifier_label": "neutral"
+            }
+          ],
+          "domain": "techqa",
+          "error_categories": [],
+          "example_id": "eval-5",
+          "gold_unsupported": true,
+          "predicted_unsupported": true,
+          "sentence": "Debt may fall in eval5, but margins shrank.",
+          "sentence_key": "c",
+          "unsupported_score": 0.803921568627451
+        }
+      ],
+      "threshold": 0.6450980392156862
+    }
+  },
+  "paired_b3_vs_b1": {
+    "finqa_f1": {
+      "confidence": 0.95,
+      "iterations": 30,
+      "lower": -0.5,
+      "point_estimate": -0.01538461538461533,
+      "seed": 42,
+      "upper": 0.11904761904761896
+    },
+    "macro_auprc": {
+      "confidence": 0.95,
+      "iterations": 30,
+      "lower": -0.4526934523809524,
+      "point_estimate": -0.16190476190476188,
+      "seed": 42,
+      "upper": 0.19999999999999996
+    },
+    "macro_f1": {
+      "confidence": 0.95,
+      "iterations": 30,
+      "lower": -0.20617559523809523,
+      "point_estimate": 0.02261072261072261,
+      "seed": 42,
+      "upper": 0.15686974789915964
+    },
+    "techqa_f1": {
+      "confidence": 0.95,
+      "iterations": 30,
+      "lower": 0.0,
+      "point_estimate": 0.06060606060606066,
+      "seed": 42,
+      "upper": 0.11445221445221451
+    }
+  }
+}
