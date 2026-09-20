@@ -10,7 +10,7 @@ import hashlib
 import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, cast
 
 import numpy as np
 from pydantic import BaseModel, Field, model_validator
@@ -220,7 +220,7 @@ def _interval(
     predictions: Mapping[str, Sequence[GroundingSentencePrediction]],
     weights: Mapping[str, float], iterations: int, seed: int,
 ) -> ConfidenceInterval | None:
-    by_example: dict[str, list[dict[str, bool]]] = {}
+    by_example: dict[str, list[dict[str, Any]]] = {}
     for condition, rows in predictions.items():
         for row in rows:
             if row.predicted_unsupported is None:
@@ -288,7 +288,8 @@ def run_decomposition_evidence_experiment(
         for x in deterministic.predictions
     }
     # Sentence keys are only record-local, so run each record with its exact reviewed map.
-    c, d = [], []
+    c: list[GroundingSentencePrediction] = []
+    d: list[GroundingSentencePrediction] = []
     d_pairs = {}
     for record in eligible:
         local = {}
@@ -307,12 +308,12 @@ def run_decomposition_evidence_experiment(
             f"{x.domain}:{x.example_id}:{x.sentence_key}": x.oracle_pairs
             for x in result.predictions
         })
-    predictions = {"A": a, "B": b, "C": c, "D": d}
-    condition_results = {}
+    predictions: dict[str, list[GroundingSentencePrediction]] = {"A": a, "B": b, "C": c, "D": d}
+    condition_results: dict[str, ConditionResult] = {}
     for name, rows in predictions.items():
         values = [x.predicted_unsupported for x in rows if x.predicted_unsupported is not None]
         condition_results[name] = ConditionResult(
-            condition=name, false_unsupported_rate=float(np.mean(values)) if values else None,
+            condition=cast(Literal["A", "B", "C", "D"], name), false_unsupported_rate=float(np.mean(values)) if values else None,
             evaluated=len(values), predictions=rows,
             pair_evaluations=b_pairs if name == "B" else d_pairs if name == "D" else {},
         )

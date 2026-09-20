@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Sequence
+from typing import cast
 
 import numpy as np
 
@@ -158,12 +159,12 @@ def _oracle_prediction(
             all_pairs.append(verification)
         usable = [item for item in claim_pairs if item.support_score is not None]
         best.append(
-            max(usable, key=lambda item: float(item.support_score))
+            max(usable, key=lambda item: cast(float, item.support_score))
             if usable
             else claim_pairs[0]
         )
     supported = aggregate_claims([item.predicted_supported for item in best])
-    scores = [item.support_score for item in best if item.support_score is not None]
+    support_scores = [item.support_score for item in best if item.support_score is not None]
     return (
         GroundingSentencePrediction(
             example_id=record.example_id,
@@ -172,7 +173,7 @@ def _oracle_prediction(
             sentence=selected.sentence,
             gold_unsupported=False,
             predicted_unsupported=not supported if supported is not None else None,
-            unsupported_score=1.0 - min(scores) if scores else None,
+            unsupported_score=1.0 - min(support_scores) if support_scores else None,
             claims=best,
         ),
         all_pairs,

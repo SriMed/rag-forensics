@@ -1,5 +1,6 @@
 import logging
 import math
+from typing import Any
 
 from langchain_anthropic import ChatAnthropic
 from ragas import EvaluationDataset, SingleTurnSample, evaluate
@@ -39,11 +40,12 @@ def _run_ragas(
     logger.debug("running ragas metric=%s", metric_name)
     excerpts = _extract_context_excerpts(chunks)
     try:
-        llm = ChatAnthropic(
-            model=CLAUDE_HAIKU, timeout=LLM_TIMEOUT_SECONDS, max_retries=LLM_MAX_RETRIES
+        # mypy's pydantic-alias handling wrongly demands `stop`; the alias is valid (verified at runtime).
+        llm = ChatAnthropic(  # type: ignore[call-arg]
+            model_name=CLAUDE_HAIKU, timeout=LLM_TIMEOUT_SECONDS, max_retries=LLM_MAX_RETRIES
         )
         dataset = EvaluationDataset(samples=[sample])
-        result = evaluate(
+        result: Any = evaluate(
             dataset, metrics=[metric], llm=llm, show_progress=False,
             # RAGAS counts attempts here; SDK retries must not be multiplied by its defaults.
             run_config=RunConfig(timeout=int(LLM_TIMEOUT_SECONDS), max_retries=1),

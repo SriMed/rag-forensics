@@ -26,9 +26,7 @@ jobs:
       - run: pipx install poetry==2.2.1
       - run: poetry install
       - run: poetry run ruff check .
-      # Informational until the remaining type errors are cleared; then drop continue-on-error.
       - run: poetry run mypy .
-        continue-on-error: true
       # All external API calls are mocked in tests; no secrets are provided here.
       - run: poetry run pytest -q
 

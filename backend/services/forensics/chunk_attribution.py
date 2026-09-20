@@ -1,4 +1,6 @@
 """Chunk attribution forensics — sentence-level grounding analysis."""
+from typing import Literal
+
 import nltk
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -68,6 +70,7 @@ def analyze_sentences_attribution(
         best_score = float(sims[best_idx])
         best_scores.append(best_score)
 
+        strength: Literal["strong", "weak", "unattributed"]
         if best_score > STRONG_THRESHOLD:
             strength = "strong"
             chunk_id: str | None = chunks[best_idx].chunk_id

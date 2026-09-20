@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from typing import Any
 
 
 def main() -> int:
@@ -41,7 +42,7 @@ def main() -> int:
         else f"openai:{ragvue.DEFAULT_MODEL}"
     )
 
-    output = {"configured_model": configured_model, "per_item": {}, "error": None}
+    output: dict[str, Any] = {"configured_model": configured_model, "per_item": {}, "error": None}
     try:
         for item in items:
             case_id = item["case_id"]

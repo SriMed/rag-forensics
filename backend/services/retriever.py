@@ -2,6 +2,8 @@
 import logging
 import os
 import random
+from collections.abc import Mapping
+from typing import Any, Literal, TypedDict, cast
 
 import chromadb
 from chromadb.api import ClientAPI
@@ -26,18 +28,29 @@ _CHROMA_PATH = "./data/chroma"
 _client: ClientAPI | None = None
 
 
-def _chunk_completeness(metadata: dict | None) -> dict[str, str]:
+class _Completeness(TypedDict):
+    completeness: Literal["complete", "truncated", "unknown"]
+    completeness_source: Literal["source", "caller", "unavailable"]
+
+
+_LEGACY_COMPLETENESS = _Completeness(completeness="unknown", completeness_source="unavailable")
+
+
+def _chunk_completeness(metadata: Mapping[str, Any] | None) -> _Completeness:
     """Read authoritative/caller metadata, falling back safely for legacy collections."""
     metadata = metadata or {}
     value = metadata.get("chunk_completeness", "unknown")
     source = metadata.get("chunk_completeness_source", "unavailable")
     if value not in {"complete", "truncated", "unknown"}:
-        return {"completeness": "unknown", "completeness_source": "unavailable"}
+        return _LEGACY_COMPLETENESS
     if source not in {"source", "caller", "unavailable"}:
-        return {"completeness": "unknown", "completeness_source": "unavailable"}
+        return _LEGACY_COMPLETENESS
     if (value == "unknown") != (source == "unavailable"):
-        return {"completeness": "unknown", "completeness_source": "unavailable"}
-    return {"completeness": value, "completeness_source": source}
+        return _LEGACY_COMPLETENESS
+    return _Completeness(
+        completeness=cast(Literal["complete", "truncated", "unknown"], value),
+        completeness_source=cast(Literal["source", "caller", "unavailable"], source),
+    )
 
 
 def _get_client() -> ClientAPI:
@@ -60,7 +73,11 @@ def available_domains() -> list[str]:
     return sorted(names & set(_DOMAINS))
 
 
-def _find_metadata(metadatas: list, example_id: str) -> dict | None:
+def _all_metadatas(collection: chromadb.Collection) -> list[Mapping[str, Any]]:
+    return list(collection.get(include=["metadatas"])["metadatas"] or [])
+
+
+def _find_metadata(metadatas: list[Mapping[str, Any]], example_id: str) -> Mapping[str, Any] | None:
     for meta in metadatas:
         if meta.get("example_id") == example_id:
             return meta
@@ -71,7 +88,7 @@ def get_random_example(domain: str) -> StoredExample:
     """Return a random example from the given domain collection."""
     collection = _get_collection(domain)
     result = collection.get(include=["metadatas", "documents"])
-    metadatas = result["metadatas"]
+    metadatas = result["metadatas"] or []
     documents = result["documents"]
 
     idx = random.randrange(len(metadatas))
@@ -79,8 +96,8 @@ def get_random_example(domain: str) -> StoredExample:
     text = documents[idx] if documents else ""
 
     return StoredExample(
-        example_id=meta["example_id"],
-        question=meta["question"],
+        example_id=str(meta["example_id"]),
+        question=str(meta["question"]),
         context_preview=text[:300],
     )
 
@@ -91,10 +108,10 @@ def _retrieve_chunks(question: str, collection: chromadb.Collection, top_k: int)
         n_results=top_k,
         include=["documents", "distances", "metadatas"],
     )
-    documents = query_result["documents"][0]
-    distances = query_result["distances"][0]
+    documents = (query_result["documents"] or [[]])[0]
+    distances = (query_result["distances"] or [[]])[0]
     chunk_ids = query_result["ids"][0]
-    metadatas = query_result.get("metadatas", [[]])[0] or [{} for _ in documents]
+    metadatas = (query_result.get("metadatas") or [[]])[0] or [{} for _ in documents]
 
     if not documents:
         return []
@@ -121,12 +138,15 @@ def _retrieve_with_embeddings(
         n_results=top_k,
         include=["documents", "distances", "embeddings", "metadatas"],
     )
-    documents = query_result["documents"][0]
-    distances = query_result["distances"][0]
+    documents = (query_result["documents"] or [[]])[0]
+    distances = (query_result["distances"] or [[]])[0]
     chunk_ids = query_result["ids"][0]
-    metadatas = query_result.get("metadatas", [[]])[0] or [{} for _ in documents]
-    # embeddings[0] is a numpy ndarray of shape (n_results, dim)
-    raw_chunk_embeddings = query_result["embeddings"][0]
+    metadatas = (query_result.get("metadatas") or [[]])[0] or [{} for _ in documents]
+    # embeddings[0] is a numpy ndarray of shape (n_results, dim); never truth-test it.
+    embeddings = query_result["embeddings"]
+    if embeddings is None:
+        raise ValueError("Chroma query returned no embeddings")
+    raw_chunk_embeddings = embeddings[0]
 
     if not documents:
         return [], [], []
@@ -145,15 +165,17 @@ def _retrieve_with_embeddings(
     chunks = [chunks[i] for i in order]
     chunk_embeddings = [list(raw_chunk_embeddings[i]) for i in order]
 
-    query_embedding = list(collection._embedding_function([question])[0])
+    embedding_function = collection._embedding_function
+    if embedding_function is None:
+        raise ValueError("Collection has no embedding function")
+    query_embedding = list(embedding_function([question])[0])
     return chunks, query_embedding, chunk_embeddings
 
 
 def retrieve(example_id: str, domain: str, top_k: int = 5) -> list[RetrievedChunk]:
     """Return up to top_k chunks most similar to the example's question, ordered by score desc."""
     collection = _get_collection(domain)
-    metadatas = collection.get(include=["metadatas"])["metadatas"]
-    meta = _find_metadata(metadatas, example_id)
+    meta = _find_metadata(_all_metadatas(collection), example_id)
     if meta is None:
         return []
     return _retrieve_chunks(meta["question"], collection, top_k)
@@ -167,8 +189,7 @@ def retrieve_for_example(example_id: str) -> tuple[str, RetrievalResult]:
     for domain in _DOMAINS:
         try:
             collection = _get_collection(domain)
-            metadatas = collection.get(include=["metadatas"])["metadatas"]
-            meta = _find_metadata(metadatas, example_id)
+            meta = _find_metadata(_all_metadatas(collection), example_id)
             if meta is None:
                 logger.debug("example_id=%s not found in domain=%s", example_id, domain)
                 continue
@@ -194,6 +215,5 @@ def retrieve_for_example(example_id: str) -> tuple[str, RetrievalResult]:
 def get_reference_answer(example_id: str, domain: str) -> str:
     """Return the ground-truth answer for the given example_id."""
     collection = _get_collection(domain)
-    metadatas = collection.get(include=["metadatas"])["metadatas"]
-    meta = _find_metadata(metadatas, example_id)
-    return meta.get("answer", "") if meta else ""
+    meta = _find_metadata(_all_metadatas(collection), example_id)
+    return str(meta.get("answer", "")) if meta else ""

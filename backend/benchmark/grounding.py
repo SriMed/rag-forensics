@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping, Sequence
-from typing import Protocol
+from typing import Literal, Protocol, cast
 
 import numpy as np
 from sklearn.metrics import average_precision_score, roc_auc_score
@@ -116,7 +116,7 @@ class FixtureEntailmentVerifier:
                 "neutral": 1.0 - float(value),
                 "contradiction": 0.0,
             }
-        label = max(probabilities, key=probabilities.get)
+        label = cast(Literal["entailment", "neutral", "contradiction"], max(probabilities, key=lambda name: probabilities[name]))
         return NLIVerifierScores(**probabilities, label=label)
 
 
@@ -145,7 +145,7 @@ class CrossEncoderNLIVerifier:
         probabilities = normalize_nli_scores(logits, id2label)
         return NLIVerifierScores(
             **probabilities,
-            label=max(probabilities, key=probabilities.get),
+            label=cast(Literal["entailment", "neutral", "contradiction"], max(probabilities, key=lambda name: probabilities[name])),
         )
 
 
@@ -408,7 +408,7 @@ def _verification(
     evidence: EvidenceCandidate,
     score: float | None,
     threshold: float,
-    status: str = "ok",
+    status: Literal["ok", "no_evidence", "verifier_error"] = "ok",
     error: str | None = None,
     nli_scores: NLIVerifierScores | None = None,
 ) -> ClaimVerification:

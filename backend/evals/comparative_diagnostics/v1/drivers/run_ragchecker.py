@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from typing import Any
 
 
 def main() -> int:
@@ -37,7 +38,7 @@ def main() -> int:
 
     checker = RAGChecker(extractor_name=args.model, checker_name=args.model, batch_size_extractor=1, batch_size_checker=1)
 
-    output = {"per_item": {}, "overall": None, "error": None}
+    output: dict[str, Any] = {"per_item": {}, "overall": None, "error": None}
     try:
         checker.evaluate(results, metrics=["faithfulness"])
         output["overall"] = results.metrics

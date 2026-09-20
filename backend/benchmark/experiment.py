@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Sequence
+from typing import cast
 
 import numpy as np
 
@@ -33,7 +34,7 @@ def _calibration_inputs(
         if prediction.unsupported_score is not None
     ]
     return (
-        [1.0 - float(item.unsupported_score) for item in usable],
+        [1.0 - cast(float, item.unsupported_score) for item in usable],
         [item.gold_unsupported for item in usable],
     )
 

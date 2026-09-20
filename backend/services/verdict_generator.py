@@ -16,6 +16,7 @@ from models import (
     HedgingMismatchMetrics,
     QueryCorpusFitMetrics,
     RetrievalDistributionMetrics,
+    SignalReliability,
 )
 from prompts.verdict_prompts import RANKED_SIGNALS_PROMPT
 from services.llm import LLMError, complete
@@ -31,14 +32,14 @@ class RankedSignal:
     name: str
     priority_score: float  # heuristic 0.0–1.0 index; not a probability or calibrated severity
     description: str
-    reliability: str
+    reliability: SignalReliability
 
 
 @dataclass(frozen=True)
 class VerdictObservation:
     signal_name: str
     description: str
-    reliability: str
+    reliability: SignalReliability
 
 
 @dataclass(frozen=True)

@@ -24,9 +24,9 @@ def get_example_ids(domain: str, max_n: int) -> list[str]:
     client = chromadb.PersistentClient(path=_CHROMA_PATH)
     col = client.get_collection(name=domain)
     result = col.get(include=["metadatas"])
-    seen = {}
-    for meta in result["metadatas"]:
-        eid = meta.get("example_id")
+    seen: dict[str, bool] = {}
+    for meta in result["metadatas"] or []:
+        eid = str(meta.get("example_id") or "")
         if eid and eid not in seen:
             seen[eid] = True
             if len(seen) >= max_n:

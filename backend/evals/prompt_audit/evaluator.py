@@ -6,9 +6,9 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
-from models import RetrievedChunk
+from models import RetrievedChunk, SignalReliability
 from prompts.generation_prompts import GENERATION_SYSTEM_PROMPT, build_generation_prompt
 from prompts.hedging_prompts import CLAIM_EXTRACTION_PROMPT, ENTAILMENT_PROMPT
 from prompts.query_fit_prompts import build_question_generation_prompt
@@ -133,7 +133,7 @@ def render_case(case: dict[str, Any]) -> RenderedCase:
             name = next((value for key, value in signal_names.items() if key in description), None)
             if name is None:
                 raise ValueError(f"unmapped frozen verdict signal: {line}")
-            signals.append(RankedSignal(name, float(metadata.group(1)), description, metadata.group(2)))
+            signals.append(RankedSignal(name, float(metadata.group(1)), description, cast(SignalReliability, metadata.group(2))))
         reasoning = build_verdict_reasoning(signals)
         prompt = RANKED_SIGNALS_PROMPT.format(
             reasoning_json=json.dumps(reasoning_payload(reasoning), indent=2)

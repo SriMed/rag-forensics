@@ -20,6 +20,7 @@ import argparse
 import json
 import subprocess
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # backend/
@@ -135,7 +136,7 @@ def run_ragvue(records) -> dict[str, cd.SystemDiagnosticRecord]:
     return out
 
 
-def infer_stratum(systems: dict[str, cd.SystemDiagnosticRecord]) -> str:
+def infer_stratum(systems: Mapping[cd.SystemName, cd.SystemDiagnosticRecord]) -> str:
     availabilities = {name: r.native.availability for name, r in systems.items()}
     if any(a in ("failed", "missing", "unavailable") for a in availabilities.values()) and any(
         a == "healthy" for a in availabilities.values()
@@ -161,7 +162,7 @@ def main() -> int:
 
     cases = []
     for record in records:
-        systems = {
+        systems: dict[cd.SystemName, cd.SystemDiagnosticRecord] = {
             "rag_forensics": rag_forensics[record.example_id],
             "ragchecker": ragchecker[record.example_id],
             "ragvue": ragvue[record.example_id],

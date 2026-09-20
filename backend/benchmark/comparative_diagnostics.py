@@ -126,7 +126,7 @@ class ComparativeCase(BaseModel):
     dataset: Literal["ragbench", "ragtruth"]
     domain: str
     dataset_revision: str
-    stratum: Literal[DECLARED_STRATA]
+    stratum: Literal[DECLARED_STRATA]  # type: ignore[valid-type]  # a tuple of literals; pydantic resolves it
     selection_rationale: str
     systems: dict[SystemName, SystemDiagnosticRecord]
     judgments: CaseJudgments
@@ -357,7 +357,7 @@ def map_ragvue_native(
     ]
     for m in failed_metrics:
         no_equivalent_fields.append(f"{m['name']} failed: {m['details']['error']}")
-    availability = "unavailable" if failed_metrics else "healthy"
+    availability: Literal["healthy", "unavailable"] = "unavailable" if failed_metrics else "healthy"
     supporting_observation = (
         "; ".join(f"{m['name']}={m['score']}" for m in healthy_metrics) or None
     )

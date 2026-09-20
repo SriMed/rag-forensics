@@ -223,18 +223,21 @@ class CustomAnalyzeRequest(BaseModel):
         return v
 
 
+SignalReliability = Literal["unvalidated", "partially_calibrated", "model_judged"]
+
+
 class VerdictSignal(BaseModel):
     name: str
     priority_score: float
     description: str
     score_kind: Literal["heuristic_priority"] = "heuristic_priority"
-    reliability: Literal["unvalidated", "partially_calibrated", "model_judged"]
+    reliability: SignalReliability
 
 
 class VerdictObservation(BaseModel):
     signal_name: str
     description: str
-    reliability: Literal["unvalidated", "partially_calibrated", "model_judged"]
+    reliability: SignalReliability
 
 
 class VerdictHypothesis(BaseModel):
