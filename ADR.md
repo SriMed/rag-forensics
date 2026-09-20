@@ -645,3 +645,29 @@ metadata but is not the recommended local setup.
 superseding ADR-012's reliance on the local-only `CLAUDE.md`. Model and download boundaries remain
 mocked in automated tests; database tests may use isolated temporary storage, as the bootstrap
 tests do, without modifying a developer's corpus.
+
+## ADR-048: Logs record operations, never caller content
+
+**Status:** Accepted
+**Issue:** #12
+
+ADR-043 requires that caller content leave the local process only for explicitly documented model
+providers. Logs are a second, easily overlooked exit: the backend defaulted to DEBUG, and the
+Anthropic SDK logs request payloads at DEBUG, so question, answer, and chunk text appeared in logs
+by default. This was confirmed with synthetic data and a mocked transport. Application log calls
+also included question text, claim text, and raw model output, and failure logging attached
+exception messages, which routinely echo their input (validation and provider errors do).
+
+The backend now defaults to INFO. The `anthropic` logger is pinned to WARNING alongside the other
+noisy third-party loggers, so SDK payloads stay out of logs even when the host configures root
+logging at DEBUG. Application logs carry identifiers, counts, lengths, statuses, and exception
+types, not content. Failures are logged through `services/failure_detail.py`, which emits the
+exception type and stack frames but neither the message nor any chained cause. The cost is that
+server logs no longer show why a failure occurred, only where; that is accepted for a tool that
+processes caller data, and a developer who needs messages can reproduce the failure locally.
+
+Regression tests enforce the policy: a subprocess test checks that a mocked SDK call does not reach
+the log in either root-logging mode, and per-module tests assert that marker strings from
+questions, claims, model output, and exception messages never appear in captured logs, even at
+DEBUG. New log calls that include caller-derived values should be treated as violations of this
+decision.
