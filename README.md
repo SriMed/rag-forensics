@@ -71,6 +71,10 @@ The API exposes two entry points:
 - `POST /example` runs the demonstration pipeline over a stored RAGBench example.
 - `POST /analyze/custom` accepts a caller-provided question, answer, and retrieved chunks.
 
+Two operational endpoints make no model calls: `GET /health` (liveness) and `GET /ready`, which
+returns 503 until `ANTHROPIC_API_KEY` is configured and reports whether the bundled RAGBench corpus
+has been bootstrapped. Server errors return a generic message; details are in the server logs.
+
 See [Methods and architecture](docs/reference/methods.md) and
 [integration documentation](docs/reference/api-integration.md) for the full contracts.
 
