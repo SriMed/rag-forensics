@@ -1,3 +1,8 @@
+import hashlib
+import json
+import os
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -7,6 +12,7 @@ from benchmark.grounding import (
     DeterministicClaimDecomposer,
     FixtureClaimDecomposer,
     FixtureEntailmentVerifier,
+    NLIVerifierScores,
     aggregate_claims,
     bootstrap_paired_difference,
     calculate_binary_metrics,
@@ -550,3 +556,124 @@ def test_oracle_cli_is_explicitly_diagnostic_and_pins_revisions():
     assert len(args.entailment_revision) == 40
     assert args.bootstrap_iterations == 2000
     assert args.entailment_threshold == pytest.approx(0.42)
+
+
+# ---------------------------------------------------------------------------
+# Characterization: pins run_grounding_methods' exact output so it can be refactored safely.
+# Fakes are pure functions of their input text, so the run is deterministic and offline.
+# Regenerate the golden file only for an intentional behavior change:
+#   UPDATE_GOLDEN=1 poetry run pytest tests/test_grounding_experiment.py -k characterization
+# ---------------------------------------------------------------------------
+
+_GOLDEN = Path(__file__).parent / "golden" / "grounding_methods.json"
+
+
+def _digest_floats(text: str, n: int) -> list[float]:
+    return [byte / 255.0 - 0.5 for byte in hashlib.sha256(text.encode()).digest()[:n]]
+
+
+class _HashEmbedder:
+    def encode(self, texts):
+        return np.array([_digest_floats(text, 8) for text in texts]).reshape(len(texts), 8)
+
+
+class _HashVerifier:
+    name = "hash-fixture"
+    revision = "1"
+
+    def score(self, claim, evidence):
+        if "boom" in claim.text:
+            raise RuntimeError("synthetic verifier failure")
+        entailment = _digest_floats(claim.text + "|" + evidence.sentence_key, 1)[0] + 0.5
+        rest = (1.0 - entailment) / 2
+        label = "entailment" if entailment >= 0.5 else "neutral"
+        return NLIVerifierScores(entailment=entailment, neutral=rest, contradiction=rest, label=label)
+
+
+def _characterization_records():
+    standard = adapt_ragbench_row(_row(), domain="finqa")
+    no_documents = adapt_ragbench_row(
+        _row(
+            id="example-empty", documents=[""], documents_sentences=[[]],
+            response="Nothing.", response_sentences=[["a", "Nothing."]],
+            sentence_support_information=[{
+                "response_sentence_key": "a", "fully_supported": True,
+                "supporting_sentence_keys": [], "explanation": "",
+            }],
+            unsupported_response_sentence_keys=[],
+        ),
+        domain="finqa",
+    )
+    multi = adapt_ragbench_row(
+        _row(
+            id="example-multi",
+            documents=["Sales grew. Margins shrank. Debt fell."],
+            documents_sentences=[[["0a", "Sales grew."], ["0b", "Margins shrank."], ["0c", "Debt fell."]]],
+            response="Sales grew. Margins shrank, but boom debt fell.",
+            response_sentences=[["a", "Sales grew."], ["b", "Margins shrank, but boom debt fell."]],
+            sentence_support_information=[
+                {"response_sentence_key": "a", "fully_supported": True,
+                 "supporting_sentence_keys": ["0a"], "explanation": ""},
+                {"response_sentence_key": "b", "fully_supported": False,
+                 "supporting_sentence_keys": ["0b"], "explanation": ""},
+            ],
+            unsupported_response_sentence_keys=["b"],
+        ),
+        domain="techqa",
+    )
+    return [standard, no_documents, multi]
+
+
+def _characterization_run():
+    records = _characterization_records()
+    runs = {}
+    for name, claim_threshold in (("shared_threshold", None), ("claim_threshold_override", 0.1)):
+        results = run_grounding_methods(
+            records,
+            embedding_model=_HashEmbedder(),
+            decomposer=DeterministicClaimDecomposer(),
+            entailment_verifier=_HashVerifier(),
+            similarity_threshold=0.3,
+            entailment_threshold=0.5,
+            claim_similarity_threshold=claim_threshold,
+        )
+        runs[name] = {
+            method: [p.model_dump(mode="json") for p in predictions]
+            for method, predictions in results.items()
+        }
+    return runs
+
+
+def _assert_close(actual, expected, path="$"):
+    if isinstance(expected, dict):
+        assert isinstance(actual, dict) and actual.keys() == expected.keys(), path
+        for key in expected:
+            _assert_close(actual[key], expected[key], f"{path}.{key}")
+    elif isinstance(expected, list):
+        assert isinstance(actual, list) and len(actual) == len(expected), path
+        for index, (a, e) in enumerate(zip(actual, expected)):
+            _assert_close(a, e, f"{path}[{index}]")
+    elif isinstance(expected, float):
+        assert actual == pytest.approx(expected, abs=1e-9), path
+    else:
+        assert actual == expected, path
+
+
+def test_run_grounding_methods_characterization():
+    actual = _characterization_run()
+    if os.environ.get("UPDATE_GOLDEN") == "1":
+        _GOLDEN.write_text(json.dumps(actual, indent=2, sort_keys=True) + "\n")
+    _assert_close(actual, json.loads(_GOLDEN.read_text()))
+
+
+def test_characterization_fixture_exercises_every_branch():
+    """Guards the golden file: it must cover skips, verifier errors, multi-claim, and both thresholds."""
+    runs = _characterization_run()
+    shared, override = runs["shared_threshold"], runs["claim_threshold_override"]
+    keys = {p["example_id"] for p in shared["b1_sentence_similarity"]}
+    assert keys == {"example-1", "example-multi"}  # the empty-document record is skipped
+    entailment = shared["b3_claim_entailment"]
+    assert any(c["status"] == "verifier_error" for p in entailment for c in p["claims"])
+    assert any(p["predicted_unsupported"] is None for p in entailment)
+    assert any(len(p["claims"]) > 1 for p in entailment)
+    assert shared["b2_claim_similarity"] != override["b2_claim_similarity"]

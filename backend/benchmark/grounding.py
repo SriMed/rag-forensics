@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from typing import Literal, Protocol, cast
 
 import numpy as np
@@ -431,6 +432,174 @@ def _verification(
     )
 
 
+@dataclass(frozen=True)
+class _Thresholds:
+    sentence_similarity: float
+    claim_similarity: float
+    entailment: float
+
+
+def _embed(embedding_model, texts: Sequence[str]) -> np.ndarray:
+    return np.asarray(embedding_model.encode(list(texts)), dtype=float)
+
+
+def _sentence_prediction(
+    record: RAGBenchEvaluationRecord,
+    sentence,
+    gold_unsupported: bool,
+    predicted_unsupported: bool | None,
+    unsupported_score: float | None,
+    claims: list[ClaimVerification],
+) -> GroundingSentencePrediction:
+    return GroundingSentencePrediction(
+        example_id=record.example_id,
+        domain=record.domain,
+        sentence_key=sentence.key,
+        sentence=sentence.text,
+        gold_unsupported=gold_unsupported,
+        predicted_unsupported=predicted_unsupported,
+        unsupported_score=unsupported_score,
+        claims=claims,
+    )
+
+
+def _aggregate_prediction(
+    record: RAGBenchEvaluationRecord,
+    sentence,
+    gold_unsupported: bool,
+    verifications: list[ClaimVerification],
+) -> GroundingSentencePrediction:
+    """Any unsupported claim makes the parent sentence unsupported; unevaluated claims are skipped."""
+    supported = aggregate_claims([item.predicted_supported for item in verifications])
+    support_scores = [item.support_score for item in verifications if item.support_score is not None]
+    return _sentence_prediction(
+        record,
+        sentence,
+        gold_unsupported,
+        not supported if supported is not None else None,
+        1.0 - min(support_scores) if support_scores else None,
+        verifications,
+    )
+
+
+def _baseline_predictions(
+    record: RAGBenchEvaluationRecord, sentence, gold_unsupported: bool
+) -> dict[str, GroundingSentencePrediction]:
+    return {
+        "b0_always_supported": _sentence_prediction(record, sentence, gold_unsupported, False, 0.0, []),
+        "b0_always_unsupported": _sentence_prediction(record, sentence, gold_unsupported, True, 1.0, []),
+    }
+
+
+def _sentence_similarity_prediction(
+    record: RAGBenchEvaluationRecord,
+    sentence,
+    gold_unsupported: bool,
+    sentence_embedding: np.ndarray,
+    evidence_embeddings: np.ndarray,
+    threshold: float,
+) -> GroundingSentencePrediction:
+    scores = cosine_similarity(sentence_embedding, evidence_embeddings)[0]
+    evidence = _candidate(record, scores)
+    claim = AtomicClaim(
+        claim_id=f"{sentence.key}.sentence",
+        parent_sentence_key=sentence.key,
+        text=sentence.text,
+    )
+    verification = _verification(claim, evidence, evidence.selection_score, threshold)
+    return _sentence_prediction(
+        record,
+        sentence,
+        gold_unsupported,
+        not bool(verification.predicted_supported),
+        1.0 - evidence.selection_score,
+        [verification],
+    )
+
+
+def _entailment_verification(
+    verifier: EntailmentVerifier,
+    claim: AtomicClaim,
+    evidence: EvidenceCandidate,
+    threshold: float,
+) -> ClaimVerification:
+    """A verifier failure is recorded as unevaluated, never as an unsupported verdict."""
+    try:
+        nli_scores = verifier.score(claim, evidence)
+        return _verification(claim, evidence, nli_scores.entailment, threshold, nli_scores=nli_scores)
+    except Exception as exc:
+        return _verification(
+            claim, evidence, None, threshold, status="verifier_error", error=str(exc)
+        )
+
+
+def _verify_claims(
+    record: RAGBenchEvaluationRecord,
+    claims: Sequence[AtomicClaim],
+    claim_embeddings: np.ndarray,
+    evidence_embeddings: np.ndarray,
+    verifier: EntailmentVerifier,
+    thresholds: _Thresholds,
+) -> tuple[list[ClaimVerification], list[ClaimVerification]]:
+    """Return (similarity verifications, entailment verifications), one of each per claim."""
+    similarity: list[ClaimVerification] = []
+    entailment: list[ClaimVerification] = []
+    for index, claim in enumerate(claims):
+        scores = cosine_similarity(claim_embeddings[index : index + 1], evidence_embeddings)[0]
+        evidence = _candidate(record, scores)
+        similarity.append(
+            _verification(claim, evidence, evidence.selection_score, thresholds.claim_similarity)
+        )
+        entailment.append(_entailment_verification(verifier, claim, evidence, thresholds.entailment))
+    return similarity, entailment
+
+
+def _run_record(
+    results: dict[str, list[GroundingSentencePrediction]],
+    record: RAGBenchEvaluationRecord,
+    embedding_model,
+    decomposer: ClaimDecomposer,
+    verifier: EntailmentVerifier,
+    thresholds: _Thresholds,
+) -> None:
+    """Append every method's prediction for each response sentence of one record."""
+    # The encode calls are ordered document sentences, response sentences, then claims.
+    evidence_embeddings = _embed(embedding_model, [s.text for s in record.document_sentences])
+    response_embeddings = _embed(embedding_model, [s.text for s in record.response_sentences])
+    claims_by_sentence = [
+        decomposer.decompose(sentence.key, sentence.text) for sentence in record.response_sentences
+    ]
+    claim_embeddings = _embed(
+        embedding_model, [claim.text for claims in claims_by_sentence for claim in claims]
+    )
+    claim_offset = 0
+    for index, (sentence, claims) in enumerate(zip(record.response_sentences, claims_by_sentence)):
+        gold = sentence.key in record.unsupported_response_sentence_keys
+        for method, prediction in _baseline_predictions(record, sentence, gold).items():
+            results[method].append(prediction)
+        results["b1_sentence_similarity"].append(
+            _sentence_similarity_prediction(
+                record,
+                sentence,
+                gold,
+                response_embeddings[index : index + 1],
+                evidence_embeddings,
+                thresholds.sentence_similarity,
+            )
+        )
+        similarity, entailment = _verify_claims(
+            record,
+            claims,
+            claim_embeddings[claim_offset : claim_offset + len(claims)],
+            evidence_embeddings,
+            verifier,
+            thresholds,
+        )
+        claim_offset += len(claims)
+        results["b2_claim_similarity"].append(_aggregate_prediction(record, sentence, gold, similarity))
+        results["b3_claim_entailment"].append(_aggregate_prediction(record, sentence, gold, entailment))
+
+
 def run_grounding_methods(
     records: Sequence[RAGBenchEvaluationRecord],
     embedding_model,
@@ -440,154 +609,16 @@ def run_grounding_methods(
     entailment_threshold: float,
     claim_similarity_threshold: float | None = None,
 ) -> dict[str, list[GroundingSentencePrediction]]:
-    results: dict[str, list[GroundingSentencePrediction]] = {
-        method: [] for method in METHODS
-    }
-    claim_threshold = (
-        similarity_threshold
-        if claim_similarity_threshold is None
-        else claim_similarity_threshold
+    results: dict[str, list[GroundingSentencePrediction]] = {method: [] for method in METHODS}
+    thresholds = _Thresholds(
+        sentence_similarity=similarity_threshold,
+        claim_similarity=(
+            similarity_threshold if claim_similarity_threshold is None else claim_similarity_threshold
+        ),
+        entailment=entailment_threshold,
     )
     for record in records:
         if not record.document_sentences:
             continue
-        evidence_embeddings = np.asarray(
-            embedding_model.encode(
-                [sentence.text for sentence in record.document_sentences]
-            ),
-            dtype=float,
-        )
-        response_embeddings = np.asarray(
-            embedding_model.encode(
-                [sentence.text for sentence in record.response_sentences]
-            ),
-            dtype=float,
-        )
-        claims_by_sentence = [
-            decomposer.decompose(sentence.key, sentence.text)
-            for sentence in record.response_sentences
-        ]
-        flattened_claims = [claim for claims in claims_by_sentence for claim in claims]
-        claim_embeddings = np.asarray(
-            embedding_model.encode([claim.text for claim in flattened_claims]),
-            dtype=float,
-        )
-        claim_offset = 0
-        for sentence_index, (sentence, claims) in enumerate(
-            zip(record.response_sentences, claims_by_sentence)
-        ):
-            gold = sentence.key in record.unsupported_response_sentence_keys
-            for method, prediction, score in (
-                ("b0_always_supported", False, 0.0),
-                ("b0_always_unsupported", True, 1.0),
-            ):
-                results[method].append(
-                    GroundingSentencePrediction(
-                        example_id=record.example_id,
-                        domain=record.domain,
-                        sentence_key=sentence.key,
-                        sentence=sentence.text,
-                        gold_unsupported=gold,
-                        predicted_unsupported=prediction,
-                        unsupported_score=score,
-                        claims=[],
-                    )
-                )
-
-            sentence_scores = cosine_similarity(
-                response_embeddings[sentence_index : sentence_index + 1],
-                evidence_embeddings,
-            )[0]
-            sentence_evidence = _candidate(record, sentence_scores)
-            sentence_claim = AtomicClaim(
-                claim_id=f"{sentence.key}.sentence",
-                parent_sentence_key=sentence.key,
-                text=sentence.text,
-            )
-            b1_verification = _verification(
-                sentence_claim,
-                sentence_evidence,
-                sentence_evidence.selection_score,
-                similarity_threshold,
-            )
-            results["b1_sentence_similarity"].append(
-                GroundingSentencePrediction(
-                    example_id=record.example_id,
-                    domain=record.domain,
-                    sentence_key=sentence.key,
-                    sentence=sentence.text,
-                    gold_unsupported=gold,
-                    predicted_unsupported=not bool(b1_verification.predicted_supported),
-                    unsupported_score=1.0 - sentence_evidence.selection_score,
-                    claims=[b1_verification],
-                )
-            )
-
-            similarity_verifications: list[ClaimVerification] = []
-            entailment_verifications: list[ClaimVerification] = []
-            for local_index, claim in enumerate(claims):
-                claim_scores = cosine_similarity(
-                    claim_embeddings[claim_offset + local_index : claim_offset + local_index + 1],
-                    evidence_embeddings,
-                )[0]
-                evidence = _candidate(record, claim_scores)
-                similarity_verifications.append(
-                    _verification(
-                        claim,
-                        evidence,
-                        evidence.selection_score,
-                        claim_threshold,
-                    )
-                )
-                try:
-                    nli_scores = entailment_verifier.score(claim, evidence)
-                    entailment_verifications.append(
-                        _verification(
-                            claim,
-                            evidence,
-                            nli_scores.entailment,
-                            entailment_threshold,
-                            nli_scores=nli_scores,
-                        )
-                    )
-                except Exception as exc:
-                    entailment_verifications.append(
-                        _verification(
-                            claim,
-                            evidence,
-                            None,
-                            entailment_threshold,
-                            status="verifier_error",
-                            error=str(exc),
-                        )
-                    )
-            claim_offset += len(claims)
-            for method, verifications in (
-                ("b2_claim_similarity", similarity_verifications),
-                ("b3_claim_entailment", entailment_verifications),
-            ):
-                supported = aggregate_claims(
-                    [item.predicted_supported for item in verifications]
-                )
-                support_scores = [
-                    item.support_score
-                    for item in verifications
-                    if item.support_score is not None
-                ]
-                results[method].append(
-                    GroundingSentencePrediction(
-                        example_id=record.example_id,
-                        domain=record.domain,
-                        sentence_key=sentence.key,
-                        sentence=sentence.text,
-                        gold_unsupported=gold,
-                        predicted_unsupported=(
-                            not supported if supported is not None else None
-                        ),
-                        unsupported_score=(
-                            1.0 - min(support_scores) if support_scores else None
-                        ),
-                        claims=verifications,
-                    )
-                )
+        _run_record(results, record, embedding_model, decomposer, entailment_verifier, thresholds)
     return results

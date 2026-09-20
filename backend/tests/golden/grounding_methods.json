@@ -1,0 +1,934 @@
+{
+  "claim_threshold_override": {
+    "b0_always_supported": [
+      {
+        "claims": [],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": false,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": false,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": false,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 0.0
+      }
+    ],
+    "b0_always_unsupported": [
+      {
+        "claims": [],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 1.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": true,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 1.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 1.0
+      }
+    ],
+    "b1_sentence_similarity": [
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.sentence",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million, but costs doubled."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.35895255750177124,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.35895255750177124,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": false,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.6410474424982288
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.sentence",
+              "parent_sentence_key": "a",
+              "text": "Sales grew."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 1.0,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": false,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "b.sentence",
+              "parent_sentence_key": "b",
+              "text": "Margins shrank, but boom debt fell."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": -0.0828399938081493,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": -0.0828399938081493,
+            "verifier_label": "dissimilar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 1.0828399938081492
+      }
+    ],
+    "b2_claim_similarity": [
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.07265490344836299,
+              "sentence_key": "0b",
+              "text": "Costs remained flat."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.07265490344836299,
+            "verifier_label": "dissimilar"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-1",
+              "parent_sentence_key": "a",
+              "text": "costs doubled."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.26389082667070424,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.26389082667070424,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.927345096551637
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Sales grew."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 1.0,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": false,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "b.claim-0",
+              "parent_sentence_key": "b",
+              "text": "Margins shrank"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.6072935624549214,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.6072935624549214,
+            "verifier_label": "similar"
+          },
+          {
+            "claim": {
+              "claim_id": "b.claim-1",
+              "parent_sentence_key": "b",
+              "text": "boom debt fell."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.08915694744113052,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.08915694744113052,
+            "verifier_label": "dissimilar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 0.9108430525588694
+      }
+    ],
+    "b3_claim_entailment": [
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.07265490344836299,
+              "sentence_key": "0b",
+              "text": "Costs remained flat."
+            },
+            "nli_scores": {
+              "contradiction": 0.26862745098039215,
+              "entailment": 0.4627450980392157,
+              "label": "neutral",
+              "neutral": 0.26862745098039215
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.4627450980392157,
+            "verifier_label": "neutral"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-1",
+              "parent_sentence_key": "a",
+              "text": "costs doubled."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.26389082667070424,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": {
+              "contradiction": 0.056862745098039236,
+              "entailment": 0.8862745098039215,
+              "label": "entailment",
+              "neutral": 0.056862745098039236
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.8862745098039215,
+            "verifier_label": "entailment"
+          }
+        ],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.5372549019607843
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Sales grew."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": {
+              "contradiction": 0.3529411764705882,
+              "entailment": 0.29411764705882354,
+              "label": "neutral",
+              "neutral": 0.3529411764705882
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.29411764705882354,
+            "verifier_label": "neutral"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": true,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.7058823529411764
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "b.claim-0",
+              "parent_sentence_key": "b",
+              "text": "Margins shrank"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.6072935624549214,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": {
+              "contradiction": 0.10588235294117648,
+              "entailment": 0.788235294117647,
+              "label": "entailment",
+              "neutral": 0.10588235294117648
+            },
+            "parent_sentence_key": "b",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.788235294117647,
+            "verifier_label": "entailment"
+          },
+          {
+            "claim": {
+              "claim_id": "b.claim-1",
+              "parent_sentence_key": "b",
+              "text": "boom debt fell."
+            },
+            "error": "synthetic verifier failure",
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.08915694744113052,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": null,
+            "status": "verifier_error",
+            "support_score": null,
+            "verifier_label": null
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": null,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 0.21176470588235297
+      }
+    ]
+  },
+  "shared_threshold": {
+    "b0_always_supported": [
+      {
+        "claims": [],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": false,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": false,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": false,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 0.0
+      }
+    ],
+    "b0_always_unsupported": [
+      {
+        "claims": [],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 1.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": true,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 1.0
+      },
+      {
+        "claims": [],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 1.0
+      }
+    ],
+    "b1_sentence_similarity": [
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.sentence",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million, but costs doubled."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.35895255750177124,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.35895255750177124,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": false,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.6410474424982288
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.sentence",
+              "parent_sentence_key": "a",
+              "text": "Sales grew."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 1.0,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": false,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "b.sentence",
+              "parent_sentence_key": "b",
+              "text": "Margins shrank, but boom debt fell."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": -0.0828399938081493,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": -0.0828399938081493,
+            "verifier_label": "dissimilar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 1.0828399938081492
+      }
+    ],
+    "b2_claim_similarity": [
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.07265490344836299,
+              "sentence_key": "0b",
+              "text": "Costs remained flat."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.07265490344836299,
+            "verifier_label": "dissimilar"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-1",
+              "parent_sentence_key": "a",
+              "text": "costs doubled."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.26389082667070424,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.26389082667070424,
+            "verifier_label": "dissimilar"
+          }
+        ],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.927345096551637
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Sales grew."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 1.0,
+            "verifier_label": "similar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": false,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.0
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "b.claim-0",
+              "parent_sentence_key": "b",
+              "text": "Margins shrank"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.6072935624549214,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.6072935624549214,
+            "verifier_label": "similar"
+          },
+          {
+            "claim": {
+              "claim_id": "b.claim-1",
+              "parent_sentence_key": "b",
+              "text": "boom debt fell."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.08915694744113052,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.08915694744113052,
+            "verifier_label": "dissimilar"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 0.9108430525588694
+      }
+    ],
+    "b3_claim_entailment": [
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Revenue rose to $20 million"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.07265490344836299,
+              "sentence_key": "0b",
+              "text": "Costs remained flat."
+            },
+            "nli_scores": {
+              "contradiction": 0.26862745098039215,
+              "entailment": 0.4627450980392157,
+              "label": "neutral",
+              "neutral": 0.26862745098039215
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.4627450980392157,
+            "verifier_label": "neutral"
+          },
+          {
+            "claim": {
+              "claim_id": "a.claim-1",
+              "parent_sentence_key": "a",
+              "text": "costs doubled."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.26389082667070424,
+              "sentence_key": "0a",
+              "text": "Revenue rose to $20 million."
+            },
+            "nli_scores": {
+              "contradiction": 0.056862745098039236,
+              "entailment": 0.8862745098039215,
+              "label": "entailment",
+              "neutral": 0.056862745098039236
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.8862745098039215,
+            "verifier_label": "entailment"
+          }
+        ],
+        "domain": "finqa",
+        "error_categories": [],
+        "example_id": "example-1",
+        "gold_unsupported": true,
+        "predicted_unsupported": true,
+        "sentence": "Revenue rose to $20 million, but costs doubled.",
+        "sentence_key": "a",
+        "unsupported_score": 0.5372549019607843
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "a.claim-0",
+              "parent_sentence_key": "a",
+              "text": "Sales grew."
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 1.0,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": {
+              "contradiction": 0.3529411764705882,
+              "entailment": 0.29411764705882354,
+              "label": "neutral",
+              "neutral": 0.3529411764705882
+            },
+            "parent_sentence_key": "a",
+            "predicted_supported": false,
+            "status": "ok",
+            "support_score": 0.29411764705882354,
+            "verifier_label": "neutral"
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": false,
+        "predicted_unsupported": true,
+        "sentence": "Sales grew.",
+        "sentence_key": "a",
+        "unsupported_score": 0.7058823529411764
+      },
+      {
+        "claims": [
+          {
+            "claim": {
+              "claim_id": "b.claim-0",
+              "parent_sentence_key": "b",
+              "text": "Margins shrank"
+            },
+            "error": null,
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.6072935624549214,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": {
+              "contradiction": 0.10588235294117648,
+              "entailment": 0.788235294117647,
+              "label": "entailment",
+              "neutral": 0.10588235294117648
+            },
+            "parent_sentence_key": "b",
+            "predicted_supported": true,
+            "status": "ok",
+            "support_score": 0.788235294117647,
+            "verifier_label": "entailment"
+          },
+          {
+            "claim": {
+              "claim_id": "b.claim-1",
+              "parent_sentence_key": "b",
+              "text": "boom debt fell."
+            },
+            "error": "synthetic verifier failure",
+            "evidence": {
+              "document_id": "document_0",
+              "selection_score": 0.08915694744113052,
+              "sentence_key": "0a",
+              "text": "Sales grew."
+            },
+            "nli_scores": null,
+            "parent_sentence_key": "b",
+            "predicted_supported": null,
+            "status": "verifier_error",
+            "support_score": null,
+            "verifier_label": null
+          }
+        ],
+        "domain": "techqa",
+        "error_categories": [],
+        "example_id": "example-multi",
+        "gold_unsupported": true,
+        "predicted_unsupported": null,
+        "sentence": "Margins shrank, but boom debt fell.",
+        "sentence_key": "b",
+        "unsupported_score": 0.21176470588235297
+      }
+    ]
+  }
+}
