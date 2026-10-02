@@ -1,8 +1,6 @@
 # Benchmarking and current evidence
 
-RAG Forensics uses label-preserving evaluation. The benchmark runner analyzes the dataset’s
-original question, documents, response, sentence boundaries, and labels. It does not retrieve a
-new context or generate a replacement answer.
+RAG Forensics uses label-preserving evaluation. The benchmark runner analyzes the dataset’s original question, documents, response, sentence boundaries, and labels. It does not retrieve a new context or generate a replacement answer.
 
 ## RAGBench baseline
 
@@ -18,8 +16,7 @@ poetry run python -m benchmark.cli \
   --output output/ragbench-techqa.json
 ```
 
-Reports preserve raw similarity, source candidates, sentence-support mappings, dataset
-configuration, skipped rows, timestamps, and aggregate confusion metrics.
+Reports preserve raw similarity, source candidates, sentence-support mappings, dataset configuration, skipped rows, timestamps, and aggregate confusion metrics.
 
 The first 100-example TechQA test run covered 946 sentences:
 
@@ -31,17 +28,13 @@ The first 100-example TechQA test run covered 946 sentences:
 | AUROC | 0.563 |
 | Coverage | 1.000 |
 
-An in-sample threshold sweep mostly improved recall by predicting nearly every sentence as
-unsupported. This established that the original `0.4` threshold was not a defensible standalone
-hallucination boundary.
+An in-sample threshold sweep mostly improved recall by predicting nearly every sentence as unsupported. This established that the original `0.4` threshold was not a defensible standalone hallucination boundary.
 
 ## Grounding-evaluator comparison
 
-For the motivation, a contradiction example, and how support judgments guide debugging, see
-[where the grounding evaluators fit](../explainers/how-rag-forensics-works.md#where-the-grounding-evaluators-fit).
+For the motivation, a contradiction example, and how support judgments guide debugging, see [where the grounding evaluators fit](../explainers/how-rag-forensics-works.md#where-the-grounding-evaluators-fit).
 
-The scientific runner evaluates constant baselines and three grounding evaluators through the
-same label-preserving interface. The internal keys remain unchanged for report compatibility:
+The scientific runner evaluates constant baselines and three grounding evaluators through the same label-preserving interface. The internal keys remain unchanged for report compatibility:
 
 - `b0_always_supported`;
 - `b0_always_unsupported`;
@@ -49,18 +42,11 @@ same label-preserving interface. The internal keys remain unchanged for report c
 - `b2_claim_similarity`;
 - `b3_claim_entailment`.
 
-The claim-similarity and claim-entailment evaluators use identical claims and evidence candidates.
-The claim-entailment evaluator preserves entailment, neutral, and
-contradiction probabilities rather than collapsing all non-entailment outcomes.
+The claim-similarity and claim-entailment evaluators use identical claims and evidence candidates. The claim-entailment evaluator preserves entailment, neutral, and contradiction probabilities rather than collapsing all non-entailment outcomes.
 
-More concretely, the claim-entailment evaluator splits a response sentence into claims, selects
-one candidate source sentence per claim using similarity, scores each pair with a pinned
-third-party pretrained NLI verifier, and aggregates the claim decisions back to the response
-sentence. RAG Forensics did not develop the verifier; the experiment evaluates whether the
-assembled method is valid for the diagnostic role assigned to it.
+More concretely, the claim-entailment evaluator splits a response sentence into claims, selects one candidate source sentence per claim using similarity, scores each pair with a pinned third-party pretrained NLI verifier, and aggregates the claim decisions back to the response sentence. RAG Forensics did not develop the verifier; the experiment evaluates whether the assembled method is valid for the diagnostic role assigned to it.
 
-RAGBench’s official validation split selects each threshold. The test split is evaluated with
-those frozen thresholds. Calibration and test example IDs are checked for overlap.
+RAGBench’s official validation split selects each threshold. The test split is evaluated with those frozen thresholds. Calibration and test example IDs are checked for overlap.
 
 ```bash
 cd backend
@@ -75,19 +61,16 @@ poetry run python -m benchmark.experiment_cli \
 
 The report includes:
 
-- per-domain and pooled confusion counts, precision, recall, F1, AUROC, AUPRC, prevalence, and
-  coverage;
+- per-domain and pooled confusion counts, precision, recall, F1, AUROC, AUPRC, prevalence, and coverage;
 - example-clustered 95% confidence intervals;
 - paired macro-F1 and macro-AUPRC intervals for claim entailment versus whole-sentence similarity;
 - claim-to-parent-sentence and evidence provenance;
 - raw verifier scores, failures, configuration, immutable data/model revisions, and code state;
-- false-positive and false-negative categories for numbers, negation, qualifiers, partial
-  support, multi-source labels, and contradiction.
+- false-positive and false-negative categories for numbers, negation, qualifiers, partial support, multi-source labels, and contradiction.
 
 ### Preliminary RAGBench result
 
-A seeded run sampled up to 100 validation and 100 test examples per domain. It retained 299
-records in each partition after one explicit skip and used 500 bootstrap iterations.
+A seeded run sampled up to 100 validation and 100 test examples per domain. It retained 299 records in each partition after one explicit skip and used 500 bootstrap iterations.
 
 | Held-out macro metric | Whole-sentence similarity | Claim similarity | Claim entailment |
 |---|---:|---:|---:|
@@ -101,15 +84,11 @@ Paired claim-entailment minus whole-sentence-similarity results:
 | Macro F1 | -0.022 | [-0.066, 0.025] |
 | Macro AUPRC | 0.032 | [-0.016, 0.123] |
 
-The predeclared success rule required claim entailment to improve both macro F1 and AUPRC, exclude no
-improvement on the primary paired interval, and improve consistently across domains. This run
-does not meet that rule. It is a mixed/null result, not evidence of superiority or inferiority.
-It remains a sampled experiment rather than a final full-corpus estimate.
+The predeclared success rule required claim entailment to improve both macro F1 and AUPRC, exclude no improvement on the primary paired interval, and improve consistently across domains. This run does not meet that rule. It is a mixed/null result, not evidence of superiority or inferiority. It remains a sampled experiment rather than a final full-corpus estimate.
 
 ## RAGTruth external validation
 
-RAGTruth uses character-level hallucination spans and heterogeneous source content. It does not
-provide RAGBench-style gold source-sentence attribution. The adapter therefore:
+RAGTruth uses character-level hallucination spans and heterogeneous source content. It does not provide RAGBench-style gold source-sentence attribution. The adapter therefore:
 
 - deterministically serializes source objects;
 - labels a response sentence unsupported when it overlaps an annotated span;
@@ -129,53 +108,38 @@ poetry run python -m benchmark.ragtruth_cli \
   --output output/ragtruth-grounding.json
 ```
 
-A 25-train/25-test adapter-validation run at RAGTruth commit
-`c103204b9ce28d6bbad859304bf30de72b8ed8fe` produced:
+A 25-train/25-test adapter-validation run at RAGTruth commit `c103204b9ce28d6bbad859304bf30de72b8ed8fe` produced:
 
 | Held-out macro metric | Whole-sentence similarity | Claim entailment |
 |---|---:|---:|
 | F1 | 0.093 | 0.256 |
 | AUPRC | 0.295 | 0.211 |
 
-Claim entailment improved F1 but reduced AUPRC and was inconsistent across QA, summarization, and
-data-to-text. Under the same decision rule this is mixed. The small sample and 100-bootstrap
-interval are runtime validation, not final estimates.
+Claim entailment improved F1 but reduced AUPRC and was inconsistent across QA, summarization, and data-to-text. Under the same decision rule this is mixed. The small sample and 100-bootstrap interval are runtime validation, not final estimates.
 
 ## What these benchmarks establish
 
-They establish that the evaluation pipeline preserves labels and provenance, prevents direct
-calibration/test overlap, reports uncertainty, and can expose a null result.
+They establish that the evaluation pipeline preserves labels and provenance, prevents direct calibration/test overlap, reports uncertainty, and can expose a null result.
 
 They do not establish:
 
 - that similarity or NLI proves factual grounding;
-- that an unsupported response was caused by retrieval depth, chunking, generation, or corpus
-  coverage;
+- that an unsupported response was caused by retrieval depth, chunking, generation, or corpus coverage;
 - that the deterministic clause splitter produces correct atomic claims;
 - that the sampled results generalize to the full datasets or production traffic.
 
 ## Oracle-evidence failure localization
 
-The implemented diagnostic compares selected evidence with RAGBench’s annotated supporting
-sentences. It is an analysis intervention, not a fourth deployable grounding method: labels supply
-the oracle evidence, so its output is not test-time classifier performance.
+The implemented diagnostic compares selected evidence with RAGBench’s annotated supporting sentences. It is an analysis intervention, not a fourth deployable grounding method: labels supply the oracle evidence, so its output is not test-time classifier performance.
 
-The primary population is response sentences marked fully supported with at least one concrete
-document-sentence key. Missing annotations and non-document support sentinels are excluded with
-explicit reason counts. Unsupported sentences are outside the primary comparison because the
-dataset does not identify a corresponding "correct negative evidence" sentence.
+The primary population is response sentences marked fully supported with at least one concrete document-sentence key. Missing annotations and non-document support sentinels are excluded with explicit reason counts. Unsupported sentences are outside the primary comparison because the dataset does not identify a corresponding "correct negative evidence" sentence.
 
-The paired conditions hold claim decomposition, NLI verifier and revision, and entailment
-threshold fixed:
+The paired conditions hold claim decomposition, NLI verifier and revision, and entailment threshold fixed:
 
-- **selected evidence:** the claim-entailment evaluator's top cosine-similarity evidence for each
-  claim;
-- **oracle evidence:** every annotated sentence is scored for every claim, with maximum entailment
-  used for the decision while all raw claim/evidence pairs remain in the report.
+- **selected evidence:** the claim-entailment evaluator's top cosine-similarity evidence for each claim;
+- **oracle evidence:** every annotated sentence is scored for every claim, with maximum entailment used for the decision while all raw claim/evidence pairs remain in the report.
 
-The primary outcome is the paired change in false-unsupported rate, with an example-clustered
-confidence interval. The report also preserves selected-evidence hit-at-1, claim scores,
-multi-source provenance, eligibility coverage, and verifier failures.
+The primary outcome is the paired change in false-unsupported rate, with an example-clustered confidence interval. The report also preserves selected-evidence hit-at-1, claim scores, multi-source provenance, eligibility coverage, and verifier failures.
 
 ```bash
 cd backend
@@ -188,32 +152,17 @@ poetry run python -m benchmark.oracle_evidence_cli \
   --output output/ragbench-oracle-evidence.json
 ```
 
-A material reduction supports evidence selection as a bottleneck for eligible supported
-sentences. Little or no reduction leaves verifier, decomposition, multi-sentence reasoning, and
-annotation-granularity failures unresolved. Heterogeneous results argue against a global
-bottleneck claim. The diagnostic cannot establish why unsupported sentences fail, causal
-responsibility for the full RAG pipeline, or production performance. See
-[Understanding the oracle-evidence experiment](../explainers/oracle-evidence.md) for a
-plain-language explanation.
+A material reduction supports evidence selection as a bottleneck for eligible supported sentences. Little or no reduction leaves verifier, decomposition, multi-sentence reasoning, and annotation-granularity failures unresolved. Heterogeneous results argue against a global bottleneck claim. The diagnostic cannot establish why unsupported sentences fail, causal responsibility for the full RAG pipeline, or production performance. See [Understanding the oracle-evidence experiment](../explainers/oracle-evidence.md) for a plain-language explanation.
 
 ### Seeded cross-domain result
 
-The entailment threshold (`0.0017914474`) was regenerated from 299 retained validation records
-sampled at up to 100 examples per domain with seed 42. The threshold was then frozen before the
-oracle diagnostic analyzed 299 retained test records at the same sampling limit. One FinQA test
-row was skipped because its annotation referenced an unknown document-sentence key.
+The entailment threshold (`0.0017914474`) was regenerated from 299 retained validation records sampled at up to 100 examples per domain with seed 42. The threshold was then frozen before the oracle diagnostic analyzed 299 retained test records at the same sampling limit. One FinQA test row was skipped because its annotation referenced an unknown document-sentence key.
 
-The threshold is a model-specific decision boundary, not a calibrated probability that a claim is
-supported. Its small absolute value is less important than the protocol: it was selected on the
-declared validation data and frozen before the test and oracle outcomes were examined.
+The threshold is a model-specific decision boundary, not a calibrated probability that a claim is supported. Its small absolute value is less important than the protocol: it was selected on the declared validation data and frozen before the test and oracle outcomes were examined.
 
-The test sample contained 224 fully supported response sentences. Of these, 188 had concrete
-annotated document evidence and were eligible; 36 used non-document support sentinels and were
-excluded. All 188 eligible sentences produced paired selected and oracle outcomes.
+The test sample contained 224 fully supported response sentences. Of these, 188 had concrete annotated document evidence and were eligible; 36 used non-document support sentinels and were excluded. All 188 eligible sentences produced paired selected and oracle outcomes.
 
-Selected evidence falsely rejected 85 of the 188 sentences, while oracle evidence falsely
-rejected 54. Annotated evidence corrected 37 previous false rejections but introduced 6 new ones,
-for a net reduction of 31.
+Selected evidence falsely rejected 85 of the 188 sentences, while oracle evidence falsely rejected 54. Annotated evidence corrected 37 previous false rejections but introduced 6 new ones, for a net reduction of 31.
 
 | Condition | False-unsupported rate |
 |---|---:|
@@ -221,9 +170,7 @@ for a net reduction of 31.
 | Annotated oracle evidence | 0.287 |
 | Paired oracle − selected difference | -0.165 |
 
-The example-clustered 95% interval for the paired difference was `[-0.230, -0.101]` with 2,000
-bootstrap iterations. At least one selected claim-level evidence candidate matched an annotated
-support sentence for 80.3% of eligible response sentences.
+The example-clustered 95% interval for the paired difference was `[-0.230, -0.101]` with 2,000 bootstrap iterations. At least one selected claim-level evidence candidate matched an annotated support sentence for 80.3% of eligible response sentences.
 
 | Stratum | Eligible sentences | Selected rate | Oracle rate | Difference |
 |---|---:|---:|---:|---:|
@@ -233,20 +180,11 @@ support sentence for 80.3% of eligible response sentences.
 | Single annotated source | 87 | 0.310 | 0.264 | -0.046 |
 | Multiple annotated sources | 101 | 0.574 | 0.307 | -0.267 |
 
-This result supports evidence selection as a meaningful bottleneck for the eligible supported
-sentences, especially where annotations identify multiple sources. It does not support evidence
-selection as the sole explanation: even with annotated evidence, 28.7% of eligible sentences were
-still falsely rejected. Claim decomposition, verifier behavior, multi-sentence reasoning, and
-annotation granularity therefore remain material competing explanations. The FinQA estimate is
-based on only 11 eligible sentences, and per-stratum differences do not have separate confidence
-intervals; their apparent heterogeneity is descriptive rather than conclusive.
+This result supports evidence selection as a meaningful bottleneck for the eligible supported sentences, especially where annotations identify multiple sources. It does not support evidence selection as the sole explanation: even with annotated evidence, 28.7% of eligible sentences were still falsely rejected. Claim decomposition, verifier behavior, multi-sentence reasoning, and annotation granularity therefore remain material competing explanations. The FinQA estimate is based on only 11 eligible sentences, and per-stratum differences do not have separate confidence intervals; their apparent heterogeneity is descriptive rather than conclusive.
 
 ## Next empirical program
 
-The decomposition-by-evidence experiment has completed a 39-sentence TechQA pilot; the full
-188-sentence, three-domain review remains an unreviewed draft. The protocol compares four conditions
-while holding the verifier, model revision, threshold, aggregation rule, and evaluation population
-fixed within each run:
+The decomposition-by-evidence experiment has completed a 39-sentence TechQA pilot; the full 188-sentence, three-domain review remains an unreviewed draft. The protocol compares four conditions while holding the verifier, model revision, threshold, aggregation rule, and evaluation population fixed within each run:
 
 | Condition | Claim decomposition | Evidence supplied to verifier |
 |---|---|---|
@@ -255,70 +193,23 @@ fixed within each run:
 | C | Frozen human-reviewed atomic claims | Similarity-selected evidence |
 | D | Frozen human-reviewed atomic claims | Annotated oracle evidence |
 
-The primary report should preserve paired outcomes and example-clustered uncertainty for each
-intervention and interaction. A frozen review of residual condition-D failures should distinguish
-verifier error, multi-sentence support, numerical or tabular reasoning, annotation-granularity
-mismatch, ambiguous labels, and undetermined cases. Human-reviewed claims and error categories are
-review artifacts, not ground truth. The frozen claim-review and residual-review files — including
-the reviewer's identity, the specific per-item decisions, and any reasoning notes — are kept
-private rather than published in this repository. What is public instead is the documented
-failure-pattern taxonomy that motivated the kinds of corrections reviewers make (see
-[the reviewer README](../../backend/evals/decomposition_evidence/v1/README.md#common-decomposition-failure-patterns)):
-enough for a reader to understand and evaluate the review *methodology*, without exposing any
-individual reviewer's specific calls.
+The primary report should preserve paired outcomes and example-clustered uncertainty for each intervention and interaction. A frozen review of residual condition-D failures should distinguish verifier error, multi-sentence support, numerical or tabular reasoning, annotation-granularity mismatch, ambiguous labels, and undetermined cases. Human-reviewed claims and error categories are review artifacts, not ground truth. The frozen claim-review and residual-review files — including the reviewer's identity, the specific per-item decisions, and any reasoning notes — are kept private rather than published in this repository. What is public instead is the documented failure-pattern taxonomy that motivated the kinds of corrections reviewers make (see [the reviewer README](../../backend/evals/decomposition_evidence/v1/README.md#common-decomposition-failure-patterns)): enough for a reader to understand and evaluate the review *methodology*, without exposing any individual reviewer's specific calls.
 
-The experiment should answer which intervention changes false-unsupported judgments and whether
-the two interventions interact. It should not claim production prevalence, a deployable oracle,
-or causal responsibility for a complete RAG pipeline. Swapping verifiers before this localization
-would confound component choice with the unresolved mechanism.
+The experiment should answer which intervention changes false-unsupported judgments and whether the two interventions interact. It should not claim production prevalence, a deployable oracle, or causal responsibility for a complete RAG pipeline. Swapping verifiers before this localization would confound component choice with the unresolved mechanism.
 
 ### Decomposition-by-evidence protocol
 
-**Interpretation constraint.** This design cannot isolate "decomposition quality" by itself.
-Replacing the deterministic clauses with reviewed claims can change claim count, which evidence
-is selected per claim, what the verifier receives, and the probability that all claims in a
-sentence pass aggregation — any of these, not atomicity accuracy alone, can move the C and D
-conditions. The C−A and D−B contrasts therefore measure the effect of substituting the reviewed
-claim representation on the assembled evaluator, not a clean atomicity effect. The primary report
-must accompany the factorial effects with: the reviewed-versus-accepted decomposition counts,
-claim-count distributions before and after review, the unchanged/rewritten rate, evidence-selection
-changes caused by reviewed claims, and aggregation exposure (how often a sentence's outcome
-depends on more than one claim passing). Without these, a reader could mistake an evaluator-level
-effect for a decomposition-accuracy effect. The pilot summary below includes mean claim counts,
-but the report schema does not yet expose the full set of representation-change diagnostics listed
-above alongside its condition rates and paired contrasts. See
-[Understanding the decomposition-by-evidence experiment](../explainers/decomposition-by-evidence.md)
-for why claim count moves the measured rate independent of correctness, and for a worked example of
-the atomicity test each reviewed claim has to pass.
+**Interpretation constraint.** This design cannot isolate "decomposition quality" by itself. Replacing the deterministic clauses with reviewed claims can change claim count, which evidence is selected per claim, what the verifier receives, and the probability that all claims in a sentence pass aggregation — any of these, not atomicity accuracy alone, can move the C and D conditions. The C−A and D−B contrasts therefore measure the effect of substituting the reviewed claim representation on the assembled evaluator, not a clean atomicity effect. The primary report must accompany the factorial effects with: the reviewed-versus-accepted decomposition counts, claim-count distributions before and after review, the unchanged/rewritten rate, evidence-selection changes caused by reviewed claims, and aggregation exposure (how often a sentence's outcome depends on more than one claim passing). Without these, a reader could mistake an evaluator-level effect for a decomposition-accuracy effect. The pilot summary below includes mean claim counts, but the report schema does not yet expose the full set of representation-change diagnostics listed above alongside its condition rates and paired contrasts. See [Understanding the decomposition-by-evidence experiment](../explainers/decomposition-by-evidence.md) for why claim count moves the measured rate independent of correctness, and for a worked example of the atomicity test each reviewed claim has to pass.
 
-Issue #29 implements this comparison as a blinded, gated two-stage workflow. The versioned
-`backend/evals/decomposition_evidence/v1/claim-review.json` packet contains the same 188 eligible
-sentences, their current deterministic clauses, original question, and response. It contains no
-selected evidence, annotated evidence, verifier scores, condition assignments, or downstream
-outcomes. The packet begins in `draft` state. A human reviewer must accept
-the proposed clauses or supply replacements for every sentence, identify themselves, record
-remaining uncertainties alongside a best executable decision, and freeze the artifact before any comparative run. The runner rejects
-drafts and population mismatches. Evidence appears only in a separate residual-review artifact
-created after the claim decomposition and primary factorial comparison are frozen.
+Issue #29 implements this comparison as a blinded, gated two-stage workflow. The versioned `backend/evals/decomposition_evidence/v1/claim-review.json` packet contains the same 188 eligible sentences, their current deterministic clauses, original question, and response. It contains no selected evidence, annotated evidence, verifier scores, condition assignments, or downstream outcomes. The packet begins in `draft` state. A human reviewer must accept the proposed clauses or supply replacements for every sentence, identify themselves, record remaining uncertainties alongside a best executable decision, and freeze the artifact before any comparative run. The runner rejects drafts and population mismatches. Evidence appears only in a separate residual-review artifact created after the claim decomposition and primary factorial comparison are frozen.
 
-The four conditions use the same retained records, pinned DeBERTa verifier revision, frozen
-entailment threshold (`0.0017914474026707317`), all-claims-supported aggregation, and seed. Reports
-preserve every claim, evidence candidate, score, unavailable verifier state, and sentence outcome.
-They report the four false-unsupported rates and example-clustered 95% intervals for B−A, C−A,
-D−C, D−B, and the difference-in-differences interaction `(D−C)−(B−A)`.
+The four conditions use the same retained records, pinned DeBERTa verifier revision, frozen entailment threshold (`0.0017914474026707317`), all-claims-supported aggregation, and seed. Reports preserve every claim, evidence candidate, score, unavailable verifier state, and sentence outcome. They report the four false-unsupported rates and example-clustered 95% intervals for B−A, C−A, D−C, D−B, and the difference-in-differences interaction `(D−C)−(B−A)`.
 
-Commands and field-level review instructions live beside the artifacts in
-[`backend/evals/decomposition_evidence/v1/README.md`](../../backend/evals/decomposition_evidence/v1/README.md).
-The full 188-item, three-domain `v1` packet described above remains an unreviewed draft; final
-rates and residual counts are not reported for it until it is frozen. After it is frozen, the run
-creates a second review packet containing only residual condition-D failures; each must receive
-one predeclared category or `undetermined` before the result is considered complete.
+Commands and field-level review instructions live beside the artifacts in [`backend/evals/decomposition_evidence/v1/README.md`](../../backend/evals/decomposition_evidence/v1/README.md). The full 188-item, three-domain `v1` packet described above remains an unreviewed draft; final rates and residual counts are not reported for it until it is frozen. After it is frozen, the run creates a second review packet containing only residual condition-D failures; each must receive one predeclared category or `undetermined` before the result is considered complete.
 
 ### TechQA pilot result
 
-A smaller, TechQA-only population was reviewed, frozen, and run to completion — see
-[`v1-techqa/README.md`](../../backend/evals/decomposition_evidence/v1-techqa/README.md) for why
-this population is TechQA-scoped rather than the full three-domain one. On 39 eligible sentences:
+A smaller, TechQA-only population was reviewed, frozen, and run to completion — see [`v1-techqa/README.md`](../../backend/evals/decomposition_evidence/v1-techqa/README.md) for why this population is TechQA-scoped rather than the full three-domain one. On 39 eligible sentences:
 
 | Condition | A (deterministic, selected) | B (deterministic, oracle) | C (reviewed, selected) | D (reviewed, oracle) |
 |---|---:|---:|---:|---:|
@@ -332,30 +223,10 @@ this population is TechQA-scoped rather than the full three-domain one. On 39 el
 | decomposition at oracle (D−B) | +0.154 | [−0.065, 0.346] |
 | interaction | +0.051 | [−0.182, 0.176] |
 
-Every interval includes zero — at n=39 this is not a statistically conclusive result in either
-direction. The reviewed-claim conditions (C, D) came out numerically *higher* than their
-deterministic counterparts, the opposite of the naive expectation, and not explained by claim
-count (mean claims per sentence went down under review, 1.38 → 1.10). Inspecting individual cases
-traced this to evidence selection and entailment scoring reacting to the reviewed claim text, not
-to aggregation exposure — see [Understanding the decomposition-by-evidence
-experiment](../explainers/decomposition-by-evidence.md) for the mechanism and a preliminary finding
-from the residual review. The residual review of the 15 sentences still false-unsupported under
-oracle evidence categorized 10 as `multi_sentence_support`, 4 as `ambiguous_label`, and 1 as
-`undetermined`; zero as `verifier_error`, numerical/tabular reasoning, or an annotation-granularity
-mismatch.
+Every interval includes zero — at n=39 this is not a statistically conclusive result in either direction. The reviewed-claim conditions (C, D) came out numerically *higher* than their deterministic counterparts, the opposite of the naive expectation, and not explained by claim count (mean claims per sentence went down under review, 1.38 → 1.10). Inspecting individual cases traced this to evidence selection and entailment scoring reacting to the reviewed claim text, not to aggregation exposure — see [Understanding the decomposition-by-evidence experiment](../explainers/decomposition-by-evidence.md) for the mechanism and a preliminary finding from the residual review. The residual review of the 15 sentences still false-unsupported under oracle evidence categorized 10 as `multi_sentence_support`, 4 as `ambiguous_label`, and 1 as `undetermined`; zero as `verifier_error`, numerical/tabular reasoning, or an annotation-granularity mismatch.
 
-The frozen claim review, the raw results, and the residual review's per-item reasoning are kept as
-private review artifacts and are not published in this repository (see the interpretation
-constraint above); the aggregate numbers here are the full extent of what this pilot publishes.
+The frozen claim review, the raw results, and the residual review's per-item reasoning are kept as private review artifacts and are not published in this repository (see the interpretation constraint above); the aggregate numbers here are the full extent of what this pilot publishes.
 
-A subsequent public case collection should select diverse examples from the committed public-data
-evaluations and preserve the input, observations, hypotheses, proposed test, intervention result,
-and retrospective interpretation. Its purpose is inspectability and counterexample discovery, not
-a representative incident taxonomy.
+A subsequent public case collection should select diverse examples from the committed public-data evaluations and preserve the input, observations, hypotheses, proposed test, intervention result, and retrospective interpretation. Its purpose is inspectability and counterexample discovery, not a representative incident taxonomy.
 
-Until authentic consumers are available, evaluation of the interactive record should focus on
-diagnostic validity: whether proposed tests actually distinguish their named hypotheses, whether
-retrospective evidence updates the record in the declared direction, whether causal language stays
-within the evidence, whether unavailable states remain unavailable, and whether displayed claims
-are traceable to observations and methods. A single-author review can exercise this protocol but
-must be labeled as such; it cannot establish usability or decision value for external users.
+Until authentic consumers are available, evaluation of the interactive record should focus on diagnostic validity: whether proposed tests actually distinguish their named hypotheses, whether retrospective evidence updates the record in the declared direction, whether causal language stays within the evidence, whether unavailable states remain unavailable, and whether displayed claims are traceable to observations and methods. A single-author review can exercise this protocol but must be labeled as such; it cannot establish usability or decision value for external users.

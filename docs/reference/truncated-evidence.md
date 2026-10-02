@@ -1,38 +1,22 @@
 # Truncated evidence in answer generation
 
-This reference reports a paired evaluation of generation from complete versus visibly
-truncated evidence. Its evidence boundary is narrow: three purposively selected pairs, four prompt
-conditions, two repetitions, and a Codex CLI proxy model. It is not a production-model evaluation
-or a failure-rate estimate.
+This reference reports a paired evaluation of generation from complete versus visibly truncated evidence. Its evidence boundary is narrow: three purposively selected pairs, four prompt conditions, two repetitions, and a Codex CLI proxy model. It is not a production-model evaluation or a failure-rate estimate.
 
 ## Decisive finding
 
-The current evidence-only generation prompt did not handle all forms of truncation alike. Across
-two repetitions per case, it extrapolated the repository-derived CovidQA fragment, abstained when
-the FinQA value needed for arithmetic was absent, and repeated the incomplete TechQA fragment.
-Therefore “truncated evidence” is distinct from ordinary insufficient context: a model can see
-enough semantic direction to complete a thought even while missing the exact ending.
+The current evidence-only generation prompt did not handle all forms of truncation alike. Across two repetitions per case, it extrapolated the repository-derived CovidQA fragment, abstained when the FinQA value needed for arithmetic was absent, and repeated the incomplete TechQA fragment. Therefore “truncated evidence” is distinct from ordinary insufficient context: a model can see enough semantic direction to complete a thought even while missing the exact ending.
 
-The hybrid alternative—terminal detection, explicit metadata, and a qualification instruction—made
-truncation explicit in all six truncated outputs. It did not strictly prevent completion: both
-CovidQA outputs still introduced `risk factor`, though they also stated that the supporting
-sentence was truncated and limited what could be concluded. All 24 complete-passage outputs across
-the four conditions remained useful on human review.
+The hybrid alternative—terminal detection, explicit metadata, and a qualification instruction—made truncation explicit in all six truncated outputs. It did not strictly prevent completion: both CovidQA outputs still introduced `risk factor`, though they also stated that the supporting sentence was truncated and limited what could be concluded. All 24 complete-passage outputs across the four conditions remained useful on human review.
 
 ## Protocol and exact results
 
-The versioned evaluation assets preserve the complete inputs, exact truncated inputs,
-transformations, source URLs or local embedding IDs, raw responses, deterministic lexical labels,
-and reviewer interpretation:
+The versioned evaluation assets preserve the complete inputs, exact truncated inputs, transformations, source URLs or local embedding IDs, raw responses, deterministic lexical labels, and reviewer interpretation:
 
 - [`cases.json`](../../backend/evals/truncated_evidence/v1/cases.json) — frozen inputs and provenance
 - [`proxy-results.json`](../../backend/evals/truncated_evidence/v1/proxy-results.json) — 48 raw outputs
-- [evaluation README](../../backend/evals/truncated_evidence/v1/README.md) — conditions, counts,
-  review semantics, limitations, and reproduction command
+- [evaluation README](../../backend/evals/truncated_evidence/v1/README.md) — conditions, counts, review semantics, limitations, and reproduction command
 
-The CovidQA complete counterpart comes from the original open-access paper; the stored Chroma
-passage ends exactly after `may be a risk`. FinQA and TechQA truncations are deterministic prefixes
-of exact repository-derived evidence already preserved by the prompt-audit dataset.
+The CovidQA complete counterpart comes from the original open-access paper; the stored Chroma passage ends exactly after `may be a risk`. FinQA and TechQA truncations are deterministic prefixes of exact repository-derived evidence already preserved by the prompt-audit dataset.
 
 ## What the alternatives establish
 
@@ -45,15 +29,9 @@ of exact repository-derived evidence already preserved by the prompt-audit datas
 
 ## Implications and update conditions
 
-These three pairs do not support a broad conclusion about generation prompts. They motivate
-preserving source-aware chunk-completeness metadata at ingestion, carrying it through
-`RetrievedChunk`, and giving generation a bounded contract for incomplete evidence. The terminal
-detector is suitable as a warning or fallback, not authoritative provenance. Evaluation with the
-exact production model and detector-specificity cases is required before generalizing the result.
+These three pairs do not support a broad conclusion about generation prompts. They motivate preserving source-aware chunk-completeness metadata at ingestion, carrying it through `RetrievedChunk`, and giving generation a bounded contract for incomplete evidence. The terminal detector is suitable as a warning or fallback, not authoritative provenance. Evaluation with the exact production model and detector-specificity cases is required before generalizing the result.
 
-Revisit this conclusion if production-model comparison does not reproduce the CovidQA behavior,
-if source-aware completeness cannot be recovered, or if a broader representative sample shows that
-the disclosure tradeoff materially reduces usefulness on complete evidence.
+Revisit this conclusion if production-model comparison does not reproduce the CovidQA behavior, if source-aware completeness cannot be recovered, or if a broader representative sample shows that the disclosure tradeoff materially reduces usefulness on complete evidence.
 
 ## Source-metadata contract
 
@@ -62,31 +40,14 @@ The resulting implementation uses explicit chunk metadata:
 - `completeness`: `complete`, `truncated`, or `unknown`;
 - `completeness_source`: `source`, `caller`, or `unavailable`.
 
-`unknown` must pair with `unavailable`; known states must have source or caller provenance. Existing
-Chroma records and custom requests without the new fields remain compatible and resolve to
-`unknown`/`unavailable`. Malformed stored metadata also fails closed to that unavailable state.
-Custom API clients may assert known completeness only with `caller` provenance.
+`unknown` must pair with `unavailable`; known states must have source or caller provenance. Existing Chroma records and custom requests without the new fields remain compatible and resolve to `unknown`/`unavailable`. Malformed stored metadata also fails closed to that unavailable state. Custom API clients may assert known completeness only with `caller` provenance.
 
-RAGBench provides already-formed document strings without original source-boundary metadata.
-Consequently, bootstrap records their completeness as unknown; terminal punctuation is never
-promoted to provenance. The heuristic used in the investigation flags headings, punctuation-free
-complete prose, scalar values, and serialized tables as possible truncation, demonstrating why it
-is suitable only as a warning or fallback.
+RAGBench provides already-formed document strings without original source-boundary metadata. Consequently, bootstrap records their completeness as unknown; terminal punctuation is never promoted to provenance. The heuristic used in the investigation flags headings, punctuation-free complete prose, scalar values, and serialized tables as possible truncation, demonstrating why it is suitable only as a warning or fallback.
 
-For source-known truncated chunks, the production prompt prohibits guessing the missing
-continuation and requires disclosure when the missing text prevents a complete answer. Unknown
-chunks are not described as truncated. The API returns `retrieved_chunk_details` so the state and
-provenance remain inspectable after analysis.
+For source-known truncated chunks, the production prompt prohibits guessing the missing continuation and requires disclosure when the missing text prevents a complete answer. Unknown chunks are not described as truncated. The API returns `retrieved_chunk_details` so the state and provenance remain inspectable after analysis.
 
 ### Exact production-model comparison
 
-The [v2 reviewed run](../../backend/evals/truncated_evidence/v2/README.md) used the exact
-`claude-haiku-4-5-20251001` model for 24 calls. Complete-evidence usefulness remained 6/6 in each
-condition. Truncation disclosure improved from 4/6 with the baseline prompt to 6/6 with the contract.
-Strict avoidance of the held-back phrase remained 4/6: both CovidQA contract responses supplied
-`risk factor`, but neither supplied the missing object and both disclosed that it was unavailable.
+The [v2 reviewed run](../../backend/evals/truncated_evidence/v2/README.md) used the exact `claude-haiku-4-5-20251001` model for 24 calls. Complete-evidence usefulness remained 6/6 in each condition. Truncation disclosure improved from 4/6 with the baseline prompt to 6/6 with the contract. Strict avoidance of the held-back phrase remained 4/6: both CovidQA contract responses supplied `risk factor`, but neither supplied the missing object and both disclosed that it was unavailable.
 
-No response-level lexical rejection is implemented. The hidden source continuation is unavailable
-at runtime, so a substring rule cannot reliably distinguish completion, paraphrase, negation, or a
-supported phrase elsewhere in the evidence. Strict enforcement would require a source-aware
-comparison boundary or a separately validated verifier.
+No response-level lexical rejection is implemented. The hidden source continuation is unavailable at runtime, so a substring rule cannot reliably distinguish completion, paraphrase, negation, or a supported phrase elsewhere in the evidence. Strict enforcement would require a source-aware comparison boundary or a separately validated verifier.
