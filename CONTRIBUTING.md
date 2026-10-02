@@ -38,4 +38,6 @@ Treat frozen evaluation inputs, human-review records, protocols, and committed r
 
 Use [CONTEXT.md](CONTEXT.md) for domain terminology and the [documentation guide](docs/README.md) to find the canonical page for a change. Update current contracts and examples when behavior changes. Architectural decisions belong in new entries in [ADR.md](ADR.md); preserve earlier entries and explicitly supersede them when necessary.
 
+Write Markdown prose without hard wraps: each paragraph, list item, and blockquote is one source line, separated from the next block by a single blank line. Leave code blocks and tables as they are. On 2026-10-02 every tracked Markdown file except the issue templates was reflowed to this style; that change, including in ADR.md, touched only line breaks and did not alter any record's wording.
+
 Do not commit API keys, environment files, generated indexes, model caches, or private review artifacts. Do not log caller prompts, answers, retrieved passages, or credentials in routine logs. Bootstrap and live smoke checks require an explicit decision to run because they download data or make paid model calls. Document which checks you actually ran and any remaining limitations.

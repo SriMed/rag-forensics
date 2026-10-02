@@ -1,6 +1,6 @@
 # RAG terms used in this project
 
-This page defines the retrieval-augmented generation (RAG) vocabulary used across the README and documentation, for readers who build software but have not worked with RAG evaluation. Project- specific terms for grounding experiments (claim, evidence, oracle-evidence condition, and so on) are defined in the [domain language](../../CONTEXT.md) instead.
+This page defines the retrieval-augmented generation (RAG) vocabulary used across the README and documentation, for readers who build software but have not worked with RAG evaluation. Project-specific terms for grounding experiments (claim, evidence, oracle-evidence condition, and so on) are defined in the [domain language](../../CONTEXT.md) instead.
 
 ## The pipeline
 
