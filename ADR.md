@@ -695,3 +695,26 @@ All type errors in the backend, including `benchmark/` and `evals/`, are now res
 a blocking CI step, superseding the informational status described in ADR-045. The changes in
 evaluation and benchmark code were annotations, casts, imports, and one variable rename, reviewed
 line by line to confirm no logic changed; the existing tests for that code pass unchanged.
+
+---
+
+## ADR-050: RAGAS scope is faithfulness and context utilization; ARES is not used
+
+**Status:** Accepted
+**Issue:** none (rationale confirmed by the project owner on 2026-10-02)
+
+The live analysis uses two reference-free RAGAS metrics: faithfulness and answer-conditioned
+context utilization (ADR-033). RAGAS metrics that require a reference answer, such as context
+recall and the reference-based context precision ADR-033 replaced, are excluded because
+`POST /analyze/custom` receives only a question, answer, and retrieved chunks; there is no
+reference answer to supply, and a placeholder would make the metric's judgment meaningless.
+
+[ARES](https://aclanthology.org/2024.naacl-long.20/) (Saad-Falcon et al.) is not used. It estimates
+system-level quality over a dataset by fine-tuning lightweight judges on synthetic data and
+correcting them with a human-labeled validation set (its documentation asks for at least 50 labeled
+examples). That setup does not fit a tool that analyzes one completed answer at a time with no
+labeled data from the caller. ARES remains a point of comparison in
+[related work](docs/reference/related-work.md).
+
+This ADR records rationale for choices already in effect. RAGAS answer relevancy was neither
+adopted nor evaluated; its absence is not a recorded, deliberate exclusion.

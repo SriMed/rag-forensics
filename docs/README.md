@@ -6,6 +6,11 @@ protocols, and reproducible commands.
 
 ## Explainers
 
+- [Frequently asked questions](explainers/faq.md) gives short answers about what the project is,
+  why it was built, why it proposes rather than runs follow-up tests, and how it relates to other
+  tools.
+- [RAG terms used in this project](explainers/rag-terms.md) defines the general RAG vocabulary
+  (retriever, chunk, embedding, faithfulness, and so on) for readers new to RAG evaluation.
 - [How RAG Forensics investigates an answer](explainers/how-rag-forensics-works.md) follows one
   example from retrieved passages through evidence candidates, competing hypotheses, follow-up
   tests, and why support checking needs evaluation beyond text similarity.
@@ -25,7 +30,8 @@ protocols, and reproducible commands.
   semantics, architecture, and limitations.
 - [Related work in RAG evaluation and debugging](reference/related-work.md) compares the project's
   contribution and evidence with diagnostic evaluators, interactive debuggers, and pipeline
-  optimizers while recording the limits of that comparison.
+  optimizers, including each system's inputs, outputs, hosting, and cost, while recording the
+  limits of that comparison.
 - [Benchmarking and current evidence](reference/benchmarks.md) records protocols, commands,
   empirical results, uncertainty, and open research questions.
 - [Custom API integration](reference/api-integration.md) describes the request and response

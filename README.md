@@ -177,6 +177,7 @@ protocol but no selected cases; see
 ## Documentation
 
 - [Documentation guide](docs/README.md) — the full map, organized by reader intent
+- [Frequently asked questions](docs/explainers/faq.md) and [RAG terms](docs/explainers/rag-terms.md)
 - [Local setup and verification](docs/reference/local-setup.md)
 - [Worked example of the investigation workflow](docs/explainers/how-rag-forensics-works.md)
 - [Methods, outputs, architecture, and limitations](docs/reference/methods.md)
