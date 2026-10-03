@@ -777,3 +777,14 @@ def test_fit_failure_logs_do_not_contain_exception_message(mocker, caplog):
             )
     assert "synthetic-caller-content" not in caplog.text
     assert "RuntimeError" in caplog.text
+
+
+# ---------------------------------------------------------------------------
+# Unavailable retrieval scores (#35): the entropy condition cannot fire
+# ---------------------------------------------------------------------------
+
+def test_missing_entropy_skips_entropy_condition_but_not_others():
+    from services.forensics.query_corpus_fit import _should_trigger
+
+    assert _should_trigger(0.5, 0.8, None, 0.1) is None
+    assert _should_trigger(0.5, 0.3, None, 0.1) == "context_utilization"

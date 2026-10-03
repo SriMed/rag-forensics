@@ -472,3 +472,27 @@ def test_render_recommendation_does_not_swallow_unexpected_errors():
     fake_client.messages.create.side_effect = RuntimeError("bug")
     with patch("services.llm.anthropic.Anthropic", return_value=fake_client), pytest.raises(RuntimeError):
         render_recommendation(reasoning)
+
+
+# ---------------------------------------------------------------------------
+# Unavailable retrieval scores (#35)
+# ---------------------------------------------------------------------------
+
+def test_unavailable_distribution_emits_no_score_derived_or_failure_signals():
+    unavailable = RetrievalDistributionMetrics(
+        status="unavailable", unavailable_reason="no scores", n_chunks=5,
+        score_gap=None, score_entropy=None, decay_rate=None, tail_mass=None, top_score=None,
+        normalized_entropy=None,
+    )
+    signals = rank_signals(
+        distribution=unavailable,
+        embedding=_embedding(),
+        faithfulness_score=0.9,
+        context_utilization_score=0.9,
+        attribution=_attribution(),
+        hedging_mismatch=_hedging(),
+        query_fit=_query_fit(),
+    )
+    names = {s.name for s in signals}
+    assert not names & {"ambiguous_retrieval", "noisy_context"}
+    assert not any(n.endswith("_unavailable") for n in names)

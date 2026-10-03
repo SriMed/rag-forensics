@@ -164,8 +164,10 @@ def rank_signals(
         ))
 
     # Ambiguous retrieval — normalize score_entropy by empirical p95 to 0–1
-    entropy_concern = min(max(distribution.normalized_entropy, 0.0), 1.0)
-    if entropy_concern > w.entropy_min_concern:
+    # Score-derived signals are skipped when the caller supplied no scores (#35); that is not a failure.
+    entropy = distribution.normalized_entropy if distribution.status == "ok" else None
+    entropy_concern = min(max(entropy, 0.0), 1.0) if entropy is not None else 0.0
+    if entropy is not None and entropy_concern > w.entropy_min_concern:
         signals.append(RankedSignal(
             name="ambiguous_retrieval",
             priority_score=entropy_concern,
@@ -211,7 +213,7 @@ def rank_signals(
         ))
 
     # Noisy context from high tail mass (only above corpus mean to reduce noise)
-    if distribution.tail_mass > w.tail_mass_threshold:
+    if distribution.status == "ok" and distribution.tail_mass is not None and distribution.tail_mass > w.tail_mass_threshold:
         tail_concern = min(distribution.tail_mass / w.tail_mass_p95, 1.0) * w.tail_mass_weight
         signals.append(RankedSignal(
             name="noisy_context",

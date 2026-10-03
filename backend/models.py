@@ -47,7 +47,8 @@ class StoredExample(BaseModel):
 class RetrievedChunk(BaseModel):
     chunk_id: str
     text: str
-    score: float = Field(ge=0.0, le=1.0)
+    # None when the retriever provides no comparable score (custom requests with score_semantics="unavailable").
+    score: float | None = Field(default=None, ge=0.0, le=1.0)
     completeness: Literal["complete", "truncated", "unknown"] = "unknown"
     completeness_source: Literal["source", "caller", "unavailable"] = "unavailable"
 
@@ -108,13 +109,16 @@ class ChunkAttributionMetrics(BaseModel):
 
 
 class RetrievalDistributionMetrics(BaseModel):
-    score_gap: float
-    score_entropy: float
+    # "unavailable" when the caller supplied no retrieval scores; every score-derived field is then None.
+    status: Literal["ok", "unavailable"] = "ok"
+    unavailable_reason: str | None = None
+    score_gap: float | None
+    score_entropy: float | None
     decay_rate: float | None  # None when exponential fit fails
-    tail_mass: float
-    top_score: float
+    tail_mass: float | None
+    top_score: float | None
     n_chunks: int
-    normalized_entropy: float = 0.0
+    normalized_entropy: float | None = 0.0
     interpretation: str = (
         "Distribution shape must be interpreted jointly with absolute relevance and score semantics."
     )
@@ -221,7 +225,7 @@ class CustomAnalyzeRequest(BaseModel):
     question: str = Field(max_length=MAX_CUSTOM_QUESTION_CHARS)
     answer: str = Field(max_length=MAX_CUSTOM_ANSWER_CHARS)
     chunks: list[CustomChunk] = Field(max_length=MAX_CUSTOM_CHUNKS)
-    score_semantics: Literal["normalized_similarity"]
+    score_semantics: Literal["normalized_similarity", "unavailable"]
 
     @field_validator("chunks")
     @classmethod
@@ -229,6 +233,15 @@ class CustomAnalyzeRequest(BaseModel):
         if not v:
             raise ValueError("chunks must not be empty")
         return v
+
+    @model_validator(mode="after")
+    def scores_match_semantics(self):
+        scored = [c.score is not None for c in self.chunks]
+        if self.score_semantics == "normalized_similarity" and not all(scored):
+            raise ValueError("normalized_similarity requires a score on every chunk")
+        if self.score_semantics == "unavailable" and any(scored):
+            raise ValueError("score_semantics 'unavailable' requires every chunk score to be null")
+        return self
 
 
 SignalReliability = Literal["unvalidated", "partially_calibrated", "model_judged"]

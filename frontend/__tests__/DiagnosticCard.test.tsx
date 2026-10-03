@@ -203,4 +203,26 @@ describe("DiagnosticCard", () => {
     expect(screen.getByText(/completeness: unknown/i)).toBeInTheDocument();
     expect(screen.getByText(/provenance: unavailable/i)).toBeInTheDocument();
   });
+  it("renders missing retrieval scores as not supplied instead of numbers", () => {
+    const unscored: AnalyzeResponse = {
+      ...BASE_RESPONSE,
+      retrieved_chunk_details: BASE_RESPONSE.retrieved_chunk_details.map((c) => ({ ...c, score: null })),
+      retrieval_distribution: {
+        status: "unavailable",
+        unavailable_reason: "The caller supplied no retrieval scores.",
+        score_gap: null,
+        score_entropy: null,
+        decay_rate: null,
+        tail_mass: null,
+        top_score: null,
+        n_chunks: 2,
+        normalized_entropy: null,
+        interpretation: "Interpret with absolute relevance.",
+      },
+    };
+    render(<DiagnosticCard response={unscored} />);
+    expect(screen.getAllByText(/score: not supplied/i)).toHaveLength(2);
+    expect(screen.getByText(/the caller supplied no retrieval scores/i)).toBeInTheDocument();
+    expect(screen.queryByText(/normalized entropy:/i)).not.toBeInTheDocument();
+  });
 });

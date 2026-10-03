@@ -35,11 +35,13 @@ print(response.json())
 |---|---|---|
 | `chunk_id` | string | Any unique identifier for the chunk in your system |
 | `text` | string | The raw text content of the chunk |
-| `score` | float (0–1) | Normalized similarity where higher means more relevant |
+| `score` | float (0–1) or `null` | Normalized similarity where higher means more relevant; `null` or omitted only when `score_semantics` is `unavailable` |
 | `completeness` | `complete`, `truncated`, or `unknown` | Whether the chunk ends at a known complete source boundary; defaults to `unknown` |
 | `completeness_source` | `caller` or `unavailable` | Provenance; known custom states require `caller`, while `unknown` requires `unavailable` |
 
 `score_semantics` is currently required to be `normalized_similarity`. BM25 values, distances, reranker logits, and vendor-specific scores must be converted to a meaningful 0–1 similarity scale before use. Distribution shape is not comparable across retrievers unless their score calibration is comparable.
+
+If your retrieval produces no comparable score, set `score_semantics` to `unavailable` and leave every `score` as `null` (or omit it). Don't send a placeholder such as `1.0` for every chunk: identical scores look like a maximally flat distribution and produce confident-looking but meaningless retrieval hypotheses. With `unavailable`, the response's `retrieval_distribution` has `status: "unavailable"`, an `unavailable_reason`, and `null` score fields; the score-derived signals (`ambiguous_retrieval`, `noisy_context`) and the entropy condition of the retrieved-context fit trigger are skipped, while every other analysis runs. Mixing scored and unscored chunks is rejected with HTTP 422. See [ADR-058](../../ADR.md#adr-058-custom-analysis-accepts-missing-retrieval-scores-instead-of-fabricated-ones).
 
 Completeness describes the source boundary, not whether the chunk contains enough evidence to answer the question. A complete but irrelevant chunk is still complete; a truncated chunk may still contain useful facts. Do not infer this field from terminal punctuation. Omit both fields when the source boundary is unavailable; the API will expose `unknown`/`unavailable`.
 

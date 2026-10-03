@@ -71,13 +71,16 @@ export interface RAGASMetricResult {
 }
 
 export interface RetrievalDistributionMetrics {
-  score_gap: number;
-  score_entropy: number;
+  /** "unavailable" when the caller supplied no retrieval scores; score-derived fields are then null. */
+  status?: "ok" | "unavailable";
+  unavailable_reason?: string | null;
+  score_gap: number | null;
+  score_entropy: number | null;
   decay_rate: number | null;
-  tail_mass: number;
-  top_score: number;
+  tail_mass: number | null;
+  top_score: number | null;
   n_chunks: number;
-  normalized_entropy: number;
+  normalized_entropy: number | null;
   interpretation: string;
 }
 
@@ -160,7 +163,7 @@ export interface AnalyzeResponse {
   retrieved_chunk_details: Array<{
     chunk_id: string;
     text: string;
-    score: number;
+    score: number | null;
     completeness: "complete" | "truncated" | "unknown";
     completeness_source: "source" | "caller" | "unavailable";
   }>;

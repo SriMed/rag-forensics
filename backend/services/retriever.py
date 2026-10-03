@@ -36,6 +36,13 @@ class _Completeness(TypedDict):
 _LEGACY_COMPLETENESS = _Completeness(completeness="unknown", completeness_source="unavailable")
 
 
+def _score(chunk: RetrievedChunk) -> float:
+    """The ChromaDB retriever always scores its chunks; None would be a retriever bug."""
+    if chunk.score is None:
+        raise ValueError(f"retriever produced chunk {chunk.chunk_id} without a score")
+    return chunk.score
+
+
 def _chunk_completeness(metadata: Mapping[str, Any] | None) -> _Completeness:
     """Read authoritative/caller metadata, falling back safely for legacy collections."""
     metadata = metadata or {}
@@ -125,7 +132,7 @@ def _retrieve_chunks(question: str, collection: chromadb.Collection, top_k: int)
         )
         for index, (chunk_id, text, distance) in enumerate(zip(chunk_ids, documents, distances))
     ]
-    chunks.sort(key=lambda c: c.score, reverse=True)
+    chunks.sort(key=_score, reverse=True)
     return chunks
 
 
@@ -161,7 +168,7 @@ def _retrieve_with_embeddings(
         for index, (chunk_id, text, distance) in enumerate(zip(chunk_ids, documents, distances))
     ]
     # Sort chunks and align chunk embeddings to the same order
-    order = sorted(range(len(chunks)), key=lambda i: chunks[i].score, reverse=True)
+    order = sorted(range(len(chunks)), key=lambda i: _score(chunks[i]), reverse=True)
     chunks = [chunks[i] for i in order]
     chunk_embeddings = [list(raw_chunk_embeddings[i]) for i in order]
 
@@ -199,7 +206,7 @@ def retrieve_for_example(example_id: str) -> tuple[str, RetrievalResult]:
             )
             if chunks:
                 logger.debug("found example_id=%s in domain=%s, scores=%s",
-                             example_id, domain, [round(c.score, 3) for c in chunks])
+                             example_id, domain, [round(_score(c), 3) for c in chunks])
                 return question, RetrievalResult(
                     chunks=chunks,
                     query_embedding=query_embedding,

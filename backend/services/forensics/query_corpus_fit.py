@@ -36,7 +36,7 @@ _UNTRIGGERED = QueryCorpusFitMetrics(
 def _should_trigger(
     query_isolation: float,
     context_utilization_score: float | None,
-    normalized_entropy: float,
+    normalized_entropy: float | None,
     faithfulness_score: float | None,
 ) -> TriggerReason | None:
     """Return the name of the first trigger condition that fired, or None."""
@@ -44,7 +44,7 @@ def _should_trigger(
         return "query_isolation"
     if context_utilization_score is not None and context_utilization_score < 0.5:
         return "context_utilization"
-    if normalized_entropy > 0.9 and faithfulness_score is not None and faithfulness_score < 0.5:
+    if normalized_entropy is not None and normalized_entropy > 0.9 and faithfulness_score is not None and faithfulness_score < 0.5:
         return "entropy_faithfulness"
     return None
 
@@ -203,7 +203,7 @@ def analyze_query_corpus_fit(
     chunk_embeddings: list[np.ndarray],
     query_isolation: float,
     context_utilization_score: float | None,
-    normalized_entropy: float,
+    normalized_entropy: float | None,
     faithfulness_score: float | None,
 ) -> QueryCorpusFitMetrics:
     """Generate questions the retrieved chunks answer well; classify observed retrieved-context fit.

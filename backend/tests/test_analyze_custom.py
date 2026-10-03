@@ -316,3 +316,51 @@ def test_custom_accepts_requests_at_the_size_limits(mocker):
     ]
     response = client.post("/analyze/custom", json=payload)
     assert response.status_code == 200
+
+
+# ---------------------------------------------------------------------------
+# Unavailable retrieval scores (#35)
+# ---------------------------------------------------------------------------
+
+_UNSCORED_REQUEST = {
+    **_VALID_REQUEST,
+    "score_semantics": "unavailable",
+    "chunks": [{"chunk_id": c["chunk_id"], "text": c["text"], "score": None} for c in _VALID_REQUEST["chunks"]],
+}
+
+
+def test_custom_unavailable_scores_returns_unavailable_distribution_and_no_score_signals(mocker):
+    _patch_services(mocker)
+    response = client.post("/analyze/custom", json=_UNSCORED_REQUEST)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["retrieval_distribution"]["status"] == "unavailable"
+    assert body["retrieval_distribution"]["normalized_entropy"] is None
+    assert all(c["score"] is None for c in body["retrieved_chunk_details"])
+    names = {s["name"] for s in body["verdict_signals"]}
+    assert not names & {"ambiguous_retrieval", "noisy_context"}
+
+
+def test_custom_unavailable_scores_may_omit_the_score_key(mocker):
+    _patch_services(mocker)
+    payload = {**_UNSCORED_REQUEST, "chunks": [{"chunk_id": "a", "text": "Refunds take 5 days."}]}
+    assert client.post("/analyze/custom", json=payload).status_code == 200
+
+
+def test_custom_unavailable_semantics_rejects_numeric_scores(mocker):
+    _patch_services(mocker)
+    payload = {**_VALID_REQUEST, "score_semantics": "unavailable"}
+    assert client.post("/analyze/custom", json=payload).status_code == 422
+
+
+def test_custom_normalized_semantics_rejects_missing_scores(mocker):
+    _patch_services(mocker)
+    payload = {**_UNSCORED_REQUEST, "score_semantics": "normalized_similarity"}
+    assert client.post("/analyze/custom", json=payload).status_code == 422
+
+
+def test_custom_normalized_semantics_rejects_mixed_scores(mocker):
+    _patch_services(mocker)
+    chunks = [_VALID_REQUEST["chunks"][0], {**_VALID_REQUEST["chunks"][1], "score": None}]
+    payload = {**_VALID_REQUEST, "chunks": chunks}
+    assert client.post("/analyze/custom", json=payload).status_code == 422

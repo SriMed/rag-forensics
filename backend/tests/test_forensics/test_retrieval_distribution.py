@@ -157,3 +157,23 @@ def test_all_float_metrics_are_floats():
 def test_n_chunks_is_int():
     result = analyze_retrieval_distribution(_chunks([0.91, 0.63, 0.61, 0.60, 0.58]))
     assert isinstance(result.n_chunks, int)
+
+
+# ---------------------------------------------------------------------------
+# Unavailable scores (#35)
+# ---------------------------------------------------------------------------
+
+def test_scored_chunks_report_ok_status():
+    result = analyze_retrieval_distribution(_chunks([0.9, 0.5]))
+    assert result.status == "ok"
+    assert result.unavailable_reason is None
+
+
+def test_chunks_without_scores_report_unavailable_instead_of_computing():
+    chunks = [RetrievedChunk(chunk_id=f"c{i}", text="t", score=None) for i in range(3)]
+    result = analyze_retrieval_distribution(chunks)
+    assert result.status == "unavailable"
+    assert result.unavailable_reason
+    assert result.n_chunks == 3
+    for field in ("score_gap", "score_entropy", "decay_rate", "tail_mass", "top_score", "normalized_entropy"):
+        assert getattr(result, field) is None

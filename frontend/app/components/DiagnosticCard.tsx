@@ -152,7 +152,7 @@ export default function DiagnosticCard({ response }: Props) {
               <li key={chunk.chunk_id} className="rounded border border-gray-100 p-3">
                 <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500">
                   <span className="font-mono font-semibold text-gray-700">{chunk.chunk_id}</span>
-                  <span>Score: {chunk.score.toFixed(2)}</span>
+                  <span>Score: {chunk.score === null ? "not supplied" : chunk.score.toFixed(2)}</span>
                   <span>Completeness: {chunk.completeness}</span>
                   <span>Provenance: {chunk.completeness_source}</span>
                 </div>
@@ -260,14 +260,20 @@ export default function DiagnosticCard({ response }: Props) {
           <span className="text-sm font-medium text-gray-700">
             Retrieval Distribution
           </span>
-          <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
-            <span>Normalized entropy: {retrieval_distribution.normalized_entropy.toFixed(2)}</span>
-            <span>Gap: {retrieval_distribution.score_gap.toFixed(2)}</span>
-            <span>Tail mass: {retrieval_distribution.tail_mass.toFixed(2)}</span>
-            <span>Decay: {retrieval_distribution.decay_rate?.toFixed(2) ?? "unavailable"}</span>
-            <span>Top: {retrieval_distribution.top_score.toFixed(2)}</span>
-            <span>Chunks: {retrieval_distribution.n_chunks}</span>
-          </div>
+          {retrieval_distribution.status === "unavailable" ? (
+            <p className="text-xs text-gray-500">
+              Not analyzed: {retrieval_distribution.unavailable_reason ?? "no retrieval scores were supplied."}
+            </p>
+          ) : (
+            <div className="grid grid-cols-3 gap-2 text-xs text-gray-500">
+              <span>Normalized entropy: {retrieval_distribution.normalized_entropy?.toFixed(2) ?? "unavailable"}</span>
+              <span>Gap: {retrieval_distribution.score_gap?.toFixed(2) ?? "unavailable"}</span>
+              <span>Tail mass: {retrieval_distribution.tail_mass?.toFixed(2) ?? "unavailable"}</span>
+              <span>Decay: {retrieval_distribution.decay_rate?.toFixed(2) ?? "unavailable"}</span>
+              <span>Top: {retrieval_distribution.top_score?.toFixed(2) ?? "unavailable"}</span>
+              <span>Chunks: {retrieval_distribution.n_chunks}</span>
+            </div>
+          )}
           <p className="text-[11px] text-gray-500">{retrieval_distribution.interpretation}</p>
         </div>
 

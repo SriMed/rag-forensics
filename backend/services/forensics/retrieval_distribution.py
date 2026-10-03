@@ -5,8 +5,16 @@ from scipy.optimize import OptimizeWarning, curve_fit
 
 from models import RetrievalDistributionMetrics, RetrievedChunk
 
+_NO_SCORES_REASON = "The caller supplied no retrieval scores, so the score distribution cannot be analyzed."
+
 
 def analyze_retrieval_distribution(chunks: list[RetrievedChunk]) -> RetrievalDistributionMetrics:
+    if any(c.score is None for c in chunks):
+        return RetrievalDistributionMetrics(
+            status="unavailable", unavailable_reason=_NO_SCORES_REASON, n_chunks=len(chunks),
+            score_gap=None, score_entropy=None, decay_rate=None, tail_mass=None, top_score=None,
+            normalized_entropy=None,
+        )
     scores = np.array([c.score for c in chunks], dtype=float)
     scores = np.sort(scores)[::-1]  # descending by score
     n = len(scores)
