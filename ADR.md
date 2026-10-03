@@ -465,3 +465,13 @@ The live analysis uses two reference-free RAGAS metrics: faithfulness and answer
 [ARES](https://aclanthology.org/2024.naacl-long.20/) (Saad-Falcon et al.) is not used. It estimates system-level quality over a dataset by fine-tuning lightweight judges on synthetic data and correcting them with a human-labeled validation set (its documentation asks for at least 50 labeled examples). That setup does not fit a tool that analyzes one completed answer at a time with no labeled data from the caller. ARES remains a point of comparison in [related work](docs/reference/related-work.md).
 
 This ADR records rationale for choices already in effect. RAGAS answer relevancy was neither adopted nor evaluated; its absence is not a recorded, deliberate exclusion.
+
+---
+
+## ADR-051: A compact, pinned NLI cross-encoder as the first claim-entailment verifier
+
+**Status:** Accepted **Issue:** #18 (rationale confirmed by the project owner on 2026-10-02)
+
+The claim-entailment evaluator uses [`cross-encoder/nli-deberta-v3-base`](https://huggingface.co/cross-encoder/nli-deberta-v3-base), pinned to revision `6c749ce3425cd33b46d187e45b92bbf96ee12ec7`. Issue #18 asked only for "a compact NLI or cross-encoder verifier"; this model was chosen as a reasonable, standard first verifier, not selected by comparing candidates. The reasons were that it is a widely used sentence-pair NLI model built on DeBERTa-v3-base and trained on SNLI and MultiNLI (its model card reports 92.38% accuracy on SNLI test and 90.04% on MNLI mismatched); it returns separate contradiction, entailment, and neutral scores, so the evaluator can keep contradiction distinct from missing support; and it runs locally and deterministically with no API calls, which keeps benchmark runs cheap and reproducible when the revision is pinned.
+
+Those benchmark accuracies come from general-domain sentence pairs and do not establish reliability on RAG answers, which involve technical, numerical, and multi-sentence evidence. Whether the verifier is suitable for this role is what the grounding-evaluator comparison and oracle-evidence experiments test (see [Benchmarking and current evidence](docs/reference/benchmarks.md)), and their results so far are mixed. The verifier is deliberately held fixed while those experiments localize where errors arise, because swapping it at the same time would confound verifier choice with the unresolved mechanism. A search for alternative verifiers remains an open follow-up.
