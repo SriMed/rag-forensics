@@ -44,3 +44,15 @@ The two intervention strata test an intervention on the grounding *evaluator* (s
 Strata are filled in the order of the table above, narrowest first, so broad strata can't use up the rare cases. Within a stratum, cases not already selected are sorted by case ID and drawn with `random.Random(30)`; a stratum with fewer eligible cases than its target takes all of them. Each case is selected into one stratum only. Targets sum to 20. Hand-picking is not used for any stratum, including the two the protocol allows it for.
 
 The manifest records, for every stratum, the number of eligible cases, the number selected, and every exclusion with its reason, so purposive coverage can't be read as prevalence.
+
+## Amendment v1.1 (2026-10-03, after seeing aggregate counts)
+
+This amendment was made **after** the v1 rules had been applied to the pool run and their aggregate counts seen. It is disclosed here, in ADR-057, and in the manifest's `selection.rules` field, which names the rules version.
+
+**What v1 produced.** No pool case was eligible for `counterexample_to_preferred_interpretation`. The v1 draw selected 17 cases: 2 single-system failure, 0 counterexample, 2 intervention-discriminates, 2 intervention-fails, 3 component disagreement, 0 evidence attribution, 3 qualifier, 2 agree-labels-contradict, 3 agree-labels-support. None was excluded.
+
+**Why.** Every one of the 98 pool cases has the dataset label `fully_supported`, because the pool is the parent examples of #29's supported-sentence population. That property should have been checked before freezing v1. RAG Forensics flags 12 of the cases, but at least one other system also flags each of them, so v1's requirement that every other system agree with the label could never be met.
+
+**The change.** A case is eligible for `counterexample_to_preferred_interpretation` when RAG Forensics' flag contradicts the dataset label, whatever the other systems say. No other rule, target, order or seed changed. Because counterexamples are filled second, the seeded draws for the strata after it can differ from v1's.
+
+**What the pool cannot show.** With no unsupported-labeled responses, `systems_agree_labels_support` always means every system said supported, and `systems_agree_labels_contradict` always means every system flagged a response the dataset calls supported. Neither stratum contains a case where systems correctly catch an unsupported response.

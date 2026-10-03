@@ -17,6 +17,8 @@ from typing import Any, Literal
 import benchmark.comparative_diagnostics as cd
 from benchmark.comparative_diagnostics import BATCH_CRASH_PREFIX
 
+RULES_VERSION = "v1.1"  # v1.1 relaxed the counterexample rule; see STRATUM-RULES.md "Amendment v1.1"
+
 Direction = Literal["retrieval", "generation"]
 FLAGGED_SYSTEMS: tuple[cd.SystemName, ...] = ("rag_forensics", "ragas_baseline", "ragchecker", "ragvue")
 
@@ -155,8 +157,7 @@ def eligible_strata(entry: Entry, record: Any, oracle_predictions: Iterable[Any]
         agrees = next(iter(flags.values())) == label_unsupported
         strata.add("systems_agree_labels_support" if agrees else "systems_agree_labels_contradict")
     rf_flag = flags.get("rag_forensics")
-    others = [f for s, f in flags.items() if s != "rag_forensics"]
-    if rf_flag is not None and rf_flag != label_unsupported and others and all(f == label_unsupported for f in others):
+    if rf_flag is not None and rf_flag != label_unsupported:
         strata.add("counterexample_to_preferred_interpretation")
     rf_dir, rv_dir = rag_forensics_direction(entry), ragvue_direction(entry)
     if rf_dir and rv_dir and rf_dir != rv_dir:
@@ -246,7 +247,7 @@ def build_case_set(
         population_sha256=cd.make_population_sha256([c for c, _ in selected]),
         cases=cases,
         selection=cd.SelectionRecord(
-            rules=rules,
+            rules=f"{rules} (rules {RULES_VERSION})",
             seed=SELECTION_SEED,
             pool_size=len(pool),
             pool_population_sha256=cd.make_population_sha256(list(pool)),

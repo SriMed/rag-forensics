@@ -138,12 +138,16 @@ class TestEligibleStrata:
         strata = cs.eligible_strata(_entry(), _record(domain=domain, response=response), [])
         assert ("qualifier_negation_numerical_tabular_multisource_or_granularity" in strata) is expected
 
-    def test_counterexample_when_only_rag_forensics_contradicts_label(self):
-        entry = _entry(rf=_rf(top="overconfidence"))
-        assert "counterexample_to_preferred_interpretation" in cs.eligible_strata(entry, _record(), [])
-        assert "counterexample_to_preferred_interpretation" not in cs.eligible_strata(
-            _entry(rf=_rf(top="overconfidence"), rc=_rc(0.5)), _record(), [],
-        )
+    def test_counterexample_when_rag_forensics_contradicts_label_regardless_of_others(self):
+        # v1.1: v1 also required every other system to agree with the label, which no pool case met.
+        stratum = "counterexample_to_preferred_interpretation"
+        assert stratum in cs.eligible_strata(_entry(rf=_rf(top="overconfidence")), _record(), [])
+        assert stratum in cs.eligible_strata(_entry(rf=_rf(top="overconfidence"), rc=_rc(0.5)), _record(), [])
+        assert stratum not in cs.eligible_strata(_entry(rf=_rf(top="overconfidence")), _record(unsupported=True), [])
+        assert stratum in cs.eligible_strata(_entry(), _record(unsupported=True), [])
+
+    def test_rules_version_is_recorded(self):
+        assert cs.RULES_VERSION == "v1.1"
 
 
 class TestExclusion:
@@ -211,6 +215,7 @@ class TestBuildCaseSet:
     def test_builds_draft_with_selection_record_and_ragas_baseline(self):
         pool, records, predictions = self._inputs()
         case_set = cs.build_case_set(pool, records, predictions, rules="STRATUM-RULES.md@abc")
+        assert case_set.selection.rules.endswith("(rules v1.1)")
 
         assert case_set.status == "draft"
         sel = case_set.selection
