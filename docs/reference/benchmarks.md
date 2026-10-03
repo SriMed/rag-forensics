@@ -28,7 +28,7 @@ The first 100-example TechQA test run covered 946 sentences:
 | AUROC | 0.563 |
 | Coverage | 1.000 |
 
-An in-sample threshold sweep mostly improved recall by predicting nearly every sentence as unsupported. This established that the original `0.4` threshold was not a defensible standalone hallucination boundary.
+An in-sample threshold sweep mostly improved recall by predicting nearly every sentence as unsupported. This established that the original `0.4` threshold was not a defensible standalone hallucination boundary. That failure motivated the [grounding-evaluator comparison](#grounding-evaluator-comparison) below (issue #18): if whole-sentence similarity cannot separate supported from unsupported sentences, does splitting sentences into claims and checking entailment do better?
 
 ## Grounding-evaluator comparison
 
