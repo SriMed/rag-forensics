@@ -227,6 +227,46 @@ Every interval includes zero — at n=39 this is not a statistically conclusive 
 
 The frozen claim review, the raw results, and the residual review's per-item reasoning are kept as private review artifacts and are not published in this repository (see the interpretation constraint above); the aggregate numbers here are the full extent of what this pilot publishes.
 
+### Joint-evidence result
+
+Issue #32 followed up the residual review: does giving the verifier evidence sentences together reduce false "unsupported" judgments, compared with scoring each sentence separately? The design, controls, and interpretation rules were frozen before any outcome was computed, in [`protocol.md`](../../backend/evals/joint_evidence/v1-techqa/protocol.md); commands and the public synthetic fixture are in [`backend/evals/joint_evidence/README.md`](../../backend/evals/joint_evidence/README.md). Joint presentation of the annotated sentences alone (B) could not reach the motivating cases, because all 10 `multi_sentence_support` residuals have a single annotated evidence sentence. The primary condition (B⁺) therefore adds one neighboring sentence on each side of the annotated evidence (ADR-055). All conditions use the same 39 sentences and reviewed claims, the same pinned verifier, and the same threshold as the pilot above; A and T1 reproduce the pilot's conditions D and C exactly.
+
+| Supported sentences (n = 39, 7 examples) | Evidence | False-unsupported | Unavailable |
+|---|---|---:|---|
+| A | Annotated sentences, scored separately (best per claim) | 15/39 (38.5%) | — |
+| B | Annotated sentences, together | 16/36 (44.4%) | 3 over budget |
+| B⁺ | Annotated sentences ±1 neighbor, together | 12/36 (33.3%) | 3 over budget |
+| S | Annotated sentences + same number of random same-document distractors | 12/32 (37.5%) | 3 over budget, 4 too few distractors |
+| T1 | Top-1 by similarity | 18/39 (46.2%) | — |
+| C | Top-3 by similarity, together | 14/39 (35.9%) | — |
+
+| Unsupported sentences (n = 330, 40 examples) | Evidence | False-supported |
+|---|---|---:|
+| T1 | Top-1 by similarity | 110/330 (33.3%) |
+| C | Top-3 by similarity, together | 125/330 (37.9%) |
+| W | Top-1 ±1 neighbor, together | 87/330 (26.4%) |
+
+| Contrast | Corrected | Newly introduced | Unchanged | Difference in error rate [95% clustered interval] | Sign-flip p |
+|---|---:|---:|---:|---:|---:|
+| B⁺ − A (primary) | 6 | 3 | 27 | −0.083 [−0.290, 0.044] | 0.50 |
+| B⁺ − S (size control) | 4 | 4 | 24 | 0.000 [−0.200, 0.154] | 1.00 |
+| C − T1 (practical) | 6 | 2 | 31 | −0.103 [−0.250, 0.047] | 0.50 |
+| B − A (descriptive) | 0 | 1 | 35 | +0.028 [0.000, 0.086] | — |
+| W − T1, unsupported | 45 | 22 | 263 | −0.070 [−0.117, −0.025] | — |
+| C − T1, unsupported | 33 | 48 | 249 | +0.045 [0.000, 0.104] | — |
+
+Both pre-registered labels are **inconclusive**. Neither condition is confounded by leniency: adding neighbors *lowered* the false-supported rate on unsupported sentences (W − T1), and C's increase (+4.5 points, interval lower bound exactly 0) stays inside the 5-point margin. But neither primary contrast reaches the confirmatory test, and B⁺ did no better than the size-matched distractor control (4 corrected, 4 introduced), so the B⁺ improvement over A cannot be attributed to local context rather than to added text.
+
+Observations and limits:
+
+- **The sign-flip test could not have succeeded here.** Only 4 of the 7 examples changed at all under B⁺ − A, so the smallest attainable p-value was 2/16 = 0.125, not the 0.016 the 7-cluster design allowed. The clustered bootstrap intervals, which are likely too narrow with 7 clusters, also include zero.
+- **Exploratory subgroup.** Among the 10 `multi_sentence_support` cases, B⁺ corrected 4 with none introduced, C corrected 3 with none introduced, and B changed none (by construction). These are the cases that generated the hypothesis, so this is not confirmatory evidence.
+- **More context did not make the verifier more permissive.** On supported sentences, B⁺ lowered false-unsupported judgments, and on unsupported sentences the same construction lowered false-supported ones. That pattern contradicts a simple "more text, more acceptance" account, but it was not a pre-registered outcome and needs a fresh sample.
+- **One protocol rule had no effect.** The rule that treating unavailable sentences as unchanged must not change the conclusion is always satisfied under these statistics, because unchanged sentences add zeros to both the counts and the sign-flip statistic.
+- **Scope.** TechQA only, 7 supported-set examples, a threshold set for single-sentence premises, reviewed claims for supported sentences and deterministic claims for unsupported ones. The result does not show that multi-sentence support is absent; it leaves claim representation, verifier behavior, and annotation ambiguity unresolved.
+
+The per-sentence results contain the private reviewed claims and are not published. Supported-set and subgroup numbers cannot be reproduced without the private reviews; unsupported-set numbers depend only on public data and the deterministic decomposer.
+
 A subsequent public case collection should select diverse examples from the committed public-data evaluations and preserve the input, observations, hypotheses, proposed test, intervention result, and retrospective interpretation. Its purpose is inspectability and counterexample discovery, not a representative incident taxonomy.
 
 Until authentic consumers are available, evaluation of the interactive record should focus on diagnostic validity: whether proposed tests actually distinguish their named hypotheses, whether retrospective evidence updates the record in the declared direction, whether causal language stays within the evidence, whether unavailable states remain unavailable, and whether displayed claims are traceable to observations and methods. A single-author review can exercise this protocol but must be labeled as such; it cannot establish usability or decision value for external users.
