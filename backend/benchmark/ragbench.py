@@ -16,13 +16,13 @@ from models import (
     UnsupportedDetectionMetrics,
     UnsupportedSentencePrediction,
 )
+from pins import DATASET_NAME, EMBEDDING_MODEL
 from services.forensics.chunk_attribution import (
     UNATTRIBUTED_THRESHOLD,
     analyze_sentences_attribution,
 )
 
-DATASET_NAME = "galileo-ai/ragbench"
-EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDING_MODEL_NAME = EMBEDDING_MODEL
 _SUPPORT_SENTINELS = {
     "general",
     "generally",

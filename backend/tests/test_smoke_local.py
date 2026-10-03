@@ -92,3 +92,22 @@ def test_missing_key_is_actionable_and_never_submits_analysis():
     with httpx.Client(base_url="http://localhost:8000", transport=httpx.MockTransport(respond)) as client:
         with pytest.raises(ValueError, match="ANTHROPIC_API_KEY"):
             run_smoke(client, analyze=True)
+
+
+@pytest.mark.parametrize(
+    ("error", "expected"),
+    [
+        (ValueError("Set ANTHROPIC_API_KEY in backend/.env and restart the backend"), "Set ANTHROPIC_API_KEY"),
+        (httpx.ConnectError("Connection refused"), "Cannot reach backend at http://127.0.0.1:8000"),
+    ],
+)
+def test_cli_failure_exits_nonzero_with_message_instead_of_traceback(mocker, error, expected):
+    from scripts import smoke_local
+
+    mocker.patch("sys.argv", ["smoke_local"])
+    mocker.patch.object(smoke_local, "run_smoke", side_effect=error)
+    with pytest.raises(SystemExit) as exit_info:
+        smoke_local.main()
+    assert isinstance(exit_info.value.code, str)
+    assert exit_info.value.code.startswith("Smoke check failed: ")
+    assert expected in exit_info.value.code

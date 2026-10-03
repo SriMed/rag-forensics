@@ -247,3 +247,13 @@ def test_available_domains_lists_known_domain_collections_sorted(mocker, tmp_pat
     client.list_collections.return_value = [named, "covidqa", "unrelated"]
     mocker.patch.object(retriever, "_get_client", return_value=client)
     assert retriever.available_domains() == ["covidqa", "techqa"]
+
+
+def test_embedding_model_loads_pinned_revision(mocker):
+    import pins
+    from services import retriever
+
+    mocker.patch.object(retriever, "_embedding_model", None)
+    loader = mocker.patch.object(retriever, "SentenceTransformer")
+    retriever.get_embedding_model()
+    loader.assert_called_once_with(pins.EMBEDDING_MODEL, revision=pins.EMBEDDING_REVISION)

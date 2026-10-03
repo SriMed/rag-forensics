@@ -4,11 +4,12 @@ This is the native setup path for running RAG Forensics beside your own RAG syst
 
 ## Install and start the backend
 
-Prerequisites: Python 3.13, Poetry 2.2.1, and an Anthropic API key. The frontend uses Node.js 22 and npm. Python 3.13 is the primary version; CI also tests the declared Python 3.11 minimum. Install these tools before running the commands below; no global Python application dependencies are needed.
+Prerequisites: [mise](https://mise.jdx.dev) and an Anthropic API key. The root `mise.toml` pins Python 3.13.11, Node.js 22.23.3 (with its npm), and Poetry 2.2.1; `mise install` provides all three. Activate mise in your shell, or prefix the commands below with `mise exec --`. Installing exactly those versions by other means also works. Python 3.13 is the primary version; CI also tests the declared Python 3.11 minimum. No global Python application dependencies are needed.
 
 From the repository root:
 
 ```bash
+mise install
 cd backend
 poetry env use python3.13
 poetry install
@@ -102,7 +103,7 @@ npm test -- --runInBand
 npm run build
 ```
 
-- Connection refused: start the backend on the URL used by the smoke command.
+- `Cannot reach backend`: start the backend on the URL used by the smoke command.
 - Missing-key readiness failure: edit `backend/.env` and restart. An invalid nonblank key needs a live analysis to detect; inspect backend logs if evaluation is unavailable.
 - Model/tokenizer download failure: check network access and cache permissions. `/ready` does not test those dependencies.
 - Empty corpus domain list: custom analysis can still run; explicitly bootstrap for the demo.
@@ -110,4 +111,4 @@ npm run build
 
 The legacy notebooks in `smoke_tests/` are historical records with obsolete response fields, not the supported smoke path. The maintained command above and its mocked tests replace that role.
 
-Application dependencies are locked, but the bundled dataset and sentence-transformer downloads still use unpinned upstream revisions. The locked dependencies and offline test suite have been verified in a fresh Python 3.13.11 virtual environment on macOS. This did not establish clean-machine model downloads or live-provider behavior. A clean-machine live run and complete restart/recovery verification remain release checks under issue #12; passing mocked tests does not establish them.
+Application dependencies are locked, the toolchain is pinned in `mise.toml`, and the RAGBench dataset and sentence-transformer revisions are pinned in `backend/pins.py`, which the backend, bootstrap, and benchmarks share. Under issue #12 a fresh clone with a new Python 3.13.11 virtual environment on macOS passed the offline checks, the live `--analyze` smoke run with an empty corpus, the missing-key readiness failure, two consecutive bootstraps with identical collection counts and no leftover staging or backup collections, and two restarts that kept the index without re-bootstrap. That run reused existing model caches, so it did not exercise first-time model downloads on a clean machine. See [ADR-052](../../ADR.md#adr-052-mise-pins-the-local-toolchain-and-pinspy-pins-upstream-model-and-dataset-revisions).

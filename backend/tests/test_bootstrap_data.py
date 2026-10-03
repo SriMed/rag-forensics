@@ -104,3 +104,25 @@ def test_numeric_zero_dataset_id_is_preserved(store, mocker):
     ])
     bootstrap_data.bootstrap()
     assert client.get_collection("techqa").get()["ids"] == ["0_chunk_0"]
+
+
+def test_bootstrap_loads_pinned_model_and_dataset_revisions(store):
+    import pins
+
+    bootstrap_data.bootstrap()
+    bootstrap_data.SentenceTransformer.assert_called_once_with(
+        pins.EMBEDDING_MODEL, revision=pins.EMBEDDING_REVISION
+    )
+    bootstrap_data.load_dataset.assert_called_once_with(
+        pins.DATASET_NAME, "techqa", split="train", revision=pins.DATASET_REVISION
+    )
+
+
+def test_benchmarks_and_app_share_one_set_of_pins():
+    import pins
+    from benchmark import experiment_cli, ragbench
+
+    assert experiment_cli.DATASET_REVISION == pins.DATASET_REVISION
+    assert experiment_cli.EMBEDDING_REVISION == pins.EMBEDDING_REVISION
+    assert ragbench.DATASET_NAME == pins.DATASET_NAME
+    assert ragbench.EMBEDDING_MODEL_NAME == pins.EMBEDDING_MODEL

@@ -3,8 +3,9 @@
 Run from backend/:
     poetry run python scripts/bootstrap_data.py
 
-Loads techqa, finqa, covidqa splits from rungalileo/ragbench, embeds with
-sentence-transformers/all-MiniLM-L6-v2, and stores in ./data/chroma.
+Loads techqa, finqa, covidqa splits from galileo-ai/ragbench, embeds with
+sentence-transformers/all-MiniLM-L6-v2 (revisions pinned in pins.py), and
+stores in ./data/chroma.
 """
 import hashlib
 import logging
@@ -19,22 +20,23 @@ import chromadb
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 
+from pins import DATASET_NAME, DATASET_REVISION, EMBEDDING_MODEL, EMBEDDING_REVISION
+
 CHROMA_PATH = "./data/chroma"
 DOMAINS = ["techqa", "finqa", "covidqa"]
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 BATCH_SIZE = 256
 logger = logging.getLogger(__name__)
 
 
 def bootstrap():
-    print(f"Loading embedding model: {MODEL_NAME}")
-    model = SentenceTransformer(MODEL_NAME)
+    print(f"Loading embedding model: {EMBEDDING_MODEL}@{EMBEDDING_REVISION}")
+    model = SentenceTransformer(EMBEDDING_MODEL, revision=EMBEDDING_REVISION)
 
     client = chromadb.PersistentClient(path=CHROMA_PATH)
 
     for domain in DOMAINS:
         print(f"\n--- {domain} ---")
-        dataset = load_dataset("rungalileo/ragbench", domain, split="train")
+        dataset = load_dataset(DATASET_NAME, domain, split="train", revision=DATASET_REVISION)
 
         all_ids = []
         all_texts = []

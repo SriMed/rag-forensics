@@ -46,7 +46,13 @@ def main():
     parser.add_argument("--analyze", action="store_true", help="Send the public example to Anthropic via the backend")
     args = parser.parse_args()
     with httpx.Client(base_url=args.base_url) as client:
-        print(json.dumps(run_smoke(client, analyze=args.analyze), indent=2))
+        try:
+            summary = run_smoke(client, analyze=args.analyze)
+        except httpx.TransportError as error:
+            raise SystemExit(f"Smoke check failed: Cannot reach backend at {args.base_url} ({error})") from None
+        except (ValueError, httpx.HTTPStatusError) as error:
+            raise SystemExit(f"Smoke check failed: {error}") from None
+    print(json.dumps(summary, indent=2))
 
 
 if __name__ == "__main__":

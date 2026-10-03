@@ -10,9 +10,10 @@ The project follows one chain: **ambiguous failure → inspectable observations 
 
 ## Quick start
 
-Use Python 3.13 and Poetry 2.2.1 for the backend. From the repository root:
+The repository's `mise.toml` pins Python 3.13.11, Node.js 22.23.3, and Poetry 2.2.1. With [mise](https://mise.jdx.dev) activated in your shell, from the repository root:
 
 ```bash
+mise install
 cd backend
 poetry env use python3.13
 poetry install

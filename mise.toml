@@ -1,0 +1,4 @@
+[tools]
+python = "3.13.11"
+node = "22.23.3"
+poetry = "2.2.1"

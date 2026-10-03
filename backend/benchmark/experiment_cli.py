@@ -14,10 +14,8 @@ from benchmark.grounding import (
 )
 from benchmark.ragbench import DATASET_NAME, RAGBenchRowError, adapt_ragbench_row
 from models import GroundingRunMetadata
+from pins import DATASET_REVISION, EMBEDDING_MODEL, EMBEDDING_REVISION
 
-DATASET_REVISION = "97808f3e5fd16ede40bbff6c2949af8139b2eb7b"
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-EMBEDDING_REVISION = "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
 ENTAILMENT_MODEL = "cross-encoder/nli-deberta-v3-base"
 ENTAILMENT_REVISION = "6c749ce3425cd33b46d187e45b92bbf96ee12ec7"
 DOMAINS = ("techqa", "finqa", "covidqa")
