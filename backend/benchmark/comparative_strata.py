@@ -17,13 +17,14 @@ from typing import Any, Literal
 import benchmark.comparative_diagnostics as cd
 from benchmark.comparative_diagnostics import BATCH_CRASH_PREFIX
 
-RULES_VERSION = "v1.1"  # v1.1 relaxed the counterexample rule; see STRATUM-RULES.md "Amendment v1.1"
+RULES_VERSION = "v2"  # see STRATUM-RULES.md "Version 2"; v1.1 relaxed the counterexample rule
 
 Direction = Literal["retrieval", "generation"]
 FLAGGED_SYSTEMS: tuple[cd.SystemName, ...] = ("rag_forensics", "ragas_baseline", "ragchecker", "ragvue")
 
-# RAG Forensics' top-ranked signal counts as "flags unsupported content" only for these names.
-RAG_FORENSICS_UNSUPPORTED_SIGNALS = frozenset({"low_faithfulness", "unattributed_content", "overconfidence"})
+# RAG Forensics flags unsupported content when one of its own detectors fires, at any rank (v2).
+# low_faithfulness is excluded: it re-ranks the RAGAS score, which is counted under ragas_baseline.
+RAG_FORENSICS_UNSUPPORTED_SIGNALS = frozenset({"unattributed_content", "overconfidence"})
 # RAGAS failures RAG Forensics passes through as its own signals; counted once, under ragas_baseline.
 RAGAS_PASSTHROUGH_SIGNALS = frozenset({"faithfulness_unavailable", "context_utilization_unavailable"})
 RAG_FORENSICS_COMPONENTS: dict[str, Direction] = {"retriever": "retrieval", "answer generator": "generation"}
@@ -88,7 +89,7 @@ def unsupported_flags(entry: Entry) -> dict[cd.SystemName, bool | None]:
     flags: dict[cd.SystemName, bool | None] = dict.fromkeys(FLAGGED_SYSTEMS)
     rf = _healthy_raw(entry, "rag_forensics")
     if rf and rf.get("verdict_signals"):
-        flags["rag_forensics"] = rf["verdict_signals"][0]["name"] in RAG_FORENSICS_UNSUPPORTED_SIGNALS
+        flags["rag_forensics"] = any(s["name"] in RAG_FORENSICS_UNSUPPORTED_SIGNALS for s in rf["verdict_signals"])
     raw = _rf_raw(entry)
     faith = (raw or {}).get("ragas", {}).get("faithfulness", {})
     if faith.get("status") == "ok" and faith.get("score") is not None:

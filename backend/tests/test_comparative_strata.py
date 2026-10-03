@@ -58,13 +58,21 @@ def _pred(selected_unsupported, oracle_unsupported):
 class TestUnsupportedFlags:
     def test_any_claim_unsupported_rule_per_system(self):
         flags = cs.unsupported_flags(_entry(
-            rf=_rf(top="low_faithfulness", faith=0.75), rc=_rc(1.0), rv=_rv(strict=0.5),
+            rf=_rf(signals=["overconfidence"], faith=0.75), rc=_rc(1.0), rv=_rv(strict=0.5),
         ))
         assert flags == {"rag_forensics": True, "ragas_baseline": True, "ragchecker": False, "ragvue": True}
 
-    @pytest.mark.parametrize("top", ["low_faithfulness", "unattributed_content", "overconfidence"])
-    def test_rag_forensics_flag_signals(self, top):
-        assert cs.unsupported_flags(_entry(rf=_rf(top=top)))["rag_forensics"] is True
+    @pytest.mark.parametrize("signal", ["unattributed_content", "overconfidence"])
+    def test_rag_forensics_flags_its_own_detectors_at_any_rank(self, signal):
+        # v2: every hypothesis counts, not just the top-ranked one.
+        assert cs.unsupported_flags(_entry(rf=_rf(top=signal)))["rag_forensics"] is True
+        assert cs.unsupported_flags(_entry(rf=_rf(signals=[signal])))["rag_forensics"] is True
+
+    def test_rag_forensics_low_faithfulness_is_ragas_not_rag_forensics(self):
+        # low_faithfulness re-ranks the RAGAS score, which is counted under ragas_baseline.
+        flags = cs.unsupported_flags(_entry(rf=_rf(top="low_faithfulness", faith=0.5)))
+        assert flags["rag_forensics"] is False
+        assert flags["ragas_baseline"] is True
 
     def test_unhealthy_or_missing_scores_have_no_flag(self):
         flags = cs.unsupported_flags(_entry(
@@ -113,7 +121,7 @@ class TestInterventionOutcomes:
 
 class TestEligibleStrata:
     def test_agreement_with_and_against_label(self):
-        agree_flagged = _entry(rf=_rf(top="low_faithfulness", faith=0.5), rc=_rc(0.5), rv=_rv(strict=0.5))
+        agree_flagged = _entry(rf=_rf(signals=["overconfidence"], faith=0.5), rc=_rc(0.5), rv=_rv(strict=0.5))
         assert "systems_agree_labels_support" in cs.eligible_strata(agree_flagged, _record(unsupported=True), [])
         assert "systems_agree_labels_contradict" in cs.eligible_strata(agree_flagged, _record(), [])
 
@@ -147,7 +155,7 @@ class TestEligibleStrata:
         assert stratum in cs.eligible_strata(_entry(), _record(unsupported=True), [])
 
     def test_rules_version_is_recorded(self):
-        assert cs.RULES_VERSION == "v1.1"
+        assert cs.RULES_VERSION == "v2"
 
 
 class TestExclusion:
@@ -215,7 +223,7 @@ class TestBuildCaseSet:
     def test_builds_draft_with_selection_record_and_ragas_baseline(self):
         pool, records, predictions = self._inputs()
         case_set = cs.build_case_set(pool, records, predictions, rules="STRATUM-RULES.md@abc")
-        assert case_set.selection.rules.endswith("(rules v1.1)")
+        assert case_set.selection.rules.endswith("(rules v2)")
 
         assert case_set.status == "draft"
         sel = case_set.selection

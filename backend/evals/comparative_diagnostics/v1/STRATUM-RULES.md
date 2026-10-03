@@ -56,3 +56,17 @@ This amendment was made **after** the v1 rules had been applied to the pool run 
 **The change.** A case is eligible for `counterexample_to_preferred_interpretation` when RAG Forensics' flag contradicts the dataset label, whatever the other systems say. No other rule, target, order or seed changed. Because counterexamples are filled second, the seeded draws for the strata after it can differ from v1's.
 
 **What the pool cannot show.** With no unsupported-labeled responses, `systems_agree_labels_support` always means every system said supported, and `systems_agree_labels_contradict` always means every system flagged a response the dataset calls supported. Neither stratum contains a case where systems correctly catch an unsupported response.
+
+## Version 2 (2026-10-03, committed before the v2 pool run finished)
+
+Version 2 supersedes v1 and v1.1. It responds to two defects found in RAG Forensics' v1 inputs and outputs, not to how the comparison read.
+
+**Why.** The v1 run passed RAGBench's placeholder chunk scores (every chunk `1.0`) to RAG Forensics as real similarity scores. A perfectly flat distribution made `ambiguous_retrieval` priority 1.0 in all 98 cases and the top signal in 75, burying the other hypotheses (#35, ADR-058). Separately, the hedging entailment check discarded 83 of 314 `not_supported` verdicts as malformed (#34, ADR-059). The v1 flag rule also counted only RAG Forensics' top-ranked signal, which measured ranking rather than detection; RAG Forensics' purpose is to keep several hypotheses visible.
+
+**What changed.**
+
+- **RAG Forensics was rerun** on the same 98 cases at the commit recorded in `pool-run-v2.json`, with chunk scores declared unavailable (`score_semantics: "unavailable"`) and the #34 fix in place. RAGChecker's and RAGVUE's v1 outputs are copied unchanged; neither used chunk scores.
+- **RAG Forensics flags unsupported content** when its hedging detector (`overconfidence`) or its sentence-attribution detector (`unattributed_content`) fires, **at any rank**. `low_faithfulness` no longer counts: it re-ranks the RAGAS score, which is already counted under the RAGAS baseline.
+- The v1.1 counterexample rule, every other rule, the targets, the order, and the seed are unchanged.
+
+**The superseded v1.1 draw** selected 18 cases: 2 single-system failure (of 17 eligible), 2 counterexample (of 12), 2 intervention-discriminates (of 31), 2 intervention-fails (of 40), 3 component disagreement (of 15), 0 evidence attribution, 3 qualifier (of 20), 1 agree-labels-contradict (of 3), 3 agree-labels-support (of 38).
