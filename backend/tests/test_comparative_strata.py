@@ -174,3 +174,55 @@ class TestSelection:
         assert set(cs.SELECTION_ORDER) == set(DECLARED_STRATA)
         assert 12 <= sum(cs.STRATUM_TARGETS.values()) <= 20
         assert cs.STRATUM_TARGETS["evidence_attributions_disagree"] == 0
+
+
+class TestBuildCaseSet:
+    def _inputs(self):
+        def native(system, raw):
+            return {
+                "system": system,
+                "native": {"system": system, "system_version": "t", "availability": "healthy", "raw_output": raw, "error": None},
+                "suspected_component": None, "supporting_observation": None, "evidence_attribution": [],
+                "method": None, "reliability": None, "causal_strength_language": None,
+                "proposed_intervention": None, "no_equivalent_fields": [],
+            }
+
+        def entry(rc_faith=1.0):
+            return {
+                "rag_forensics": native("rag_forensics", _rf()["native"]["raw_output"]),
+                "ragchecker": native("ragchecker", {"faithfulness": rc_faith}),
+                "ragvue": native("ragvue", _rv()["native"]["raw_output"]),
+            }
+
+        crashed = entry()
+        crashed["ragvue"]["native"] = {
+            "system": "ragvue", "system_version": "unknown", "availability": "failed",
+            "raw_output": None, "error": "runner batch failed: X",
+        }
+        pool = {"a": entry(), "b": entry(), "c": crashed}
+        records = {
+            cid: SimpleNamespace(example_id=cid, domain="covidqa", response="It spreads.",
+                                 unsupported_response_sentence_keys=[])
+            for cid in pool
+        }
+        predictions = {"a": [_pred(True, False)], "b": [], "c": []}
+        return pool, records, predictions
+
+    def test_builds_draft_with_selection_record_and_ragas_baseline(self):
+        pool, records, predictions = self._inputs()
+        case_set = cs.build_case_set(pool, records, predictions, rules="STRATUM-RULES.md@abc")
+
+        assert case_set.status == "draft"
+        sel = case_set.selection
+        assert sel is not None
+        assert sel.pool_size == 3
+        assert sel.exclusions == {"c": "ragvue batch crashed and was not rerun"}
+        assert sel.eligible_counts["intervention_discriminates_hypotheses"] == 1
+        assert sel.eligible_counts["systems_agree_labels_support"] == 2
+        by_id = {c.case_id: c for c in case_set.cases}
+        assert by_id["a"].stratum == "intervention_discriminates_hypotheses"
+        assert by_id["b"].stratum == "systems_agree_labels_support"
+        assert set(by_id["a"].systems) == {"rag_forensics", "ragas_baseline", "ragchecker", "ragvue"}
+        assert by_id["a"].judgments.dataset_label == "fully_supported"
+        assert by_id["a"].judgments.intervention_evidence is not None
+        assert "seed 30" in by_id["a"].selection_rationale

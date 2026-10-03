@@ -135,12 +135,43 @@ class ComparativeCase(BaseModel):
     judgments: CaseJudgments
 
 
+class SelectionRecord(BaseModel):
+    """How the cases were drawn from the candidate pool (CASE-SELECTION-PROTOCOL.md step 4).
+
+    Eligible counts are recorded next to selected counts so purposive coverage cannot be read as
+    prevalence.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    rules: str
+    seed: int
+    pool_size: int
+    pool_population_sha256: str
+    targets: dict[str, int]
+    eligible_counts: dict[str, int]
+    selected_counts: dict[str, int]
+    exclusions: dict[str, str] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_counts(self):
+        for counts in (self.targets, self.eligible_counts, self.selected_counts):
+            unknown = set(counts) - set(DECLARED_STRATA)
+            if unknown:
+                raise ValueError(f"undeclared strata: {sorted(unknown)}")
+        for stratum, selected in self.selected_counts.items():
+            if selected > self.eligible_counts.get(stratum, 0):
+                raise ValueError(f"{stratum}: selected more cases than were eligible")
+        return self
+
+
 class ComparativeCaseSet(BaseModel):
     schema_version: Literal["comparative-diagnostics.v1"]
     status: Literal["draft", "frozen"] = "draft"
     reviewer_identity: str | None = None
     population_sha256: str
     cases: list[ComparativeCase]
+    selection: SelectionRecord | None = None
 
     @model_validator(mode="after")
     def validate_case_set(self):
@@ -381,6 +412,39 @@ def map_ragvue_native(
         causal_strength_language=None,
         proposed_intervention=None,
         no_equivalent_fields=no_equivalent_fields,
+    )
+
+
+def map_ragas_baseline_native(*, case_id: str, ragas: dict | None) -> SystemDiagnosticRecord:
+    """Project RAGAS, which runs inside RAG Forensics, as its own baseline system."""
+    if ragas is None:
+        return SystemDiagnosticRecord(
+            system="ragas_baseline",
+            native=NativeSystemOutput(
+                system="ragas_baseline", system_version="project-wrapper", availability="failed",
+                raw_output=None, error="RAG Forensics produced no output, so RAGAS did not run",
+            ),
+            suspected_component=None, supporting_observation=None, evidence_attribution=[],
+            method=None, reliability=None, causal_strength_language=None,
+            proposed_intervention=None, no_equivalent_fields=[],
+        )
+    metrics = ("faithfulness", "context_utilization")
+    ok = [m for m in metrics if ragas.get(m, {}).get("status") == "ok"]
+    failed = [m for m in metrics if m not in ok]
+    return SystemDiagnosticRecord(
+        system="ragas_baseline",
+        native=NativeSystemOutput(
+            system="ragas_baseline", system_version="project-wrapper",
+            availability="unavailable" if failed else "healthy", raw_output=ragas, error=None,
+        ),
+        suspected_component=None,
+        supporting_observation="; ".join(f"{m}={ragas[m]['score']}" for m in ok) or None,
+        evidence_attribution=[],
+        method="ragas" if ok else None,
+        reliability="model_judged" if ok else None,
+        causal_strength_language=None,
+        proposed_intervention=None,
+        no_equivalent_fields=[f"{m} unavailable: {ragas.get(m, {}).get('error')}" for m in failed],
     )
 
 

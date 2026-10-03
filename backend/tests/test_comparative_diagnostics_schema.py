@@ -12,12 +12,14 @@ from benchmark.comparative_diagnostics import (
     ComparativeCase,
     ComparativeCaseSet,
     NativeSystemOutput,
+    SelectionRecord,
     SystemDiagnosticRecord,
     assert_ragchecker_metrics_computable,
     dataset_label_for_record,
     load_case_candidate_pool,
     make_population_sha256,
     map_rag_forensics_native,
+    map_ragas_baseline_native,
     map_ragchecker_native,
     map_ragvue_native,
     ragchecker_result_input,
@@ -457,3 +459,64 @@ class TestMapRagvueNative:
         assert record.native.raw_output == raw  # RAGVue's self-reported "gpt-4o-mini" is preserved untouched
         assert record.method == "anthropic:claude-haiku-4-5-20251001"
         assert "self-reported" in " ".join(record.no_equivalent_fields).lower()
+
+
+class TestSelectionRecord:
+    def _selection(self, **overrides):
+        values = {
+            "rules": "evals/comparative_diagnostics/v1/STRATUM-RULES.md@abc123",
+            "seed": 30,
+            "pool_size": 3,
+            "pool_population_sha256": make_population_sha256(["a", "b", "c"]),
+            "targets": {"systems_agree_labels_support": 3},
+            "eligible_counts": {"systems_agree_labels_support": 2},
+            "selected_counts": {"systems_agree_labels_support": 2},
+            "exclusions": {"c": "ragvue batch crashed and was not rerun"},
+        }
+        return SelectionRecord(**{**values, **overrides})
+
+    def test_case_set_carries_optional_selection_record(self):
+        case_set = ComparativeCaseSet(
+            schema_version="comparative-diagnostics.v1",
+            population_sha256=make_population_sha256([]),
+            cases=[],
+            selection=self._selection(),
+        )
+        assert case_set.selection is not None
+        assert case_set.selection.exclusions == {"c": "ragvue batch crashed and was not rerun"}
+
+    def test_rejects_undeclared_stratum_names(self):
+        with pytest.raises(ValidationError):
+            self._selection(eligible_counts={"made_up_stratum": 1})
+
+    def test_rejects_selecting_more_than_eligible(self):
+        with pytest.raises(ValidationError):
+            self._selection(selected_counts={"systems_agree_labels_support": 3})
+
+
+class TestMapRagasBaselineNative:
+    def test_both_metrics_ok_is_healthy(self):
+        ragas = {
+            "faithfulness": {"score": 0.5, "status": "ok", "error": None},
+            "context_utilization": {"score": 1.0, "status": "ok", "error": None},
+        }
+        record = map_ragas_baseline_native(case_id="c1", ragas=ragas)
+        assert record.system == "ragas_baseline"
+        assert record.native.availability == "healthy"
+        assert record.native.raw_output == ragas
+        assert record.supporting_observation == "faithfulness=0.5; context_utilization=1.0"
+
+    def test_a_failed_metric_is_unavailable_not_a_healthy_score(self):
+        ragas = {
+            "faithfulness": {"score": None, "status": "unavailable", "error": "evaluation_failed"},
+            "context_utilization": {"score": 1.0, "status": "ok", "error": None},
+        }
+        record = map_ragas_baseline_native(case_id="c1", ragas=ragas)
+        assert record.native.availability == "unavailable"
+        assert record.supporting_observation == "context_utilization=1.0"
+        assert any("faithfulness" in note for note in record.no_equivalent_fields)
+
+    def test_no_ragas_output_is_failed(self):
+        record = map_ragas_baseline_native(case_id="c1", ragas=None)
+        assert record.native.availability == "failed"
+        assert record.native.error

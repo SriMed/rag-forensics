@@ -14,10 +14,11 @@ import re
 from collections.abc import Iterable, Mapping
 from typing import Any, Literal
 
+import benchmark.comparative_diagnostics as cd
 from benchmark.comparative_diagnostics import BATCH_CRASH_PREFIX
 
 Direction = Literal["retrieval", "generation"]
-FLAGGED_SYSTEMS = ("rag_forensics", "ragas_baseline", "ragchecker", "ragvue")
+FLAGGED_SYSTEMS: tuple[cd.SystemName, ...] = ("rag_forensics", "ragas_baseline", "ragchecker", "ragvue")
 
 # RAG Forensics' top-ranked signal counts as "flags unsupported content" only for these names.
 RAG_FORENSICS_UNSUPPORTED_SIGNALS = frozenset({"low_faithfulness", "unattributed_content", "overconfidence"})
@@ -81,8 +82,8 @@ def _ragvue_scores(entry: Entry) -> dict[str, float]:
     }
 
 
-def unsupported_flags(entry: Entry) -> dict[str, bool | None]:
-    flags: dict[str, bool | None] = dict.fromkeys(FLAGGED_SYSTEMS)
+def unsupported_flags(entry: Entry) -> dict[cd.SystemName, bool | None]:
+    flags: dict[cd.SystemName, bool | None] = dict.fromkeys(FLAGGED_SYSTEMS)
     rf = _healthy_raw(entry, "rag_forensics")
     if rf and rf.get("verdict_signals"):
         flags["rag_forensics"] = rf["verdict_signals"][0]["name"] in RAG_FORENSICS_UNSUPPORTED_SIGNALS
@@ -178,3 +179,80 @@ def select_cases(eligibility: Mapping[str, set[str]], seed: int) -> list[tuple[s
             taken.add(case_id)
             selected.append((case_id, stratum))
     return selected
+
+
+def _intervention_summary(predictions: list[Any]) -> str | None:
+    if not predictions:
+        return None
+    fixed = sum(p.selected.predicted_unsupported is True and p.oracle.predicted_unsupported is False for p in predictions)
+    stayed = sum(p.selected.predicted_unsupported is True and p.oracle.predicted_unsupported is True for p in predictions)
+    return (
+        f"Oracle evidence on {len(predictions)} eligible sentence(s): {fixed} changed from unsupported to "
+        f"supported, {stayed} stayed unsupported. This intervenes on the grounding evaluator, not the RAG system."
+    )
+
+
+def _flag_judgment(flag: bool | None) -> str:
+    return {True: "flags unsupported content", False: "no unsupported flag", None: "no usable score"}[flag]
+
+
+def build_case_set(
+    pool: Mapping[str, Entry], records: Mapping[str, Any], predictions: Mapping[str, list[Any]], *, rules: str,
+) -> cd.ComparativeCaseSet:
+    """Apply the frozen rules to a pool run and return a draft manifest for the owner to freeze."""
+    exclusions: dict[str, str] = {}
+    eligibility: dict[str, set[str]] = {}
+    for case_id, entry in pool.items():
+        reason = exclusion_reason(entry)
+        if reason:
+            exclusions[case_id] = reason
+        else:
+            eligibility[case_id] = eligible_strata(entry, records[case_id], predictions.get(case_id, []))
+    eligible_counts = {s: sum(s in e for e in eligibility.values()) for s in SELECTION_ORDER}
+    selected = select_cases(eligibility, seed=SELECTION_SEED)
+
+    cases = []
+    for case_id, stratum in selected:
+        entry, record = pool[case_id], records[case_id]
+        native_systems: tuple[cd.SystemName, ...] = ("rag_forensics", "ragchecker", "ragvue")
+        systems: dict[cd.SystemName, cd.SystemDiagnosticRecord] = {
+            name: cd.SystemDiagnosticRecord.model_validate(entry[name]) for name in native_systems
+        }
+        rf_raw = entry["rag_forensics"]["native"]["raw_output"]
+        systems["ragas_baseline"] = cd.map_ragas_baseline_native(case_id=case_id, ragas=(rf_raw or {}).get("ragas"))
+        also = sorted(eligibility[case_id] - {stratum})
+        cases.append(cd.ComparativeCase(
+            case_id=case_id,
+            dataset="ragbench",
+            domain=record.domain,
+            dataset_revision=f"galileo-ai/ragbench@{cd.CANDIDATE_POOL_REVISION}",
+            stratum=stratum,
+            selection_rationale=(
+                f"Seeded draw (seed {SELECTION_SEED}) from {eligible_counts[stratum]} eligible case(s) in this stratum."
+                + (f" Also eligible for: {', '.join(also)}." if also else "")
+            ),
+            systems=systems,
+            judgments=cd.CaseJudgments(
+                dataset_label=cd.dataset_label_for_record(record),
+                model_judgments={s: _flag_judgment(f) for s, f in unsupported_flags(entry).items()},
+                reviewer_judgment=None,
+                intervention_evidence=_intervention_summary(predictions.get(case_id, [])),
+            ),
+        ))
+    selected_counts = {s: sum(st == s for _, st in selected) for s in SELECTION_ORDER}
+    return cd.ComparativeCaseSet(
+        schema_version="comparative-diagnostics.v1",
+        status="draft",
+        population_sha256=cd.make_population_sha256([c for c, _ in selected]),
+        cases=cases,
+        selection=cd.SelectionRecord(
+            rules=rules,
+            seed=SELECTION_SEED,
+            pool_size=len(pool),
+            pool_population_sha256=cd.make_population_sha256(list(pool)),
+            targets=dict(STRATUM_TARGETS),
+            eligible_counts=eligible_counts,
+            selected_counts=selected_counts,
+            exclusions=exclusions,
+        ),
+    )
