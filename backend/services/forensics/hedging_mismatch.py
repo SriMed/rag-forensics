@@ -33,6 +33,19 @@ _CLAIMS_OUTPUT_CONFIG = {
         "schema": _CLAIMS_ADAPTER.json_schema(),
     }
 }
+# The verdict is constrained at generation time (#34): a free-text reply let the model append an
+# explanation after "not_supported", which the exact ADR-035 boundary then discarded.
+_VERDICT_OUTPUT_CONFIG = {
+    "format": {
+        "type": "json_schema",
+        "schema": {
+            "type": "object",
+            "properties": {"verdict": {"type": "string", "enum": [v.value for v in EntailmentVerdict]}},
+            "required": ["verdict"],
+            "additionalProperties": False,
+        },
+    }
+}
 
 # ---------------------------------------------------------------------------
 # Lexicon for confidence classification (deterministic, no LLM)
@@ -187,6 +200,14 @@ def _extract_claims(answer: str) -> list[str]:
     return _parse_claims(raw)
 
 
+def _parse_verdict(raw: str) -> EntailmentVerdict:
+    """Exactly {"verdict": <enum value>}; anything else raises ValueError (ADR-035: no normalization)."""
+    decoded = json.loads(raw)  # JSONDecodeError is a ValueError
+    if not isinstance(decoded, dict) or set(decoded) != {"verdict"} or not isinstance(decoded["verdict"], str):
+        raise ValueError("entailment reply does not match the verdict schema")
+    return EntailmentVerdict(decoded["verdict"])
+
+
 def _check_entailment(claim: str, chunk: RetrievedChunk) -> EntailmentCheck:
     """One entailment judgment. Request failures and malformed replies are recorded, not raised."""
     try:
@@ -194,12 +215,13 @@ def _check_entailment(claim: str, chunk: RetrievedChunk) -> EntailmentCheck:
             ENTAILMENT_PROMPT.format(chunk_text=chunk.text, claim=claim),
             model=CLAUDE_HAIKU,
             max_tokens=32,
+            output_config=_VERDICT_OUTPUT_CONFIG,
         )
     except LLMError:
         logger.warning("Entailment check failed on chunk '%s'", chunk.chunk_id)
         return EntailmentCheck(chunk_id=chunk.chunk_id, status="error")
     try:
-        verdict = EntailmentVerdict(raw_verdict.strip())
+        verdict = _parse_verdict(raw_verdict)
     except ValueError:
         logger.warning("Invalid entailment response on chunk '%s' (%d chars)", chunk.chunk_id, len(raw_verdict))
         return EntailmentCheck(chunk_id=chunk.chunk_id, status="invalid_format", raw_output=raw_verdict)

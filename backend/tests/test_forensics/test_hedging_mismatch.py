@@ -3,6 +3,7 @@
 All Claude API calls are mocked. classify_confidence tests need no mocking.
 """
 import inspect
+import json
 from unittest.mock import MagicMock
 
 import anthropic
@@ -29,6 +30,11 @@ def _mock_response(text: str) -> MagicMock:
     msg = MagicMock()
     msg.content = [MagicMock(text=text)]
     return msg
+
+
+def _v(verdict: str) -> str:
+    """An entailment reply in the structured-output shape the model is constrained to."""
+    return json.dumps({"verdict": verdict})
 
 
 def _make_mock(mocker, responses: list) -> MagicMock:
@@ -82,8 +88,8 @@ def test_all_definitive_not_supported(mocker):
     chunks = _chunks(2)
     _make_mock(mocker, [
         '["The deadline is March 15."]',  # extraction: 1 definitive claim
-        "not_supported",  # chunk c0
-        "not_supported",  # chunk c1
+        _v("not_supported"),  # chunk c0
+        _v("not_supported"),  # chunk c1
     ])
     result = analyze_hedging_mismatch("The deadline is March 15.", chunks)
     assert result.overconfident_fraction == pytest.approx(1.0)
@@ -100,7 +106,7 @@ def test_all_hedged_supported(mocker):
     chunks = _chunks(2)
     _make_mock(mocker, [
         '["It may apply after March."]',  # extraction: 1 hedged claim
-        "supported",  # chunk c0 → short-circuit, c1 not checked
+        _v("supported"),  # chunk c0 → short-circuit, c1 not checked
     ])
     result = analyze_hedging_mismatch("It may apply after March.", chunks)
     assert result.underconfident_fraction == pytest.approx(0.0)
@@ -116,9 +122,9 @@ def test_all_matched(mocker):
     chunks = _chunks(2)
     _make_mock(mocker, [
         '["The deadline is March 15.", "It may apply after March."]',
-        "supported",      # claim 0 (definitive) + supported → matched, short-circuit
-        "not_supported",  # claim 1 (hedged) + not_supported → matched, chunk c0
-        "not_supported",  # claim 1, chunk c1
+        _v("supported"),      # claim 0 (definitive) + supported → matched, short-circuit
+        _v("not_supported"),  # claim 1 (hedged) + not_supported → matched, chunk c0
+        _v("not_supported"),  # claim 1, chunk c1
     ])
     result = analyze_hedging_mismatch("answer", chunks)
     assert result.overconfident_fraction == pytest.approx(0.0)
@@ -150,11 +156,11 @@ def test_mixed_claims_fractions(mocker):
     _make_mock(mocker, [
         '["The deadline is March 15.", "It may apply after March.", "The fee is $50."]',
         # claim 0: definitive + not_supported → overconfident (k=3 chunks all checked)
-        "not_supported", "not_supported", "not_supported",
+        _v("not_supported"), _v("not_supported"), _v("not_supported"),
         # claim 1: hedged + supported → matched (binary entailment cannot establish underconfidence) (short-circuit at c0)
-        "supported",
+        _v("supported"),
         # claim 2: definitive + supported → matched (short-circuit at c0)
-        "supported",
+        _v("supported"),
     ])
     result = analyze_hedging_mismatch("answer", chunks)
     assert result.total_claims == 3
@@ -171,9 +177,9 @@ def test_total_claims_equals_breakdown_length(mocker):
     chunks = _chunks(1)
     _make_mock(mocker, [
         '["Claim A.", "Claim B.", "Claim C."]',
-        "not_supported",  # claim 0
-        "not_supported",  # claim 1
-        "not_supported",  # claim 2
+        _v("not_supported"),  # claim 0
+        _v("not_supported"),  # claim 1
+        _v("not_supported"),  # claim 2
     ])
     result = analyze_hedging_mismatch("answer", chunks)
     assert result.total_claims == len(result.claim_breakdown)
@@ -185,37 +191,37 @@ def test_total_claims_equals_breakdown_length(mocker):
 # ---------------------------------------------------------------------------
 
 def test_mismatch_type_definitive_not_supported(mocker):
-    _make_mock(mocker, ['["The deadline is March 15."]', "not_supported"])
+    _make_mock(mocker, ['["The deadline is March 15."]', _v("not_supported")])
     result = analyze_hedging_mismatch("The deadline is March 15.", _chunks(1))
     assert result.claim_breakdown[0].mismatch_type == "overconfident"
 
 
 def test_mismatch_type_hedged_supported(mocker):
-    _make_mock(mocker, ['["It may apply after March."]', "supported"])
+    _make_mock(mocker, ['["It may apply after March."]', _v("supported")])
     result = analyze_hedging_mismatch("It may apply after March.", _chunks(1))
     assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 def test_mismatch_type_definitive_supported(mocker):
-    _make_mock(mocker, ['["The fee is $50."]', "supported"])
+    _make_mock(mocker, ['["The fee is $50."]', _v("supported")])
     result = analyze_hedging_mismatch("The fee is $50.", _chunks(1))
     assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 def test_mismatch_type_hedged_not_supported(mocker):
-    _make_mock(mocker, ['["It may apply after March."]', "not_supported"])
+    _make_mock(mocker, ['["It may apply after March."]', _v("not_supported")])
     result = analyze_hedging_mismatch("It may apply after March.", _chunks(1))
     assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 def test_mismatch_type_uncertain_not_supported(mocker):
-    _make_mock(mocker, ['["I\'m not sure this applies."]', "not_supported"])
+    _make_mock(mocker, ['["I\'m not sure this applies."]', _v("not_supported")])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].mismatch_type == "matched"
 
 
 def test_mismatch_type_uncertain_supported(mocker):
-    _make_mock(mocker, ['["I\'m not sure this applies."]', "supported"])
+    _make_mock(mocker, ['["I\'m not sure this applies."]', _v("supported")])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].mismatch_type == "matched"
 
@@ -318,7 +324,7 @@ def test_per_claim_entailment_failure_is_isolated(mocker):
     mock_client.messages.create.side_effect = [
         _mock_response('["The deadline is March 15.", "It may apply after March."]'),  # extraction
         _API_ERROR,   # claim 0 (definitive) entailment raises → unavailable
-        _mock_response("supported"),  # claim 1 (hedged) entailment succeeds → supported
+        _mock_response(_v("supported")),  # claim 1 (hedged) entailment succeeds → supported
     ]
     mock_cls = MagicMock(return_value=mock_client)
     mocker.patch("services.llm.anthropic.Anthropic", mock_cls)
@@ -347,7 +353,7 @@ def test_prompts_imported_from_constants(mocker):
     chunks = [RetrievedChunk(chunk_id="c0", text="chunk text here", score=0.9)]
     answer = "The answer is 42."
 
-    mock_client = _make_mock(mocker, ['["The answer is 42."]', "not_supported"])
+    mock_client = _make_mock(mocker, ['["The answer is 42."]', _v("not_supported")])
     analyze_hedging_mismatch(answer, chunks)
 
     calls = mock_client.messages.create.call_args_list
@@ -369,8 +375,8 @@ def test_fractions_sum_at_most_one(mocker):
     chunks = _chunks(1)
     _make_mock(mocker, [
         '["The deadline is March 15.", "It may apply after March."]',
-        "not_supported",  # claim 0 (definitive) → overconfident
-        "supported",      # claim 1 (hedged) → underconfident
+        _v("not_supported"),  # claim 0 (definitive) → overconfident
+        _v("supported"),      # claim 1 (hedged) → underconfident
     ])
     result = analyze_hedging_mismatch("answer", chunks)
     assert result.overconfident_fraction + result.underconfident_fraction <= 1.0
@@ -404,7 +410,7 @@ def test_dimension_result_not_imported_in_module():
 # ---------------------------------------------------------------------------
 
 def test_entailment_supported_with_trailing_punctuation_is_invalid(mocker):
-    _make_mock(mocker, ['["It may apply after March."]', "supported."])
+    _make_mock(mocker, ['["It may apply after March."]', _v("supported.")])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].supported is None
     assert result.claim_breakdown[0].mismatch_type is None
@@ -412,20 +418,20 @@ def test_entailment_supported_with_trailing_punctuation_is_invalid(mocker):
 
 
 def test_entailment_supported_with_prefix_is_invalid(mocker):
-    _make_mock(mocker, ['["It may apply after March."]', "yes, supported"])
+    _make_mock(mocker, ['["It may apply after March."]', _v("yes, supported")])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].supported is None
 
 
 def test_entailment_not_supported_with_trailing_punctuation_is_invalid(mocker):
-    _make_mock(mocker, ['["The deadline is March 15."]', "not_supported."])
+    _make_mock(mocker, ['["The deadline is March 15."]', _v("not_supported.")])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].supported is None
     assert result.overconfident_fraction == 0.0
 
 
 def test_entailment_not_supported_capitalized_is_invalid(mocker):
-    _make_mock(mocker, ['["The deadline is March 15."]', "Not supported"])
+    _make_mock(mocker, ['["The deadline is March 15."]', _v("Not supported")])
     result = analyze_hedging_mismatch("answer", _chunks(1))
     assert result.claim_breakdown[0].supported is None
 
@@ -443,6 +449,8 @@ def test_entailment_unexpected_response_is_unavailable(mocker):
     "supported because the context says so",
     "not_supported: the number contradicts the claim",
     "unsupported",
+    "not_supported\n\nThe context mentions CVE-2015-2017 but not the claimed CVE.",  # issue #34's failure shape
+    "not_supported",  # a bare label is no longer the contract; replies must be the JSON object
 ])
 def test_entailment_arbitrary_prose_cannot_supply_a_verdict(mocker, verdict):
     _make_mock(mocker, ['["The deadline is March 15."]', verdict])
@@ -457,7 +465,7 @@ def test_invalid_chunk_then_supported_chunk_preserves_short_circuit(mocker):
     mock_client = _make_mock(mocker, [
         '["The deadline is March 15."]',
         "supported because...",
-        "supported",
+        _v("supported"),
     ])
     result = analyze_hedging_mismatch("answer", _chunks(3))
     entry = result.claim_breakdown[0]
@@ -472,9 +480,9 @@ def test_invalid_chunk_then_supported_chunk_preserves_short_circuit(mocker):
 def test_valid_negative_and_errors_preserve_per_chunk_coverage(mocker):
     _make_mock(mocker, [
         '["The deadline is March 15."]',
-        "not_supported",
+        _v("not_supported"),
         _API_ERROR,
-        "not_supported",
+        _v("not_supported"),
     ])
     result = analyze_hedging_mismatch("answer", _chunks(3))
     entry = result.claim_breakdown[0]
@@ -516,3 +524,47 @@ def test_entailment_logs_do_not_contain_claim_or_model_output(mocker, caplog):
     assert "synthetic-claim-text" not in caplog.text
     assert "synthetic-model-echo" not in caplog.text
     assert "c0" in caplog.text and "c1" in caplog.text  # identifiers are still logged
+
+
+# ---------------------------------------------------------------------------
+# Issue #34 — the verdict format is enforced at generation time
+# ---------------------------------------------------------------------------
+
+def test_entailment_request_constrains_the_verdict_to_the_enum_schema(mocker):
+    mock_client = _make_mock(mocker, ['["The deadline is March 15."]', _v("supported")])
+    analyze_hedging_mismatch("answer", _chunks(1))
+    entailment_call = mock_client.messages.create.call_args_list[1]
+    assert entailment_call.kwargs["output_config"] == {
+        "format": {
+            "type": "json_schema",
+            "schema": {
+                "type": "object",
+                "properties": {"verdict": {"type": "string", "enum": ["supported", "not_supported"]}},
+                "required": ["verdict"],
+                "additionalProperties": False,
+            },
+        }
+    }
+
+
+@pytest.mark.parametrize("reply", [
+    json.dumps({"verdict": "supported", "reason": "extra"}),
+    json.dumps({"verdict": True}),
+    json.dumps({}),
+    json.dumps(["supported"]),
+])
+def test_entailment_reply_outside_the_schema_is_invalid(mocker, reply):
+    _make_mock(mocker, ['["The deadline is March 15."]', reply])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    check = result.claim_breakdown[0].entailment_checks[0]
+    assert check.status == "invalid_format"
+    assert check.raw_output == reply
+
+
+def test_valid_structured_negative_verdict_is_evaluated(mocker):
+    _make_mock(mocker, ['["The deadline is March 15."]', _v("not_supported")])
+    result = analyze_hedging_mismatch("answer", _chunks(1))
+    check = result.claim_breakdown[0].entailment_checks[0]
+    assert check.status == "evaluated"
+    assert check.verdict == "not_supported"
+    assert result.overconfident_fraction == 1.0

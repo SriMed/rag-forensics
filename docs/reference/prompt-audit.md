@@ -167,7 +167,7 @@ The typed boundary and failure distinction prevent invalid values from reaching 
 
 ### Output contract and current handling
 
-Production trims surrounding whitespace and accepts only the exact lowercase typed enum values `supported` and `not_supported`. Invalid formats and per-chunk exceptions remain distinct from a valid negative judgment, with claim- and chunk-level coverage exposed in the API.
+Production requests the verdict through structured output: a JSON object whose only field, `verdict`, is constrained to `supported` or `not_supported` ([ADR-059](../../ADR.md#adr-059-the-entailment-verdict-is-constrained-by-a-structured-output-schema)). The reply must decode to exactly that object with an exact enum value. Before this change, the model often appended an explanation after `not_supported`, and those replies were discarded as invalid (issue #34). The offline prompt-audit cases above still score bare-text replies to the same prompt and don't exercise the schema. Invalid formats and per-chunk exceptions remain distinct from a valid negative judgment, with claim- and chunk-level coverage exposed in the API.
 
 ### Representative observations
 
