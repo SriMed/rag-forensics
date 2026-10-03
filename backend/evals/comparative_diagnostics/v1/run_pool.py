@@ -20,6 +20,7 @@ import subprocess
 import sys
 from collections.abc import Callable, Mapping
 from pathlib import Path
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # backend/
 
@@ -68,6 +69,28 @@ def run_pool(
             print(f"{system}: {start + len(batch)}/{len(pending)}", file=sys.stderr, flush=True)
 
 
+def seed_from(output: Path, source: Path, *, systems: list[str]) -> None:
+    """Copy the named systems' records from an earlier pool run so a later run only reruns the rest."""
+    source_cases = json.loads(source.read_text())["cases"]
+    doc = {"cases": {cid: {s: entry[s] for s in systems if s in entry} for cid, entry in source_cases.items()}}
+    output.write_text(json.dumps(doc, indent=2))
+
+
+def run_rag_forensics_unscored(records: list) -> dict[str, cd.SystemDiagnosticRecord]:
+    """RAG Forensics on RAGBench records, declaring their placeholder chunk scores unavailable (#35)."""
+    from evals.comparative_diagnostics.v1 import run_pilot
+    from models import CustomChunk
+
+    unscored = [
+        SimpleNamespace(
+            example_id=r.example_id, question=r.question, response=r.response,
+            chunks=[CustomChunk(chunk_id=c.chunk_id, text=c.text, score=None) for c in r.chunks],
+        )
+        for r in records
+    ]
+    return run_pilot.run_rag_forensics(unscored, score_semantics="unavailable")
+
+
 def _git(*args: str) -> str:
     return subprocess.run(["git", *args], capture_output=True, text=True, check=True).stdout.strip()
 
@@ -76,7 +99,15 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
     parser.add_argument("--batch-size", type=int, default=10)
+    parser.add_argument("--seed-from", help="earlier pool run to copy --seed-systems from instead of rerunning them")
+    parser.add_argument("--seed-systems", nargs="+", default=["ragchecker", "ragvue"])
+    parser.add_argument(
+        "--unscored", action="store_true",
+        help="declare RAGBench's placeholder chunk scores unavailable to RAG Forensics (#35)",
+    )
     args = parser.parse_args()
+    if args.seed_from and not Path(args.output).exists():
+        seed_from(Path(args.output), Path(args.seed_from), systems=args.seed_systems)
 
     from config import CLAUDE_HAIKU, CLAUDE_SONNET
     from evals.comparative_diagnostics.v1 import run_pilot
@@ -91,6 +122,8 @@ def main() -> int:
         "dataset_revision": f"galileo-ai/ragbench@{cd.CANDIDATE_POOL_REVISION}",
         "pool_size": len(case_ids),
         "population_sha256": cd.make_population_sha256(case_ids),
+        "rag_forensics_score_semantics": "unavailable" if args.unscored else "normalized_similarity",
+        "seeded_from": {"path": args.seed_from, "systems": args.seed_systems} if args.seed_from else None,
         "models": {
             "rag_forensics": {"haiku": CLAUDE_HAIKU, "sonnet": CLAUDE_SONNET},
             "ragchecker": run_pilot.RAGCHECKER_MODEL,
@@ -100,7 +133,7 @@ def main() -> int:
     run_pool(
         records, Path(args.output), batch_size=args.batch_size, metadata=metadata,
         runners={
-            "rag_forensics": run_pilot.run_rag_forensics,
+            "rag_forensics": run_rag_forensics_unscored if args.unscored else run_pilot.run_rag_forensics,
             "ragchecker": run_pilot.run_ragchecker,
             "ragvue": run_pilot.run_ragvue,
         },

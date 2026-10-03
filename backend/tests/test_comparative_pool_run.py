@@ -99,3 +99,46 @@ def test_failed_cases_are_retried_on_resume(tmp_path):
     assert ("ragvue", ["c0", "c1"]) not in calls
     cases = json.loads(out.read_text())["cases"]
     assert cases["c1"]["ragchecker"]["native"]["availability"] == "healthy"
+
+
+def test_seed_from_copies_only_the_named_systems(tmp_path):
+    source = tmp_path / "v1.json"
+    run_pool.run_pool([_record("c0"), _record("c1")], source, runners=_runners([]), batch_size=2, metadata={"v": 1})
+    out = tmp_path / "v2.json"
+
+    run_pool.seed_from(out, source, systems=["ragchecker", "ragvue"])
+
+    cases = json.loads(out.read_text())["cases"]
+    assert set(cases) == {"c0", "c1"}
+    assert all(set(c) == {"ragchecker", "ragvue"} for c in cases.values())
+
+
+def test_seeded_systems_are_not_rerun(tmp_path):
+    source = tmp_path / "v1.json"
+    records = [_record("c0"), _record("c1")]
+    run_pool.run_pool(records, source, runners=_runners([]), batch_size=2, metadata={})
+    out = tmp_path / "v2.json"
+    run_pool.seed_from(out, source, systems=["ragchecker", "ragvue"])
+
+    calls: list = []
+    run_pool.run_pool(records, out, runners=_runners(calls), batch_size=2, metadata={})
+
+    assert {system for system, _ in calls} == {"rag_forensics"}
+
+
+def test_unscored_rag_forensics_requests_declare_scores_unavailable(mocker):
+    from models import RetrievedChunk
+
+    record = SimpleNamespace(
+        example_id="c0", question="Q?", response="A.",
+        chunks=[RetrievedChunk(chunk_id="d0", text="t", score=1.0)],
+    )
+    analyze = mocker.patch("routers.analyze.analyze_custom")
+    analyze.return_value.verdict_signals = []
+    analyze.return_value.model_dump.return_value = {}
+
+    run_pool.run_rag_forensics_unscored([record])
+
+    request = analyze.call_args.args[0]
+    assert request.score_semantics == "unavailable"
+    assert [c.score for c in request.chunks] == [None]

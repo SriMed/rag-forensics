@@ -22,6 +22,7 @@ import subprocess
 import sys
 from collections.abc import Mapping
 from pathlib import Path
+from typing import Literal
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # backend/
 
@@ -39,7 +40,9 @@ RAGCHECKER_MODEL = "anthropic/claude-haiku-4-5-20251001"
 RAGVUE_MODEL = "claude-haiku-4-5-20251001"
 
 
-def run_rag_forensics(records) -> dict[str, cd.SystemDiagnosticRecord]:
+def run_rag_forensics(
+    records, score_semantics: Literal["normalized_similarity", "unavailable"] = "normalized_similarity",
+) -> dict[str, cd.SystemDiagnosticRecord]:
     from routers.analyze import analyze_custom
 
     out = {}
@@ -49,7 +52,7 @@ def run_rag_forensics(records) -> dict[str, cd.SystemDiagnosticRecord]:
         ]
         request = CustomAnalyzeRequest(
             question=record.question, answer=record.response, chunks=custom_chunks,
-            score_semantics="normalized_similarity",
+            score_semantics=score_semantics,
         )
         try:
             response = analyze_custom(request)
