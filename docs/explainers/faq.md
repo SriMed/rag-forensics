@@ -12,7 +12,7 @@ Two problems came up repeatedly in a production RAG system.
 
 First, evaluation scores such as faithfulness or relevance can show that an answer deserves attention, but they rarely show why. A weak answer may reflect retrieval, missing evidence, contradiction, changed qualifiers, generation, or a failed evaluator. Treating one score as proof of one cause hides the others.
 
-Second, those scores carry meaning that is easiest to act on with data-science training. A mostly SWE-heavy team with little data-science support. A faithfulness score of 0.62 is a real measurement, but going from that number to "what do I change next" requires reasoning about cause and effect that the score does not spell out. RAG Forensics turns the scores and other signals into a record an engineer can act on: what was observed, which explanations remain open, and which experiment would distinguish them.
+Second, those scores carry meaning that is easiest to act on with data-science training. The team was mostly software engineers with little data-science support. A faithfulness score of 0.62 is a real measurement, but going from that number to "what do I change next" requires reasoning about cause and effect that the score does not spell out. RAG Forensics turns the scores and other signals into a record an engineer can act on: what was observed, which explanations remain open, and which experiment would distinguish them.
 
 No proprietary incidents, outputs, or user research are included in this repository; its empirical claims come from public datasets.
 
