@@ -283,3 +283,36 @@ def test_custom_failure_logs_do_not_contain_exception_message(mocker, caplog):
         assert client.post("/analyze/custom", json=_VALID_REQUEST).status_code == 500
     assert "synthetic-caller-content" not in caplog.text
     assert "RuntimeError" in caplog.text
+
+
+@pytest.mark.parametrize(
+    ("field", "build"),
+    [
+        ("question", lambda r: {**r, "question": "q" * 2001}),
+        ("answer", lambda r: {**r, "answer": "a" * 20001}),
+        ("chunks", lambda r: {**r, "chunks": [{**r["chunks"][0], "chunk_id": f"c{i}"} for i in range(51)]}),
+        ("text", lambda r: {**r, "chunks": [{**r["chunks"][0], "text": "t" * 20001}]}),
+    ],
+)
+def test_custom_rejects_oversized_requests_before_analysis(mocker, field, build):
+    _patch_services(mocker)
+    response = client.post("/analyze/custom", json=build(_VALID_REQUEST))
+    assert response.status_code == 422
+    assert any(field in error["loc"] for error in response.json()["detail"])
+    analyze_module.analyze_hedging_mismatch.assert_not_called()
+
+
+def test_custom_accepts_requests_at_the_size_limits(mocker):
+    _patch_services(mocker)
+    chunk = _VALID_REQUEST["chunks"][0]
+    payload = {
+        **_VALID_REQUEST,
+        "question": "q" * 2000,
+        "answer": "a" * 20000,
+        "chunks": [{**chunk, "chunk_id": f"c{i}", "text": "t" * 20000} for i in range(50)],
+    }
+    mocker.patch("routers.analyze.get_embedding_model").return_value.encode.side_effect = [
+        np.ones((1, 2)), np.random.default_rng(0).random((50, 2)),
+    ]
+    response = client.post("/analyze/custom", json=payload)
+    assert response.status_code == 200

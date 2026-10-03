@@ -16,6 +16,10 @@ from uuid import uuid4
 # Allow imports from backend root
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
+from telemetry import disable_dependency_telemetry
+
+disable_dependency_telemetry()
+
 import chromadb
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer

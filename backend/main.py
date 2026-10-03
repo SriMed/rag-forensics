@@ -5,6 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from telemetry import disable_dependency_telemetry
+
+disable_dependency_telemetry()
+
 # LOG_LEVEL controls verbosity only; unknown values fall back to INFO. Third-party loggers below
 # stay at WARNING regardless, so SDK request payloads are never logged.
 _LOG_LEVEL = logging.getLevelNamesMapping().get(os.environ.get("LOG_LEVEL", "INFO").strip().upper(), logging.INFO)

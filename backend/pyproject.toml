@@ -45,8 +45,9 @@ select = ["E", "F", "I", "B", "UP", "BLE"]
 ignore = ["E501", "B905"]
 
 [tool.ruff.lint.per-file-ignores]
-# load_dotenv() / sys.path setup must run before the imports that follow.
+# load_dotenv() / sys.path / telemetry opt-out must run before the imports that follow.
 "main.py" = ["E402"]
+"scripts/bootstrap_data.py" = ["E402"]
 "evals/comparative_diagnostics/v1/run_pilot.py" = ["E402"]
 # Research code records evaluator failures instead of crashing.
 "benchmark/*" = ["BLE001"]

@@ -91,3 +91,34 @@ def test_invalid_log_level_falls_back_to_info():
     output = _run("default", LOG_LEVEL="not-a-level")
     assert "synthetic-operation-completed" in output
     assert "synthetic-debug-detail" not in output
+
+
+_TELEMETRY_SCRIPT = """
+import importlib, sys
+importlib.import_module(sys.argv[1])
+import chromadb.config, huggingface_hub.constants, ragas._analytics
+print(chromadb.config.Settings().anonymized_telemetry, ragas._analytics.do_not_track(),
+      huggingface_hub.constants.HF_HUB_DISABLE_TELEMETRY)
+"""
+
+
+def _telemetry_flags(module: str, **extra_env: str) -> str:
+    telemetry_vars = {"ANONYMIZED_TELEMETRY", "RAGAS_DO_NOT_TRACK", "HF_HUB_DISABLE_TELEMETRY", "DO_NOT_TRACK"}
+    env = {k: v for k, v in os.environ.items() if k not in telemetry_vars}
+    result = subprocess.run(
+        [sys.executable, "-c", _TELEMETRY_SCRIPT, module],
+        cwd=Path(__file__).resolve().parents[1],
+        env={**env, "PYTHON_DOTENV_DISABLED": "1", "HF_HUB_OFFLINE": "1", **extra_env},
+        capture_output=True, text=True, timeout=120,
+    )
+    assert result.returncode == 0, result.stderr
+    return result.stdout.strip().splitlines()[-1]
+
+
+@pytest.mark.parametrize("module", ["main", "scripts.bootstrap_data"])
+def test_dependency_telemetry_is_off_by_default(module):
+    assert _telemetry_flags(module) == "False True True"
+
+
+def test_operator_can_explicitly_reenable_chroma_telemetry():
+    assert _telemetry_flags("main", ANONYMIZED_TELEMETRY="True").startswith("True ")

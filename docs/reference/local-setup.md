@@ -83,6 +83,7 @@ Open `http://localhost:3000`. That browser origin is explicitly allowed by backe
 | Hugging Face cache (normally `~/.cache/huggingface/`) | Downloaded dataset/model files; `HF_HOME` can relocate the cache |
 | `~/.cache/chroma/onnx_models/` | Chroma's default query-embedding model for the bundled demo |
 | NLTK data (normally `~/nltk_data/`) | Sentence-tokenizer data; `NLTK_DATA` adds a lookup location |
+| `ANONYMIZED_TELEMETRY`, `RAGAS_DO_NOT_TRACK`, `HF_HUB_DISABLE_TELEMETRY` | Usage telemetry from Chroma, RAGAS, and the Hugging Face Hub. The backend and bootstrap turn all three off unless you set a value yourself |
 
 Ordinary restarts do not delete these files or require bootstrap. Changing the working directory, cache environment, or user account can make existing data appear absent. Copy the Chroma directory only with the backend and bootstrap stopped.
 

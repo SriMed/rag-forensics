@@ -60,8 +60,16 @@ class RetrievedChunk(BaseModel):
         return self
 
 
+MAX_CUSTOM_CHUNKS = 50
+MAX_CUSTOM_CHUNK_CHARS = 20_000
+MAX_CUSTOM_QUESTION_CHARS = 2_000
+MAX_CUSTOM_ANSWER_CHARS = 20_000
+
+
 class CustomChunk(RetrievedChunk):
     """Caller-supplied chunk; known completeness is necessarily caller asserted."""
+
+    text: str = Field(max_length=MAX_CUSTOM_CHUNK_CHARS)
 
     @model_validator(mode="after")
     def custom_completeness_is_caller_asserted(self):
@@ -210,9 +218,9 @@ class AnalyzeRequest(BaseModel):
 
 
 class CustomAnalyzeRequest(BaseModel):
-    question: str
-    answer: str
-    chunks: list[CustomChunk]
+    question: str = Field(max_length=MAX_CUSTOM_QUESTION_CHARS)
+    answer: str = Field(max_length=MAX_CUSTOM_ANSWER_CHARS)
+    chunks: list[CustomChunk] = Field(max_length=MAX_CUSTOM_CHUNKS)
     score_semantics: Literal["normalized_similarity"]
 
     @field_validator("chunks")

@@ -43,6 +43,10 @@ print(response.json())
 
 Completeness describes the source boundary, not whether the chunk contains enough evidence to answer the question. A complete but irrelevant chunk is still complete; a truncated chunk may still contain useful facts. Do not infer this field from terminal punctuation. Omit both fields when the source boundary is unavailable; the API will expose `unknown`/`unavailable`.
 
+## Request limits
+
+A request may contain at most 50 chunks, 20,000 characters per chunk text, 2,000 characters of question, and 20,000 characters of answer. Larger requests are rejected with HTTP 422 before any model call, and the error's `loc` names the field that is too large. Model-call cost grows with the number of chunks; the limits cap a single request and are not a recommendation about how many chunks to retrieve. See [ADR-053](../../ADR.md#adr-053-dependency-telemetry-is-off-by-default-and-custom-analysis-requests-are-size-bounded).
+
 ## Response
 
 Same `AnalyzeResponse` shape as the demo endpoint. Its RAGAS portion uses explicit result objects:
