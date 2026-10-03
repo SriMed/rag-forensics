@@ -126,3 +126,49 @@ def test_benchmarks_and_app_share_one_set_of_pins():
     assert experiment_cli.EMBEDDING_REVISION == pins.EMBEDDING_REVISION
     assert ragbench.DATASET_NAME == pins.DATASET_NAME
     assert ragbench.EMBEDDING_MODEL_NAME == pins.EMBEDDING_MODEL
+
+
+_TECHQA_DUPLICATE_ROWS = [
+    {"id": "q1", "question": "What is TCP?", "response": "First response.",
+     "documents": ["TCP is a protocol.", "It is reliable."]},
+    {"id": "q2", "question": "What is UDP?", "response": "UDP response.", "documents": ["UDP is a protocol."]},
+    {"id": "q1", "question": "What is TCP?", "response": "Second response.",
+     "documents": ["TCP is a protocol.", "It is reliable."]},
+]
+
+
+def test_duplicate_dataset_ids_keep_the_first_row(store, mocker):
+    client, encoder = store
+    mocker.patch.object(bootstrap_data, "load_dataset", return_value=_TECHQA_DUPLICATE_ROWS)
+    encoder.encode.side_effect = lambda texts, **_: np.eye(3)[[i % 3 for i in range(len(texts))]]
+
+    bootstrap_data.bootstrap()
+
+    stored = client.get_collection("techqa").get(include=["metadatas"])
+    assert sorted(stored["ids"]) == ["q1_chunk_0", "q1_chunk_1", "q2_chunk_0"]
+    answers = {meta["example_id"]: meta["answer"] for meta in stored["metadatas"]}
+    assert answers == {"q1": "First response.", "q2": "UDP response."}
+    assert encoder.encode.call_args.args[0] == ["TCP is a protocol.", "It is reliable.", "UDP is a protocol."]
+
+
+def test_duplicate_id_with_different_documents_fails_without_replacing_corpus(store, mocker):
+    client, _ = store
+    conflicting = [dict(_TECHQA_DUPLICATE_ROWS[0]), dict(_TECHQA_DUPLICATE_ROWS[2], documents=["Other text."])]
+    mocker.patch.object(bootstrap_data, "load_dataset", return_value=conflicting)
+
+    with pytest.raises(ValueError, match="q1"):
+        bootstrap_data.bootstrap()
+
+    assert client.get_collection("techqa").get()["documents"] == ["Existing corpus"]
+
+
+def test_bootstrap_reports_stored_chunks_and_skipped_duplicates(store, mocker, capsys):
+    _, encoder = store
+    mocker.patch.object(bootstrap_data, "load_dataset", return_value=_TECHQA_DUPLICATE_ROWS)
+    encoder.encode.side_effect = lambda texts, **_: np.eye(3)[[i % 3 for i in range(len(texts))]]
+
+    bootstrap_data.bootstrap()
+
+    out = capsys.readouterr().out
+    assert "Skipped 1 duplicate rows" in out
+    assert "Indexed: 3 chunks" in out

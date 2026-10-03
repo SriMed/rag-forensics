@@ -45,6 +45,10 @@ def bootstrap():
         all_ids = []
         all_texts = []
         all_metadatas = []
+        # RAGBench repeats some ids, one row per answer generator, with the same question and
+        # documents. Keep the first row so the stored response metadata is deterministic.
+        seen_rows = {}
+        skipped_duplicates = 0
 
         for row in dataset:
             question = row["question"]
@@ -59,6 +63,15 @@ def bootstrap():
             documents = row.get("documents") or []
             if isinstance(documents, str):
                 documents = [documents]
+
+            if example_id in seen_rows:
+                if seen_rows[example_id] != (question, documents):
+                    raise ValueError(
+                        f"Duplicate id {example_id!r} in {domain} has different question or documents"
+                    )
+                skipped_duplicates += 1
+                continue
+            seen_rows[example_id] = (question, documents)
 
             for chunk_idx, chunk_text in enumerate(documents):
                 chunk_id = f"{example_id}_chunk_{chunk_idx}"
@@ -107,7 +120,9 @@ def bootstrap():
 
         sample_idx = 0
         sample_question = all_metadatas[sample_idx]["question"] if all_metadatas else "N/A"
-        print(f"  Indexed: {len(all_ids)} chunks")
+        if skipped_duplicates:
+            print(f"  Skipped {skipped_duplicates} duplicate rows (kept the first row per id)")
+        print(f"  Indexed: {client.get_collection(name=domain).count()} chunks")
         print(f"  Sample question: {sample_question[:120]}")
 
     print("\nBootstrap complete.")
