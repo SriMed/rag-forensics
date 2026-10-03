@@ -25,8 +25,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # backend/
 
 import benchmark.comparative_diagnostics as cd
 
-BATCH_CRASH_PREFIX = "runner batch failed: "
-
 Runner = Callable[[list], Mapping[str, cd.SystemDiagnosticRecord]]
 
 
@@ -35,7 +33,7 @@ def _crashed(system: cd.SystemName, error: str) -> cd.SystemDiagnosticRecord:
         system=system,
         native=cd.NativeSystemOutput(
             system=system, system_version="unknown", availability="failed",
-            raw_output=None, error=BATCH_CRASH_PREFIX + error,
+            raw_output=None, error=cd.BATCH_CRASH_PREFIX + error,
         ),
         suspected_component=None, supporting_observation=None, evidence_attribution=[],
         method=None, reliability=None, causal_strength_language=None,
@@ -46,7 +44,7 @@ def _crashed(system: cd.SystemName, error: str) -> cd.SystemDiagnosticRecord:
 def _needs_run(entry: dict | None) -> bool:
     if entry is None:
         return True
-    return (entry["native"].get("error") or "").startswith(BATCH_CRASH_PREFIX)
+    return (entry["native"].get("error") or "").startswith(cd.BATCH_CRASH_PREFIX)
 
 
 def run_pool(

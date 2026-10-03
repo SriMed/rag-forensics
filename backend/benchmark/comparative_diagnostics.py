@@ -50,6 +50,9 @@ SystemName = Literal["rag_forensics", "ragchecker", "ragvue", "ragas_baseline"]
 # evaluator error), or attempted and returned an explicit failure (failed).
 AvailabilityState = Literal["healthy", "missing", "unavailable", "failed"]
 
+# Error prefix the pool runner writes when a whole batch crashed (infrastructure, not system output).
+BATCH_CRASH_PREFIX = "runner batch failed: "
+
 DECLARED_STRATA = (
     "systems_agree_labels_support",
     "systems_agree_labels_contradict",
