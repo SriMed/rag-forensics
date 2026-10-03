@@ -1,0 +1,297 @@
+{
+  "description": "Synthetic, publishable TechQA-shaped inputs for the joint-evidence protocol (issue #32). All text is invented; the claim review accepts the deterministic claims and contains no human judgment.",
+  "rows": [
+    {
+      "domain": "techqa",
+      "row": {
+        "id": "synthetic-001",
+        "question": "How do I fix the scheduler crash after upgrading Acme Batch to 4.2?",
+        "documents": [
+          "Acme Batch 4.2 changed the default heap size for the scheduler service. Some installations report that the scheduler crashes during startup after the upgrade. Fix pack 4.2.0.1 resolves this problem. It restores the previous heap default and adds a startup check. The fix pack can be downloaded from the support portal. Release notes for 4.2 list other known issues. The reporting module is unaffected by this change. Customers on version 4.1 do not need to take action. Contact support if the problem persists after applying the fix pack. Logs are written to the scheduler log directory by default.",
+          "Acme Batch supports Linux and Windows. Version 4.2 was released in March. Version 4.2 adds a new web console."
+        ],
+        "documents_sentences": [
+          [
+            [
+              "0a",
+              "Acme Batch 4.2 changed the default heap size for the scheduler service."
+            ],
+            [
+              "0b",
+              "Some installations report that the scheduler crashes during startup after the upgrade."
+            ],
+            [
+              "0c",
+              "Fix pack 4.2.0.1 resolves this problem."
+            ],
+            [
+              "0d",
+              "It restores the previous heap default and adds a startup check."
+            ],
+            [
+              "0e",
+              "The fix pack can be downloaded from the support portal."
+            ],
+            [
+              "0f",
+              "Release notes for 4.2 list other known issues."
+            ],
+            [
+              "0g",
+              "The reporting module is unaffected by this change."
+            ],
+            [
+              "0h",
+              "Customers on version 4.1 do not need to take action."
+            ],
+            [
+              "0i",
+              "Contact support if the problem persists after applying the fix pack."
+            ],
+            [
+              "0j",
+              "Logs are written to the scheduler log directory by default."
+            ]
+          ],
+          [
+            [
+              "1a",
+              "Acme Batch supports Linux and Windows."
+            ],
+            [
+              "1b",
+              "Version 4.2 was released in March."
+            ],
+            [
+              "1c",
+              "Version 4.2 adds a new web console."
+            ]
+          ]
+        ],
+        "response": "Fix pack 4.2.0.1 restores the previous heap default. The upgrade to Acme Batch 4.2 changed the scheduler heap size. The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1. The fix pack also requires a database migration.",
+        "response_sentences": [
+          [
+            "a",
+            "Fix pack 4.2.0.1 restores the previous heap default."
+          ],
+          [
+            "b",
+            "The upgrade to Acme Batch 4.2 changed the scheduler heap size."
+          ],
+          [
+            "c",
+            "The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1."
+          ],
+          [
+            "u",
+            "The fix pack also requires a database migration."
+          ]
+        ],
+        "sentence_support_information": [
+          {
+            "response_sentence_key": "a",
+            "fully_supported": true,
+            "supporting_sentence_keys": [
+              "0c"
+            ]
+          },
+          {
+            "response_sentence_key": "b",
+            "fully_supported": true,
+            "supporting_sentence_keys": [
+              "0a"
+            ]
+          },
+          {
+            "response_sentence_key": "c",
+            "fully_supported": true,
+            "supporting_sentence_keys": [
+              "0b",
+              "0c"
+            ]
+          },
+          {
+            "response_sentence_key": "u",
+            "fully_supported": false,
+            "supporting_sentence_keys": []
+          }
+        ],
+        "unsupported_response_sentence_keys": [
+          "u"
+        ]
+      }
+    },
+    {
+      "domain": "techqa",
+      "row": {
+        "id": "synthetic-002",
+        "question": "Which ports must be open for the Acme agent?",
+        "documents": [
+          "The Acme agent communicates with the server over two ports. Port 9443 carries encrypted management traffic. Port 9080 is used for health checks. Both ports must be reachable from the server. The agent installer does not modify firewall rules. Administrators must open the ports manually. The agent runs as a background service. Agent logs rotate daily. The agent can be upgraded in place."
+        ],
+        "documents_sentences": [
+          [
+            [
+              "0a",
+              "The Acme agent communicates with the server over two ports."
+            ],
+            [
+              "0b",
+              "Port 9443 carries encrypted management traffic."
+            ],
+            [
+              "0c",
+              "Port 9080 is used for health checks."
+            ],
+            [
+              "0d",
+              "Both ports must be reachable from the server."
+            ],
+            [
+              "0e",
+              "The agent installer does not modify firewall rules."
+            ],
+            [
+              "0f",
+              "Administrators must open the ports manually."
+            ],
+            [
+              "0g",
+              "The agent runs as a background service."
+            ],
+            [
+              "0h",
+              "Agent logs rotate daily."
+            ],
+            [
+              "0i",
+              "The agent can be upgraded in place."
+            ]
+          ]
+        ],
+        "response": "Port 9443 carries encrypted management traffic. The installer does not change firewall rules. Port 22 must also be open for the agent.",
+        "response_sentences": [
+          [
+            "d",
+            "Port 9443 carries encrypted management traffic."
+          ],
+          [
+            "e",
+            "The installer does not change firewall rules."
+          ],
+          [
+            "v",
+            "Port 22 must also be open for the agent."
+          ]
+        ],
+        "sentence_support_information": [
+          {
+            "response_sentence_key": "d",
+            "fully_supported": true,
+            "supporting_sentence_keys": [
+              "0b"
+            ]
+          },
+          {
+            "response_sentence_key": "e",
+            "fully_supported": true,
+            "supporting_sentence_keys": [
+              "0e"
+            ]
+          },
+          {
+            "response_sentence_key": "v",
+            "fully_supported": false,
+            "supporting_sentence_keys": []
+          }
+        ],
+        "unsupported_response_sentence_keys": [
+          "v"
+        ]
+      }
+    }
+  ],
+  "claim_review": {
+    "schema_version": "decomposition-evidence-claims.v1",
+    "status": "frozen",
+    "reviewer_identity": "synthetic-fixture",
+    "reviewer_instructions": "Rewrite each supported response sentence as the smallest independently verifiable claims without adding facts. Use only the question, full response, target sentence, and proposed decomposition in this packet. Do not consult evidence, condition assignments, verifier outcomes, or downstream results. Preserve qualifiers, negation, quantities, entities, and relations. Set accept_deterministic=true when the proposed split is already atomic; otherwise set it false and provide reviewed_claims. Record uncertainty in unresolved_judgments and still provide the best review decision; set status=frozen only after every item is reviewed.",
+    "population_sha256": "da83dc2fe596be1a5e8c65c7e2a29c87ec0b20f543a44bf45a4d3328e53188d5",
+    "decomposer_name": "deterministic_clause",
+    "decomposer_version": "1",
+    "revision": 1,
+    "unresolved_judgments": [],
+    "items": [
+      {
+        "domain": "techqa",
+        "example_id": "synthetic-001",
+        "sentence_key": "a",
+        "question": "How do I fix the scheduler crash after upgrading Acme Batch to 4.2?",
+        "full_response": "Fix pack 4.2.0.1 restores the previous heap default. The upgrade to Acme Batch 4.2 changed the scheduler heap size. The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1. The fix pack also requires a database migration.",
+        "sentence": "Fix pack 4.2.0.1 restores the previous heap default.",
+        "deterministic_claims": [
+          "Fix pack 4.2.0.1 restores the previous heap default."
+        ],
+        "accept_deterministic": true,
+        "reviewed_claims": [],
+        "reviewer_notes": null
+      },
+      {
+        "domain": "techqa",
+        "example_id": "synthetic-001",
+        "sentence_key": "b",
+        "question": "How do I fix the scheduler crash after upgrading Acme Batch to 4.2?",
+        "full_response": "Fix pack 4.2.0.1 restores the previous heap default. The upgrade to Acme Batch 4.2 changed the scheduler heap size. The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1. The fix pack also requires a database migration.",
+        "sentence": "The upgrade to Acme Batch 4.2 changed the scheduler heap size.",
+        "deterministic_claims": [
+          "The upgrade to Acme Batch 4.2 changed the scheduler heap size."
+        ],
+        "accept_deterministic": true,
+        "reviewed_claims": [],
+        "reviewer_notes": null
+      },
+      {
+        "domain": "techqa",
+        "example_id": "synthetic-001",
+        "sentence_key": "c",
+        "question": "How do I fix the scheduler crash after upgrading Acme Batch to 4.2?",
+        "full_response": "Fix pack 4.2.0.1 restores the previous heap default. The upgrade to Acme Batch 4.2 changed the scheduler heap size. The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1. The fix pack also requires a database migration.",
+        "sentence": "The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1.",
+        "deterministic_claims": [
+          "The scheduler crash after the upgrade is resolved by fix pack 4.2.0.1."
+        ],
+        "accept_deterministic": true,
+        "reviewed_claims": [],
+        "reviewer_notes": null
+      },
+      {
+        "domain": "techqa",
+        "example_id": "synthetic-002",
+        "sentence_key": "d",
+        "question": "Which ports must be open for the Acme agent?",
+        "full_response": "Port 9443 carries encrypted management traffic. The installer does not change firewall rules. Port 22 must also be open for the agent.",
+        "sentence": "Port 9443 carries encrypted management traffic.",
+        "deterministic_claims": [
+          "Port 9443 carries encrypted management traffic."
+        ],
+        "accept_deterministic": true,
+        "reviewed_claims": [],
+        "reviewer_notes": null
+      },
+      {
+        "domain": "techqa",
+        "example_id": "synthetic-002",
+        "sentence_key": "e",
+        "question": "Which ports must be open for the Acme agent?",
+        "full_response": "Port 9443 carries encrypted management traffic. The installer does not change firewall rules. Port 22 must also be open for the agent.",
+        "sentence": "The installer does not change firewall rules.",
+        "deterministic_claims": [
+          "The installer does not change firewall rules."
+        ],
+        "accept_deterministic": true,
+        "reviewed_claims": [],
+        "reviewer_notes": null
+      }
+    ]
+  }
+}

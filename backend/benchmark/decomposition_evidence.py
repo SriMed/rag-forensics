@@ -253,18 +253,15 @@ def _interval(
                               upper=float(np.quantile(samples, .975)), iterations=iterations, seed=seed)
 
 
-def run_decomposition_evidence_experiment(
-    records: Sequence[RAGBenchEvaluationRecord], embedding_model,
-    deterministic_decomposer: ClaimDecomposer, verifier: EntailmentVerifier,
-    threshold: float, review: ClaimReviewArtifact, review_sha256: str,
-    bootstrap_iterations: int = 2000, seed: int = 42,
-    metadata: ExperimentMetadata | None = None,
-) -> DecompositionEvidenceReport:
+def validate_claim_review(
+    records: Sequence[RAGBenchEvaluationRecord],
+    review: ClaimReviewArtifact,
+    deterministic_decomposer: ClaimDecomposer,
+) -> tuple[list[RAGBenchEvaluationRecord], dict[tuple[str, str, str], ClaimReviewItem]]:
+    """Return eligible records and reviewed items once the review provably matches them."""
     if review.status != "frozen":
         raise ValueError("claim review must be frozen before running the experiment")
-    if bootstrap_iterations < 1:
-        raise ValueError("bootstrap_iterations must be at least 1")
-    eligible, _, excluded = _eligible_records(records)
+    eligible, _, _ = _eligible_records(records)
     if review.population_sha256 != population_sha256(eligible):
         raise ValueError("claim review population provenance does not match eligible records")
     if (review.decomposer_name, review.decomposer_version) != (
@@ -276,6 +273,21 @@ def run_decomposition_evidence_experiment(
     reviewed = {_key(x.domain, x.example_id, x.sentence_key): x for x in review.items}
     if set(reviewed) != expected:
         raise ValueError("claim review population does not exactly match eligible records")
+    return eligible, reviewed
+
+
+def run_decomposition_evidence_experiment(
+    records: Sequence[RAGBenchEvaluationRecord], embedding_model,
+    deterministic_decomposer: ClaimDecomposer, verifier: EntailmentVerifier,
+    threshold: float, review: ClaimReviewArtifact, review_sha256: str,
+    bootstrap_iterations: int = 2000, seed: int = 42,
+    metadata: ExperimentMetadata | None = None,
+) -> DecompositionEvidenceReport:
+    if bootstrap_iterations < 1:
+        raise ValueError("bootstrap_iterations must be at least 1")
+    eligible, reviewed = validate_claim_review(records, review, deterministic_decomposer)
+    _, _, excluded = _eligible_records(records)
+    expected = {_key(r.domain, r.example_id, s.key) for r in eligible for s in r.response_sentences}
 
     deterministic = run_oracle_evidence_diagnostic(
         eligible, embedding_model, deterministic_decomposer, verifier, threshold,
