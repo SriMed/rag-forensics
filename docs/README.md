@@ -10,6 +10,7 @@ The documentation is organized by reader intent. Start with an explainer for an 
 - [Understanding the oracle-evidence experiment](explainers/oracle-evidence.md) explains how the experiment tests evidence selection, why it checks source sentences separately, and what persistent rejections do and do not establish.
 - [Understanding the decomposition-by-evidence experiment](explainers/decomposition-by-evidence.md) explains what makes a claim well-formed enough to verify, why the blinded review can't reason from evidence, why claim count affects the measured outcome on its own, and how the four-condition design compares claim representations and evidence conditions without isolating decomposition quality.
 - [Understanding the joint-evidence experiment](explainers/joint-evidence.md) explains why the follow-up added a neighbor-window condition, how the distractor and unsupported-sentence controls separate better evidence from more text, how the result was judged, and what the design got wrong.
+- [Understanding the comparative disagreement set](explainers/comparative-disagreement-set.md) explains what RAG Forensics, RAGChecker, RAGVUE, and RAGAS can be compared on, why every pool case is labeled supported, how cases were drawn without hand-picking, how to read a case, and what the design got wrong.
 
 ## Reference
 

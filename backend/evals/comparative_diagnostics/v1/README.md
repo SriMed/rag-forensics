@@ -57,8 +57,14 @@ All three systems ran live and returned genuine, healthy results on all three ca
 
 On these 3 cases, RAGChecker's `faithfulness` and RAGVue's `strict_faithfulness`/ `retrieval_relevance` did not always agree with each other or with RAG Forensics' top-ranked concern even though the RAGBench dataset label was `fully_supported` for all three (e.g. `techqa_DEV_Q099`: RAGChecker faithfulness `1.0`, RAGVue `retrieval_relevance` `0.2`, RAG Forensics top signal `overconfidence`). This is exactly the kind of cross-system disagreement the full case collection is meant to surface — but 3 non-stratified cases are not enough to characterize it, and no interpretation of it is offered here.
 
-## 4. What is not done yet
+## 4. Pool runs and case selection
 
-No cases are selected under the frozen protocol. `run_pilot.py`'s 3-case output demonstrates the pipeline works end to end and uses its own independent sample, not the pool below.
+[`run_pool.py`](run_pool.py) ran all three systems over the 98-case candidate pool (`load_case_candidate_pool()`); [`pool-run.json`](pool-run.json) records every native output. That first run passed RAGBench's placeholder chunk scores to RAG Forensics as real similarity scores, so [`pool-run-v2.json`](pool-run-v2.json) reruns RAG Forensics with scores declared unavailable and the #34 entailment fix, copying RAGChecker's and RAGVue's outputs unchanged (ADR-060). The stratum rules in [`STRATUM-RULES.md`](STRATUM-RULES.md) (v2) are applied by [`select_cases.py`](select_cases.py) together with the local oracle-evidence report, producing the case manifest [`selected-cases.json`](selected-cases.json). Reproduce from `backend/`:
 
-The candidate pool itself is now decided and implemented: `benchmark.comparative_diagnostics.load_case_candidate_pool()` returns the deduplicated parent examples of issue #29's 188-eligible-sentence population (see `CASE-SELECTION-PROTOCOL.md` §"Candidate pool" for why the sentence-level population isn't used directly). It has not been run yet — running the full pool through all three systems is a much larger live-API operation than the 3-case pilot (roughly 60x), and was deliberately deferred pending explicit go-ahead rather than run automatically. Once run, the seeded per-stratum draw (`CASE-SELECTION-PROTOCOL.md` §"Selection procedure") produces the actual 12–20 selected, frozen cases.
+```bash
+poetry run python evals/comparative_diagnostics/v1/run_pool.py --output evals/comparative_diagnostics/v1/pool-run-v2.json --seed-from evals/comparative_diagnostics/v1/pool-run.json --unscored
+poetry run python -m benchmark.oracle_evidence_cli --domains techqa finqa covidqa --evaluation-split test --evaluation-limit 100 --entailment-threshold 0.0017914474026707317 --seed 42 --bootstrap-iterations 2000 --output output/comparative-pool-oracle-evidence.json
+poetry run python evals/comparative_diagnostics/v1/select_cases.py --pool-run evals/comparative_diagnostics/v1/pool-run-v2.json --oracle-report output/comparative-pool-oracle-evidence.json --output evals/comparative_diagnostics/v1/selected-cases.json
+```
+
+The pool run makes paid, non-deterministic model calls, so a rerun won't reproduce `pool-run-v2.json` exactly; the selection step is deterministic given it. Counts and interpretation are in [Benchmarking and current evidence](../../../../docs/reference/benchmarks.md#comparative-disagreement-set) and [Understanding the comparative disagreement set](../../../../docs/explainers/comparative-disagreement-set.md).

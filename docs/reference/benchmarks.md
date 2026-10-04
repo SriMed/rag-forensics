@@ -270,3 +270,48 @@ The per-sentence results contain the private reviewed claims and are not publish
 A subsequent public case collection should select diverse examples from the committed public-data evaluations and preserve the input, observations, hypotheses, proposed test, intervention result, and retrospective interpretation. Its purpose is inspectability and counterexample discovery, not a representative incident taxonomy.
 
 Until authentic consumers are available, evaluation of the interactive record should focus on diagnostic validity: whether proposed tests actually distinguish their named hypotheses, whether retrospective evidence updates the record in the declared direction, whether causal language stays within the evidence, whether unavailable states remain unavailable, and whether displayed claims are traceable to observations and methods. A single-author review can exercise this protocol but must be labeled as such; it cannot establish usability or decision value for external users.
+
+## Comparative disagreement set
+
+Issue #30 asks where RAG Forensics, RAGChecker, RAGVUE, and a RAGAS baseline agree or disagree on the same public cases. It is a qualitative case collection, not a ranking: it does not measure diagnostic accuracy, prevalence, or developer usefulness (#31 covers those).
+
+All four systems ran on the 98-example candidate pool: the parent examples of the 188 supported sentences in the oracle-evidence population (87 CovidQA, 7 TechQA, 4 FinQA, pinned RAGBench revision). Every pool example is labeled fully supported. RAGChecker computes only `faithfulness`, because its other metrics need a reference answer that RAGBench doesn't provide. Claude Haiku 4.5 was every LLM judge, plus Sonnet 4.6 for RAG Forensics' recommendation text.
+
+The figures below come from the second pool run, [`pool-run-v2.json`](../../backend/evals/comparative_diagnostics/v1/pool-run-v2.json). RAG Forensics was rerun at `73c20ea` with chunk scores declared unavailable, because RAGBench has none (#35), and with the structured entailment verdict (#34). RAGChecker's and RAGVUE's outputs were copied unchanged from the first run, [`pool-run.json`](../../backend/evals/comparative_diagnostics/v1/pool-run.json), made at `55f7a96`. The first run passed RAGBench's placeholder scores to RAG Forensics as real ones, which put `ambiguous_retrieval` first in 75 cases, and ADR-060 records why it was superseded. All 98 × 3 outputs are healthy, and none of the second run's 631 entailment checks was malformed (83 of 629 in the first).
+
+A system "flags unsupported content" when at least one claim is unsupported; the exact rule for each system is in [`STRATUM-RULES.md`](../../backend/evals/comparative_diagnostics/v1/STRATUM-RULES.md). RAG Forensics flags a case when its hedging detector (`overconfidence`, 30 cases) or its sentence-attribution detector (`unattributed_content`, 18 cases) fires at any rank. Its `low_faithfulness` signal is the RAGAS score and counts under the baseline.
+
+| System | Cases flagged (of 98) |
+|---|---:|
+| RAG Forensics | 42 |
+| RAGAS baseline | 40 |
+| RAGVUE | 39 |
+| RAGChecker | 30 |
+
+| Systems flagging a case | 0 | 1 | 2 | 3 | 4 |
+|---|---:|---:|---:|---:|---:|
+| Cases | 32 | 19 | 20 | 16 | 11 |
+
+Pairwise agreement ranges from 63/98 (RAGChecker and RAGVUE) to 70/98 (RAG Forensics with RAGAS, and RAGAS with RAGChecker). These are descriptive counts on a pool where every label says supported, so every flag disagrees with the dataset label. They are not error rates: RAGBench's annotations aren't infallible, and the systems judge different things. The RAGAS baseline reran inside RAG Forensics and flagged 40 cases rather than the first run's 39, a reminder that model judges aren't deterministic.
+
+Three structural observations:
+
+- RAG Forensics' top-ranked hypothesis was `retrieved_context_near_miss` in 45 cases and `low_context_utilization` in 19. Its proposed test targeted the retrieval-to-generation boundary in 76 cases, the retriever in 12, the answer generator in 2, and an unavailable component in 8. Because it mostly proposes a boundary test rather than naming one component, only 2 cases are eligible for component disagreement with RAGVUE's derived direction.
+- All 11 cases where exactly one system exposed a failure are RAG Forensics' retrieved-context fit reporting too few valid questions. RAGChecker, RAGVUE, and RAGAS reported no failure states on any case.
+- 11 cases were flagged by all four systems although RAGBench labels them supported. These are the strongest candidates for annotation error or for a shared blind spot in the judges.
+
+The case set was drawn by seeded rule from these outputs:
+
+| Stratum | Selected / eligible |
+|---|---:|
+| Exactly one system exposes a failure | 2 / 11 |
+| Counterexample: RAG Forensics' flag contradicts the label | 2 / 42 |
+| Oracle evidence turns an unsupported judgment into supported | 2 / 31 |
+| Oracle evidence leaves it unsupported | 2 / 40 |
+| Component diagnoses disagree | 1 / 2 |
+| Evidence attributions disagree | 0 / 0 (declared infeasible) |
+| Qualifier, negation, or tabular wording | 3 / 20 |
+| All systems agree, against the label | 3 / 11 |
+| All systems agree, with the label | 3 / 32 |
+
+The selected 18 cases are 14 CovidQA, 3 TechQA, and 1 FinQA. The rules went through three versions, and each superseded draw is recorded in the rules file: v1.1 relaxed the counterexample rule after v1 left it empty (ADR-057), and v2 reran RAG Forensics and counts every hypothesis (ADR-060). The manifest is [`selected-cases.json`](../../backend/evals/comparative_diagnostics/v1/selected-cases.json). [Understanding the comparative disagreement set](../explainers/comparative-disagreement-set.md) explains the design calls and how to read a case.

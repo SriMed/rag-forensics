@@ -74,7 +74,7 @@ A direct comparison with RAGChecker and RAGVUE could present developers with the
 
 The comparison above consequently describes differences in documented design and published evidence, not performance rankings.
 
-A feasibility check (issue #30) confirmed both frameworks run on the same public inputs, but only from isolated environments, not as dependencies of this backend. It also found that RAGVue's self-reported provenance can be wrong, so the frozen comparison schema treats it as untrusted. The findings, schema, and the case-selection protocol (frozen before any case is chosen) are in [`backend/evals/comparative_diagnostics/v1/README.md`](../../backend/evals/comparative_diagnostics/v1/README.md) and [`CASE-SELECTION-PROTOCOL.md`](../../backend/evals/comparative_diagnostics/v1/CASE-SELECTION-PROTOCOL.md).
+A feasibility check (issue #30) confirmed both frameworks run on the same public inputs, but only from isolated environments, not as dependencies of this backend. It also found that RAGVue's self-reported provenance can be wrong, so the frozen comparison schema treats it as untrusted. The findings, schema, and the case-selection protocol (frozen before any case is chosen) are in [`backend/evals/comparative_diagnostics/v1/README.md`](../../backend/evals/comparative_diagnostics/v1/README.md) and [`CASE-SELECTION-PROTOCOL.md`](../../backend/evals/comparative_diagnostics/v1/CASE-SELECTION-PROTOCOL.md). The resulting case collection and its pool-level counts are in [Benchmarking and current evidence](benchmarks.md#comparative-disagreement-set); like this page, it compares designs rather than ranking performance.
 
 ## Scope and exclusions
 
